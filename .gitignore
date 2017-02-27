@@ -22,12 +22,27 @@ node_modules/
 tmp/
 temp/
 hooks/
-platforms/
-plugins/
 plugins/android.json
 plugins/ios.json
-www/
+/www/
 $RECYCLE.BIN/
+
+# Disable other platforms
+plugins/*/src/blackberry*/
+plugins/*/src/windows/
+plugins/*/src/ubuntu/
+plugins/*/src/wp/
+plugins/*/src/firefoxos/
+plugins/*/src/osx/
+plugins/*/src/tizen/
+plugins/*/test*/
+plugins/*/doc*/
+
+# Remove .md from plugins
+plugins/*/*.md
+
+# disable iOS platform
+platforms/ios
 
 .DS_Store
 Thumbs.db

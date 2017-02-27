@@ -1,0 +1,37 @@
+<!--
+  Generated template for the SignUp page.
+
+  See http://ionicframework.com/docs/v2/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>signUp</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+  <ion-list>
+
+    <ion-item>
+      <ion-input type="tel" placeholder="Phone number"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input type="password" placeholder="SMS code"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-datetime placeholder="Birthday" displayFormat="MMM D, YYYY" pickerFormat="MMM D YYYY"></ion-datetime>
+    </ion-item>
+
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <button ion-button color="bk" class="main-action-btn" (click)="doSignUp()" outline></button>
+  <span class="main-action-text">Tap to continue</span>
+</ion-footer>

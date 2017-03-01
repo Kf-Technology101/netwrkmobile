@@ -44,6 +44,8 @@ plugins/*/*.md
 # disable iOS platform
 platforms/ios
 
+build/
+
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate

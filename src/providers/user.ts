@@ -1,39 +1,38 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import { Api } from './api';
+import { LocalStorage } from './local-storage';
 import 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
 
-/*
-  Generated class for the User provider.
+import { Facebook } from 'ionic-native';
 
-  See https://angular.io/docs/ts/latest/guide/dependency-injection.html
-  for more info on providers and Angular 2 DI.
-*/
 @Injectable()
 export class User {
   _user: any;
+  _smsCode: any;
+  _registerData: any;
 
-  constructor(public http: Http, public api: Api) {
+  constructor(
+    public http: Http,
+    public api: Api,
+    public storage: LocalStorage
+  ) {
     console.log('Hello User Provider');
   }
 
   login(accountInfo: any) {
-    let seq = this.api.post('login', accountInfo).share();
+    let user = {
+      'user': accountInfo,
+    }
 
-    seq
-      .map(res => res.json())
-      .subscribe(res => {
-        // If the API returned a successful response, mark the user as logged in
-        if(res.status == 'success') {
-          this._loggedIn(res);
-        } else {
-
-        }
-      }, err => {
-        console.error('ERROR', err);
-      });
+    let seq = this.api.post('sessions', user).share();
+    seq.map(res => res.json()).subscribe(res => {
+      this.saveAuthData(res, 'email');
+    }, err => {
+      console.error('ERROR', err);
+    });
 
     return seq;
   }
@@ -47,48 +46,63 @@ export class User {
       user: accountInfo,
     }
 
-    console.log(user);
-
     let seq = this.api.post('registrations', user).share();
-
-    seq
-      .map(res => res.json())
-      .subscribe(res => {
-        console.log(res);
-
-        // If the API returned a successful response, mark the user as logged in
-        if(res.status == 'success') {
-          this._loggedIn(res);
-        }
-      }, err => {
-        console.error('ERROR', err);
-      });
+    seq.map(res => res.json()).subscribe(res => {
+      this.saveAuthData(res, 'email');
+    }, err => {
+      console.error('ERROR', err);
+    });
 
     return seq;
   }
 
-  forgot(accountInfo: any) {
-    // let seq = this.api.post('signup', accountInfo).share();
+  signUpFacebook() {
+    return new Promise((resolve, reject) => {
+      Facebook.getLoginStatus().then((data) => {
+        console.log(data);
 
-    // seq
-    //   .map(res => res.json())
-    //   .subscribe(res => {
-    //     // If the API returned a successful response, mark the user as logged in
-    //     if(res.status == 'success') {
-    //       this._loggedIn(res);
-    //     }
-    //   }, err => {
-    //     console.error('ERROR', err);
-    //   });
+        if (data.status && data.status == 'connected') {
+          this.loginWithFacebook(data, resolve, reject);
+        } else {
+          Facebook.login(['public_profile']).then((data) => {
+            this.loginWithFacebook(data, resolve, reject);
+          }, (err) => {
+            reject(err);
+          });
+        }
+      }, (err) => {
+        reject(err);
+      });
+    });
+  }
 
-    // return seq;
+  getFbLoginStatus() {
+    return Facebook.getLoginStatus();
+  }
+
+  private loginWithFacebook(data, resolve, reject) {
+    let authData = {
+      user: {
+        provider_name: 'fb',
+        provider_id: data.authResponse.userID,
+      }
+    }
+
+    let seq = this.api.post('sessions/oauth_login', authData).share();
+    seq.map(res => res.json()).subscribe(res => {
+      resolve(res);
+      this.saveAuthData(res, 'facebook');
+    }, err => {
+      reject(err);
+    });
   }
 
   /**
    * Log the user out, which forgets the session
    */
   logout() {
-    this._user = null;
+    this.storage.rm('auth_type');
+    this.storage.rm('auth_data');
   }
 
   /**
@@ -96,6 +110,32 @@ export class User {
    */
   _loggedIn(resp) {
     this._user = resp.user;
+  }
+
+  private saveAuthData(authData: any, type: string) {
+    this.storage.set('auth_type', type);
+    this.storage.set('auth_data', authData);
+  }
+
+  getAuthType():any {
+    return this.storage.get('auth_type');
+  }
+
+  getAuthData():any {
+    return this.storage.get('auth_data');
+  }
+
+  saveRegisterData(data: any) {
+    this._registerData = data;
+  }
+
+  getSMSCode() {
+    this._smsCode = this.geterateCode();
+    console.log(this._smsCode);
+  }
+
+  private geterateCode(): number {
+    return Math.floor((Math.random() * 8999) + 1000);
   }
 
 }

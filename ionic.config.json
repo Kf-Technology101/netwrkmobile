@@ -2,5 +2,11 @@
   "name": "BK",
   "app_id": "",
   "v2": true,
-  "typescript": true
+  "typescript": true,
+  "proxies": [
+    {
+      "path": "/v1",
+      "proxyUrl": "http://192.168.1.13:3000/api/v1"
+    }
+  ]
 }

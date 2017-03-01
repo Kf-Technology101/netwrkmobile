@@ -221,6 +221,14 @@ module.exports = [
         "clobbers": [
             "CordovaHttpPlugin"
         ]
+    },
+    {
+        "id": "cordova-plugin-facebook4.FacebookConnectPlugin",
+        "file": "plugins/cordova-plugin-facebook4/www/facebook-native.js",
+        "pluginId": "cordova-plugin-facebook4",
+        "clobbers": [
+            "facebookConnectPlugin"
+        ]
     }
 ];
 module.exports.metadata = 
@@ -235,7 +243,8 @@ module.exports.metadata =
     "com.mbppower.camerapreview": "0.0.8",
     "cordova-plugin-compat": "1.1.0",
     "cordova-plugin-file": "4.3.1",
-    "cordova-plugin-http": "1.2.0"
+    "cordova-plugin-http": "1.2.0",
+    "cordova-plugin-facebook4": "1.7.4"
 };
 // BOTTOM OF METADATA
 });

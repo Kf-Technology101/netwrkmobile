@@ -1,42 +1,53 @@
-<!--
-  Generated template for the LogIn page.
-
-  See http://ionicframework.com/docs/v2/components/#navigation for more info on
-  Ionic pages and navigation.
--->
-<ion-header>
-
-  <ion-navbar>
-    <ion-title>Netwrk</ion-title>
-  </ion-navbar>
-
-</ion-header>
-
-
 <ion-content padding>
-  <ion-list>
 
-    <ion-item>
-      <ion-input color="bk" type="tel" placeholder="Phone number"></ion-input>
-    </ion-item>
+  <ion-grid>
+    <ion-row>
+      <ion-col text-center>
+        <img src="assets/icon/logo.png">
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <form (submit)="doLogin()">
+          <ion-list>
 
-    <ion-item >
-      <ion-input color="bk" type="password" placeholder="SMS code"></ion-input>
-    </ion-item>
+            <ion-item>
+              <ion-input type="tel" placeholder="Phone number" [(ngModel)]="account.phone" name="phone"></ion-input>
+            </ion-item>
 
-    <ion-item>
-      <!-- <ion-col> -->
-        <button ion-button clear color="bk">Login with facebook</button>
-      <!-- </ion-col>
-      <ion-col> -->
-        <button ion-button default round item-right color="bk">Login</button>
-      <!-- </ion-col> -->
-    </ion-item>
-  </ion-list>
+            <ion-item >
+              <ion-input type="password" placeholder="Password" [(ngModel)]="account.password" name="password"></ion-input>
+            </ion-item>
+
+            <ion-item>
+              <button type="button" ion-button icon-left clear color="bk" (click)="doFbLogin()">
+                <ion-icon name="logo-facebook"></ion-icon>
+                Login with Facebook
+              </button>
+              <button type="submit" ion-button default round item-right color="bk">Login</button>
+            </ion-item>
+          </ion-list>
+        </form>
+      </ion-col>
+    </ion-row>
+    <ion-row>
+      <ion-col>
+        <ion-list>
+
+          <ion-item text-center text-wrap>
+            <span color="bk">
+              You will be asked when you login or sign up for your location, it's needed to access your local netwrk.
+            </span>
+          </ion-item>
+
+        </ion-list>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
 
 </ion-content>
 
 <ion-footer>
   <button ion-button color="bk" class="main-action-btn" (click)="goToSignUp()" outline></button>
-  <span class="main-action-text">New? Tap to get started</span>
+  <span class="main-action-text" color="bk">New? Tap to get started</span>
 </ion-footer>

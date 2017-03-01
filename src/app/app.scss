@@ -32,8 +32,56 @@
   }
 }
 
+.footer-back-button {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  padding: 0 10px;
+  height: 40px;
+  margin: 0;
+  background: none;
+  box-shadow: none;
+
+  &.activated {
+    background: none;
+  }
+}
+
+.main-action-text {
+  font-size: 18px;
+}
+
 ion-footer {
   text-align: center;
   height: 38px;
   border-top: none;
+}
+
+.footer-md::before {
+  background: none;
+}
+
+.list-ios > .item-block:first-child {
+  border-top: none;
+}
+
+.list-ios > .item-block:last-child, .list-ios > .item-wrapper:last-child .item-block {
+  border-bottom: none;
+}
+
+.datetime-ios {
+  padding: 0;
+}
+.datetime-md {
+  padding-left: 9px;
+}
+
+.or-divider {
+  margin: 8% 0;
+  border: none;
+}
+
+.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner {
+  border-bottom-color: #26A69A;
+  box-shadow: none;
 }

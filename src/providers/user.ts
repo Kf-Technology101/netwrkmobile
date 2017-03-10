@@ -10,9 +10,8 @@ import { Facebook } from 'ionic-native';
 
 @Injectable()
 export class User {
-  _user: any;
-  _smsCode: any;
-  _registerData: any;
+  confirmCode: any;
+  registerData: any;
 
   constructor(
     public http: Http,
@@ -22,9 +21,26 @@ export class User {
     console.log('Hello User Provider');
   }
 
+  verification(accountInfo: any) {
+    let data = {
+      country_code: this.storage.get('country_code'),
+      login: accountInfo.login,
+    }
+
+    let seq = this.api.post('sessions/verification', data).share();
+    seq.map(res => res.json()).subscribe(res => {
+      console.log(res);
+      this.confirmCode = res.login_code;
+    }, err => {
+      console.error('ERROR', err);
+    });
+
+    return seq;
+  }
+
   login(accountInfo: any) {
     let user = {
-      'user': accountInfo,
+      'user': accountInfo
     }
 
     let seq = this.api.post('sessions', user).share();
@@ -37,16 +53,28 @@ export class User {
     return seq;
   }
 
-  /**
-   * Send a POST request to our signup endpoint with the data
-   * the user entered on the form.
-   */
   signup(accountInfo: any) {
-    let user = {
-      user: accountInfo,
+    let info = {
+      user: {
+        date_of_birthday: accountInfo.date_of_birthday,
+        password: accountInfo.password
+      }
     }
 
-    let seq = this.api.post('registrations', user).share();
+    info.user[accountInfo.type] = accountInfo.login;
+
+    let time = new Date().getTime();
+    switch (accountInfo.type) {
+      case 'email':
+        info.user['phone'] = time;
+      break;
+      case 'phone':
+        info.user['email'] = time + '@mail.com';
+      break;
+    }
+    // console.log(info);
+
+    let seq = this.api.post('registrations', info).share();
     seq.map(res => res.json()).subscribe(res => {
       this.saveAuthData(res, 'email');
     }, err => {
@@ -57,14 +85,15 @@ export class User {
   }
 
   signUpFacebook() {
+
     return new Promise((resolve, reject) => {
-      Facebook.getLoginStatus().then((data) => {
+      Facebook.getLoginStatus().then((data: any) => {
         console.log(data);
 
         if (data.status && data.status == 'connected') {
           this.loginWithFacebook(data, resolve, reject);
         } else {
-          Facebook.login(['public_profile']).then((data) => {
+          Facebook.login(['public_profile']).then((data: any) => {
             this.loginWithFacebook(data, resolve, reject);
           }, (err) => {
             reject(err);
@@ -80,18 +109,27 @@ export class User {
     return Facebook.getLoginStatus();
   }
 
-  private loginWithFacebook(data, resolve, reject) {
+  private loginWithFacebook(data: any, resolve, reject) {
+    let time = new Date().getTime();
     let authData = {
       user: {
         provider_name: 'fb',
         provider_id: data.authResponse.userID,
+        phone: time,
+        email: time + '@mail.com',
       }
     }
 
     let seq = this.api.post('sessions/oauth_login', authData).share();
     seq.map(res => res.json()).subscribe(res => {
+      console.log(res);
       resolve(res);
-      this.saveAuthData(res, 'facebook');
+      if (data.date_of_birthday) {
+        let date = new Date(data.date_of_birthday);
+        if (typeof date == 'object') {
+          this.saveAuthData(res, 'facebook');
+        }
+      }
     }, err => {
       reject(err);
     });
@@ -103,13 +141,6 @@ export class User {
   logout() {
     this.storage.rm('auth_type');
     this.storage.rm('auth_data');
-  }
-
-  /**
-   * Process a login/signup response to store user data
-   */
-  _loggedIn(resp) {
-    this._user = resp.user;
   }
 
   private saveAuthData(authData: any, type: string) {
@@ -126,16 +157,7 @@ export class User {
   }
 
   saveRegisterData(data: any) {
-    this._registerData = data;
-  }
-
-  getSMSCode() {
-    this._smsCode = this.geterateCode();
-    console.log(this._smsCode);
-  }
-
-  private geterateCode(): number {
-    return Math.floor((Math.random() * 8999) + 1000);
+    this.registerData = data;
   }
 
 }

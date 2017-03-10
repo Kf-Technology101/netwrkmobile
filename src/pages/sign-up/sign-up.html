@@ -1,4 +1,4 @@
-<ion-content padding>
+<ion-content padding has-main-btn>
 
   <ion-grid>
     <ion-row>
@@ -8,30 +8,36 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <ion-list>
+        <form (submit)="doSignUp()" #submitForm="ngForm">
+          <ion-list>
 
-          <ion-item>
-            <ion-input type="tel" placeholder="Phone number" [(ngModel)]="account.phone" name="phone"></ion-input>
-          </ion-item>
+            <ion-item>
+              <ion-datetime placeholder="Birthday..." displayFormat="MMMM D, YYYY" pickerFormat="MMMM D YYYY" [(ngModel)]="account.date_of_birthday" name="date_of_birthday"></ion-datetime>
+            </ion-item>
 
-          <ion-item>
-            <ion-input type="password" placeholder="Password" [(ngModel)]="account.password" name="password"></ion-input>
-          </ion-item>
+            <ion-item>
+              <ion-input type="text" placeholder="Email/Phone number..." [(ngModel)]="account.login" name="login"></ion-input>
+            </ion-item>
 
-          <ion-item>
-            <ion-datetime placeholder="Birthday" displayFormat="MMMM D, YYYY" pickerFormat="MMMM D YYYY" max="2007" [(ngModel)]="account.date_of_birthday" name="date_of_birthday"></ion-datetime>
-          </ion-item>
+            <ion-item>
+              <ion-input type="password" placeholder="Password..." [(ngModel)]="account.password" name="password"></ion-input>
+            </ion-item>
 
-          <ion-item-divider text-center class="or-divider"><span color="bk">OR</span></ion-item-divider>
+            <ion-item>
+              <ion-input type="password" placeholder="Confirm password..." [(ngModel)]="account.confirm_password" name="confirm_password"></ion-input>
+            </ion-item>
 
-          <div text-center>
-            <button ion-button icon-left clear color="bk" (click)="doFbLogin()">
-              <ion-icon name="logo-facebook"></ion-icon>
-              Sign Up with Facebook
-            </button>
-          </div>
+            <ion-item-divider text-center class="or-divider"><span color="bk">OR</span></ion-item-divider>
 
-        </ion-list>
+            <div text-center>
+              <button ion-button icon-left clear color="bk" (click)="doFbLogin()">
+                <ion-icon name="logo-facebook"></ion-icon>
+                Sign Up with Facebook
+              </button>
+            </div>
+
+          </ion-list>
+        </form>
       </ion-col>
     </ion-row>
   </ion-grid>
@@ -39,7 +45,7 @@
 </ion-content>
 
 <ion-footer>
-  <button ion-button color="bk" class="main-action-btn" (click)="doSignUp()" outline></button>
+  <button ion-button color="bk" class="main-action-btn" (click)="doSignUp(submitForm)" outline></button>
   <span class="main-action-text" color="bk">Tap to continue</span>
 
   <button ion-button class="footer-back-button" (click)="goBack()">

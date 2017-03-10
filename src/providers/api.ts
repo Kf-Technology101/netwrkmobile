@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class Api {
-  url: string = 'http://192.168.1.13:3000/api/v1';
+  url: string = 'http://54.200.151.55/api/v1'; //192.168.1.13:3000 //
 
   constructor(public http: Http) {
     console.log('Hello Api Provider');

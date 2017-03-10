@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ToastController, Platform } from 'ionic-angular';
 
 // Pages
-import { HomePage } from '../home/home';
+import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
 
 // Providers
 import { User } from '../../providers/user';
@@ -12,47 +12,84 @@ import { User } from '../../providers/user';
   templateUrl: 'sign-up-confirm.html'
 })
 export class SignUpConfirmPage {
-  smsCode: number;
+  confirmCode: number;
 
   private signUpErrorString: string;
+  private codeErrorString: string;
 
   constructor(
     public navCtrl: NavController,
     public user: User,
     public toastCtrl: ToastController,
-    public navParams: NavParams
+    public navParams: NavParams,
+    public platform: Platform
   ) {
     this.signUpErrorString = 'Unable to Sign Up. Please check your account information and try again.';
+    this.codeErrorString = 'Code error!';
   }
 
   doSignUp() {
-    console.log('data', this.user._registerData);
-    console.log('sms', this.smsCode);
-    if (this.smsCode == this.user._smsCode) {
-      this.user.signup(this.user._registerData).subscribe((resp) => {
-        console.log(resp);
-        this.navCtrl.push(HomePage);
-      }, (err) => {
-        console.log(err);
+    // if (this.platform.is('cordova')) {
+      console.log('data', this.user.registerData);
+      console.log('sms', this.confirmCode);
+      if (this.confirmCode == this.user.confirmCode) {
+        this.user.signup(this.user.registerData)
+          .map(res => res.json())
+          .subscribe((resp) => {
+            console.log(resp);
+            this.navCtrl.push(SignUpContactListPage);
+          }, (err) => {
+            let body = JSON.parse(err._body);
+            console.log(body, body[this.user.registerData.type]);
+            let toast = this.toastCtrl.create({
+              message: this.signUpErrorString,
+              duration: 3000,
+              position: 'top'
+            });
+            toast.present();
+          });
+      } else {
         let toast = this.toastCtrl.create({
-          message: this.signUpErrorString,
+          message: this.codeErrorString,
           duration: 3000,
           position: 'top'
         });
         toast.present();
-      });
-    } else {
-      let toast = this.toastCtrl.create({
-        message: 'SMS code error!',
-        duration: 3000,
-        position: 'top'
-      });
-      toast.present();
-    }
+      }
+    // } else {
+    //   this.navCtrl.push(SignUpContactListPage);
+    // }
   }
 
-  sendSMS() {
-    this.user.getSMSCode();
+  sendCode() {
+    this.user.verification(this.user.registerData)
+      .map(res => res.json())
+      .subscribe(res => {
+        switch (res.login_type) {
+          case 'email':
+          case 'phone':
+            this.user.registerData.type = res.login_type;
+            this.user.saveRegisterData(this.user.registerData);
+            break;
+        }
+        let toast = this.toastCtrl.create({
+          message: res.login_message,
+          duration: 3000,
+          position: 'top'
+        });
+        toast.present();
+    }, err => {
+      if (this.platform.is('cordova')) {
+        let toast = this.toastCtrl.create({
+          message: this.codeErrorString,
+          duration: 3000,
+          position: 'top'
+        });
+        toast.present();
+      } else {
+        this.navCtrl.push(SignUpContactListPage);
+      }
+    });
   }
 
   goBack() {

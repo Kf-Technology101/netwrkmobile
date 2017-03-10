@@ -15149,23 +15149,23 @@ ion-loading {
 
 .loading-ios .spinner-ios line,
 .loading-ios .spinner-ios-small line {
-  stroke: #69717d;
+  stroke: #5b87aa;
 }
 
 .loading-ios .spinner-bubbles circle {
-  fill: #69717d;
+  fill: #5b87aa;
 }
 
 .loading-ios .spinner-circles circle {
-  fill: #69717d;
+  fill: #5b87aa;
 }
 
 .loading-ios .spinner-crescent circle {
-  stroke: #69717d;
+  stroke: #5b87aa;
 }
 
 .loading-ios .spinner-dots circle {
-  fill: #69717d;
+  fill: #5b87aa;
 }
 
 .loading-md .loading-wrapper {
@@ -15184,23 +15184,23 @@ ion-loading {
 
 .loading-md .spinner-ios line,
 .loading-md .spinner-ios-small line {
-  stroke: #387ef5;
+  stroke: #5b87aa;
 }
 
 .loading-md .spinner-bubbles circle {
-  fill: #387ef5;
+  fill: #5b87aa;
 }
 
 .loading-md .spinner-circles circle {
-  fill: #387ef5;
+  fill: #5b87aa;
 }
 
 .loading-md .spinner-crescent circle {
-  stroke: #387ef5;
+  stroke: #5b87aa;
 }
 
 .loading-md .spinner-dots circle {
-  fill: #387ef5;
+  fill: #5b87aa;
 }
 
 .loading-wp .loading-wrapper {
@@ -26688,13 +26688,20 @@ ion-navbar.toolbar {
   left: 50%;
   margin-left: -35px;
   text-align: center;
-  border-width: 4px;
+  border-width: 6px;
   border-radius: 25px;
+  background: #fff;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.8);
 }
 
 .main-action-btn button {
   width: 100%;
   height: 100%;
+}
+
+ion-app .ion-page ion-content[has-main-btn] .scroll-content {
+  padding-bottom: 150px;
+  margin-bottom: 0px !important;
 }
 
 .footer-back-button {
@@ -26714,6 +26721,9 @@ ion-navbar.toolbar {
 
 .main-action-text {
   font-size: 18px;
+  background: #fff;
+  padding: 1px 5px;
+  border-radius: 5px;
 }
 
 ion-footer {
@@ -26745,9 +26755,82 @@ ion-footer {
 .or-divider {
   margin: 8% 0;
   border: none;
+  padding-left: 0;
 }
 
-.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner {
-  border-bottom-color: #26A69A;
+.item-input.item-block .item-inner,
+.item-datetime.item-block .item-inner {
+  border: 1px solid #dedede;
+}
+
+.item-input .item-inner,
+.item-datetime .item-inner {
+  border-color: #5b87aa;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 100px;
+  margin-bottom: 10px;
+}
+
+.item-md.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner,
+.item-md.item-datetime.input-has-value:not(.input-has-focus) .item-inner {
+  border: 1px solid #5b87aa;
   box-shadow: none;
+}
+
+.item-md.item-input.input-has-focus .item-inner,
+.item-md.item-md.item-datetime.input-has-focus .item-inner {
+  border: 1px solid #5b87aa;
+  box-shadow: none;
+}
+
+.checkbox-md .checkbox-checked .checkbox-inner {
+  top: 2px;
+  left: 7px;
+  width: 9px;
+  height: 14px;
+}
+
+.checkbox-md .checkbox-icon {
+  width: 24px;
+  height: 24px;
+  border-width: 1px;
+  border-color: #5b87aa;
+}
+
+.item.item-block.item-right .item-inner {
+  padding-right: 0;
+}
+
+.item [item-right] {
+  margin-right: 0;
+}
+
+page-log-in .item-block {
+  padding-left: 0;
+}
+
+page-sign-up .item-block {
+  padding-left: 0;
+}
+
+page-sign-up-after-fb .item-block {
+  padding-left: 0;
+}
+
+page-sign-up-confirm .item-block {
+  padding-left: 0;
+}
+
+page-sign-up-contact-list .select-all {
+  margin-right: 33px;
+  text-transform: capitalize;
+}
+
+page-sign-up-contact-list .item-block.item-checkbox {
+  padding-left: 0;
+}
+
+page-sign-up-contact-list .item-block.item-checkbox .item-inner {
+  padding: 0 23px;
 }

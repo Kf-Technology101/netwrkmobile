@@ -1,4 +1,4 @@
-<ion-content padding>
+<ion-content padding has-main-btn>
 
   <ion-grid>
     <ion-row>
@@ -12,14 +12,14 @@
           <ion-list>
 
             <ion-item>
-              <ion-input type="tel" placeholder="Phone number" [(ngModel)]="account.phone" name="phone"></ion-input>
-            </ion-item>
-
-            <ion-item >
-              <ion-input type="password" placeholder="Password" [(ngModel)]="account.password" name="password"></ion-input>
+              <ion-input type="text" placeholder="Email/Phone number..." [(ngModel)]="account.login" name="login"></ion-input>
             </ion-item>
 
             <ion-item>
+              <ion-input type="password" placeholder="Password..." [(ngModel)]="account.password" name="password"></ion-input>
+            </ion-item>
+
+            <ion-item class="item-right">
               <button type="button" ion-button icon-left clear color="bk" (click)="doFbLogin()">
                 <ion-icon name="logo-facebook"></ion-icon>
                 Login with Facebook

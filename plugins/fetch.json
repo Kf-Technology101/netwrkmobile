@@ -89,5 +89,21 @@
             "APP_ID": "390382104668705",
             "APP_NAME": "Netwrk"
         }
+    },
+    "cordova-plugin-contacts": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-contacts"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-sim": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-sim"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

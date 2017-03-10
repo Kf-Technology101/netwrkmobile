@@ -37,14 +37,14 @@ $colors: (
 // --------------------------------------------------
 // iOS only Sass variables can go here
 
-
+$loading-ios-spinner-color: color($colors, bk);
 
 
 // App Material Design Variables
 // --------------------------------------------------
 // Material Design only Sass variables can go here
 
-
+$loading-md-spinner-color: color($colors, bk);
 
 
 // App Windows Variables

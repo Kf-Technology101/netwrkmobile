@@ -1,4 +1,4 @@
-<ion-content padding>
+<ion-content padding has-main-btn>
   <ion-grid>
     <ion-row>
       <ion-col text-center>
@@ -10,12 +10,16 @@
         <ion-list>
 
           <ion-item>
-            <ion-input type="password" placeholder="Type SMS code in here..." [(ngModel)]="smsCode" name="smsCode"></ion-input>
+            <ion-input text-center type="password" placeholder="Type code in here..." [(ngModel)]="confirmCode" name="confirmCode"></ion-input>
           </ion-item>
 
-          <button type="button" ion-button icon-left clear color="bk" (click)="sendSMS()">
-            Send SMS again
-          </button>
+          <ion-item-divider text-center class="or-divider"><span color="bk">OR</span></ion-item-divider>
+
+          <div text-center>
+            <button type="button" ion-button icon-left clear color="bk" (click)="sendCode()">
+              Send code again
+            </button>
+          </div>
 
           <ion-item></ion-item>
 

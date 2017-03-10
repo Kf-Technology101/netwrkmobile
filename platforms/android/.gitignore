@@ -13,8 +13,3 @@ out
 # Gradle builds
 /build
 .gradle/
-
-# iml files
-*.iml
-
-*.apk

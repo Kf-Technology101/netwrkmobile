@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController } from 'ionic-angular';
+import { NavController, NavParams, ToastController, Platform } from 'ionic-angular';
 
 // Pages
 import { HomePage } from '../home/home';
@@ -13,35 +13,76 @@ import { User } from '../../providers/user';
   templateUrl: 'sign-up.html'
 })
 export class SignUpPage {
-  account: {phone: string, password: string, date_of_birthday: string} = {
-    phone: '+380971460376',
-    password: '11111111',
-    date_of_birthday: '1993-10-02',
+  account: {
+    login: string,
+    password: string,
+    confirm_password: string,
+    date_of_birthday: string,
+    type: string,
+  } = {
+    login: '',
+    password: '',
+    confirm_password: '',
+    date_of_birthday: '',
+    // login: '+380971460376',
+    // password: '11111111',
+    // confirm_password: '11111111',
+    // date_of_birthday: '1993-10-02',
+    type: '',
   };
 
-  private signUpErrorString: string;
   private fbSignUpErrorString: string;
+  private validLoginErrorString: string;
 
   constructor(
     public navCtrl: NavController,
     public user: User,
     public toastCtrl: ToastController,
-    public navParams: NavParams
+    public navParams: NavParams,
+    public platform: Platform
   ) {
     this.fbSignUpErrorString = 'Unable to SignUp with Facebook.';
+    this.validLoginErrorString = 'Please enter valid login';
   }
 
   doSignUp() {
-    this.user.getSMSCode();
+    console.log(this.account);
     this.user.saveRegisterData(this.account);
-    this.navCtrl.push(SignUpConfirmPage);
+    this.user.verification(this.account)
+      .map(res => res.json())
+      .subscribe(res => {
+        switch (res.login_type) {
+          case 'email':
+          case 'phone':
+            this.account.type = res.login_type;
+            this.navCtrl.push(SignUpConfirmPage);
+            break;
+        }
+        let toast = this.toastCtrl.create({
+          message: res.login_message,
+          duration: 3000,
+          position: 'top'
+        });
+        toast.present();
+    }, err => {
+      if (this.platform.is('cordova')) {
+        let toast = this.toastCtrl.create({
+          message: this.validLoginErrorString,
+          duration: 3000,
+          position: 'top'
+        });
+        toast.present();
+      } else {
+        this.navCtrl.push(SignUpConfirmPage);
+      }
+    });
   }
 
   doFbLogin() {
-    this.user.signUpFacebook().then((data) => {
+    this.user.signUpFacebook().then(data => {
       console.log(data);
       this.navCtrl.push(HomePage);
-    }, (err) => {
+    }, err => {
       let toast = this.toastCtrl.create({
         message: this.fbSignUpErrorString,
         duration: 3000,

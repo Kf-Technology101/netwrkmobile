@@ -29,7 +29,7 @@ $RECYCLE.BIN/
 
 # Disable other platforms
 plugins/*/src/blackberry*/
-plugins/*/src/windows/
+plugins/*/src/windows*/
 plugins/*/src/ubuntu/
 plugins/*/src/wp/
 plugins/*/src/firefoxos/

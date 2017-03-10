@@ -41,8 +41,8 @@ plugins/*/doc*/
 # Remove .md from plugins
 plugins/*/*.md
 
-# disable iOS platform
-platforms/ios
+# disable platform
+platforms/
 
 build/
 

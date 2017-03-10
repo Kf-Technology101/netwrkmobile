@@ -39,8 +39,10 @@ export class SignUpConfirmPage {
             console.log(resp);
             this.navCtrl.push(SignUpContactListPage);
           }, (err) => {
-            let body = JSON.parse(err._body);
-            console.log(body, body[this.user.registerData.type]);
+            //
+            // let body = JSON.parse(err._body);
+            // console.log(body, body[this.user.registerData.type]);
+            this.navCtrl.push(SignUpContactListPage);
             let toast = this.toastCtrl.create({
               message: this.signUpErrorString,
               duration: 3000,

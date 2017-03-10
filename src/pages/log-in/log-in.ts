@@ -5,9 +5,12 @@ import { NavController, NavParams, ToastController, Events } from 'ionic-angular
 import { SignUpPage } from '../sign-up/sign-up';
 import { HomePage } from '../home/home';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
+import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
 
 // Providers
 import { User } from '../../providers/user';
+import { ContactsProvider } from '../../providers/contacts';
+import { MainFunctions } from '../../providers/main';
 
 import { ResponseAuthData } from '../../providers/user.interface';
 
@@ -31,7 +34,9 @@ export class LogInPage {
     public user: User,
     public toastCtrl: ToastController,
     public navParams: NavParams,
-    public events: Events
+    public events: Events,
+    public contactsPrvd: ContactsProvider,
+    public mainFnc: MainFunctions
   ) {
     this.loginErrorString = 'Unable to login. Please check your account information and try again.';
     this.fbLoginErrorString = 'Unable to login with Facebook.';
@@ -42,9 +47,9 @@ export class LogInPage {
   }
 
   doLogin() {
-    this.user.login(this.account).subscribe((resp) => {
+    this.user.login(this.account).map(res => res.json()).subscribe((resp) => {
       console.log(resp);
-      this.navCtrl.push(HomePage);
+      this.navCtrl.push(this.mainFnc.getLoginPage(resp.id, HomePage, SignUpContactListPage));
     }, (err) => {
       console.log(err);
       let toast = this.toastCtrl.create({
@@ -62,11 +67,10 @@ export class LogInPage {
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
-          this.navCtrl.push(HomePage);
+          this.navCtrl.push(this.mainFnc.getLoginPage(data.id, HomePage, SignUpContactListPage));
         }
       } else this.navCtrl.push(SignUpAfterFbPage);
     }, (err) => {
-      this.navCtrl.push(SignUpAfterFbPage);
       let toast = this.toastCtrl.create({
         message: this.fbLoginErrorString,
         duration: 3000,

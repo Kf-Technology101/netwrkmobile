@@ -4,7 +4,7 @@ import { Injectable } from '@angular/core';
 export class LocalStorage {
 
   set(key: string, value: any): any {
-    let strVal;
+    let strVal: any;
     if (typeof value != 'string') {
       try {
         strVal = JSON.stringify(value);
@@ -25,7 +25,7 @@ export class LocalStorage {
     let parsedVal;
     try {
       val ?  parsedVal = JSON.parse(val) : parsedVal = val;
-    }catch (e) {
+    } catch (e) {
       parsedVal = val;
     }
 

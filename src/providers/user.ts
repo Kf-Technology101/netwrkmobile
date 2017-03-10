@@ -12,6 +12,7 @@ import { Facebook } from 'ionic-native';
 export class User {
   confirmCode: any;
   registerData: any;
+  fbResponseData: any;
 
   constructor(
     public http: Http,
@@ -28,27 +29,23 @@ export class User {
     }
 
     let seq = this.api.post('sessions/verification', data).share();
-    seq.map(res => res.json()).subscribe(res => {
-      console.log(res);
-      this.confirmCode = res.login_code;
-    }, err => {
-      console.error('ERROR', err);
-    });
-
+    seq.map(res => res.json()).subscribe(
+      res => {
+        console.log(res);
+        this.confirmCode = res.login_code;
+      }, err => console.error('ERROR', err)
+    );
     return seq;
   }
 
   login(accountInfo: any) {
-    let user = {
-      'user': accountInfo
-    }
+    let user = { user: accountInfo };
 
     let seq = this.api.post('sessions', user).share();
-    seq.map(res => res.json()).subscribe(res => {
-      this.saveAuthData(res, 'email');
-    }, err => {
-      console.error('ERROR', err);
-    });
+    seq.map(res => res.json()).subscribe(
+      res => this.saveAuthData(res, 'email'),
+      err => console.error('ERROR', err)
+    );
 
     return seq;
   }
@@ -75,16 +72,30 @@ export class User {
     // console.log(info);
 
     let seq = this.api.post('registrations', info).share();
-    seq.map(res => res.json()).subscribe(res => {
-      this.saveAuthData(res, 'email');
-    }, err => {
-      console.error('ERROR', err);
-    });
+    seq.map(res => res.json()).subscribe(
+      res => this.saveAuthData(res, 'email'),
+      err => console.error('ERROR', err)
+    );
 
     return seq;
   }
 
-  signUpFacebook() {
+  update(id: number, accountInfo: any, type: string) {
+    let seq = this.api.patch('registrations/' + id, accountInfo).share();
+    seq.map(res => res.json()).subscribe(
+      res => {
+        console.log(res);
+        if (type === 'fb') {
+          this.fbResponseData = null;
+          this.saveAuthData(res, 'facebook');
+        }
+      }, err => console.error('ERROR', err)
+    );
+
+    return seq;
+  }
+
+  signUpFacebook(): Promise<any> {
 
     return new Promise((resolve, reject) => {
       Facebook.getLoginStatus().then((data: any) => {
@@ -105,9 +116,18 @@ export class User {
     });
   }
 
-  getFbLoginStatus() {
-    return Facebook.getLoginStatus();
+  logout() {
+    this.storage.rm('auth_type');
+    this.storage.rm('auth_data');
   }
+
+  getFbLoginStatus() { return Facebook.getLoginStatus(); }
+
+  getAuthType():any { return this.storage.get('auth_type'); }
+
+  getAuthData():any { return this.storage.get('auth_data'); }
+
+  saveRegisterData(data: any) { this.registerData = data; }
 
   private loginWithFacebook(data: any, resolve, reject) {
     let time = new Date().getTime();
@@ -121,43 +141,22 @@ export class User {
     }
 
     let seq = this.api.post('sessions/oauth_login', authData).share();
-    seq.map(res => res.json()).subscribe(res => {
-      console.log(res);
-      resolve(res);
-      if (data.date_of_birthday) {
-        let date = new Date(data.date_of_birthday);
-        if (typeof date == 'object') {
-          this.saveAuthData(res, 'facebook');
-        }
-      }
-    }, err => {
-      reject(err);
-    });
-  }
-
-  /**
-   * Log the user out, which forgets the session
-   */
-  logout() {
-    this.storage.rm('auth_type');
-    this.storage.rm('auth_data');
+    seq.map(res => res.json()).subscribe(
+      res => {
+        console.log(res, res.date_of_birthday);
+        if (res.date_of_birthday) {
+          console.log(res.date_of_birthday);
+          let date = new Date(res.date_of_birthday);
+          console.log(date);
+          if (typeof date == 'object') this.saveAuthData(res, 'facebook');
+        } else this.fbResponseData = res;
+        resolve(res);
+      }, err => reject(err)
+    );
   }
 
   private saveAuthData(authData: any, type: string) {
     this.storage.set('auth_type', type);
     this.storage.set('auth_data', authData);
   }
-
-  getAuthType():any {
-    return this.storage.get('auth_type');
-  }
-
-  getAuthData():any {
-    return this.storage.get('auth_data');
-  }
-
-  saveRegisterData(data: any) {
-    this.registerData = data;
-  }
-
 }

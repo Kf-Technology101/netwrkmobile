@@ -4,9 +4,14 @@ import { NavController, NavParams, ToastController, Platform } from 'ionic-angul
 // Pages
 import { HomePage } from '../home/home';
 import { SignUpConfirmPage } from '../sign-up-confirm/sign-up-confirm';
+import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
+import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
 
 // Providers
 import { User } from '../../providers/user';
+import { MainFunctions } from '../../providers/main';
+
+import { ResponseAuthData } from '../../providers/user.interface';
 
 @Component({
   selector: 'page-sign-up',
@@ -39,7 +44,8 @@ export class SignUpPage {
     public user: User,
     public toastCtrl: ToastController,
     public navParams: NavParams,
-    public platform: Platform
+    public platform: Platform,
+    public mainFnc: MainFunctions
   ) {
     this.fbSignUpErrorString = 'Unable to SignUp with Facebook.';
     this.validLoginErrorString = 'Please enter valid login';
@@ -79,9 +85,14 @@ export class SignUpPage {
   }
 
   doFbLogin() {
-    this.user.signUpFacebook().then(data => {
+    this.user.signUpFacebook().then((data: ResponseAuthData) => {
       console.log(data);
-      this.navCtrl.push(HomePage);
+      if (data.date_of_birthday) {
+        let date = new Date(data.date_of_birthday);
+        if (typeof date == 'object') {
+          this.navCtrl.push(this.mainFnc.getLoginPage(data.id, HomePage, SignUpContactListPage));
+        }
+      } else this.navCtrl.push(SignUpAfterFbPage);
     }, err => {
       let toast = this.toastCtrl.create({
         message: this.fbSignUpErrorString,

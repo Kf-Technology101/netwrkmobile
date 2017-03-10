@@ -1,17 +1,31 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
+import { LocalStorage } from './local-storage';
 import 'rxjs/add/operator/map';
 
 @Injectable()
 export class Api {
-  url: string = 'http://54.200.151.55/api/v1'; //192.168.1.13:3000 //
+  url: string = 'http://192.168.1.13:3000/api/v1'; //192.168.1.13:3000 //54.200.151.55
 
-  constructor(public http: Http) {
+  constructor(
+    public http: Http,
+    public storage: LocalStorage
+  ) {
     console.log('Hello Api Provider');
   }
 
-  createAuthorizationHeader(headers: Headers) {
-    headers.append('Authorization', window.localStorage.getItem('auth_token'));
+  createAuthorizationHeader(options: RequestOptions): RequestOptions {
+    if (!options) {
+      options = new RequestOptions();
+    }
+
+    let headers = new Headers();
+    if (this.storage.get('auth_data')) {
+      headers.append('Authorization', this.storage.get('auth_data').auth_token);
+      options.headers = headers;
+    }
+
+    return options;
   }
 
   get(endpoint: string, params?: any, options?: RequestOptions) {
@@ -30,25 +44,28 @@ export class Api {
       options.search = !options.search && p || options.search;
     }
 
+    options = this.createAuthorizationHeader(options);
+
     return this.http.get(this.url + '/' + endpoint, options);
   }
 
   post(endpoint: string, body: any, options?: RequestOptions) {
-    let headers = new Headers();
-    this.createAuthorizationHeader(headers);
-    console.log(headers);
+    options = this.createAuthorizationHeader(options);
     return this.http.post(this.url + '/' + endpoint, body, options);
   }
 
   put(endpoint: string, body: any, options?: RequestOptions) {
+    options = this.createAuthorizationHeader(options);
     return this.http.put(this.url + '/' + endpoint, body, options);
   }
 
   delete(endpoint: string, body: any, options?: RequestOptions) {
+    options = this.createAuthorizationHeader(options);
     return this.http.post(this.url + '/' + endpoint, body, options);
   }
 
   patch(endpoint: string, body: any, options?: RequestOptions) {
+    options = this.createAuthorizationHeader(options);
     return this.http.patch(this.url + '/' + endpoint, body, options);
   }
 

@@ -9,12 +9,14 @@ import { SignUpPage } from '../pages/sign-up/sign-up';
 import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
 import { SignUpContactListPage } from '../pages/sign-up-contact-list/sign-up-contact-list';
 import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
+import { ProfilePage } from '../pages/profile/profile';
 
 // Services
 import { User } from '../providers/user';
 import { Api } from '../providers/api';
 import { LocalStorage } from '../providers/local-storage';
 import { MainFunctions } from '../providers/main';
+import { ContactsProvider } from '../providers/contacts';
 
 import { Facebook } from 'ionic-native';
 
@@ -25,7 +27,8 @@ let pages = [
   SignUpPage,
   SignUpConfirmPage,
   SignUpContactListPage,
-  SignUpAfterFbPage
+  SignUpAfterFbPage,
+  ProfilePage
 ];
 
 export function declarations() {
@@ -44,6 +47,7 @@ export function providers() {
     Api,
     LocalStorage,
     MainFunctions,
+    ContactsProvider,
 
     Facebook,
 

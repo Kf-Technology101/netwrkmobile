@@ -4,9 +4,12 @@ import { StatusBar, Splashscreen, Sim } from 'ionic-native';
 
 import { LogInPage } from '../pages/log-in/log-in';
 import { HomePage } from '../pages/home/home';
+import { SignUpContactListPage } from '../pages/sign-up-contact-list/sign-up-contact-list';
+// import { ProfilePage } from '../pages/profile/profile';
 
 import { User } from '../providers/user';
 import { LocalStorage } from '../providers/local-storage';
+import { MainFunctions } from '../providers/main';
 
 
 @Component({
@@ -19,7 +22,8 @@ export class MyApp {
     platform: Platform,
     public user: User,
     public localStorage: LocalStorage,
-    public events: Events
+    public events: Events,
+    public mainFnc: MainFunctions
   ) {
     platform.registerBackButtonAction(function () {
       events.publish('backButton:clicked');
@@ -48,7 +52,7 @@ export class MyApp {
         case 'facebook':
           this.user.getFbLoginStatus().then((data) => {
             if (data.status && data.status == 'connected') {
-              this.rootPage = HomePage;
+              this.rootPage = this.mainFnc.getLoginPage(authData.id, HomePage, LogInPage);
             } else {
               this.rootPage = LogInPage;
             }
@@ -56,7 +60,7 @@ export class MyApp {
           });
           break;
         case 'email':
-          this.rootPage = HomePage;
+          this.rootPage = this.mainFnc.getLoginPage(authData.id, HomePage, LogInPage);
           Splashscreen.hide();
           break;
       }

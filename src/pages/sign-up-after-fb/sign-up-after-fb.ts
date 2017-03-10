@@ -1,5 +1,11 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, ToastController } from 'ionic-angular';
+
+// Pages
+import { HomePage } from '../home/home';
+
+// Providers
+import { User } from '../../providers/user';
 
 @Component({
   selector: 'page-sign-up-after-fb',
@@ -10,12 +16,30 @@ export class SignUpAfterFbPage {
 
   constructor(
     public navCtrl: NavController,
-    public navParams: NavParams
+    public navParams: NavParams,
+    public user: User,
+    public toastCtrl: ToastController
   ) {}
 
   doSignUp(form: any) {
     form.ngSubmit.emit();
-    console.log('date_of_birthday', this.date_of_birthday, form);
+    let updateObj = {
+      user: {
+        date_of_birthday: this.date_of_birthday
+      }
+    };
+
+    this.user.update(this.user.fbResponseData.id, updateObj, 'fb')
+      .map(res => res.json()).subscribe(res => {
+        this.navCtrl.push(HomePage);
+      }, err => {
+        let toast = this.toastCtrl.create({
+          message: JSON.stringify(err),
+          duration: 3000,
+          position: 'top'
+        });
+        toast.present();
+      });
   }
 
   goBack() {

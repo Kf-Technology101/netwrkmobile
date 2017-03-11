@@ -5,7 +5,7 @@ import { StatusBar, Splashscreen, Sim } from 'ionic-native';
 import { LogInPage } from '../pages/log-in/log-in';
 import { HomePage } from '../pages/home/home';
 import { SignUpContactListPage } from '../pages/sign-up-contact-list/sign-up-contact-list';
-// import { ProfilePage } from '../pages/profile/profile';
+import { ProfilePage } from '../pages/profile/profile';
 
 import { User } from '../providers/user';
 import { LocalStorage } from '../providers/local-storage';
@@ -65,7 +65,7 @@ export class MyApp {
           break;
       }
     } else {
-      this.rootPage = LogInPage;
+      this.rootPage = ProfilePage;
     }
   }
 

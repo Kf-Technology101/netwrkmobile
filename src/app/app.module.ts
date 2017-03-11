@@ -10,6 +10,7 @@ import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
 import { SignUpContactListPage } from '../pages/sign-up-contact-list/sign-up-contact-list';
 import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
 import { ProfilePage } from '../pages/profile/profile';
+import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 
 // Services
 import { User } from '../providers/user';
@@ -28,7 +29,8 @@ let pages = [
   SignUpConfirmPage,
   SignUpContactListPage,
   SignUpAfterFbPage,
-  ProfilePage
+  ProfilePage,
+  ProfileSettingPage
 ];
 
 export function declarations() {

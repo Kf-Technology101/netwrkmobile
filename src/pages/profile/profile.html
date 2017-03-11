@@ -1,51 +1,119 @@
 <ion-header>
+  <ion-toolbar>
+    <span class="top-profile" (click)="openProfile()">
+      <img class="avatar" src="assets/images/Layer0.png">
+      <span class="label">
+        <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+        <span>Nataliya Miller</span>
+      </span>
+    </span>
 
-  <!-- <ion-navbar>
-    <ion-title>profile</ion-title>
-  </ion-navbar> -->
-
-  <ion-buttons end>
-    <button ion-button icon-only clear>
-      <ion-icon name="settings" color="dark"></ion-icon>
-    </button>
-  </ion-buttons>
+    <ion-buttons end>
+      <button ion-button icon-only clear class="setting">
+        <ion-icon name="settings" color="dark"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
 
 </ion-header>
 
 
-<ion-content padding>
-  <ion-scroll scrollX="true" class="item">
-    <ion-row>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-      <ion-col width-25>
-        Item 1
-      </ion-col>
-    </ion-row>
-  </ion-scroll>
+<ion-content has-main-btn>
+  <ion-row class="facebook" padding>
+    <ion-col>
+      <label>{{testSlides.length}} Сommon Connections</label>
+      <ion-slides #fbSlider>
+        <ion-slide *ngFor="let testSlide of testSlides">
+          <ion-avatar>
+            <img src="assets/images/Layer{{testSlide}}.png">
+          </ion-avatar>
+          <span>Tets</span>
+        </ion-slide>
+      </ion-slides>
+    </ion-col>
+  </ion-row>
+  <ion-row class="connect" padding>
+    <ion-col>
+      <ion-row>
+        <ion-col class="fb" *ngIf="!connect.facebook">
+          <ion-icon name="logo-facebook"></ion-icon>
+          <br>
+          Facebook
+        </ion-col>
+        <ion-col class="in" *ngIf="!connect.instagram">
+          <ion-icon name="logo-instagram"></ion-icon>
+          <br>
+          Instagram
+        </ion-col>
+        <ion-col class="tw" *ngIf="!connect.twitter">
+          <ion-icon name="logo-twitter"></ion-icon>
+          <br>
+          Twitter
+        </ion-col>
+        <ion-col class="sc" *ngIf="!connect.snapchat">
+          <ion-icon name="logo-snapchat"></ion-icon>
+          <br>
+          Snapchat
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col>
+          <button ion-button color="light" outline class="connect-accounts">Connect your music or creative accounts</button>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
+  <ion-row class="feed">
+    <ion-col>
+      <h3><span>Recent</span></h3>
+
+      <ion-row>
+        <ion-col>
+          <ion-card>
+            <ion-card-content>
+              <ion-card-title>Shared via Facebook - 6h</ion-card-title>
+              <p>
+                Just waking up in the morning, gotta thank God. I don't know, but today seems kinda odd. No barking from the dog, no smog. And momma cooked a breakfast with no hog. I got my grub on, but didn't pig out. Just waking up in the morning, gotta thank God. I don't know, but today seems kinda odd. No barking from the dog, no smog. And momma cooked a breakfast with no hog.
+              </p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col width-10>
+          <ion-badge item-right>
+            0
+            <ion-icon name="bulb"></ion-icon>
+          </ion-badge>
+          <ion-badge item-right>
+            0
+            <ion-icon name="contact"></ion-icon>
+          </ion-badge>
+        </ion-col>
+      </ion-row>
+
+      <ion-row>
+        <ion-col>
+          <ion-card>
+            <ion-card-content>
+              <ion-card-title>Shared via Instagram - 6h</ion-card-title>
+            </ion-card-content>
+            <img src="assets/images/instagram.png">
+          </ion-card>
+        </ion-col>
+        <ion-col width-10>
+          <ion-badge item-right>
+            0
+            <ion-icon name="bulb"></ion-icon>
+          </ion-badge>
+          <ion-badge item-right>
+            0
+            <ion-icon name="contact"></ion-icon>
+          </ion-badge>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
 </ion-content>
+
+<ion-footer>
+  <button ion-button color="bk" class="main-action-btn transparent" outline></button>
+</ion-footer>

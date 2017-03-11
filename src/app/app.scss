@@ -17,16 +17,25 @@
 
 .main-action-btn {
   position: absolute;
-  bottom: 40px;
+  bottom: 10px;
   height: 100px;
   width: 70px;
   left: 50%;
   margin-left: -35px;
   text-align: center;
-  border-width: 6px;
+  border-width: 4px;
   border-radius: 25px;
   background: #fff;
   box-shadow: 0 0 10px rgba(255,255,255,0.8);
+
+  &.transparent {
+    background: transparent;
+    box-shadow: none;
+  }
+
+  &.has-label {
+    bottom: 40px;
+  }
 
   button {
     width: 100%;
@@ -35,9 +44,15 @@
 }
 
 ion-app .ion-page ion-content {
-  &[has-main-btn] .scroll-content {
-    padding-bottom: 150px;
-    margin-bottom: 0px !important;
+  &[has-main-btn] {
+    .scroll-content {
+      padding-bottom: 120px;
+      margin-bottom: 0px !important;
+    }
+
+    &[has-main-btn-label] .scroll-content {
+      padding-bottom: 150px;
+    }
   }
 }
 

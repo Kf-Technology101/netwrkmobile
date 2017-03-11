@@ -1,0 +1,55 @@
+<ion-header>
+  <ion-toolbar>
+    <span class="top-profile" (click)="goBack()">
+      <span class="label">
+        <span>Nataliya Miller</span>
+        <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+      </span>
+      <img class="avatar" src="assets/images/Layer0.png">
+    </span>
+
+    <ion-buttons end>
+      <button ion-button icon-only clear class="setting">
+        <ion-icon name="settings" color="dark"></ion-icon>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
+
+</ion-header>
+
+
+<ion-content has-main-btn>
+  <ion-row class="avatar-section">
+    <ion-col>
+      <div class="avatar">
+        <img src="assets/images/incognito.png">
+        <button color="bk" ion-button (click)="callback($event)">
+          <ion-icon name="add"></ion-icon>
+        </button>
+        <input type="file" (change)="filesAdded($event)" style="display: none" #input />
+      </div>
+    </ion-col>
+  </ion-row>
+  <ion-row class="input-section">
+    <ion-col>
+      <ion-input text-center type="text" placeholder="Choose a name" [(ngModel)]="userName" name="userName" [ngClass]="{'has-value' : userName}"></ion-input>
+    </ion-col>
+  </ion-row>
+  <ion-row class="description-section">
+    <ion-col>
+      <ion-card>
+        <h1 text-center>Will you be a super hero or a villain?</h1>
+        <p>
+          Points are given by bringing joy to netwrk, or becoming a legend. Being vulgar or blocked takes them away.
+        </p>
+        <p>
+          Beware: too much negativity and your powers will be recinded.
+        </p>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+</ion-content>
+
+<ion-footer>
+  <button ion-button color="bk" class="main-action-btn transparent" outline></button>
+</ion-footer>

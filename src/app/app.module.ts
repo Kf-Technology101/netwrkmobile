@@ -18,6 +18,7 @@ import { Api } from '../providers/api';
 import { LocalStorage } from '../providers/local-storage';
 import { MainFunctions } from '../providers/main';
 import { ContactsProvider } from '../providers/contacts';
+import { Social } from '../providers/social';
 
 import { Facebook } from 'ionic-native';
 
@@ -50,6 +51,7 @@ export function providers() {
     LocalStorage,
     MainFunctions,
     ContactsProvider,
+    Social,
 
     Facebook,
 

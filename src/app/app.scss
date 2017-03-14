@@ -27,6 +27,7 @@
   border-radius: 25px;
   background: #fff;
   box-shadow: 0 0 10px rgba(255,255,255,0.8);
+  transition: all 0.5s ease;
 
   &.transparent {
     background: transparent;
@@ -43,7 +44,7 @@
   }
 }
 
-ion-app .ion-page ion-content {
+ion-app .ion-page .content {
   &[has-main-btn] {
     .scroll-content {
       padding-bottom: 120px;
@@ -172,5 +173,90 @@ ion-footer {
   }
   [item-right] {
     margin-right: 0;
+  }
+}
+
+.content {
+  .row {
+    &.feed {
+      border-top: 2px solid #b8b8b8;
+      margin-top: 10px;
+
+      .row {
+        &.instagram-post {
+          .card {
+            width: auto;
+            position: absolute;
+            top: 6px;
+          }
+        }
+      }
+
+      .col {
+        padding: 0;
+      }
+
+      h3 {
+        position: relative;
+        color: #fff;
+        text-align: center;
+        top: -28px;
+        font-size: 14px;
+
+        span {
+          background-color: #302f2f;
+          padding: 0 10px;
+        }
+      }
+
+      .card {
+        margin-top: 0;
+        border-radius: 16px;
+
+        .card-content {
+          padding-top: 0;
+          padding-bottom: 0;
+        }
+
+        .card-title {
+          font-size: 1.2rem;
+          color: #4e4e4e;
+        }
+
+        p {
+          font-size: 1.0rem;
+          margin-bottom: 5px;
+        }
+      }
+
+      .badge {
+        background: none;
+        color: #fff;
+        margin-left: -3px;
+        margin-bottom: 8px;
+        padding: 0;
+
+        .icon {
+          background: #5682aa;
+          padding: 3px 4px;
+          border-radius: 100%;
+          font-size: 1.4rem;
+
+          &.icon-ios[name="bulb"] {
+            padding: 3px 6px;
+          }
+        }
+      }
+
+      .points {
+        color: #fff;
+        font-size: 0.9rem;
+        margin-left: -4px;
+
+        &.bad-rating {
+          color: #ee708d;
+        }
+      }
+    }
   }
 }

@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
-import { Api } from './api';
-import { LocalStorage } from './local-storage';
+
 import 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
+
+import { Api } from './api';
+import { LocalStorage } from './local-storage';
+import { Social } from './social';
 
 import { Facebook } from 'ionic-native';
 
@@ -17,7 +20,8 @@ export class User {
   constructor(
     public http: Http,
     public api: Api,
-    public storage: LocalStorage
+    public storage: LocalStorage,
+    public social: Social
   ) {
     console.log('Hello User Provider');
   }
@@ -130,6 +134,8 @@ export class User {
   saveRegisterData(data: any) { this.registerData = data; }
 
   private loginWithFacebook(data: any, resolve, reject) {
+    this.social.setSocialAuth(data.authResponse, Social.FACEBOOK);
+
     let time = new Date().getTime();
     let authData = {
       user: {
@@ -143,11 +149,8 @@ export class User {
     let seq = this.api.post('sessions/oauth_login', authData).share();
     seq.map(res => res.json()).subscribe(
       res => {
-        console.log(res, res.date_of_birthday);
         if (res.date_of_birthday) {
-          console.log(res.date_of_birthday);
           let date = new Date(res.date_of_birthday);
-          console.log(date);
           if (typeof date == 'object') this.saveAuthData(res, 'facebook');
         } else this.fbResponseData = res;
         resolve(res);

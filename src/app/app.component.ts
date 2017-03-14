@@ -2,15 +2,15 @@ import { Component } from '@angular/core';
 import { Platform, Events } from 'ionic-angular';
 import { StatusBar, Splashscreen, Sim } from 'ionic-native';
 
+// Pages
 import { LogInPage } from '../pages/log-in/log-in';
 import { HomePage } from '../pages/home/home';
-import { SignUpContactListPage } from '../pages/sign-up-contact-list/sign-up-contact-list';
 import { ProfilePage } from '../pages/profile/profile';
 
+// Providers
 import { User } from '../providers/user';
 import { LocalStorage } from '../providers/local-storage';
 import { MainFunctions } from '../providers/main';
-
 
 @Component({
   templateUrl: 'app.html'

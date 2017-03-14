@@ -35,7 +35,12 @@
       <ion-input text-center type="text" placeholder="Choose a name" [(ngModel)]="userName" name="userName" [ngClass]="{'has-value' : userName}"></ion-input>
     </ion-col>
   </ion-row>
-  <ion-row class="description-section">
+  <ion-row class="points-section bad-rating">
+    <ion-col text-center>
+      <span>- 67 points</span>
+    </ion-col>
+  </ion-row>
+  <ion-row class="description-section" hidden>
     <ion-col>
       <ion-card>
         <h1 text-center>Will you be a super hero or a villain?</h1>
@@ -48,8 +53,52 @@
       </ion-card>
     </ion-col>
   </ion-row>
+  <ion-row class="feed">
+    <ion-col>
+      <h3><span>Recent</span></h3>
+
+      <ion-row class="facebook-post">
+        <ion-col>
+          <ion-card>
+            <ion-card-content>
+              <ion-card-title>Shared via Facebook - 6h</ion-card-title>
+              <p>
+                Just waking up in the morning, gotta thank God. I don't know, but today seems kinda odd. No barking from the dog, no smog. And momma cooked a breakfast with no hog. I got my grub on, but didn't pig out. Just waking up in the morning, gotta thank God. I don't know, but today seems kinda odd. No barking from the dog, no smog. And momma cooked a breakfast with no hog.
+              </p>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+        <ion-col width-10>
+          <ion-badge item-right>
+            0
+            <ion-icon name="bulb"></ion-icon>
+          </ion-badge>
+          <ion-badge item-right>
+            0
+            <ion-icon name="contact"></ion-icon>
+          </ion-badge>
+          <div class="points" text-center>
+            20
+            <br>
+            points
+          </div>
+        </ion-col>
+      </ion-row>
+
+      <ion-row class="instagram-post">
+        <ion-col>
+          <img src="assets/images/instagram.png">
+          <ion-card>
+            <ion-card-content>
+              <ion-card-title>Shared via Instagram - 6h</ion-card-title>
+            </ion-card-content>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ion-col>
+  </ion-row>
 </ion-content>
 
-<ion-footer>
+<ion-footer [hidden]="hiddenMainBtn">
   <button ion-button color="bk" class="main-action-btn transparent" outline></button>
 </ion-footer>

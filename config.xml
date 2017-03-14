@@ -88,4 +88,7 @@
         <variable name="APP_ID" value="390382104668705" />
         <variable name="APP_NAME" value="Netwrk" />
     </plugin>
+
+    <preference name="TwitterConsumerKey" value="iLR8G2qTqBEL0L2W4rV11xQdX" />
+    <preference name="TwitterConsumerSecret" value="4phuCBbYt2g0eSGZFsCqeGio48LDUmFk5uAcBSxkw54p0HnA12" />
 </widget>

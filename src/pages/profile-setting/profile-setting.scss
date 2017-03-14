@@ -1,85 +1,5 @@
 page-profile-setting {
-  ion-content {
-    &.content {
-      background: #302f2f;
-    }
-
-    .avatar-section {
-      .avatar {
-        text-align: center;
-
-        img {
-          border-radius: 100%;
-          height: auto;
-          width: 200px;
-        }
-
-        .button {
-          position: absolute;
-          bottom: 0;
-          left: 50%;
-          margin: 0;
-          padding: 0;
-          width: 30px;
-          height: 30px;
-          margin-left: -15px;
-          font-size: 22px;
-          color: #fff;
-          border-radius: 6px;
-        }
-      }
-    }
-
-    .input-section {
-      .input {
-        width: 300px;
-        margin: 10px auto;
-        border: 2px solid #fff;
-        border-radius: 16px;
-        font-size: 1.6rem;
-
-        input {
-          color: #fff;
-
-          &::-webkit-input-placeholder {
-            color: #fff;
-          }
-
-          &:focus {
-            color: #fff;
-          }
-        }
-
-        &.has-value {
-          input {
-            text-align: left;
-          }
-        }
-      }
-    }
-
-    .description-section {
-      .card {
-        background: transparent;
-        box-shadow: none;
-
-        h1 {
-          color: #fff;
-          font-size: 2rem;
-          margin-bottom: 20px;
-        }
-
-        p {
-          color: #fff;
-          margin-bottom: 10px;
-          padding: 0 10%;
-          line-height: 1.2;
-        }
-      }
-    }
-  }
-
-  ion-header {
+  .header {
     &.header::after {
       background: none;
     }
@@ -89,6 +9,7 @@ page-profile-setting {
 
       [name='settings'] {
         font-size: 30px;
+        color: #fff;
       }
     }
 
@@ -129,4 +50,92 @@ page-profile-setting {
       }
     }
   }
+
+  .content {
+    background: #302f2f;
+
+    .avatar-section {
+      .avatar {
+        text-align: center;
+
+        img {
+          border-radius: 100%;
+          height: auto;
+          width: 200px;
+        }
+
+        .button {
+          position: absolute;
+          bottom: 0;
+          left: 50%;
+          margin: 0;
+          padding: 0;
+          width: 30px;
+          height: 30px;
+          margin-left: -15px;
+          font-size: 22px;
+          color: #fff;
+          border-radius: 6px;
+        }
+      }
+    }
+
+    .input-section {
+      .input {
+        width: 300px;
+        margin: 10px auto 0;
+        border: 2px solid #fff;
+        border-radius: 16px;
+        font-size: 1.6rem;
+
+        input {
+          color: #fff;
+
+          &::-webkit-input-placeholder {
+            color: #fff;
+          }
+
+          &:focus {
+            color: #fff;
+          }
+        }
+
+        &.has-value {
+          input {
+            text-align: left;
+          }
+        }
+      }
+    }
+
+    .points-section {
+      color: #fff;
+      font-size: 2rem;
+
+      &.bad-rating {
+        color: #ee708d;
+      }
+    }
+
+    .description-section {
+      .card {
+        background: transparent;
+        box-shadow: none;
+
+        h1 {
+          color: #fff;
+          font-size: 2rem;
+          margin-bottom: 20px;
+        }
+
+        p {
+          color: #fff;
+          margin-bottom: 10px;
+          padding: 0 10%;
+          line-height: 1.2;
+        }
+      }
+    }
+  }
+
 }

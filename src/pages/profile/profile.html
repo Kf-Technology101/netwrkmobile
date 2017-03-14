@@ -24,9 +24,9 @@
       <label>{{testSlides.length}} Сommon Connections</label>
       <ion-slides #fbSlider>
         <ion-slide *ngFor="let testSlide of testSlides">
-          <ion-avatar>
+          <div class="avatar">
             <img src="assets/images/Layer{{testSlide}}.png">
-          </ion-avatar>
+          </div>
           <span>Tets</span>
         </ion-slide>
       </ion-slides>
@@ -36,24 +36,32 @@
     <ion-col>
       <ion-row>
         <ion-col class="fb" *ngIf="!connect.facebook">
-          <ion-icon name="logo-facebook"></ion-icon>
-          <br>
-          Facebook
+          <button type="button" (click)="connectToFacebook()">
+            <ion-icon name="logo-facebook"></ion-icon>
+            <br>
+            Facebook
+          </button>
         </ion-col>
         <ion-col class="in" *ngIf="!connect.instagram">
-          <ion-icon name="logo-instagram"></ion-icon>
-          <br>
-          Instagram
+          <button type="button" (click)="connectToInstagram()">
+            <ion-icon name="logo-instagram"></ion-icon>
+            <br>
+            Instagram
+          </button>
         </ion-col>
         <ion-col class="tw" *ngIf="!connect.twitter">
-          <ion-icon name="logo-twitter"></ion-icon>
-          <br>
-          Twitter
+          <button type="button" (click)="connectToTwitter()">
+            <ion-icon name="logo-twitter"></ion-icon>
+            <br>
+            Twitter
+          </button>
         </ion-col>
         <ion-col class="sc" *ngIf="!connect.snapchat">
-          <ion-icon name="logo-snapchat"></ion-icon>
-          <br>
-          Snapchat
+          <button type="button" (click)="connectToSnapchat()">
+            <ion-icon name="logo-snapchat"></ion-icon>
+            <br>
+            Snapchat
+          </button>
         </ion-col>
       </ion-row>
       <ion-row>
@@ -67,7 +75,7 @@
     <ion-col>
       <h3><span>Recent</span></h3>
 
-      <ion-row>
+      <ion-row class="facebook-post">
         <ion-col>
           <ion-card>
             <ion-card-content>
@@ -90,30 +98,20 @@
         </ion-col>
       </ion-row>
 
-      <ion-row>
+      <ion-row class="instagram-post">
         <ion-col>
+          <img src="assets/images/instagram.png">
           <ion-card>
             <ion-card-content>
               <ion-card-title>Shared via Instagram - 6h</ion-card-title>
             </ion-card-content>
-            <img src="assets/images/instagram.png">
           </ion-card>
-        </ion-col>
-        <ion-col width-10>
-          <ion-badge item-right>
-            0
-            <ion-icon name="bulb"></ion-icon>
-          </ion-badge>
-          <ion-badge item-right>
-            0
-            <ion-icon name="contact"></ion-icon>
-          </ion-badge>
         </ion-col>
       </ion-row>
     </ion-col>
   </ion-row>
 </ion-content>
 
-<ion-footer>
+<ion-footer [hidden]="hiddenMainBtn">
   <button ion-button color="bk" class="main-action-btn transparent" outline></button>
 </ion-footer>

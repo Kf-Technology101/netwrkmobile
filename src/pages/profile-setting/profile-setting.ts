@@ -7,6 +7,7 @@ import { NavController, NavParams } from 'ionic-angular';
 })
 export class ProfileSettingPage {
   userName: string;
+  hiddenMainBtn: boolean;
 
   /**
    * Native upload button (hidden)
@@ -44,11 +45,34 @@ export class ProfileSettingPage {
   }
 
   goBack() {
-    this.navCtrl.pop();
+    let navOptions = {
+      animate: true,
+      animation: 'ios-transition',
+      direction: 'back'
+    }
+
+    this.hiddenMainBtn = true;
+    this.navCtrl.pop(navOptions);
   }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ProfileSettingPage');
+  }
+  ionViewWillEnter() {
+    console.log('ionViewWillEnter ProfileSettingPage');
+  }
+  ionViewDidEnter() {
+    this.hiddenMainBtn = false;
+    console.log('ionViewDidEnter ProfileSettingPage');
+  }
+  ionViewWillLeave() {
+    console.log('ionViewWillLeave ProfileSettingPage');
+  }
+  ionViewDidLeave() {
+    console.log('ionViewDidLeave ProfileSettingPage');
+  }
+  ionViewWillUnload() {
+    console.log('ionViewWillUnload ProfileSettingPage');
   }
 
 }

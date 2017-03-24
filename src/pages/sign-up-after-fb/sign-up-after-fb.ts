@@ -1,13 +1,17 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController } from 'ionic-angular';
+import {
+  NavController,
+  NavParams
+} from 'ionic-angular';
 
 // Pages
-import { HomePage } from '../home/home';
+// import { HomePage } from '../home/home';
 import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
+import { ProfileSettingPage } from '../profile-setting/profile-setting';
 
 // Providers
 import { User } from '../../providers/user';
-import { MainFunctions } from '../../providers/main';
+import { Tools } from '../../providers/tools';
 
 @Component({
   selector: 'page-sign-up-after-fb',
@@ -15,42 +19,47 @@ import { MainFunctions } from '../../providers/main';
 })
 export class SignUpAfterFbPage {
   date_of_birthday: string;
+  hiddenMainBtn: boolean = false;
+  maxBirthday: number;
+
+  private validBirthdayErrorString: string;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public user: User,
-    public toastCtrl: ToastController,
-    public mainFnc: MainFunctions
-  ) {}
+    public tools: Tools
+  ) {
+    this.maxBirthday = new Date().getFullYear() - 1;
+    this.validBirthdayErrorString = 'Please fill all fields';
+  }
 
   doSignUp(form: any) {
-    form.ngSubmit.emit();
-    let updateObj = {
-      user: {
-        date_of_birthday: this.date_of_birthday
-      }
-    };
+    console.log(form);
+    if (form.valid) {
+      this.tools.showLoader();
+      let updateObj = { user: { date_of_birthday: this.date_of_birthday } };
 
-    this.user.update(this.user.fbResponseData.id, updateObj, 'fb')
-      .map(res => res.json()).subscribe(res => {
-        this.navCtrl.push(this.mainFnc.getLoginPage(res.id, HomePage, SignUpContactListPage));
-      }, err => {
-        let toast = this.toastCtrl.create({
-          message: JSON.stringify(err),
-          duration: 3000,
-          position: 'top'
+      this.user.update(this.user.fbResponseData.id, updateObj, 'fb')
+        .map(res => res.json()).subscribe(res => {
+          this.tools.hideLoader();
+          this.tools.getLoginPage(ProfileSettingPage, SignUpContactListPage).then(
+            res => this.navCtrl.push(res),
+            err => this.navCtrl.push(ProfileSettingPage)
+          );
+        }, err => {
+          this.tools.hideLoader();
+          this.tools.showToast(JSON.stringify(err));
         });
-        toast.present();
-      });
+    } else {
+      this.tools.showToast(this.validBirthdayErrorString);
+    }
   }
 
-  goBack() {
-    this.navCtrl.pop();
-  }
+  goBack() { this.navCtrl.pop(); }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SignUpAfterFbPage');
-  }
+  ionViewDidLoad() { this.hiddenMainBtn = true; }
+  ionViewWillEnter() { this.hiddenMainBtn = false; }
+  ionViewWillLeave() { this.hiddenMainBtn = true; }
 
 }

@@ -80,24 +80,6 @@ export class ProfilePage {
 
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ProfilePage');
-  }
-  ionViewWillEnter() {
-    this.hiddenMainBtn = false;
-    console.log('ionViewWillEnter ProfilePage');
-  }
-  ionViewDidEnter() {
-    console.log('ionViewDidEnter ProfilePage');
-  }
-  ionViewWillLeave() {
-    console.log('ionViewWillLeave ProfilePage');
-  }
-  ionViewDidLeave() {
-    console.log('ionViewDidLeave ProfilePage');
-  }
-  ionViewWillUnload() {
-    console.log('ionViewWillUnload ProfilePage');
-  }
+  ionViewWillEnter() { this.hiddenMainBtn = false; }
 
 }

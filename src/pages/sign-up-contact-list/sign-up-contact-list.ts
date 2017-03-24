@@ -1,12 +1,18 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, LoadingController, Platform, ToastController } from 'ionic-angular';
+import {
+  NavController,
+  NavParams,
+  Platform
+} from 'ionic-angular';
 import { Contacts } from 'ionic-native';
 
-import { HomePage } from '../home/home';
+// import { HomePage } from '../home/home';
+import { ProfileSettingPage } from '../profile-setting/profile-setting';
 
 // Providers
 import { User } from '../../providers/user';
 import { ContactsProvider } from '../../providers/contacts';
+import { Tools } from '../../providers/tools';
 
 
 @Component({
@@ -16,40 +22,40 @@ import { ContactsProvider } from '../../providers/contacts';
 export class SignUpContactListPage {
   contacts: Array<any>;
   selectAll: boolean = false;
+  hiddenMainBtn: boolean = false;
 
   private selectErrorString: string;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public loadingCtrl: LoadingController,
     public platform: Platform,
-    public toastCtrl: ToastController,
     public user: User,
-    public contactsPrvd: ContactsProvider
+    public contactsPrvd: ContactsProvider,
+    public tools: Tools
   ) {
     if (!this.platform.is('cordova')) this.contacts = [
       {
         name: {
-          formatted: 'sss',
+          formatted: 'Test 1',
         },
         emails: [{
-          value: 'sddfdsfsdf'
+          value: 'test1@mail.com'
         }],
         phoneNumbers: [{
-          value: 'aaaaaaa'
+          value: '+1 000 111 2222'
         }],
         checked: false
       },
       {
         name: {
-          formatted: 'sss',
+          formatted: 'Test 2',
         },
         emails: [{
-          value: 'sddfdsfsdf'
+          value: 'test2@mail.com'
         }],
         phoneNumbers: [{
-          value: 'aaaaaaa'
+          value: '333.444.5555'
         }],
         checked: true
       }
@@ -60,25 +66,19 @@ export class SignUpContactListPage {
   }
 
   getContacts() {
-    let loader = this.loadingCtrl.create({
-      content: "Please wait..."
-    });
-
-    loader.present();
+    this.tools.showLoader();
     Contacts.find(['emails']).then((data) => {
+      this.tools.hideLoader();
       let contacts: Array<any> = [];
       for (let i in data) {
-        // console.log(data[i].emails, data[i].phoneNumbers);
-        if (data[i].emails) {
+        if (data[i].emails && contacts.length < 500) {
           contacts.push(data[i]);
         }
       }
       this.contacts = contacts;
       console.log(this.contacts);
-      loader.dismiss();
-    }, (err) => {
-      console.log(err);
-      loader.dismiss();
+    }, err => {
+      this.tools.hideLoader();
     })
   }
 
@@ -105,11 +105,7 @@ export class SignUpContactListPage {
   }
 
   goHome() {
-    let loader = this.loadingCtrl.create({
-      content: "Please wait..."
-    });
-
-    loader.present();
+    this.tools.showLoader();
     var checkedContacts: Array<any> = [];
 
     for (let c in this.contacts) {
@@ -122,41 +118,33 @@ export class SignUpContactListPage {
     }
 
     if (checkedContacts.length > 0) {
-      this.contactsPrvd.sendEmails(checkedContacts).map(res => res.json()).subscribe(
+      this.contactsPrvd.sendEmails(checkedContacts)
+        .map(res => res.json()).subscribe(
         res => {
-          this.user.update(this.user.getAuthData().id, { user: { invitation: true } }, null)
-            .map(res => res.json()).subscribe(res => {
-              loader.dismiss();
-              this.navCtrl.push(HomePage);
+          this.user.update(
+            this.user.getAuthData().id,
+            { user: { invitation_sent: true } },
+            null
+          ).map(res => res.json()).subscribe(res => {
+              this.tools.hideLoader();
+              this.navCtrl.push(ProfileSettingPage);
             }, err => {
-              loader.dismiss();
-              let toast = this.toastCtrl.create({
-                message: JSON.stringify(err),
-                duration: 3000,
-                position: 'top'
-              });
-              toast.present();
+              this.tools.hideLoader();
+              this.tools.showToast(JSON.stringify(err));
             });
         },
         err => console.error('ERROR', err)
       );
     } else {
-      loader.dismiss();
-      let toast = this.toastCtrl.create({
-        message: this.selectErrorString,
-        duration: 3000,
-        position: 'top'
-      });
-      toast.present();
+      this.tools.hideLoader();
+      this.tools.showToast(this.selectErrorString);
     }
   }
 
-  goBack() {
-    this.navCtrl.pop();
-  }
+  goBack() { this.navCtrl.pop(); }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SignUpContactListPage');
-  }
+  ionViewDidLoad() { this.hiddenMainBtn = true; }
+  ionViewWillEnter() { this.hiddenMainBtn = false; }
+  ionViewWillLeave() { this.hiddenMainBtn = true; }
 
 }

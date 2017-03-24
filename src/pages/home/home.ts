@@ -7,7 +7,7 @@ import { LogInPage } from '../log-in/log-in';
 
 // Providers
 import { User } from '../../providers/user';
-import { MainFunctions } from '../../providers/main';
+import { Tools } from '../../providers/tools';
 
 @Component({
   selector: 'page-home',
@@ -18,9 +18,9 @@ export class HomePage {
   constructor(
     public navCtrl: NavController,
     public user: User,
-    public mainFunc: MainFunctions
+    public tools: Tools
   ) {
-    mainFunc.doBackButton('home', (page) => {
+    tools.doBackButton('home', (page) => {
       console.log(page);
     });
   }

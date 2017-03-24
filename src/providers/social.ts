@@ -17,9 +17,7 @@ export class Social {
     public http: Http,
     public storage: LocalStorage,
     public api: Api
-  ) {
-    console.log('Hello Social Provider');
-  }
+  ) {}
 
   connectToFacebook() {
     let connect = Facebook.getLoginStatus().then((data: any) => {

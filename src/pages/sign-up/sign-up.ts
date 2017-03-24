@@ -1,17 +1,23 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, Platform } from 'ionic-angular';
+import {
+  NavController,
+  NavParams,
+  Platform
+} from 'ionic-angular';
 
 // Pages
-import { HomePage } from '../home/home';
+// import { HomePage } from '../home/home';
 import { SignUpConfirmPage } from '../sign-up-confirm/sign-up-confirm';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
 import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
+import { ProfileSettingPage } from '../profile-setting/profile-setting';
 
 // Providers
 import { User } from '../../providers/user';
-import { MainFunctions } from '../../providers/main';
+import { Tools } from '../../providers/tools';
 
-import { ResponseAuthData } from '../../providers/user.interface';
+// Interfaces
+import { ResponseAuthData } from '../../interfaces/user';
 
 @Component({
   selector: 'page-sign-up',
@@ -36,52 +42,58 @@ export class SignUpPage {
     type: '',
   };
 
-  private fbSignUpErrorString: string;
-  private validLoginErrorString: string;
+  hiddenMainBtn: boolean = false;
+  maxBirthday: number;
+
+  private textStrings: any = {};
 
   constructor(
     public navCtrl: NavController,
     public user: User,
-    public toastCtrl: ToastController,
     public navParams: NavParams,
     public platform: Platform,
-    public mainFnc: MainFunctions
+    public tools: Tools
   ) {
-    this.fbSignUpErrorString = 'Unable to SignUp with Facebook.';
-    this.validLoginErrorString = 'Please enter valid login';
+    this.maxBirthday = new Date().getFullYear() - 1;
+
+    this.textStrings.fb = 'Unable to SignUp with Facebook.';
+    this.textStrings.login = 'Please enter valid login';
+    this.textStrings.password = 'The passwords not match!';
+    this.textStrings.require = 'Please fill all fields';
   }
 
-  doSignUp() {
-    console.log(this.account);
-    this.user.saveRegisterData(this.account);
-    this.user.verification(this.account)
-      .map(res => res.json())
-      .subscribe(res => {
-        switch (res.login_type) {
-          case 'email':
-          case 'phone':
-            this.account.type = res.login_type;
-            this.navCtrl.push(SignUpConfirmPage);
-            break;
+  doSignUp(form: any) {
+    console.log(form, this.account);
+    if (form.invalid) {
+      this.tools.showToast(this.textStrings.require);
+      return;
+    }
+
+    this.tools.showLoader();
+    if (this.account.password == this.account.confirm_password) {
+      this.user.saveRegisterData(this.account);
+      this.user.verification(this.account)
+        .map(res => res.json())
+        .subscribe(res => {
+          console.log(res);
+          this.tools.hideLoader();
+
+          this.account.type = res.login_type;
+          this.navCtrl.push(SignUpConfirmPage);
+
+          this.tools.showToast(res.login_message);
+      }, err => {
+        this.tools.hideLoader();
+        if (this.platform.is('cordova')) {
+          this.tools.showToast(this.textStrings.login);
+        } else {
+          this.navCtrl.push(SignUpConfirmPage);
         }
-        let toast = this.toastCtrl.create({
-          message: res.login_message,
-          duration: 3000,
-          position: 'top'
-        });
-        toast.present();
-    }, err => {
-      if (this.platform.is('cordova')) {
-        let toast = this.toastCtrl.create({
-          message: this.validLoginErrorString,
-          duration: 3000,
-          position: 'top'
-        });
-        toast.present();
-      } else {
-        this.navCtrl.push(SignUpConfirmPage);
-      }
-    });
+      });
+    } else {
+      this.tools.hideLoader();
+      this.tools.showToast(this.textStrings.password);
+    }
   }
 
   doFbLogin() {
@@ -90,25 +102,21 @@ export class SignUpPage {
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
-          this.navCtrl.push(this.mainFnc.getLoginPage(data.id, HomePage, SignUpContactListPage));
+          this.tools.getLoginPage(ProfileSettingPage, SignUpContactListPage).then(
+            res => this.navCtrl.push(res),
+            err => this.navCtrl.push(ProfileSettingPage)
+          );
         }
       } else this.navCtrl.push(SignUpAfterFbPage);
     }, err => {
-      let toast = this.toastCtrl.create({
-        message: this.fbSignUpErrorString,
-        duration: 3000,
-        position: 'top'
-      });
-      toast.present();
+      this.tools.showToast(this.textStrings.fb);
     });
   }
 
-  goBack() {
-    this.navCtrl.pop();
-  }
+  goBack() { this.navCtrl.pop(); }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SignUpPage');
-  }
+  ionViewDidLoad() { this.hiddenMainBtn = true; }
+  ionViewWillEnter() { this.hiddenMainBtn = false; }
+  ionViewWillLeave() { this.hiddenMainBtn = true; }
 
 }

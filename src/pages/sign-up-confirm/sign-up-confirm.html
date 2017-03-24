@@ -10,13 +10,18 @@
         <ion-list>
 
           <ion-item>
-            <ion-input text-center type="password" placeholder="Type code in here..." [(ngModel)]="confirmCode" name="confirmCode"></ion-input>
+            <ion-input text-center type="password"
+              placeholder="Type code in here..."
+              [(ngModel)]="confirmCode" name="confirmCode"></ion-input>
           </ion-item>
 
-          <ion-item-divider text-center class="or-divider"><span color="bk">OR</span></ion-item-divider>
+          <ion-item-divider text-center class="or-divider">
+            <span color="bk">OR</span>
+          </ion-item-divider>
 
           <div text-center>
-            <button type="button" ion-button icon-left clear color="bk" (click)="sendCode()">
+            <button type="button" ion-button icon-left clear color="bk"
+              (click)="sendCode()">
               Send code again
             </button>
           </div>
@@ -30,8 +35,11 @@
 </ion-content>
 
 <ion-footer>
-  <button ion-button color="bk" class="main-action-btn has-label" (click)="doSignUp()" outline></button>
-  <span class="main-action-text" color="bk">Tap to continue</span>
+  <button [hidden]="hiddenMainBtn" ion-button color="bk"
+    class="main-action-btn has-label" (click)="doSignUp()" outline></button>
+  <span [hidden]="hiddenMainBtn" class="main-action-text" color="bk">
+    Tap to continue
+  </span>
 
   <button ion-button class="footer-back-button" (click)="goBack()">
     <span color="bk">Back</span>

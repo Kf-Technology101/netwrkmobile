@@ -57,6 +57,10 @@ ion-app .ion-page .content {
   }
 }
 
+.header-ios {
+  top: 12px;
+}
+
 .footer-back-button {
   position: absolute;
   right: 0;
@@ -79,7 +83,7 @@ ion-app .ion-page .content {
   border-radius: 5px;
 }
 
-ion-footer {
+.footer {
   text-align: center;
   height: 38px;
   border-top: none;
@@ -97,9 +101,9 @@ ion-footer {
   border-bottom: none;
 }
 
-.datetime-ios {
-  padding: 0;
-}
+// .datetime-ios {
+//   padding: 0;
+// }
 .datetime-md {
   padding-left: 9px;
 }
@@ -108,6 +112,7 @@ ion-footer {
   margin: 8% 0;
   border: none;
   padding-left: 0;
+  background: none;
 }
 
 .item-input,
@@ -124,6 +129,10 @@ ion-footer {
     border-style: solid;
     border-radius: 100px;
     margin-bottom: 10px;
+  }
+
+  .text-input-ios {
+    margin-left: 15px;
   }
 }
 

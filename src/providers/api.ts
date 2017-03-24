@@ -5,15 +5,13 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class Api {
-  siteDomain: string = '192.168.1.13:3000'; //192.168.1.13:3000 //54.200.151.55/
+  siteDomain: string = '192.168.1.13:3000'; //192.168.1.13:3000 //54.200.151.55
   url: string = 'http://' + this.siteDomain + '/api/v1';
 
   constructor(
     public http: Http,
     public storage: LocalStorage
-  ) {
-    console.log('Hello Api Provider');
-  }
+  ) {}
 
   createAuthorizationHeader(options: RequestOptions): RequestOptions {
     if (!options) {
@@ -30,9 +28,7 @@ export class Api {
   }
 
   get(endpoint: string, params?: any, options?: RequestOptions) {
-    if (!options) {
-      options = new RequestOptions();
-    }
+    if (!options) { options = new RequestOptions(); }
 
     // Support easy query params for GET requests
     if (params) {

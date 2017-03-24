@@ -22,9 +22,7 @@ export class User {
     public api: Api,
     public storage: LocalStorage,
     public social: Social
-  ) {
-    console.log('Hello User Provider');
-  }
+  ) {}
 
   verification(accountInfo: any) {
     let data = {
@@ -35,10 +33,10 @@ export class User {
     let seq = this.api.post('sessions/verification', data).share();
     seq.map(res => res.json()).subscribe(
       res => {
-        console.log(res);
         this.confirmCode = res.login_code;
       }, err => console.error('ERROR', err)
     );
+
     return seq;
   }
 
@@ -66,14 +64,9 @@ export class User {
 
     let time = new Date().getTime();
     switch (accountInfo.type) {
-      case 'email':
-        info.user['phone'] = time;
-      break;
-      case 'phone':
-        info.user['email'] = time + '@mail.com';
-      break;
+      case 'email': info.user['phone'] = time; break;
+      case 'phone': info.user['email'] = time + '@mail.com'; break;
     }
-    // console.log(info);
 
     let seq = this.api.post('registrations', info).share();
     seq.map(res => res.json()).subscribe(
@@ -103,7 +96,6 @@ export class User {
 
     return new Promise((resolve, reject) => {
       Facebook.getLoginStatus().then((data: any) => {
-        console.log(data);
 
         if (data.status && data.status == 'connected') {
           this.loginWithFacebook(data, resolve, reject);
@@ -143,6 +135,7 @@ export class User {
         provider_id: data.authResponse.userID,
         phone: time,
         email: time + '@mail.com',
+        token: data.authResponse.accessToken,
       }
     }
 

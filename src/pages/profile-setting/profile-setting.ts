@@ -55,24 +55,6 @@ export class ProfileSettingPage {
     this.navCtrl.pop(navOptions);
   }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad ProfileSettingPage');
-  }
-  ionViewWillEnter() {
-    console.log('ionViewWillEnter ProfileSettingPage');
-  }
-  ionViewDidEnter() {
-    this.hiddenMainBtn = false;
-    console.log('ionViewDidEnter ProfileSettingPage');
-  }
-  ionViewWillLeave() {
-    console.log('ionViewWillLeave ProfileSettingPage');
-  }
-  ionViewDidLeave() {
-    console.log('ionViewDidLeave ProfileSettingPage');
-  }
-  ionViewWillUnload() {
-    console.log('ionViewWillUnload ProfileSettingPage');
-  }
+  ionViewDidEnter() { this.hiddenMainBtn = false; }
 
 }

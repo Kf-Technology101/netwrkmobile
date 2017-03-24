@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, Platform } from 'ionic-angular';
+import {
+  NavController,
+  NavParams,
+  Platform
+} from 'ionic-angular';
 
 // Pages
 import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
 
 // Providers
 import { User } from '../../providers/user';
+import { Tools } from '../../providers/tools';
 
 @Component({
   selector: 'page-sign-up-confirm',
@@ -13,6 +18,7 @@ import { User } from '../../providers/user';
 })
 export class SignUpConfirmPage {
   confirmCode: number;
+  hiddenMainBtn: boolean = false;
 
   private signUpErrorString: string;
   private codeErrorString: string;
@@ -20,86 +26,64 @@ export class SignUpConfirmPage {
   constructor(
     public navCtrl: NavController,
     public user: User,
-    public toastCtrl: ToastController,
     public navParams: NavParams,
-    public platform: Platform
+    public platform: Platform,
+    public tools: Tools
   ) {
     this.signUpErrorString = 'Unable to Sign Up. Please check your account information and try again.';
     this.codeErrorString = 'Code error!';
   }
 
   doSignUp() {
-    // if (this.platform.is('cordova')) {
-      console.log('data', this.user.registerData);
-      console.log('sms', this.confirmCode);
-      if (this.confirmCode == this.user.confirmCode) {
-        this.user.signup(this.user.registerData)
-          .map(res => res.json())
-          .subscribe((resp) => {
-            console.log(resp);
-            this.navCtrl.push(SignUpContactListPage);
-          }, (err) => {
-            //
-            // let body = JSON.parse(err._body);
-            // console.log(body, body[this.user.registerData.type]);
-            this.navCtrl.push(SignUpContactListPage);
-            let toast = this.toastCtrl.create({
-              message: this.signUpErrorString,
-              duration: 3000,
-              position: 'top'
-            });
-            toast.present();
-          });
-      } else {
-        let toast = this.toastCtrl.create({
-          message: this.codeErrorString,
-          duration: 3000,
-          position: 'top'
+    console.log('data', this.user.registerData);
+    console.log('sms', this.confirmCode);
+    this.tools.showLoader();
+    if (this.confirmCode == this.user.confirmCode) {
+      this.user.signup(this.user.registerData)
+        .map(res => res.json())
+        .subscribe((resp) => {
+          this.tools.hideLoader();
+          console.log(resp);
+          this.navCtrl.push(SignUpContactListPage);
+        }, (err) => {
+          this.tools.hideLoader();
+          this.tools.showToast(this.signUpErrorString);
         });
-        toast.present();
-      }
-    // } else {
-    //   this.navCtrl.push(SignUpContactListPage);
-    // }
+    } else {
+      this.tools.hideLoader();
+      this.tools.showToast(this.codeErrorString);
+    }
   }
 
   sendCode() {
+    this.tools.showLoader();
     this.user.verification(this.user.registerData)
       .map(res => res.json())
       .subscribe(res => {
+        this.tools.hideLoader();
         switch (res.login_type) {
           case 'email':
           case 'phone':
             this.user.registerData.type = res.login_type;
             this.user.saveRegisterData(this.user.registerData);
             break;
+          default: this.tools.showToast(this.codeErrorString);
         }
-        let toast = this.toastCtrl.create({
-          message: res.login_message,
-          duration: 3000,
-          position: 'top'
-        });
-        toast.present();
+        this.tools.showToast(res.login_message);
     }, err => {
+      this.tools.hideLoader();
       if (this.platform.is('cordova')) {
-        let toast = this.toastCtrl.create({
-          message: this.codeErrorString,
-          duration: 3000,
-          position: 'top'
-        });
-        toast.present();
+        this.tools.showToast(this.codeErrorString);
       } else {
         this.navCtrl.push(SignUpContactListPage);
       }
     });
   }
 
-  goBack() {
-    this.navCtrl.pop();
-  }
+  goBack() { this.navCtrl.pop(); }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad SignUpConfirmPage');
-  }
+  ionViewDidLoad() { this.hiddenMainBtn = true; }
+  ionViewWillEnter() { this.hiddenMainBtn = false; }
+  ionViewWillLeave() { this.hiddenMainBtn = true; }
 
 }

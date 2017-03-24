@@ -11,9 +11,7 @@ export class ContactsProvider {
     public http: Http,
     public api: Api,
     public storage: LocalStorage
-  ) {
-    console.log('Hello Contacts Provider');
-  }
+  ) {}
 
   sendEmails(list: Array<any>) {
     let contactList = { contact_list: list }
@@ -28,7 +26,5 @@ export class ContactsProvider {
 
     return seq;
   }
-
-  getInviteStatus(): boolean | number { return this.storage.get('invite_sent'); }
 
 }

@@ -5,12 +5,12 @@ import { StatusBar, Splashscreen, Sim } from 'ionic-native';
 // Pages
 import { LogInPage } from '../pages/log-in/log-in';
 import { HomePage } from '../pages/home/home';
-import { ProfilePage } from '../pages/profile/profile';
+// import { ProfilePage } from '../pages/profile/profile';
 
 // Providers
 import { User } from '../providers/user';
 import { LocalStorage } from '../providers/local-storage';
-import { MainFunctions } from '../providers/main';
+import { Tools } from '../providers/tools';
 
 @Component({
   templateUrl: 'app.html'
@@ -23,7 +23,7 @@ export class MyApp {
     public user: User,
     public localStorage: LocalStorage,
     public events: Events,
-    public mainFnc: MainFunctions
+    public tools: Tools
   ) {
     platform.registerBackButtonAction(function () {
       events.publish('backButton:clicked');
@@ -52,7 +52,10 @@ export class MyApp {
         case 'facebook':
           this.user.getFbLoginStatus().then((data) => {
             if (data.status && data.status == 'connected') {
-              this.rootPage = this.mainFnc.getLoginPage(authData.id, HomePage, LogInPage);
+              this.tools.getLoginPage(HomePage, LogInPage).then(
+                res => this.rootPage = res,
+                err => this.rootPage = HomePage
+              )
             } else {
               this.rootPage = LogInPage;
             }
@@ -60,12 +63,15 @@ export class MyApp {
           });
           break;
         case 'email':
-          this.rootPage = this.mainFnc.getLoginPage(authData.id, HomePage, LogInPage);
+          this.tools.getLoginPage(HomePage, LogInPage).then(
+            res => this.rootPage = res,
+            err => this.rootPage = HomePage
+          )
           Splashscreen.hide();
           break;
       }
     } else {
-      this.rootPage = ProfilePage;
+      this.rootPage = LogInPage;
     }
   }
 

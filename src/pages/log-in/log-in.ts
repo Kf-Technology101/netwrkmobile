@@ -1,18 +1,24 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams, ToastController, Events } from 'ionic-angular';
+import {
+  NavController,
+  NavParams,
+  Events
+} from 'ionic-angular';
 
 // Pages
 import { SignUpPage } from '../sign-up/sign-up';
-import { HomePage } from '../home/home';
+// import { HomePage } from '../home/home';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
 import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
+import { ProfileSettingPage } from '../profile-setting/profile-setting';
 
 // Providers
 import { User } from '../../providers/user';
 import { ContactsProvider } from '../../providers/contacts';
-import { MainFunctions } from '../../providers/main';
+import { Tools } from '../../providers/tools';
 
-import { ResponseAuthData } from '../../providers/user.interface';
+// Interfaces
+import { ResponseAuthData } from '../../interfaces/user';
 
 @Component({
   selector: 'page-log-in',
@@ -26,66 +32,73 @@ export class LogInPage {
     // password: '11111111',
   };
 
-  private loginErrorString: string;
-  private fbLoginErrorString: string;
+  hiddenMainBtn: boolean = false;
+
+  private textStrings: any = {};
 
   constructor(
     public navCtrl: NavController,
     public user: User,
-    public toastCtrl: ToastController,
     public navParams: NavParams,
     public events: Events,
     public contactsPrvd: ContactsProvider,
-    public mainFnc: MainFunctions
+    public tools: Tools
   ) {
-    this.loginErrorString = 'Unable to login. Please check your account information and try again.';
-    this.fbLoginErrorString = 'Unable to login with Facebook.';
+    this.textStrings.login = 'Unable to login. Please check your account information and try again.';
+    this.textStrings.fb = 'Unable to login with Facebook.';
+    this.textStrings.require = 'Please fill all fields';
 
     events.subscribe('backButton:clicked', () => {
       console.log('backButton');
     });
   }
 
-  doLogin() {
-    this.user.login(this.account).map(res => res.json()).subscribe((resp) => {
+  doLogin(form: any) {
+    console.log(form);
+    if (form.invalid) {
+      this.tools.showToast(this.textStrings.require);
+      return;
+    }
+
+    this.tools.showLoader();
+    this.user.login(this.account).map(res => res.json()).subscribe(resp => {
       console.log(resp);
-      this.navCtrl.push(this.mainFnc.getLoginPage(resp.id, HomePage, SignUpContactListPage));
-    }, (err) => {
-      console.log(err);
-      let toast = this.toastCtrl.create({
-        message: this.loginErrorString,
-        duration: 3000,
-        position: 'top'
-      });
-      toast.present();
+      this.tools.hideLoader();
+      this.tools.getLoginPage(ProfileSettingPage, SignUpContactListPage).then(
+        res => this.navCtrl.push(res),
+        err => this.navCtrl.push(ProfileSettingPage)
+      );
+    }, err => {
+      this.tools.showToast(this.textStrings.login);
+      this.tools.hideLoader();
     });
   }
 
   doFbLogin() {
+    this.tools.showLoader();
     this.user.signUpFacebook().then((data: ResponseAuthData) => {
       console.log(data);
+      this.tools.hideLoader();
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
-          this.navCtrl.push(this.mainFnc.getLoginPage(data.id, HomePage, SignUpContactListPage));
+          this.tools.getLoginPage(ProfileSettingPage, SignUpContactListPage).then(
+            res => this.navCtrl.push(res),
+            err => this.navCtrl.push(ProfileSettingPage)
+          );
         }
       } else this.navCtrl.push(SignUpAfterFbPage);
-    }, (err) => {
-      let toast = this.toastCtrl.create({
-        message: this.fbLoginErrorString,
-        duration: 3000,
-        position: 'top'
-      });
-      toast.present();
+    }, err => {
+      this.tools.hideLoader();
+      this.tools.showToast(this.textStrings.fb);
     });
   }
 
-  goToSignUp() {
-    this.navCtrl.push(SignUpPage);
-  }
+  goToSignUp() { this.navCtrl.push(SignUpPage); }
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad LogInPage');
-  }
+  ionViewDidLoad() { this.hiddenMainBtn = true; }
+  ionViewWillEnter() { this.hiddenMainBtn = false; }
+  ionViewWillLeave() { this.hiddenMainBtn = true; }
+
 
 }

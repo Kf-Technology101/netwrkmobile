@@ -16,7 +16,7 @@ import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 import { User } from '../providers/user';
 import { Api } from '../providers/api';
 import { LocalStorage } from '../providers/local-storage';
-import { MainFunctions } from '../providers/main';
+import { Tools } from '../providers/tools';
 import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
 
@@ -49,7 +49,7 @@ export function providers() {
     User,
     Api,
     LocalStorage,
-    MainFunctions,
+    Tools,
     ContactsProvider,
     Social,
 

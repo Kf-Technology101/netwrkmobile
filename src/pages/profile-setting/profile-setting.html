@@ -32,7 +32,9 @@
   </ion-row>
   <ion-row class="input-section">
     <ion-col>
-      <ion-input text-center type="text" placeholder="Choose a name" [(ngModel)]="userName" name="userName" [ngClass]="{'has-value' : userName}"></ion-input>
+      <ion-input text-center type="text" placeholder="Choose a name"
+        [(ngModel)]="userName" name="userName"
+        [ngClass]="{'has-value' : userName}"></ion-input>
     </ion-col>
   </ion-row>
   <ion-row class="points-section bad-rating">
@@ -40,7 +42,7 @@
       <span>- 67 points</span>
     </ion-col>
   </ion-row>
-  <ion-row class="description-section" hidden>
+  <ion-row class="description-section">
     <ion-col>
       <ion-card>
         <h1 text-center>Will you be a super hero or a villain?</h1>
@@ -53,7 +55,7 @@
       </ion-card>
     </ion-col>
   </ion-row>
-  <ion-row class="feed">
+  <ion-row class="feed" hidden>
     <ion-col>
       <h3><span>Recent</span></h3>
 

@@ -4,8 +4,10 @@ import { StatusBar, Splashscreen, Sim } from 'ionic-native';
 
 // Pages
 import { LogInPage } from '../pages/log-in/log-in';
-import { HomePage } from '../pages/home/home';
+// import { HomePage } from '../pages/home/home';
 // import { ProfilePage } from '../pages/profile/profile';
+// import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
+import { NetworkFindPage } from '../pages/network-find/network-find';
 
 // Providers
 import { User } from '../providers/user';
@@ -52,9 +54,9 @@ export class MyApp {
         case 'facebook':
           this.user.getFbLoginStatus().then((data) => {
             if (data.status && data.status == 'connected') {
-              this.tools.getLoginPage(HomePage, LogInPage).then(
+              this.tools.getLoginPage(NetworkFindPage, LogInPage).then(
                 res => this.rootPage = res,
-                err => this.rootPage = HomePage
+                err => this.rootPage = NetworkFindPage
               )
             } else {
               this.rootPage = LogInPage;
@@ -63,15 +65,16 @@ export class MyApp {
           });
           break;
         case 'email':
-          this.tools.getLoginPage(HomePage, LogInPage).then(
+          this.tools.getLoginPage(NetworkFindPage, LogInPage).then(
             res => this.rootPage = res,
-            err => this.rootPage = HomePage
+            err => this.rootPage = NetworkFindPage
           )
           Splashscreen.hide();
           break;
       }
     } else {
-      this.rootPage = LogInPage;
+      // this.rootPage = LogInPage;
+      this.rootPage = NetworkFindPage;
     }
   }
 

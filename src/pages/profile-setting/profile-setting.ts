@@ -50,7 +50,7 @@ export class ProfileSettingPage {
       animation: 'ios-transition',
       direction: 'back'
     }
-
+ 
     this.hiddenMainBtn = true;
     this.navCtrl.pop(navOptions);
   }

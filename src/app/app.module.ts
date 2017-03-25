@@ -11,6 +11,8 @@ import { SignUpContactListPage } from '../pages/sign-up-contact-list/sign-up-con
 import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
 import { ProfilePage } from '../pages/profile/profile';
 import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
+import { UndercoverPage } from '../pages/undercover/undercover';
+import { NetworkFindPage } from '../pages/network-find/network-find';
 
 // Services
 import { User } from '../providers/user';
@@ -20,7 +22,9 @@ import { Tools } from '../providers/tools';
 import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
 
+// Native services
 import { Facebook } from 'ionic-native';
+import { Geolocation } from '@ionic-native/geolocation';
 
 let pages = [
   MyApp,
@@ -31,7 +35,9 @@ let pages = [
   SignUpContactListPage,
   SignUpAfterFbPage,
   ProfilePage,
-  ProfileSettingPage
+  ProfileSettingPage,
+  UndercoverPage,
+  NetworkFindPage
 ];
 
 export function declarations() {
@@ -54,6 +60,7 @@ export function providers() {
     Social,
 
     Facebook,
+    Geolocation,
 
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }

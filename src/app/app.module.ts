@@ -3,16 +3,24 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 
 // Pages
 import { MyApp } from './app.component';
+
 import { HomePage } from '../pages/home/home';
+
 import { LogInPage } from '../pages/log-in/log-in';
 import { SignUpPage } from '../pages/sign-up/sign-up';
 import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
 import { SignUpContactListPage } from '../pages/sign-up-contact-list/sign-up-contact-list';
 import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
+
 import { ProfilePage } from '../pages/profile/profile';
 import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
-import { UndercoverPage } from '../pages/undercover/undercover';
+
 import { NetworkFindPage } from '../pages/network-find/network-find';
+import { NetworkNoPage } from '../pages/network-no/network-no';
+import { NetworkFaqPage } from '../pages/network-faq/network-faq';
+import { NetworkCreatePage } from '../pages/network-create/network-create';
+
+import { UndercoverPage } from '../pages/undercover/undercover';
 
 // Services
 import { User } from '../providers/user';
@@ -21,6 +29,7 @@ import { LocalStorage } from '../providers/local-storage';
 import { Tools } from '../providers/tools';
 import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
+import { Gps } from '../providers/gps';
 
 // Native services
 import { Facebook } from 'ionic-native';
@@ -28,16 +37,24 @@ import { Geolocation } from '@ionic-native/geolocation';
 
 let pages = [
   MyApp,
+
   HomePage,
+
   LogInPage,
   SignUpPage,
   SignUpConfirmPage,
   SignUpContactListPage,
   SignUpAfterFbPage,
+
   ProfilePage,
   ProfileSettingPage,
+
+  NetworkFindPage,
+  NetworkNoPage,
+  NetworkFaqPage,
+  NetworkCreatePage,
+
   UndercoverPage,
-  NetworkFindPage
 ];
 
 export function declarations() {
@@ -58,6 +75,7 @@ export function providers() {
     Tools,
     ContactsProvider,
     Social,
+    Gps,
 
     Facebook,
     Geolocation,

@@ -10,7 +10,7 @@ import { SignUpPage } from '../sign-up/sign-up';
 // import { HomePage } from '../home/home';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
 import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
-import { ProfileSettingPage } from '../profile-setting/profile-setting';
+import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
 import { User } from '../../providers/user';
@@ -64,9 +64,9 @@ export class LogInPage {
     this.user.login(this.account).map(res => res.json()).subscribe(resp => {
       console.log(resp);
       this.tools.hideLoader();
-      this.tools.getLoginPage(ProfileSettingPage, SignUpContactListPage).then(
+      this.tools.getLoginPage(NetworkFindPage, SignUpContactListPage).then(
         res => this.navCtrl.push(res),
-        err => this.navCtrl.push(ProfileSettingPage)
+        err => this.navCtrl.push(NetworkFindPage)
       );
     }, err => {
       this.tools.showToast(this.textStrings.login);
@@ -82,9 +82,9 @@ export class LogInPage {
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
-          this.tools.getLoginPage(ProfileSettingPage, SignUpContactListPage).then(
+          this.tools.getLoginPage(NetworkFindPage, SignUpContactListPage).then(
             res => this.navCtrl.push(res),
-            err => this.navCtrl.push(ProfileSettingPage)
+            err => this.navCtrl.push(NetworkFindPage)
           );
         }
       } else this.navCtrl.push(SignUpAfterFbPage);

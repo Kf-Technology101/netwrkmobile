@@ -1,0 +1,27 @@
+<ion-content has-main-btn>
+  <ion-row class="main-row" center [hidden]="hideSearch">
+    <ion-col text-center>
+      <span color="bk">
+        A netwrk hasn't been created yet
+      </span>
+      <br><br>
+      <button class="be-founder" ion-button clear (click)="doFounder()" color="bk">
+        Be a founder
+        <ion-icon class="sun-icon"></ion-icon>
+      </button>
+      <br><br>
+      <span color="bk">Or</span>
+    </ion-col>
+  </ion-row>
+</ion-content>
+
+<ion-footer>
+  <button [hidden]="hiddenMainBtn" ion-button color="bk"
+    class="main-action-btn has-label" outline (click)="goUndercover()"></button>
+  <span [hidden]="hiddenMainBtn" class="main-action-text" color="bk">
+    Go undercover
+  </span>
+  <button ion-button class="footer-back-button" (click)="goFaq()" clear>
+    <span color="bk">Why?</span>
+  </button>
+</ion-footer>

@@ -1,3 +1,16 @@
-<ion-content padding>
-
+<ion-content has-main-btn>
+  <ion-row class="loading" center [hidden]="hideSearch">
+    <ion-col text-center>
+      <span color="bk">
+        Searching for a hearby netwrk...
+      </span>
+    </ion-col>
+  </ion-row>
 </ion-content>
+
+<ion-footer>
+  <button [hidden]="hiddenMainBtn" ion-button color="bk-active-blue"
+    class="main-action-btn" outline (click)="go()">
+    <ion-icon class="glowing-icon"></ion-icon>
+  </button>
+</ion-footer>

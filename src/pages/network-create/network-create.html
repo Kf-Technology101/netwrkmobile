@@ -1,0 +1,69 @@
+<ion-content has-main-btn has-main-btn-label>
+  <ion-row>
+    <ion-col text-center>
+      <img class="sun-icon" src="assets/images/sun_icon.png">
+      <ion-card>
+        <ion-card-content>
+          <span color="bk">
+            <p>To become a founder, at least 20 people must be invited from your contact list or by email, and at least 10 need to join.</p>
+            <p>10 people are needed to found a netwrk. Click the email button to contact your email list, or send a text message to your phone book.</p>
+          </span>
+        </ion-card-content>
+      </ion-card>
+    </ion-col>
+  </ion-row>
+  <ion-row class="action-buttons">
+    <ion-col text-left>
+      <button ion-button clear>
+        <span color="bk">Send emails</span>
+      </button>
+    </ion-col>
+    <ion-col text-right>
+      <button ion-button clear>
+        <span color="bk">Send texts</span>
+      </button>
+    </ion-col>
+  </ion-row>
+  <ion-row class="count-people">
+    <ion-col text-center>
+      <span color="bk">3/10</span>
+    </ion-col>
+  </ion-row>
+  <ion-row>
+    <ion-col>
+      <ion-list>
+        <ion-item (click)="goToProfile()">
+          <ion-avatar item-left>
+            <img src="assets/images/Layer0.png">
+          </ion-avatar>
+          <h2 color="bk">Bib Barker</h2>
+        </ion-item>
+        <ion-item (click)="goToProfile()">
+          <ion-avatar item-left>
+            <img src="assets/images/Layer1.png">
+          </ion-avatar>
+          <h2 color="bk">John Barker</h2>
+        </ion-item>
+        <ion-item (click)="goToProfile()">
+          <ion-avatar item-left>
+            <img src="assets/images/Layer2.png">
+          </ion-avatar>
+          <h2 color="bk">John Barker</h2>
+        </ion-item>
+      </ion-list>
+    </ion-col>
+  </ion-row>
+</ion-content>
+
+<ion-footer>
+  <button [hidden]="hiddenMainBtn" ion-button color="bk"
+    class="main-action-btn has-label"
+    (click)="doAction()" outline></button>
+  <span [hidden]="hiddenMainBtn" class="main-action-text" color="bk">
+    Tap to continue
+  </span>
+
+  <button ion-button class="footer-back-button" (click)="goBack()" clear>
+    <span color="bk">Back</span>
+  </button>
+</ion-footer>

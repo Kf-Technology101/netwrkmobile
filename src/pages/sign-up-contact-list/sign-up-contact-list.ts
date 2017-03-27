@@ -7,7 +7,7 @@ import {
 import { Contacts } from 'ionic-native';
 
 // import { HomePage } from '../home/home';
-import { ProfileSettingPage } from '../profile-setting/profile-setting';
+import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
 import { User } from '../../providers/user';
@@ -127,7 +127,7 @@ export class SignUpContactListPage {
             null
           ).map(res => res.json()).subscribe(res => {
               this.tools.hideLoader();
-              this.navCtrl.push(ProfileSettingPage);
+              this.navCtrl.push(NetworkFindPage);
             }, err => {
               this.tools.hideLoader();
               this.tools.showToast(JSON.stringify(err));

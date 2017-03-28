@@ -6,7 +6,8 @@ import {
 } from 'ionic-angular';
 
 // Pages
-import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
+// import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
+import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
 import { User } from '../../providers/user';
@@ -44,7 +45,7 @@ export class SignUpConfirmPage {
         .subscribe((resp) => {
           this.tools.hideLoader();
           console.log(resp);
-          this.navCtrl.push(SignUpContactListPage);
+          this.navCtrl.push(NetworkFindPage);
         }, (err) => {
           this.tools.hideLoader();
           this.tools.showToast(this.signUpErrorString);
@@ -75,7 +76,7 @@ export class SignUpConfirmPage {
       if (this.platform.is('cordova')) {
         this.tools.showToast(this.codeErrorString);
       } else {
-        this.navCtrl.push(SignUpContactListPage);
+        this.navCtrl.push(NetworkFindPage);
       }
     });
   }

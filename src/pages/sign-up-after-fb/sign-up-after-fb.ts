@@ -6,8 +6,9 @@ import {
 
 // Pages
 // import { HomePage } from '../home/home';
-import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
-import { ProfileSettingPage } from '../profile-setting/profile-setting';
+// import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
+// import { ProfileSettingPage } from '../profile-setting/profile-setting';
+import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
 import { User } from '../../providers/user';
@@ -43,10 +44,11 @@ export class SignUpAfterFbPage {
       this.user.update(this.user.fbResponseData.id, updateObj, 'fb')
         .map(res => res.json()).subscribe(res => {
           this.tools.hideLoader();
-          this.tools.getLoginPage(ProfileSettingPage, SignUpContactListPage).then(
-            res => this.navCtrl.push(res),
-            err => this.navCtrl.push(ProfileSettingPage)
-          );
+          this.navCtrl.push(NetworkFindPage);
+          // this.tools.getLoginPage(ProfileSettingPage, NetworkContactListPage).then(
+          //   res => this.navCtrl.push(res),
+          //   err => this.navCtrl.push(ProfileSettingPage)
+          // );
         }, err => {
           this.tools.hideLoader();
           this.tools.showToast(JSON.stringify(err));

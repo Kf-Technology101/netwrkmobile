@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Platform } from 'ionic-angular';
 
 // Page
 import { NetworkNoPage } from '../network-no/network-no';
@@ -22,7 +22,8 @@ export class NetworkFindPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public gps: Gps,
-    public tools: Tools
+    public tools: Tools,
+    private platform: Platform
   ) {}
 
   ionViewDidLoad() {
@@ -39,8 +40,11 @@ export class NetworkFindPage {
   }
 
   go() {
-    // this.navCtrl.push(NetworkNoPage);
-    this.tools.showToast('Please wait...', null, 'bottom')
+    if (this.platform.is('cordova')) {
+      this.tools.showToast('Please wait...', null, 'bottom');
+    } else {
+      this.navCtrl.push(NetworkNoPage);
+    }
   }
 
 }

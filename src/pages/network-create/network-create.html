@@ -14,12 +14,12 @@
   </ion-row>
   <ion-row class="action-buttons">
     <ion-col text-left>
-      <button ion-button clear>
+      <button ion-button clear (click)="sendEmails()">
         <span color="bk">Send emails</span>
       </button>
     </ion-col>
     <ion-col text-right>
-      <button ion-button clear>
+      <button ion-button clear (click)="sendSMS()">
         <span color="bk">Send texts</span>
       </button>
     </ion-col>

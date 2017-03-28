@@ -4,7 +4,6 @@ import {
   NavParams,
   Platform
 } from 'ionic-angular';
-import { Contacts } from 'ionic-native';
 
 // import { HomePage } from '../home/home';
 import { NetworkFindPage } from '../network-find/network-find';
@@ -14,17 +13,21 @@ import { User } from '../../providers/user';
 import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
 
+// Pipes
+// import { ContactListPipe } from '../../pipes/contact-list';
 
 @Component({
-  selector: 'page-sign-up-contact-list',
-  templateUrl: 'sign-up-contact-list.html'
+  selector: 'page-network-contact-list',
+  templateUrl: 'network-contact-list.html'
 })
-export class SignUpContactListPage {
+export class NetworkContactListPage {
   contacts: Array<any>;
   selectAll: boolean = false;
   hiddenMainBtn: boolean = false;
 
+  public listType: string;
   private selectErrorString: string;
+  private selectMinErrorString: string;
 
   constructor(
     public navCtrl: NavController,
@@ -34,52 +37,47 @@ export class SignUpContactListPage {
     public contactsPrvd: ContactsProvider,
     public tools: Tools
   ) {
-    if (!this.platform.is('cordova')) this.contacts = [
-      {
-        name: {
-          formatted: 'Test 1',
-        },
-        emails: [{
-          value: 'test1@mail.com'
-        }],
-        phoneNumbers: [{
-          value: '+1 000 111 2222'
-        }],
-        checked: false
-      },
-      {
-        name: {
-          formatted: 'Test 2',
-        },
-        emails: [{
-          value: 'test2@mail.com'
-        }],
-        phoneNumbers: [{
-          value: '333.444.5555'
-        }],
-        checked: true
-      }
-    ];
-    this.getContacts();
+    this.listType = this.navParams.get('type');
+    console.log(this.listType);
 
-    this.selectErrorString = 'Please, select at least one contact to continue';
+    if (!this.platform.is('cordova')) {
+      this.contacts = [];
+      for (let i = 0; i < 15; i++) {
+        this.contacts.push({
+          name: {
+            formatted: `Test ${i}`,
+          },
+          emails: [{
+            value: `test${i}@mail.com`
+          }],
+          phoneNumbers: [{
+            value: `+1 000 000 00${i}`
+          }],
+          checked: false
+        });
+      }
+      this.setErrorMessages(this.contacts);
+    }
+
+    this.contactsPrvd.getContacts(this.listType).then(data => {
+      console.log(data);
+      this.contacts = data;
+      this.setErrorMessages(this.contacts);
+    }, err => {
+      console.log(err);
+    });
+
   }
 
-  getContacts() {
-    this.tools.showLoader();
-    Contacts.find(['emails']).then((data) => {
-      this.tools.hideLoader();
-      let contacts: Array<any> = [];
-      for (let i in data) {
-        if (data[i].emails && contacts.length < 500) {
-          contacts.push(data[i]);
-        }
-      }
-      this.contacts = contacts;
-      console.log(this.contacts);
-    }, err => {
-      this.tools.hideLoader();
-    })
+  private setErrorMessages(contacts: Array<any>) {
+    let count: number | string = 20;
+    if (contacts.length > count) {
+      this.selectMinErrorString = 'You need to select 20 or more contacts';
+      this.selectErrorString = 'Please, select 20 or more contacts to continue';
+    } else {
+      this.selectMinErrorString = 'You need to select all contacts';
+      this.selectErrorString = 'Please, select all contacts to continue';
+    }
   }
 
   doSelectAll() {
@@ -110,15 +108,28 @@ export class SignUpContactListPage {
 
     for (let c in this.contacts) {
       if (this.contacts[c].checked) {
-        checkedContacts.push({
+        let checkedObj = {
           name: this.contacts[c].name.formatted || '',
-          email: this.contacts[c].emails[0].value || '',
-        });
+          email: null,
+          phone: null,
+        }
+        if (this.listType == 'emails') {
+          checkedObj.email = this.contacts[c].emails[0].value || '';
+        } else if (this.listType == 'phones') {
+          checkedObj.phone = this.contacts[c].phoneNumbers[0].value || '';
+        }
+
+        checkedContacts.push(checkedObj);
       }
     }
 
     if (checkedContacts.length > 0) {
-      this.contactsPrvd.sendEmails(checkedContacts)
+      if (this.listType == 'emails' && checkedContacts.length < 20) {
+        this.tools.hideLoader();
+        this.tools.showToast(this.selectMinErrorString);
+        return;
+      }
+      this.contactsPrvd.sendInvitations(checkedContacts)
         .map(res => res.json()).subscribe(
         res => {
           this.user.update(
@@ -133,7 +144,7 @@ export class SignUpContactListPage {
               this.tools.showToast(JSON.stringify(err));
             });
         },
-        err => console.error('ERROR', err)
+        err => this.tools.hideLoader()
       );
     } else {
       this.tools.hideLoader();

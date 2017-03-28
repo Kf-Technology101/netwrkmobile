@@ -15,8 +15,8 @@
         <h2 color="bk" *ngIf="c.name.formatted">
           <strong>{{c.name.formatted}}</strong>
         </h2>
-        <p *ngIf="c.emails">{{c.emails[0].value}}</p>
-        <!-- <p *ngIf="c.phoneNumbers">{{c.phoneNumbers[0].value}}</p> -->
+        <p *ngIf="c.emails && listType == 'emails'">{{c.emails[0].value}}</p>
+        <p *ngIf="c.phoneNumbers && listType == 'phones'">{{c.phoneNumbers[0].value}}</p>
       </ion-label>
       <ion-checkbox item-right color="bk" checked="true"
         [(ngModel)]="c.checked" (click)="doChange(c)"></ion-checkbox>

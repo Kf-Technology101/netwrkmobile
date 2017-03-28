@@ -1,4 +1,7 @@
-import { Component } from '@angular/core';
+import {
+  Component
+} from '@angular/core';
+
 import {
   NavController,
   NavParams,
@@ -19,17 +22,25 @@ import { Tools } from '../../providers/tools';
 // Interfaces
 import { ResponseAuthData } from '../../interfaces/user';
 
+// Animations
+import { animSpeed } from '../../includes/animations';
+import { toggleInputsFade } from '../../includes/animations';
+
 @Component({
   selector: 'page-sign-up',
-  templateUrl: 'sign-up.html'
+  templateUrl: 'sign-up.html',
+  animations: [
+    toggleInputsFade
+  ]
 })
+
 export class SignUpPage {
   account: {
     login: string,
     password: string,
     confirm_password: string,
     date_of_birthday: string,
-    type: string,
+    type: string
   } = {
     login: '',
     password: '',
@@ -39,8 +50,30 @@ export class SignUpPage {
     // password: '11111111',
     // confirm_password: '11111111',
     // date_of_birthday: '1993-10-02',
-    type: '',
+    type: ''
   };
+
+  // object for toggling input elements relative to registration steps
+  states: any = {
+    login: {
+      str: 'hidden',
+      bool: true,
+      id: 0
+    },
+    password: {
+      str: 'hidden',
+      bool: false,
+      id: 1
+    },
+    date_of_birthday: {
+      str: 'hidden',
+      bool: false,
+      id: 2
+    },
+  };
+
+  // id of the active state (this.states[n].id). Default: -1
+  activeStateId: number = -1;
 
   hiddenMainBtn: boolean = false;
   maxBirthday: number;
@@ -64,36 +97,60 @@ export class SignUpPage {
 
   doSignUp(form: any) {
     console.log(form, this.account);
-    if (form.invalid) {
-      this.tools.showToast(this.textStrings.require);
-      return;
+
+    // --- validation needed ---
+    let accKeys = Object.keys(this.account);
+    if(this.account[accKeys[this.activeStateId]].trim() != ''){
+      this.activeStateId++;
+    }
+    // -------------------------
+
+    for(let i in this.states){
+      if(this.states[i].id == this.activeStateId){
+        let self = this;
+        setTimeout(function(){
+          self.states[i].str = "shown";
+          self.states[i].bool = true;
+        }, animSpeed.fadeOut);
+      }else{
+        this.states[i].str = "hidden";
+        let self = this;
+        setTimeout(function(){
+          self.states[i].bool = false;
+        }, animSpeed.fadeOut);
+      }
     }
 
-    this.tools.showLoader();
-    if (this.account.password == this.account.confirm_password) {
-      this.user.saveRegisterData(this.account);
-      this.user.verification(this.account)
-        .map(res => res.json())
-        .subscribe(res => {
-          console.log(res);
-          this.tools.hideLoader();
-
-          this.account.type = res.login_type;
-          this.navCtrl.push(SignUpConfirmPage);
-
-          this.tools.showToast(res.login_message);
-      }, err => {
-        this.tools.hideLoader();
-        if (this.platform.is('cordova')) {
-          this.tools.showToast(this.textStrings.login);
-        } else {
-          this.navCtrl.push(SignUpConfirmPage);
-        }
-      });
-    } else {
-      this.tools.hideLoader();
-      this.tools.showToast(this.textStrings.password);
-    }
+    // if (form.invalid) {
+    //   this.tools.showToast(this.textStrings.require);
+    //   return;
+    // }
+    //
+    // this.tools.showLoader();
+    // if (this.account.password == this.account.confirm_password) {
+    //   this.user.saveRegisterData(this.account);
+    //   this.user.verification(this.account)
+    //     .map(res => res.json())
+    //     .subscribe(res => {
+    //       console.log(res);
+    //       this.tools.hideLoader();
+    //
+    //       this.account.type = res.login_type;
+    //       this.navCtrl.push(SignUpConfirmPage);
+    //
+    //       this.tools.showToast(res.login_message);
+    //   }, err => {
+    //     this.tools.hideLoader();
+    //     if (this.platform.is('cordova')) {
+    //       this.tools.showToast(this.textStrings.login);
+    //     } else {
+    //       this.navCtrl.push(SignUpConfirmPage);
+    //     }
+    //   });
+    // } else {
+    //   this.tools.hideLoader();
+    //   this.tools.showToast(this.textStrings.password);
+    // }
   }
 
   doFbLogin() {
@@ -115,7 +172,17 @@ export class SignUpPage {
 
   goBack() { this.navCtrl.pop(); }
 
-  ionViewDidLoad() { this.hiddenMainBtn = true; }
+  updateStates(){
+    for(let i in this.states){
+      this.states[i].str = this.states[i].bool ? 'shown' : 'hidden';
+    }
+  }
+
+  ionViewDidLoad() {
+    this.activeStateId++;
+    this.hiddenMainBtn = true;
+    this.updateStates();
+  }
   ionViewWillEnter() { this.hiddenMainBtn = false; }
   ionViewWillLeave() { this.hiddenMainBtn = true; }
 

@@ -9,8 +9,9 @@ import {
 // import { HomePage } from '../home/home';
 import { SignUpConfirmPage } from '../sign-up-confirm/sign-up-confirm';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
-import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
-import { ProfileSettingPage } from '../profile-setting/profile-setting';
+// import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
+// import { ProfileSettingPage } from '../profile-setting/profile-setting';
+import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
 import { User } from '../../providers/user';
@@ -102,10 +103,11 @@ export class SignUpPage {
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
-          this.tools.getLoginPage(ProfileSettingPage, SignUpContactListPage).then(
-            res => this.navCtrl.push(res),
-            err => this.navCtrl.push(ProfileSettingPage)
-          );
+          this.navCtrl.push(NetworkFindPage);
+          // this.tools.getLoginPage(ProfileSettingPage, NetworkContactListPage).then(
+          //   res => this.navCtrl.push(res),
+          //   err => this.navCtrl.push(ProfileSettingPage)
+          // );
         }
       } else this.navCtrl.push(SignUpAfterFbPage);
     }, err => {

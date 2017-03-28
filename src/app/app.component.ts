@@ -55,10 +55,11 @@ export class MyApp {
         case 'facebook':
           this.user.getFbLoginStatus().then((data) => {
             if (data.status && data.status == 'connected') {
-              this.tools.getLoginPage(NetworkFindPage, LogInPage).then(
-                res => this.rootPage = res,
-                err => this.rootPage = NetworkFindPage
-              )
+              this.rootPage = NetworkFindPage;
+              // this.tools.getLoginPage(NetworkFindPage, LogInPage).then(
+              //   res => this.rootPage = res,
+              //   err => this.rootPage = NetworkFindPage
+              // )
             } else {
               this.rootPage = LogInPage;
             }
@@ -66,16 +67,17 @@ export class MyApp {
           });
           break;
         case 'email':
-          this.tools.getLoginPage(NetworkFindPage, LogInPage).then(
-            res => this.rootPage = res,
-            err => this.rootPage = NetworkFindPage
-          )
+          this.rootPage = NetworkFindPage;
+          // this.tools.getLoginPage(NetworkFindPage, LogInPage).then(
+          //   res => this.rootPage = res,
+          //   err => this.rootPage = NetworkFindPage
+          // )
           Splashscreen.hide();
           break;
       }
     } else {
-      this.rootPage = LogInPage;
-      // this.rootPage = NetworkFindPage;
+      // this.rootPage = LogInPage;
+      this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
     }
   }

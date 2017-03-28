@@ -9,7 +9,7 @@ import {
 import { SignUpPage } from '../sign-up/sign-up';
 // import { HomePage } from '../home/home';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
-import { SignUpContactListPage } from '../sign-up-contact-list/sign-up-contact-list';
+// import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
@@ -64,10 +64,11 @@ export class LogInPage {
     this.user.login(this.account).map(res => res.json()).subscribe(resp => {
       console.log(resp);
       this.tools.hideLoader();
-      this.tools.getLoginPage(NetworkFindPage, SignUpContactListPage).then(
-        res => this.navCtrl.push(res),
-        err => this.navCtrl.push(NetworkFindPage)
-      );
+      this.navCtrl.push(NetworkFindPage)
+      // this.tools.getLoginPage(NetworkFindPage, NetworkContactListPage).then(
+      //   res => this.navCtrl.push(res),
+      //   err => this.navCtrl.push(NetworkFindPage)
+      // );
     }, err => {
       this.tools.showToast(this.textStrings.login);
       this.tools.hideLoader();
@@ -82,10 +83,11 @@ export class LogInPage {
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
-          this.tools.getLoginPage(NetworkFindPage, SignUpContactListPage).then(
-            res => this.navCtrl.push(res),
-            err => this.navCtrl.push(NetworkFindPage)
-          );
+          this.navCtrl.push(NetworkFindPage);
+          // this.tools.getLoginPage(NetworkFindPage, NetworkContactListPage).then(
+          //   res => this.navCtrl.push(res),
+          //   err => this.navCtrl.push(NetworkFindPage)
+          // );
         }
       } else this.navCtrl.push(SignUpAfterFbPage);
     }, err => {

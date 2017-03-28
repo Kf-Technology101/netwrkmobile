@@ -8,7 +8,6 @@ import {
   LoadingController
 } from 'ionic-angular';
 
-import { ContactsProvider } from './contacts';
 import { User } from './user';
 
 @Injectable()
@@ -19,7 +18,6 @@ export class Tools {
   constructor(
     public http: Http,
     public events: Events,
-    public contactsPrvd: ContactsProvider,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
     public user: User
@@ -32,10 +30,10 @@ export class Tools {
     });
   }
 
-  getLoginPage(HomePage, SignUpContactListPage) {
+  getLoginPage(DefaultPage: any, InvitationPage: any): Promise<any> {
     return new Promise((resolve, reject) => {
       let userData = this.user.getAuthData();
-      userData.invitation_sent ? resolve(HomePage) : resolve(SignUpContactListPage);
+      userData.invitation_sent ? resolve(DefaultPage) : resolve(InvitationPage);
     });
   }
 

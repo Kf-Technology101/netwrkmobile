@@ -9,7 +9,6 @@ import { HomePage } from '../pages/home/home';
 import { LogInPage } from '../pages/log-in/log-in';
 import { SignUpPage } from '../pages/sign-up/sign-up';
 import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
-import { SignUpContactListPage } from '../pages/sign-up-contact-list/sign-up-contact-list';
 import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
 
 import { ProfilePage } from '../pages/profile/profile';
@@ -19,6 +18,7 @@ import { NetworkFindPage } from '../pages/network-find/network-find';
 import { NetworkNoPage } from '../pages/network-no/network-no';
 import { NetworkFaqPage } from '../pages/network-faq/network-faq';
 import { NetworkCreatePage } from '../pages/network-create/network-create';
+import { NetworkContactListPage } from '../pages/network-contact-list/network-contact-list';
 
 import { UndercoverPage } from '../pages/undercover/undercover';
 
@@ -43,7 +43,6 @@ let pages = [
   LogInPage,
   SignUpPage,
   SignUpConfirmPage,
-  SignUpContactListPage,
   SignUpAfterFbPage,
 
   ProfilePage,
@@ -53,6 +52,7 @@ let pages = [
   NetworkNoPage,
   NetworkFaqPage,
   NetworkCreatePage,
+  NetworkContactListPage,
 
   UndercoverPage,
 ];

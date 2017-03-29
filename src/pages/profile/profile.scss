@@ -174,3 +174,36 @@ page-profile {
     }
   }
 }
+
+// Vlad
+#profile-list-sliding{
+  max-width: 250px;
+  margin: 15px auto;
+
+  ion-item-sliding{
+    overflow: visible;
+    background-color: transparent;
+  }
+  .button.slide-item-bg-button{
+    padding: 0 100px;
+  }
+  ion-item{
+    font-size: 1.2em;
+  }
+  ion-item,
+  .button.slide-item-bg-button{
+    background-color: transparent;
+  }
+  ion-item.avatar-container{
+    width: 47px;
+    height: 47px;
+    position: absolute;
+    z-index: 999;
+  }
+  .label{
+    padding: 2px 35px;
+  }
+  ion-item-options{
+    border: none;
+  }
+}

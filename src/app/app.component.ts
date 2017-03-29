@@ -3,9 +3,9 @@ import { Platform, Events } from 'ionic-angular';
 import { StatusBar, Splashscreen, Sim } from 'ionic-native';
 
 // Pages
-import { LogInPage } from '../pages/log-in/log-in';
+// import { LogInPage } from '../pages/log-in/log-in';
 // import { HomePage } from '../pages/home/home';
-// import { ProfilePage } from '../pages/profile/profile';
+import { ProfilePage } from '../pages/profile/profile';
 // import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
@@ -61,7 +61,7 @@ export class MyApp {
               //   err => this.rootPage = NetworkFindPage
               // )
             } else {
-              this.rootPage = LogInPage;
+              // this.rootPage = LogInPage;
             }
             Splashscreen.hide();
           });
@@ -77,8 +77,8 @@ export class MyApp {
       }
     } else {
       // this.rootPage = LogInPage;
-      this.rootPage = NetworkFindPage;
-      // this.rootPage = ProfilePage;
+      // this.rootPage = NetworkFindPage;
+      this.rootPage = ProfilePage;
     }
   }
 

@@ -109,14 +109,14 @@ export class SignUpPage {
     for(let i in this.states){
       if(this.states[i].id == this.activeStateId){
         let self = this;
-        setTimeout(function(){
+        setTimeout(() => {
           self.states[i].str = "shown";
           self.states[i].bool = true;
         }, animSpeed.fadeOut);
       }else{
         this.states[i].str = "hidden";
         let self = this;
-        setTimeout(function(){
+        setTimeout(() => {
           self.states[i].bool = false;
         }, animSpeed.fadeOut);
       }

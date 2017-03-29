@@ -1,11 +1,32 @@
 <ion-header>
   <ion-toolbar>
-    <span class="top-profile" (click)="openProfile()">
+    <!-- <span class="top-profile" (click)="openProfile()">
       <img class="avatar" src="assets/images/Layer0.png">
       <span class="label">
         <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
         <span>Nataliya Miller</span>
       </span>
+    </span> -->
+
+    <span class="top-profile" (click)="openProfile()">
+      <ion-list id="profile-list-sliding">
+        <ion-item-sliding #incognitoSlider>
+
+          <ion-item class="avatar-container">
+            <img class="avatar" src="assets/images/Layer0.png">
+          </ion-item>
+
+          <ion-item class="profile-slider-info">
+            <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+            <span>Nataliya Miller</span>
+          </ion-item>
+
+          <ion-item-options side="left">
+            <button ion-button class="slide-item-bg-button" (ionDrag)="ondrag($event, incognitoSlider)"></button>
+          </ion-item-options>
+
+        </ion-item-sliding>
+      </ion-list>
     </span>
 
     <ion-buttons end>

@@ -34,6 +34,7 @@ import { Gps } from '../providers/gps';
 // Native services
 import { Facebook } from 'ionic-native';
 import { Geolocation } from '@ionic-native/geolocation';
+import { CameraPreview } from '@ionic-native/camera-preview';
 
 let pages = [
   MyApp,
@@ -79,6 +80,7 @@ export function providers() {
 
     Facebook,
     Geolocation,
+    CameraPreview,
 
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }

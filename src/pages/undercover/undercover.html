@@ -1,12 +1,29 @@
 <ion-header>
-
-  <ion-navbar>
-    <ion-title>undercover</ion-title>
-  </ion-navbar>
-
+  <ion-toolbar>
+    <span class="top-profile">
+      <span class="label">
+        <span>Nataliya Miller</span>
+        <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+      </span>
+      <img class="avatar" src="assets/images/Layer0.png">
+    </span>
+  </ion-toolbar>
 </ion-header>
 
-
-<ion-content padding>
+<ion-content has-main-btn has-main-btn-label>
 
 </ion-content>
+
+<ion-footer class="has-input">
+  <button [hidden]="hiddenMainBtn" ion-button color="bk"
+    class="main-action-btn has-footer transparent" outline></button>
+  <ion-item class="text">
+    <button ion-button item-left clear>
+      <ion-icon name="add" color="black"></ion-icon>
+    </button>
+    <ion-input type="text" placeholder="On this spot..."></ion-input>
+    <button ion-button item-right clear>
+      <ion-icon ios="ios-text-outline" md="md-text" color="black"></ion-icon>
+    </button>
+  </ion-item>
+</ion-footer>

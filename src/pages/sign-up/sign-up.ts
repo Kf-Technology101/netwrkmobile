@@ -101,22 +101,22 @@ export class SignUpPage {
 
     // --- validation needed ---
     let accKeys = Object.keys(this.account);
-    if(this.account[accKeys[this.activeStateId]].trim() != ''){
+    if (this.account[accKeys[this.activeStateId]].trim() != '') {
       this.activeStateId++;
     }
     // -------------------------
 
-    for(let i in this.states){
-      if(this.states[i].id == this.activeStateId){
+    for (let i in this.states) {
+      if (this.states[i].id == this.activeStateId) {
         let self = this;
-        setTimeout(function(){
-          self.states[i].str = "shown";
+        setTimeout(() => {
+          self.states[i].str = 'shown';
           self.states[i].bool = true;
         }, animSpeed.fadeOut);
-      }else{
-        this.states[i].str = "hidden";
+      } else {
+        this.states[i].str = 'hidden';
         let self = this;
-        setTimeout(function(){
+        setTimeout(() => {
           self.states[i].bool = false;
         }, animSpeed.fadeOut);
       }

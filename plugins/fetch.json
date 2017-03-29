@@ -47,14 +47,6 @@
         "is_top_level": true,
         "variables": {}
     },
-    "com.mbppower.camerapreview": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-camera-preview"
-        },
-        "is_top_level": true,
-        "variables": {}
-    },
     "cordova-plugin-http": {
         "source": {
             "type": "registry",
@@ -138,6 +130,15 @@
             "id": "cordova-plugin-add-swift-support"
         },
         "is_top_level": false,
+        "variables": {}
+    },
+    "cordova-plugin-camera-preview": {
+        "source": {
+            "type": "git",
+            "url": "https://github.com/cordova-plugin-camera-preview/cordova-plugin-camera-preview",
+            "subdir": "."
+        },
+        "is_top_level": true,
         "variables": {}
     }
 }

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Slides } from 'ionic-angular';
+import { NavController, NavParams, Slides, ItemSliding } from 'ionic-angular';
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
@@ -16,6 +16,7 @@ export class ProfilePage {
   testSlides: string[] = [];
   hiddenMainBtn: boolean = false;
   @ViewChild('fbSlider') fbSlider: Slides;
+  @ViewChild('incognitoSlider') incoSlider;
 
   connect: any = {
     facebook: false,
@@ -36,6 +37,22 @@ export class ProfilePage {
     },100);
   }
 
+  ondrag(event, item) {
+    let percent = item.getSlidingPercent();
+    if (percent > 0) {
+      console.log('incognito [ON]');
+    } else {
+      console.log('incognito [OFF]');
+    }
+    if (Math.abs(percent) > 1) {
+      console.log('overscroll');
+    }
+  }
+
+  share(slidingItem: ItemSliding) {
+    slidingItem.close();
+  }
+
   ngAfterViewInit() {
     this.connect.facebook = this.social.getFacebookData();
     this.connect.instagram = this.social.getInstagramData();
@@ -44,7 +61,6 @@ export class ProfilePage {
 
     this.fbSlider.pager = true;
     this.fbSlider.slidesPerView = 5;
-
   }
 
   openProfile() {

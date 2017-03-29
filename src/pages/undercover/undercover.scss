@@ -86,14 +86,32 @@ page-undercover {
     }
   }
 }
-.icon-list.item-md [item-left]{
-  margin: 0;
-}
-ion-fab.icon-list{
+
+.textInpBtns{
+  &{
+    position: absolute;
+    left: 0;
+    top: 15px;
+    width: 100%;
+    z-index: 999;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
   button{
-    outline: 1px solid #333;
-    margin: 0;
+    padding: 0;
     float: left;
-    width: 25%;
+    margin: 0;
+    width: 20%;
+    height: 44px;
+    text-align: center;
+    background: #fff;
+    outline: 1px dashed #333;
+    transition: 1s;
+  }
+}
+
+ion-item.text{
+  button.plus-btn{
+    z-index: 50;
   }
 }

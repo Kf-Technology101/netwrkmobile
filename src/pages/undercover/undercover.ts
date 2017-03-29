@@ -8,9 +8,16 @@ import {
   CameraPreviewDimensions
 } from '@ionic-native/camera-preview';
 
+// Animations
+import { animSpeed } from '../../includes/animations';
+import { toggleInputsFade } from '../../includes/animations';
+
 @Component({
   selector: 'page-undercover',
-  templateUrl: 'undercover.html'
+  templateUrl: 'undercover.html',
+  animations: [
+    toggleInputsFade
+  ]
 })
 export class UndercoverPage {
   // @HostBinding('class.fixed');
@@ -39,6 +46,23 @@ export class UndercoverPage {
     }, err => {
       console.log(err)
     });
+  }
+
+  chatOptions: any = {
+    visible: false,
+    state: 'hidden'
+  }
+
+  showChatOptions(){
+    this.chatOptions.visible = true;
+    this.chatOptions.state = 'shown';
+  }
+
+  hideChatOptions(){
+    this.chatOptions.state = 'hidden';
+    setTimeout(() => {
+      this.chatOptions.visible = false;
+    }, animSpeed.fadeOut);
   }
 
   ionViewDidLoad() {

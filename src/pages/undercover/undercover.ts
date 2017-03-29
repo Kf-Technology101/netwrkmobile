@@ -13,7 +13,7 @@ import {
   templateUrl: 'undercover.html'
 })
 export class UndercoverPage {
-  @HostBinding('class.fixed');
+  // @HostBinding('class.fixed');
   backbgoundTransparent = true;
 
   constructor(

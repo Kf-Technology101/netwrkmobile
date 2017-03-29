@@ -38,15 +38,17 @@ export class ProfilePage {
   }
 
   ondrag(event, item) {
-    let percent = item.getSlidingPercent();
-    if (percent > 0) {
-      console.log('incognito [ON]');
-    } else {
-      console.log('incognito [OFF]');
-    }
-    if (Math.abs(percent) > 1) {
-      console.log('overscroll');
-    }
+    setTimeout(() => {
+      let percent = item.getSlidingPercent();
+      if (percent >= 0) {
+        console.log('incognito [OFF]');
+      } else {
+        console.log('incognito [ON]');
+      }
+      if (Math.abs(percent) > 1) {
+        console.log('overscroll');
+      }
+    }, 1);
   }
 
   share(slidingItem: ItemSliding) {

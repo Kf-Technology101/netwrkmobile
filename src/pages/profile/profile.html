@@ -10,7 +10,8 @@
 
     <span class="top-profile" (click)="openProfile()">
       <ion-list id="profile-list-sliding">
-        <ion-item-sliding #incognitoSlider>
+        <ion-item-sliding #incognitoSlider
+        (touchend)="ondrag($event, incognitoSlider)">
 
           <ion-item class="avatar-container">
             <img class="avatar" src="assets/images/Layer0.png">
@@ -22,7 +23,7 @@
           </ion-item>
 
           <ion-item-options side="left">
-            <button ion-button class="slide-item-bg-button" (ionDrag)="ondrag($event, incognitoSlider)"></button>
+            <button ion-button class="slide-item-bg-button"></button>
           </ion-item-options>
 
         </ion-item-sliding>

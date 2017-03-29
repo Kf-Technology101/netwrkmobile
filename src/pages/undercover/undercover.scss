@@ -86,3 +86,14 @@ page-undercover {
     }
   }
 }
+.icon-list.item-md [item-left]{
+  margin: 0;
+}
+ion-fab.icon-list{
+  button{
+    outline: 1px solid #333;
+    margin: 0;
+    float: left;
+    width: 25%;
+  }
+}

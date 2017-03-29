@@ -52,6 +52,6 @@
 </ion-content>
 
 <ion-footer [hidden]="hiddenMainBtn">
-  <button ion-button color="bk" class="main-action-btn has-label" (click)="goToSignUp()" outline></button>
+  <button [@inputState]="mainBtnState" ion-button color="bk" class="main-action-btn has-label" (click)="goToSignUp()" outline></button>
   <span class="main-action-text" color="bk">New? Tap to get started</span>
 </ion-footer>

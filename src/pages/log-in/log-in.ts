@@ -20,19 +20,27 @@ import { Tools } from '../../providers/tools';
 // Interfaces
 import { ResponseAuthData } from '../../interfaces/user';
 
+// Animations
+import { animSpeed } from '../../includes/animations';
+import { toggleInputsFade } from '../../includes/animations';
+
 @Component({
   selector: 'page-log-in',
   templateUrl: 'log-in.html',
+  animations: [
+    toggleInputsFade
+  ]
 })
 export class LogInPage {
   account: {login: string, password: string} = {
     login: '',
-    password: '',
+    password: ''
     // login: '+380971460376',
     // password: '11111111',
   };
 
   hiddenMainBtn: boolean = false;
+  mainBtnState: string = "hidden";
 
   private textStrings: any = {};
 
@@ -98,7 +106,12 @@ export class LogInPage {
 
   goToSignUp() { this.navCtrl.push(SignUpPage); }
 
-  ionViewDidLoad() { this.hiddenMainBtn = true; }
+  ionViewDidLoad() {
+    setTimeout(() => {
+      this.mainBtnState = "shown";
+    }, 1);
+    this.hiddenMainBtn = true;
+  }
   ionViewWillEnter() { this.hiddenMainBtn = false; }
   ionViewWillLeave() { this.hiddenMainBtn = true; }
 

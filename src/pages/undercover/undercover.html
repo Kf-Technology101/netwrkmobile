@@ -17,11 +17,25 @@
 <ion-footer class="has-input">
   <button [hidden]="hiddenMainBtn" ion-button color="bk"
     class="main-action-btn has-footer transparent" outline></button>
-  <ion-item class="text">
+    <!--
     <button ion-button item-left clear>
       <ion-icon name="add" color="black"></ion-icon>
+
     </button>
+    -->
+  <ion-item>
+    <ion-fab item-left class="icon-list">
+      <button ion-fab mini><ion-icon name="add"></ion-icon></button>
+      <ion-fab-list side="right">
+        <button ion-fab><ion-icon name="logo-facebook"></ion-icon></button>
+        <button ion-fab><ion-icon name="logo-twitter"></ion-icon></button>
+        <button ion-fab><ion-icon name="logo-vimeo"></ion-icon></button>
+        <button ion-fab><ion-icon name="logo-googleplus"></ion-icon></button>
+      </ion-fab-list>
+    </ion-fab>
+
     <ion-input type="text" placeholder="On this spot..."></ion-input>
+
     <button ion-button item-right clear>
       <ion-icon ios="ios-text-outline" md="md-text" color="black"></ion-icon>
     </button>

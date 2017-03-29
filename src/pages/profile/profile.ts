@@ -22,7 +22,7 @@ export class ProfilePage {
     facebook: false,
     instagram: false,
     twitter: false,
-    snapchat: false,
+    snapchat: false
   };
 
   constructor(

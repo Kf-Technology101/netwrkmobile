@@ -1,0 +1,101 @@
+page-camera {
+  &.ion-page ion-content.content {
+    background: -webkit-linear-gradient(top, transparent 75%, rgba(0, 0, 0, 0.5) 100%);
+  }
+
+  .grid {
+    height: 100%;
+
+    .row {
+      height: 100%;
+
+      .tooltip {
+        background-color: rgba(91, 135, 170, 0.8);
+        width: 267px;
+        height: 46px;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 146px;
+        text-align: center;
+        margin: auto;
+        line-height: 46px;
+        font-size: 14px;
+        color: #fff;
+        border-radius: 9px;
+
+        div {
+          height: 9px;
+          position: absolute;
+          bottom: -9px;
+          left: 0;
+          right: 0;
+          margin: auto;
+          overflow: hidden;
+
+          &::after {
+            content: '';
+            position: absolute;
+            background-color: rgba(91, 135, 170, 0.8);
+            border-bottom-left-radius: 100px;
+            border-bottom-right-radius: 100px;
+            width: 219px;
+            height: 100px;
+            left: 0;
+            right: 0;
+            margin: auto;
+            bottom: 0;
+          }
+        }
+      }
+
+      .take-photo {
+        border-radius: 50%;
+        width: 98px;
+        height: 98px;
+        margin: 0;
+        padding: 0;
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 30px;
+        margin: auto;
+        border-width: 6px;
+        -webkit-transition: 0.1s all;
+        transition: 0.1s all;
+
+        &.activated {
+          background: #fff;
+
+          .white {
+            background: transparent;
+          }
+        }
+
+        .white {
+          background: #fff;
+          width: 70px;
+          height: 70px;
+          border-radius: 50%;
+          padding: 0;
+          -webkit-transition: 0.1s all;
+          transition: 0.1s all;
+        }
+      }
+    }
+  }
+
+  .switch-camera {
+    position: absolute;
+    left: 30px;
+    bottom: 30px;
+    padding: 0;
+    margin: 0;
+    width: 26px;
+    height: 26px;
+  }
+
+  .main-action-btn {
+    bottom: 22px;
+  }
+}

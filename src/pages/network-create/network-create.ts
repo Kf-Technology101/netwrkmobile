@@ -32,6 +32,10 @@ export class NetworkCreatePage {
     this.navCtrl.push(NetworkContactListPage, { type: 'phones' });
   }
 
+  doAction() {
+    
+  }
+
   goBack() { this.navCtrl.pop(); }
 
 }

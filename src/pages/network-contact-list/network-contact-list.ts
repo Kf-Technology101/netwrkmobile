@@ -6,7 +6,7 @@ import {
 } from 'ionic-angular';
 
 // import { HomePage } from '../home/home';
-import { NetworkFindPage } from '../network-find/network-find';
+// import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
 import { User } from '../../providers/user';
@@ -138,7 +138,7 @@ export class NetworkContactListPage {
             null
           ).map(res => res.json()).subscribe(res => {
               this.tools.hideLoader();
-              this.navCtrl.push(NetworkFindPage);
+              this.navCtrl.pop();
             }, err => {
               this.tools.hideLoader();
               this.tools.showToast(JSON.stringify(err));

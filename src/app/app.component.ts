@@ -1,15 +1,16 @@
 import { Component } from '@angular/core';
-import { Platform, Events } from 'ionic-angular';
+import { Platform, Events, App } from 'ionic-angular';
 import { StatusBar, Splashscreen, Sim } from 'ionic-native';
 
 // Pages
-// import { LogInPage } from '../pages/log-in/log-in';
+import { LogInPage } from '../pages/log-in/log-in';
 // import { HomePage } from '../pages/home/home';
 // import { ProfilePage } from '../pages/profile/profile';
 // import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
 import { UndercoverPage } from '../pages/undercover/undercover';
+import { CameraPage } from '../pages/camera/camera';
 
 // Providers
 import { User } from '../providers/user';
@@ -27,7 +28,8 @@ export class MyApp {
     public user: User,
     public localStorage: LocalStorage,
     public events: Events,
-    public tools: Tools
+    public tools: Tools,
+    public app: App
   ) {
     platform.registerBackButtonAction(function () {
       events.publish('backButton:clicked');
@@ -41,10 +43,10 @@ export class MyApp {
 
       StatusBar.styleDefault();
     });
-  }
 
-  ngOnInit() {
-
+    this.app.viewDidEnter.subscribe((view) => {
+      this.tools.subscribeViewDidEnter(view);
+    });
   }
 
   _getLogin() {
@@ -57,22 +59,14 @@ export class MyApp {
           this.user.getFbLoginStatus().then((data) => {
             if (data.status && data.status == 'connected') {
               this.rootPage = NetworkFindPage;
-              // this.tools.getLoginPage(NetworkFindPage, LogInPage).then(
-              //   res => this.rootPage = res,
-              //   err => this.rootPage = NetworkFindPage
-              // )
             } else {
-              // this.rootPage = LogInPage;
+              this.rootPage = LogInPage;
             }
             Splashscreen.hide();
           });
           break;
         case 'email':
           this.rootPage = NetworkFindPage;
-          // this.tools.getLoginPage(NetworkFindPage, LogInPage).then(
-          //   res => this.rootPage = res,
-          //   err => this.rootPage = NetworkFindPage
-          // )
           Splashscreen.hide();
           break;
       }
@@ -80,7 +74,8 @@ export class MyApp {
       // this.rootPage = LogInPage;
       // this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
-      this.rootPage = UndercoverPage;
+      // this.rootPage = UndercoverPage;
+      this.rootPage = CameraPage;
     }
   }
 

@@ -122,7 +122,7 @@ export class UndercoverPage {
       this.gallery.state = (this.gallery.state == 'on') ? 'off' : 'on';
     }
     if(this.gallery.state == 'on'){
-      this.mainBtn.state = 'hidden';
+      this.mainBtn.state = 'moved-n-scaled';
     }else{
       this.mainBtn.state = 'normal';
     }

@@ -16,16 +16,19 @@
 
 <ion-footer class="has-input">
 
+  <div item-content class="gallery-container" [@galleryState]="gallery.state">
+
+  </div>
+
   <button [hidden]="hiddenMainBtn" [@mainBtnState]="mainBtn.state" (click)="debugScaleMainBtn()" ion-button color="bk"
     class="main-action-btn has-footer transparent" outline></button>
-
 
   <ion-item class="text">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">
       <button ion-button [@inputState]="chatBtns.state[0]">
         <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[1]">
+      <button ion-button [@inputState]="chatBtns.state[1]" (click)="toggleImageGallery()">
          <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
       </button>
       <button ion-button [@inputState]="chatBtns.state[2]">
@@ -37,7 +40,7 @@
       <button ion-button [@inputState]="chatBtns.state[4]"></button>
     </div>
 
-    <button (click)="toggleChatOptions()" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
+    <button (click)="toggleChatOptions(); toggleImageGallery('hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 

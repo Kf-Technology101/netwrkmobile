@@ -23,6 +23,7 @@ export const toggleInputsFade:any = trigger('inputState', [
     transform: 'scale(0.8)',
     opacity: '0'
   })),
+
   state('btnShown', style({
     transform: 'scale(1)',
     opacity: '1'
@@ -72,6 +73,24 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
     transform: 'scale(1)',
     bottom: '70px'
   })),
-  transition('* => minimised', animate(animSpeed.fadeIn + 'ms ease-in')),
-  transition('minimised => normal', animate(animSpeed.fadeOut + 'ms ease-out'))
+
+  state('hidden', style({
+    transform: 'scale(0)',
+    bottom: 0
+  })),
+  transition('normal => minimised', animate(animSpeed.fadeIn/2 + 'ms ease-in')),
+  transition('minimised => normal', animate(animSpeed.fadeOut/2 + 'ms ease-out')),
+  transition('* => hidden', animate(chatAnim/3 + 'ms ease-out'))
+]);
+
+export const toggleGallery: any = trigger('galleryState', [
+  state('on', style({
+    top: '50%',
+    height: '50%'
+  })),
+  state('off', style({
+    top: '100%',
+    height: 0
+  })),
+  transition('* => *', animate(chatAnim/2 + 'ms ease-in'))
 ]);

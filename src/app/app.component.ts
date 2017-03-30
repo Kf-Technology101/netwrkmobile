@@ -71,11 +71,11 @@ export class MyApp {
           break;
       }
     } else {
-      // this.rootPage = LogInPage;
+      this.rootPage = LogInPage;
       // this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
       // this.rootPage = UndercoverPage;
-      this.rootPage = CameraPage;
+      // this.rootPage = CameraPage;
     }
   }
 

@@ -11,35 +11,39 @@
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label>
-  <button ion-button class="footer-back-button" (click)="goBack()">
-    <span color="bk">Back</span>
-  </button>
+
 </ion-content>
 
 <ion-footer class="has-input">
-  <button [hidden]="hiddenMainBtn" ion-button color="bk"
+
+  <button [hidden]="hiddenMainBtn" [@mainBtnState]="mainBtn.state" (click)="debugScaleMainBtn()" ion-button color="bk"
     class="main-action-btn has-footer transparent" outline></button>
-    <!--
-    <button ion-button item-left clear>
-      <ion-icon name="add" color="black"></ion-icon>
 
+
+  <ion-item class="text">
+    <div item-content id="textInpBtns" [@bgState]="bgState.state">
+      <button ion-button [@inputState]="chatBtns.state[0]" (click)="openCamera()">
+        <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
+      </button>
+      <button ion-button [@inputState]="chatBtns.state[1]">
+         <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
+      </button>
+      <button ion-button [@inputState]="chatBtns.state[2]">
+        <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
+      </button>
+      <button ion-button [@inputState]="chatBtns.state[3]">
+        <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
+      </button>
+      <button ion-button [@inputState]="chatBtns.state[4]"></button>
+    </div>
+
+    <button (click)="toggleChatOptions()" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
+      <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
-    -->
-  <ion-item>
-    <ion-fab item-left class="icon-list">
-      <button ion-fab mini><ion-icon name="add"></ion-icon></button>
-      <ion-fab-list side="right">
-        <button ion-fab><ion-icon name="logo-facebook"></ion-icon></button>
-        <button ion-fab><ion-icon name="logo-twitter"></ion-icon></button>
-        <button ion-fab><ion-icon name="logo-vimeo"></ion-icon></button>
-        <button ion-fab><ion-icon name="logo-googleplus"></ion-icon></button>
-      </ion-fab-list>
-    </ion-fab>
 
-    <ion-input type="text" placeholder="On this spot..."></ion-input>
-
+    <ion-input id="textInput" type="text" placeholder="On this spot..."></ion-input>
     <button ion-button item-right clear>
-      <ion-icon ios="ios-text-outline" md="md-text" color="black"></ion-icon>
+      <ion-icon ios="ios-text-outline" md="ios-text-outline"></ion-icon>
     </button>
   </ion-item>
 </ion-footer>

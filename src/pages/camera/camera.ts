@@ -4,8 +4,10 @@ import {
   CameraPreview,
   // PictureOptions,
   CameraPreviewOptions,
-  CameraPreviewDimensions
+  // CameraPreviewDimensions
 } from '@ionic-native/camera-preview';
+
+import { UndercoverPage } from '../undercover/undercover';
 
 @Component({
   selector: 'page-camera',
@@ -61,7 +63,12 @@ export class CameraPage {
     this.cameraPreview.switchCamera();
   }
 
-  goBack(params?: any) { this.navCtrl.pop(params); }
+  goBack(params?: any) {
+    this.navCtrl.push(UndercoverPage, params, {
+      animate: false,
+      animation: 'md-transition',
+    });
+  }
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad CameraPage');

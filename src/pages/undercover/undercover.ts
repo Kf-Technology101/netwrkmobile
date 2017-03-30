@@ -1,4 +1,4 @@
-import { Component, HostBinding } from '@angular/core';
+import { Component, HostBinding} from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 import {
@@ -8,17 +8,31 @@ import {
   CameraPreviewDimensions
 } from '@ionic-native/camera-preview';
 
+import { Keyboard } from '@ionic-native/keyboard';
+
 // Animations
-import { animSpeed } from '../../includes/animations';
-import { toggleInputsFade } from '../../includes/animations';
+import {
+  animSpeed,
+  chatAnim,
+  toggleInputsFade,
+  rotateChatPlus,
+  toggleChatOptionsBg,
+  scaleMainBtn
+} from '../../includes/animations';
+
 
 @Component({
   selector: 'page-undercover',
   templateUrl: 'undercover.html',
   animations: [
-    toggleInputsFade
-  ]
+    toggleInputsFade,
+    rotateChatPlus,
+    toggleChatOptionsBg,
+    scaleMainBtn
+  ],
+  providers: [Keyboard]
 })
+
 export class UndercoverPage {
   // @HostBinding('class.fixed');
   backbgoundTransparent = true;
@@ -26,7 +40,8 @@ export class UndercoverPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private cameraPreview: CameraPreview
+    private cameraPreview: CameraPreview,
+    private keyboard: Keyboard
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -38,31 +53,58 @@ export class UndercoverPage {
       previewDrag: true,
       toBack: true,
       alpha: 1
-    };
+    }
 
     this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
       console.log(res);
       this.cameraPreview.show();
     }, err => {
-      console.log(err)
+      console.log(err);
+    });
+
+    this.keyboard.onKeyboardShow().subscribe(res => {
+      console.log(res);
+    }, err => {
+      console.log(err);
     });
   }
 
   chatOptions: any = {
-    visible: false,
-    state: 'hidden'
+    state: 'default'
+  };
+
+  bgState: any = {
+    state: 'compressed'
+  };
+
+  chatBtns: any = {
+    state: ['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']
+  };
+
+  mainBtn: any = {
+    state: 'normal'
+  };
+
+  // debug function for scaling main button
+  debugScaleMainBtn(){
+    this.mainBtn.state = (this.mainBtn.state == 'minimised') ? 'normal' : 'minimised';
   }
 
-  showChatOptions(){
-    this.chatOptions.visible = true;
-    this.chatOptions.state = 'shown';
-  }
+  toggleChatOptions(){
+    this.chatOptions.state = (this.chatOptions.state == 'spined') ? 'default' : 'spined';
+    this.bgState.state = (this.bgState.state == 'stretched') ? 'compressed' : 'stretched';
 
-  hideChatOptions(){
-    this.chatOptions.state = 'hidden';
-    setTimeout(() => {
-      this.chatOptions.visible = false;
-    }, animSpeed.fadeOut);
+    if(this.bgState.state == 'stretched'){
+      for(let i = 0; i < this.chatBtns.state.length; i++){
+        setTimeout(() => {
+          this.chatBtns.state[i] = 'btnShown';
+        }, chatAnim/3 + (i*50));
+      }
+    }else {
+      for(let i = 0; i < this.chatBtns.state.length; i++){
+        this.chatBtns.state[i] = 'btnHidden';
+      }
+    }
   }
 
   ionViewDidLoad() {

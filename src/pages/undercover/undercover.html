@@ -16,24 +16,34 @@
 
 <ion-footer class="has-input">
 
-  <button [hidden]="hiddenMainBtn" ion-button color="bk"
+  <button [hidden]="hiddenMainBtn" [@mainBtnState]="mainBtn.state" (click)="debugScaleMainBtn()" ion-button color="bk"
     class="main-action-btn has-footer transparent" outline></button>
 
-  <span [hidden]="!chatOptions.visible" [@inputState]="chatOptions.state" class="textInpBtns">
-    <button item-left>1</button>
-    <button item-left>2</button>
-    <button item-left>3</button>
-    <button item-left>4</button>
-    <button #closeOptions class="close-options" (click)="hideChatOptions()">X</button>
-  </span>
 
   <ion-item class="text">
-    <button (click)="showChatOptions()" ion-button item-left clear class="plus-btn">
-      <ion-icon name="add" color="black"></ion-icon>
+    <div item-content id="textInpBtns" [@bgState]="bgState.state">
+      <button ion-button [@inputState]="chatBtns.state[0]">
+        <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
+      </button>
+      <button ion-button [@inputState]="chatBtns.state[1]">
+         <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
+      </button>
+      <button ion-button [@inputState]="chatBtns.state[2]">
+        <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
+      </button>
+      <button ion-button [@inputState]="chatBtns.state[3]">
+        <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
+      </button>
+      <button ion-button [@inputState]="chatBtns.state[4]"></button>
+    </div>
+
+    <button (click)="toggleChatOptions()" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
+      <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
-    <ion-input type="text" placeholder="On this spot..."></ion-input>
+
+    <ion-input id="textInput" type="text" placeholder="On this spot..."></ion-input>
     <button ion-button item-right clear>
-      <ion-icon ios="ios-text-outline" md="md-text" color="black"></ion-icon>
+      <ion-icon ios="ios-text-outline" md="ios-text-outline"></ion-icon>
     </button>
   </ion-item>
 </ion-footer>

@@ -16,7 +16,8 @@
 // automatically applied to the <body> element in the app.
 
 .main-action-btn {
-  position: absolute;
+  position: fixed;
+  bottom: 10px;
   height: 110px;
   width: 68px;
   left: 0;

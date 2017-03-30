@@ -21,7 +21,8 @@ import {
   toggleInputsFade,
   rotateChatPlus,
   toggleChatOptionsBg,
-  scaleMainBtn
+  scaleMainBtn,
+  toggleGallery
 } from '../../includes/animations';
 
 
@@ -32,7 +33,8 @@ import {
     toggleInputsFade,
     rotateChatPlus,
     toggleChatOptionsBg,
-    scaleMainBtn
+    scaleMainBtn,
+    toggleGallery
   ],
   providers: [Keyboard]
 })
@@ -100,6 +102,10 @@ export class UndercoverPage {
     this.navCtrl.pop();
   }
 
+  gallery: any = {
+    state: 'off'
+  };
+
   // debug function for scaling main button
   debugScaleMainBtn() {
     this.mainBtn.state = (this.mainBtn.state == 'minimised') ? 'normal' : 'minimised';
@@ -120,6 +126,29 @@ export class UndercoverPage {
         this.chatBtns.state[i] = 'btnHidden';
       }
     }
+  }
+
+  toggleImageGallery(visibility){
+    if(visibility == 'hide'){
+      this.gallery.state = 'off';
+    }
+    if(!visibility)
+    {
+      this.gallery.state = (this.gallery.state == 'on') ? 'off' : 'on';
+    }
+    if(this.gallery.state == 'on'){
+      this.mainBtn.state = 'moved-n-scaled';
+    }else{
+      this.mainBtn.state = 'normal';
+    }
+  }
+
+  getActiveStyle(){
+    // if(this.showStyle) {
+    //   return "yellow";
+    // } else {
+    //   return "";
+    // }
   }
 
   ionViewDidLoad() {

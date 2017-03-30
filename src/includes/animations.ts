@@ -23,6 +23,7 @@ export const toggleInputsFade:any = trigger('inputState', [
     transform: 'scale(0.8)',
     opacity: '0'
   })),
+
   state('btnShown', style({
     transform: 'scale(1)',
     opacity: '1'
@@ -46,8 +47,8 @@ export const rotateChatPlus: any = trigger('rotState', [
   state('default', style({
     transform: 'rotate(0deg)',
   })),
-  transition('* => spined', animate(chatAnim - 250 + 'ms ease-in')),
-  transition('spined => default', animate(chatAnim - 250 + 'ms ease-in'))
+  transition('* => spined', animate(chatAnim - 150 + 'ms ease-in')),
+  transition('spined => default', animate(chatAnim - 150 + 'ms ease-in'))
 ]);
 
 // Toggle chat options buttons
@@ -58,8 +59,8 @@ export const toggleChatOptionsBg: any = trigger('bgState', [
   state('compressed', style({
     width: '0%'
   })),
-  transition('* => stretched', animate(chatAnim - 300 + 'ms ease-in')),
-  transition('stretched => compressed', animate(chatAnim - 300 + 'ms ease-in'))
+  transition('* => stretched', animate(chatAnim - 200 + 'ms ease-in')),
+  transition('stretched => compressed', animate(chatAnim - 200 + 'ms ease-in'))
 ]);
 
 // Main button scaling
@@ -72,6 +73,31 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
     transform: 'scale(1)',
     bottom: '70px'
   })),
-  transition('* => minimised', animate(animSpeed.fadeIn + 'ms ease-in')),
-  transition('minimised => normal', animate(animSpeed.fadeOut + 'ms ease-out'))
+
+  state('hidden', style({
+    transform: 'scale(0)',
+    bottom: 0
+  })),
+
+  state('moved-n-scaled', style({
+    bottom: 'calc(50% - 25px)',
+    transform: 'scale(0.381)'
+  })),
+  transition('normal => minimised', animate(chatAnim/2 + 'ms ease-in')),
+  transition('minimised => normal', animate(chatAnim/2 + 'ms ease-in')),
+  transition('* => hidden', animate(chatAnim/3 + 'ms ease-out')),
+  transition('* => moved-n-scaled', animate(chatAnim/2 + 'ms ease-in')),
+  transition('moved-n-scaled => normal', animate(chatAnim/2 + 'ms ease-in'))
+]);
+
+export const toggleGallery: any = trigger('galleryState', [
+  state('on', style({
+    top: '50%',
+    height: '50%'
+  })),
+  state('off', style({
+    top: '100%',
+    height: 0
+  })),
+  transition('* => *', animate(chatAnim/2 + 'ms ease-in'))
 ]);

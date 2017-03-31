@@ -68,6 +68,7 @@ export class UndercoverPage {
 
   gallery: any = {
     state: 'off',
+    stateBool: false,
     imgHeight: undefined
   };
 
@@ -149,10 +150,20 @@ export class UndercoverPage {
 
     if(visibility == 'hide') {
       this.gallery.state = 'off';
+      setTimeout(() => {
+        this.gallery.stateBool = false;
+      }, chatAnim/2);
     }
     if(!visibility) {
       // this.imagePicker.requestReadPermission();
       this.gallery.state = (this.gallery.state == 'on') ? 'off' : 'on';
+      if(this.gallery.state){
+        this.gallery.stateBool = true;
+      }else{
+        setTimeout(() => {
+          this.gallery.stateBool = false;
+        }, chatAnim/2);
+      }
     }
 
     if(this.gallery.state == 'on') {

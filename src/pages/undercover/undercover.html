@@ -11,16 +11,15 @@
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label isScrolling="false">
-
-</ion-content>
-
-<ion-footer class="has-input" isScrolling="false">
   <div #galleryCont item-content  class="gallery-container" [hidden]="!gallery.stateBool" [@galleryState]="gallery.state">
     <ion-img *ngFor="let imgSrc of imagesSrc" [src]="imgSrc" [style.height.px]="gallery.imgHeight"></ion-img>
   </div>
 
   <button isScrolling="false" [hidden]="hiddenMainBtn" [@mainBtnState]="mainBtn.state" ion-button color="bk"
-    class="main-action-btn has-footer transparent" outline></button>
+  class="main-action-btn has-footer transparent" outline></button>
+</ion-content>
+
+<ion-footer class="has-input" isScrolling="false">
 
   <ion-item class="text">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">

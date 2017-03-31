@@ -123,10 +123,19 @@ page-undercover {
   }
 }
 
+.chatMainBtn{
+  bottom: 70px;
+}
+
+ion-footer.chatFooter.has-input{
+  height: 100%;
+}
+
 ion-item.text{
   &{
-    // position: absolute;
-    // bottom: 0;
+    position: absolute;
+    bottom: 0;
+    border-radius: 12px;
   }
   #plus-btn{
     &{

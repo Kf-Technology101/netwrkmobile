@@ -32,7 +32,7 @@
   <ion-footer class="has-input">
     <ion-item class="text">
       <div item-content id="textInpBtns" [@bgState]="bgState.state">
-        <button ion-button [@inputState]="chatBtns.state[0]">
+        <button ion-button [@inputState]="chatBtns.state[0]" (click)="openCamera()">
           <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
         </button>
         <button ion-button [@inputState]="chatBtns.state[1]" (click)="toggleImageGallery()">

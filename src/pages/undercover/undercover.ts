@@ -1,4 +1,4 @@
-import { Component, HostBinding} from '@angular/core';
+import { Component, HostBinding, ViewChild} from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 import {
@@ -39,6 +39,8 @@ export class UndercoverPage {
   // @HostBinding('class.fixed');
   backbgoundTransparent = true;
 
+  @ViewChild('galleryCont') gCont;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -66,6 +68,7 @@ export class UndercoverPage {
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       console.log(res);
+      this.mainBtn.state = 'minimised';
     }, err => {
       console.log(err);
     });
@@ -88,8 +91,21 @@ export class UndercoverPage {
   };
 
   gallery: any = {
-    state: 'off'
+    state: 'off',
+    imgHeight: undefined
   };
+
+  images: [
+    {
+      src: ""
+    },
+    {
+      src: ""
+    },
+    {
+      src: ""
+    }
+  ];
 
   // debug function for scaling main button
   debugScaleMainBtn(){
@@ -127,7 +143,7 @@ export class UndercoverPage {
       this.mainBtn.state = 'normal';
     }
   }
-
+  
   getActiveStyle(){
     // if(this.showStyle) {
     //   return "yellow";
@@ -137,6 +153,7 @@ export class UndercoverPage {
   }
 
   ionViewDidLoad() {
+    this.gallery.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
     console.log('ionViewDidLoad UndercoverPage');
   }
 

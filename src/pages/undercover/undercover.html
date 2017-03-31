@@ -13,7 +13,7 @@
 <ion-content has-main-btn has-main-btn-label>
 
   <div #galleryCont item-content  class="gallery-container" [@galleryState]="gallery.state">
-    <ion-img *ngFor="let imgSrc of imagesSrc" src="{{imgSrc}}" alt="" [style.height.px]="gallery.imgHeight"></ion-img>
+    <ion-img *ngFor="let imgSrc of imagesSrc" [src]="imgSrc" [style.height.px]="gallery.imgHeight"></ion-img>
   </div>
 
   <button [hidden]="hiddenMainBtn" [@mainBtnState]="mainBtn.state" ion-button color="bk"

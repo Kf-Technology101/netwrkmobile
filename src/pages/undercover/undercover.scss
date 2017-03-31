@@ -153,6 +153,11 @@ ion-item.text{
       margin-left: 47px;
       padding-left: 10px;
       box-sizing: border-box;
+      border: none;
+      -webkit-border-radius:0;
+      -webkit-appearance: none;
+      border-radius:0;
+      box-shadow: none;
     }
   }
 }

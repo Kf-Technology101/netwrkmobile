@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 import {
@@ -42,6 +42,8 @@ import {
 export class UndercoverPage {
   backbgoundTransparent = true;
 
+  @ViewChild('galleryCont') gCont;
+
   chatOptions: any = {
     state: 'default'
   };
@@ -57,6 +59,13 @@ export class UndercoverPage {
   mainBtn: any = {
     state: 'normal'
   };
+
+  gallery: any = {
+    state: 'off',
+    imgHeight: undefined
+  };
+
+  imagesSrc = ["", "", ""];
 
   constructor(
     public navCtrl: NavController,
@@ -86,6 +95,7 @@ export class UndercoverPage {
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       console.log(res);
+      this.mainBtn.state = 'minimised';
     }, err => {
       console.log(err);
     });
@@ -101,10 +111,6 @@ export class UndercoverPage {
   goBack() {
     this.navCtrl.pop();
   }
-
-  gallery: any = {
-    state: 'off'
-  };
 
   // debug function for scaling main button
   debugScaleMainBtn() {
@@ -152,6 +158,9 @@ export class UndercoverPage {
   }
 
   ionViewDidLoad() {
+    setTimeout(() => {
+      this.gallery.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
+    }, 100);
     console.log('ionViewDidLoad UndercoverPage');
   }
 

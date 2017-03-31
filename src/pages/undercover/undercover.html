@@ -12,41 +12,39 @@
 
 <ion-content has-main-btn has-main-btn-label>
 
-</ion-content>
-
-<ion-footer class="has-input">
-
-  <div item-content class="gallery-container" [@galleryState]="gallery.state">
-
+  <div #galleryCont item-content  class="gallery-container" [@galleryState]="gallery.state">
+    <ion-img *ngFor="let imgSrc of imagesSrc" src="{{imgSrc}}" alt="" [style.height.px]="gallery.imgHeight"></ion-img>
   </div>
 
   <button [hidden]="hiddenMainBtn" [@mainBtnState]="mainBtn.state" ion-button color="bk"
     class="main-action-btn has-footer transparent" outline></button>
 
-  <ion-item class="text">
-    <div item-content id="textInpBtns" [@bgState]="bgState.state">
-      <button ion-button [@inputState]="chatBtns.state[0]" (click)="openCamera()">
-        <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
-      </button>
-      <button ion-button [@inputState]="chatBtns.state[1]" (click)="toggleImageGallery()">
-         <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
-      </button>
-      <button ion-button [@inputState]="chatBtns.state[2]">
-        <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
-      </button>
-      <button ion-button [@inputState]="chatBtns.state[3]">
-        <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
-      </button>
-      <button ion-button [@inputState]="chatBtns.state[4]"></button>
-    </div>
+  <ion-footer class="has-input">
+    <ion-item class="text">
+      <div item-content id="textInpBtns" [@bgState]="bgState.state">
+        <button ion-button [@inputState]="chatBtns.state[0]" (click)="openCamera()">
+          <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
+        </button>
+        <button ion-button [@inputState]="chatBtns.state[1]" (click)="toggleImageGallery()">
+           <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
+        </button>
+        <button ion-button [@inputState]="chatBtns.state[2]">
+          <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
+        </button>
+        <button ion-button [@inputState]="chatBtns.state[3]">
+          <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
+        </button>
+        <button ion-button [@inputState]="chatBtns.state[4]"></button>
+      </div>
 
-    <button (click)="toggleChatOptions(); toggleImageGallery('hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
-      <ion-icon ios="ios-add" md="ios-add"></ion-icon>
-    </button>
+      <button (click)="toggleChatOptions(); toggleImageGallery('hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
+        <ion-icon ios="ios-add" md="ios-add"></ion-icon>
+      </button>
 
-    <ion-input id="textInput" type="text" placeholder="On this spot..."></ion-input>
-    <button ion-button item-right clear>
-      <ion-icon ios="ios-text-outline" md="ios-text-outline"></ion-icon>
-    </button>
-  </ion-item>
-</ion-footer>
+      <ion-input id="textInput" type="text" placeholder="On this spot..."></ion-input>
+      <button ion-button item-right clear>
+        <ion-icon ios="ios-text-outline" md="ios-text-outline"></ion-icon>
+      </button>
+    </ion-item>
+  </ion-footer>
+</ion-content>

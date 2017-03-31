@@ -65,17 +65,7 @@ export class UndercoverPage {
     imgHeight: undefined
   };
 
-  images: [
-    {
-      src: ""
-    },
-    {
-      src: ""
-    },
-    {
-      src: ""
-    }
-  ];
+  imagesSrc = ["", "", ""];
 
   constructor(
     public navCtrl: NavController,
@@ -168,7 +158,9 @@ export class UndercoverPage {
   }
 
   ionViewDidLoad() {
-    this.gallery.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
+    setTimeout(() => {
+      this.gallery.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
+    }, 100);
     console.log('ionViewDidLoad UndercoverPage');
   }
 

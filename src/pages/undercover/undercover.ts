@@ -167,32 +167,6 @@ export class UndercoverPage {
     }
 
     if(this.gallery.state == 'on') {
-      const options: CameraOptions = {
-        quality: 100,
-        destinationType: this.camera.DestinationType.FILE_URI,
-        encodingType: this.camera.EncodingType.JPEG,
-        mediaType: this.camera.MediaType.PICTURE,
-        sourceType: this.camera.PictureSourceType.SAVEDPHOTOALBUM,
-      }
-
-      this.camera.getPicture(options).then((imageData) => {
-       // imageData is either a base64 encoded string or a file URI
-       // If it's base64:
-      //  let base64Image = 'data:image/jpeg;base64,' + imageData;
-      console.log(imageData);
-      }, (err) => {
-       // Handle error
-      });
-      // this.imagePicker.getPictures(imagePickerOpts).then((results) => {
-      //   console.log(results);
-      //   // for (var i = 0; i < results.length; i++) {
-      //   //   console.log('Image URI: ' + results[i]);
-      //   // }
-      //   // this.imgesSrc = results;
-      //   console.log('pictures get!');
-      // }, (err) => {
-      //   console.log(err);
-      // });
       this.mainBtn.state = 'moved-n-scaled';
     } else {
       this.mainBtn.state = 'normal';

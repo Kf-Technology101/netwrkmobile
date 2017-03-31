@@ -24,10 +24,10 @@ export class Tools {
   ) {}
 
   doBackButton(page: string, callback: any) {
-    this.events.unsubscribe('backButton:clicked');
-    this.events.subscribe('backButton:clicked', () => {
-      callback(page);
-    });
+    // this.events.unsubscribe('backButton:clicked');
+    // this.events.subscribe('backButton:clicked', () => {
+    //   callback(page);
+    // });
   }
 
   getLoginPage(DefaultPage: any, InvitationPage: any): Promise<any> {

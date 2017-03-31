@@ -10,9 +10,9 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content has-main-btn has-main-btn-label>
+<ion-content has-main-btn has-main-btn-label isScrolling="false">
 
-  <div #galleryCont item-content  class="gallery-container" [@galleryState]="gallery.state">
+  <div #galleryCont item-content  class="gallery-container" [hidden]="!gallery.stateBool" [@galleryState]="gallery.state">
     <ion-img *ngFor="let imgSrc of imagesSrc" [src]="imgSrc" [style.height.px]="gallery.imgHeight"></ion-img>
   </div>
 

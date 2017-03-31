@@ -164,7 +164,6 @@ export class UndercoverPage {
     }
     if(!visibility)
     {
-      this.imagePicker.requestReadPermission();
       this.gallery.state = (this.gallery.state == 'on') ? 'off' : 'on';
       if(this.gallery.state){
         this.gallery.stateBool = true;

@@ -8,6 +8,8 @@ import {
   // CameraPreviewDimensions
 } from '@ionic-native/camera-preview';
 
+import { ImagePicker } from '@ionic-native/image-picker';
+
 import { CameraPage } from '../camera/camera';
 
 // Providers
@@ -36,7 +38,10 @@ import {
     scaleMainBtn,
     toggleGallery
   ],
-  providers: [Keyboard]
+  providers: [
+    Keyboard,
+    ImagePicker
+  ]
 })
 
 export class UndercoverPage {
@@ -65,14 +70,15 @@ export class UndercoverPage {
     imgHeight: undefined
   };
 
-  imagesSrc = ["", "", ""];
+  imgesSrc = [];
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private cameraPreview: CameraPreview,
     public tools: Tools,
-    private keyboard: Keyboard
+    private keyboard: Keyboard,
+    private imagePicker: ImagePicker
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -86,6 +92,10 @@ export class UndercoverPage {
       alpha: 1
     }
 
+    const imagePickerOpts = {
+      maximumImagesCount: 18
+    }
+
     this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
       console.log(res);
       this.cameraPreview.show();
@@ -97,6 +107,16 @@ export class UndercoverPage {
       console.log(res);
       this.mainBtn.state = 'minimised';
     }, err => {
+      console.log(err);
+    });
+
+    this.imagePicker.getPictures(imagePickerOpts).then((results) => {
+      for (var i = 0; i < results.length; i++) {
+        console.log('Image URI: ' + results[i]);
+      }
+      this.imgesSrc = results;
+      console.log('pictures get!');
+    }, (err) => {
       console.log(err);
     });
   }
@@ -140,6 +160,7 @@ export class UndercoverPage {
     }
     if(!visibility)
     {
+      this.imagePicker.requestReadPermission();
       this.gallery.state = (this.gallery.state == 'on') ? 'off' : 'on';
     }
     if(this.gallery.state == 'on'){
@@ -158,9 +179,11 @@ export class UndercoverPage {
   }
 
   ionViewDidLoad() {
-    setTimeout(() => {
-      this.gallery.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
-    }, 100);
+    if(this.imgesSrc.length > 0){
+      setTimeout(() => {
+        this.gallery.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
+      }, 100);
+    }
     console.log('ionViewDidLoad UndercoverPage');
   }
 

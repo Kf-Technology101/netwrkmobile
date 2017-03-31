@@ -58,4 +58,28 @@ export class Tools {
     this.loader.dismiss();
   }
 
+  public getToday(): string {
+    let myDate = new Date();
+    let year = myDate.getFullYear();
+    let month = myDate.getMonth() < 10 ? '0' + (myDate.getMonth() + 1) : myDate.getMonth() + 1;
+    let day = myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate();
+    return `${year}-${month}-${day}`;
+  }
+
+  public subscribeViewDidEnter(view: any) {
+    let transparentPages: Array<string> = [
+      'UndercoverPage',
+      'CameraPage',
+    ];
+    let name: string = view.instance.constructor.name;
+    let action: boolean = transparentPages.indexOf(name) !== -1;
+    this.changeBodyClass(action);
+  }
+
+  private changeBodyClass(add?: boolean) {
+    let body = document.getElementsByTagName('body')[0];
+    let className = 'transparent-background';
+    add ? body.classList.add(className) : body.classList.remove(className);
+  }
+
 }

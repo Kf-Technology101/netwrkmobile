@@ -1,6 +1,8 @@
 import {
-  Component
+  Component,
+  ViewChild
 } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 
 import {
   NavController,
@@ -36,6 +38,8 @@ import { toggleInputsFade } from '../../includes/animations';
 })
 
 export class SignUpPage {
+  @ViewChild('focusBirthday') birthdayInput;
+
   account: {
     login: string,
     password: string,
@@ -77,35 +81,151 @@ export class SignUpPage {
   activeStateId: number = -1;
 
   hiddenMainBtn: boolean = false;
-  maxBirthday: number;
+  public maxBirthday: string;
 
   private textStrings: any = {};
+
+  public signUpForm: any;
 
   constructor(
     public navCtrl: NavController,
     public user: User,
     public navParams: NavParams,
     public platform: Platform,
-    public tools: Tools
+    public tools: Tools,
+    public formBuilder: FormBuilder
   ) {
-    this.maxBirthday = new Date().getFullYear() - 1;
+    this.maxBirthday = this.tools.getToday();
 
     this.textStrings.fb = 'Unable to SignUp with Facebook.';
-    this.textStrings.login = 'Please enter valid login';
+    this.textStrings.login = 'Please enter valid phone or email';
     this.textStrings.password = 'The passwords not match!';
     this.textStrings.require = 'Please fill all fields';
+
+    this.signUpForm = formBuilder.group({
+		  'login' : [
+        null,
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(5),
+          Validators.maxLength(50),
+          // Validators.pattern(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i) Email
+        ])
+      ],
+		  'password': [
+        null,
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(6),
+        ])
+      ],
+      'confirm_password': [
+        null,
+        Validators.compose([
+          Validators.required,
+          Validators.minLength(6),
+        ])
+      ],
+		  'date_of_birthday' : [null, Validators.required]
+		})
   }
 
   doSignUp(form: any) {
     console.log(form, this.account);
 
-    // --- validation needed ---
-    let accKeys = Object.keys(this.account);
-    if (this.account[accKeys[this.activeStateId]].trim() != '') {
-      this.activeStateId++;
-    }
-    // -------------------------
+    let valid = this.formValidate(form);
+    if (!valid) return;
 
+    console.log(form, this.account);
+
+    if (this.activeStateId == 1) this.openDatePicker();
+
+    this.activeStateId++;
+
+    this.updateActiveStates();
+
+    if (this.activeStateId == 3) {
+      this.tools.showLoader();
+      this.user.saveRegisterData(this.account);
+      this.user.verification(this.account)
+        .map(res => res.json())
+        .subscribe(res => {
+          console.log(res);
+          this.activeStateId--;
+          this.tools.hideLoader();
+
+          this.account.type = res.login_type;
+          this.navCtrl.push(SignUpConfirmPage);
+
+          this.tools.showToast(res.login_message);
+      }, err => {
+        this.tools.hideLoader();
+        if (this.platform.is('cordova')) {
+          this.tools.showToast(this.textStrings.login);
+        } else {
+          this.navCtrl.push(SignUpConfirmPage);
+        }
+      });
+    }
+  }
+
+  doFbLogin() {
+    this.user.signUpFacebook().then((data: ResponseAuthData) => {
+      console.log(data);
+      if (data.date_of_birthday) {
+        let date = new Date(data.date_of_birthday);
+        if (typeof date == 'object') {
+          this.navCtrl.push(NetworkFindPage);
+        }
+      } else this.navCtrl.push(SignUpAfterFbPage);
+    }, err => {
+      this.tools.showToast(this.textStrings.fb);
+    });
+  }
+
+  goBack() {
+    if (this.activeStateId == 0) {
+      this.navCtrl.pop();
+    } else {
+      this.activeStateId--;
+      this.updateActiveStates();
+    }
+  }
+
+  private updateStates(){
+    for(let i in this.states){
+      this.states[i].str = this.states[i].bool ? 'shown' : 'hidden';
+    }
+  }
+
+  private formValidate(form: any): boolean {
+    let status = true;
+    if (this.activeStateId == 0) {
+      if (!form.controls.login.valid) {
+        this.tools.showToast(this.textStrings.login);
+        status = false;
+      }
+    } else if (this.activeStateId == 1) {
+      if (form.controls.password.valid && form.controls.confirm_password.valid) {
+        if (form.controls.password.value != form.controls.confirm_password.value) {
+          this.tools.showToast(this.textStrings.password);
+          status = false;
+        }
+      } else {
+        this.tools.showToast(this.textStrings.require);
+        status = false;
+      }
+    } else if (this.activeStateId == 2) {
+      if (!form.controls.date_of_birthday.valid) {
+        this.tools.showToast(this.textStrings.require);
+        status = false;
+      }
+    }
+
+    return status;
+  }
+
+  private updateActiveStates() {
     for (let i in this.states) {
       if (this.states[i].id == this.activeStateId) {
         let self = this;
@@ -121,71 +241,41 @@ export class SignUpPage {
         }, animSpeed.fadeOut);
       }
     }
-
-    // if (form.invalid) {
-    //   this.tools.showToast(this.textStrings.require);
-    //   return;
-    // }
-    //
-    // this.tools.showLoader();
-    // if (this.account.password == this.account.confirm_password) {
-    //   this.user.saveRegisterData(this.account);
-    //   this.user.verification(this.account)
-    //     .map(res => res.json())
-    //     .subscribe(res => {
-    //       console.log(res);
-    //       this.tools.hideLoader();
-    //
-    //       this.account.type = res.login_type;
-    //       this.navCtrl.push(SignUpConfirmPage);
-    //
-    //       this.tools.showToast(res.login_message);
-    //   }, err => {
-    //     this.tools.hideLoader();
-    //     if (this.platform.is('cordova')) {
-    //       this.tools.showToast(this.textStrings.login);
-    //     } else {
-    //       this.navCtrl.push(SignUpConfirmPage);
-    //     }
-    //   });
-    // } else {
-    //   this.tools.hideLoader();
-    //   this.tools.showToast(this.textStrings.password);
-    // }
   }
 
-  doFbLogin() {
-    this.user.signUpFacebook().then((data: ResponseAuthData) => {
-      console.log(data);
-      if (data.date_of_birthday) {
-        let date = new Date(data.date_of_birthday);
-        if (typeof date == 'object') {
-          this.navCtrl.push(NetworkFindPage);
-          // this.tools.getLoginPage(ProfileSettingPage, NetworkContactListPage).then(
-          //   res => this.navCtrl.push(res),
-          //   err => this.navCtrl.push(ProfileSettingPage)
-          // );
-        }
-      } else this.navCtrl.push(SignUpAfterFbPage);
-    }, err => {
-      this.tools.showToast(this.textStrings.fb);
-    });
-  }
-
-  goBack() { this.navCtrl.pop(); }
-
-  updateStates(){
-    for(let i in this.states){
-      this.states[i].str = this.states[i].bool ? 'shown' : 'hidden';
-    }
+  private openDatePicker() {
+    setTimeout(() => {
+      this.birthdayInput.open();
+    }, 1500);
   }
 
   ionViewDidLoad() {
+    console.log('ionViewDidLoad');
     this.activeStateId++;
     this.hiddenMainBtn = true;
     this.updateStates();
   }
-  ionViewWillEnter() { this.hiddenMainBtn = false; }
-  ionViewWillLeave() { this.hiddenMainBtn = true; }
+  ionViewWillEnter() {
+    console.log('ionViewWillEnter');
+    if (this.activeStateId == 3) {
+      this.openDatePicker();
+      this.activeStateId--;
+      this.updateActiveStates();
+    }
+    this.hiddenMainBtn = false;
+  }
+  ionViewWillLeave() {
+    console.log('ionViewWillLeave');
+    this.hiddenMainBtn = true;
+  }
+  ionViewWillUnload() {
+    console.log('ionViewWillUnload');
+  }
+  ionViewDidLeave() {
+    console.log('ionViewDidLeave');
+  }
+  ionViewDidEnter() {
+    console.log('ionViewDidEnter');
+  }
 
 }

@@ -8,23 +8,26 @@
     </ion-row>
     <ion-row>
       <ion-col>
-        <form (submit)="doSignUp(submitForm)" #submitForm="ngForm" novalidate class="registration-form">
+        <form [formGroup]="signUpForm" (submit)="doSignUp(signUpForm)" #submitForm="ngForm" novalidate class="registration-form">
           <ion-list>
 
             <ion-item [hidden]="!states.date_of_birthday.bool" [@inputState]="states.date_of_birthday.str">
-              <ion-datetime placeholder="Birthday..."
+              <ion-datetime #focusBirthday placeholder="Birthday..."
                 displayFormat="MMMM D, YYYY"
                 pickerFormat="MMMM D YYYY"
-                [(ngModel)]="account.date_of_birthday"
                 [max]="maxBirthday"
                 name="date_of_birthday"
+                [formControl]="signUpForm.controls['date_of_birthday']"
+                [ngClass]="{'error-border':!signUpForm.controls['date_of_birthday'].valid}"
+                (ionChange)="doSignUp(signUpForm)"
                 required></ion-datetime>
             </ion-item>
 
             <ion-item [hidden]="!states.login.bool" [@inputState]="states.login.str">
               <ion-input type="text"
                 placeholder="Email/Phone number..."
-                [(ngModel)]="account.login"
+                [formControl]="signUpForm.controls['login']"
+                [ngClass]="{'error-border':!signUpForm.controls['login'].valid}"
                 name="login"
                 required></ion-input>
             </ion-item>
@@ -32,16 +35,18 @@
             <ion-item [hidden]="!states.password.bool" [@inputState]="states.password.str">
               <ion-input type="password"
                 placeholder="Password..."
-                [(ngModel)]="account.password"
                 name="password"
+                [formControl]="signUpForm.controls['password']"
+                [ngClass]="{'error-border':!signUpForm.controls['password'].valid}"
                 required></ion-input>
             </ion-item>
 
             <ion-item [hidden]="!states.password.bool" [@inputState]="states.password.str">
               <ion-input type="password"
                 placeholder="Confirm password..."
-                [(ngModel)]="account.confirm_password"
                 name="confirm_password"
+                [formControl]="signUpForm.controls['confirm_password']"
+                [ngClass]="{'error-border':!signUpForm.controls['confirm_password'].valid}"
                 required></ion-input>
             </ion-item>
 
@@ -72,7 +77,7 @@
 <ion-footer>
   <button [hidden]="hiddenMainBtn" ion-button color="bk"
     class="main-action-btn has-label"
-    (click)="doSignUp(submitForm)" outline></button>
+    (click)="doSignUp(signUpForm)" outline></button>
   <span [hidden]="hiddenMainBtn" class="main-action-text" color="bk">
     Tap to continue
   </span>

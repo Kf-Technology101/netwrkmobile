@@ -21,7 +21,7 @@ import { Tools } from '../../providers/tools';
 import { ResponseAuthData } from '../../interfaces/user';
 
 // Animations
-import { animSpeed } from '../../includes/animations';
+// import { animSpeed } from '../../includes/animations';
 import { toggleInputsFade } from '../../includes/animations';
 
 @Component({
@@ -32,6 +32,7 @@ import { toggleInputsFade } from '../../includes/animations';
   ]
 })
 export class LogInPage {
+
   account: {login: string, password: string} = {
     login: '',
     password: ''
@@ -40,7 +41,7 @@ export class LogInPage {
   };
 
   hiddenMainBtn: boolean = false;
-  mainBtnState: string = "hidden";
+  mainBtnState: string = 'hidden';
 
   private textStrings: any = {};
 
@@ -72,11 +73,7 @@ export class LogInPage {
     this.user.login(this.account).map(res => res.json()).subscribe(resp => {
       console.log(resp);
       this.tools.hideLoader();
-      this.navCtrl.push(NetworkFindPage)
-      // this.tools.getLoginPage(NetworkFindPage, NetworkContactListPage).then(
-      //   res => this.navCtrl.push(res),
-      //   err => this.navCtrl.push(NetworkFindPage)
-      // );
+      this.navCtrl.push(NetworkFindPage);
     }, err => {
       this.tools.showToast(this.textStrings.login);
       this.tools.hideLoader();
@@ -92,10 +89,6 @@ export class LogInPage {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
           this.navCtrl.push(NetworkFindPage);
-          // this.tools.getLoginPage(NetworkFindPage, NetworkContactListPage).then(
-          //   res => this.navCtrl.push(res),
-          //   err => this.navCtrl.push(NetworkFindPage)
-          // );
         }
       } else this.navCtrl.push(SignUpAfterFbPage);
     }, err => {
@@ -108,7 +101,7 @@ export class LogInPage {
 
   ionViewDidLoad() {
     setTimeout(() => {
-      this.mainBtnState = "shown";
+      this.mainBtnState = 'shown';
     }, 1);
     this.hiddenMainBtn = true;
   }

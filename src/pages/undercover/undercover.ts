@@ -1,18 +1,22 @@
-import { Component, HostBinding, ViewChild} from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 import {
   CameraPreview,
   // PictureOptions,
   CameraPreviewOptions,
-  CameraPreviewDimensions
+  // CameraPreviewDimensions
 } from '@ionic-native/camera-preview';
+
+import { CameraPage } from '../camera/camera';
+
+// Providers
+import { Tools } from '../../providers/tools';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
 // Animations
 import {
-  animSpeed,
   chatAnim,
   toggleInputsFade,
   rotateChatPlus,
@@ -36,43 +40,9 @@ import {
 })
 
 export class UndercoverPage {
-  // @HostBinding('class.fixed');
   backbgoundTransparent = true;
 
   @ViewChild('galleryCont') gCont;
-
-  constructor(
-    public navCtrl: NavController,
-    public navParams: NavParams,
-    private cameraPreview: CameraPreview,
-    private keyboard: Keyboard
-  ) {
-    const cameraPreviewOpts: CameraPreviewOptions = {
-      x: 0,
-      y: 0,
-      width: window.screen.width,
-      height: window.screen.height,
-      camera: 'rear',
-      tapPhoto: true,
-      previewDrag: true,
-      toBack: true,
-      alpha: 1
-    }
-
-    this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
-      console.log(res);
-      this.cameraPreview.show();
-    }, err => {
-      console.log(err);
-    });
-
-    this.keyboard.onKeyboardShow().subscribe(res => {
-      console.log(res);
-      this.mainBtn.state = 'minimised';
-    }, err => {
-      console.log(err);
-    });
-  }
 
   chatOptions: any = {
     state: 'default'
@@ -107,22 +77,67 @@ export class UndercoverPage {
     }
   ];
 
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    private cameraPreview: CameraPreview,
+    public tools: Tools,
+    private keyboard: Keyboard
+  ) {
+    const cameraPreviewOpts: CameraPreviewOptions = {
+      x: 0,
+      y: 0,
+      width: window.screen.width,
+      height: window.screen.height,
+      camera: 'rear',
+      tapPhoto: false,
+      previewDrag: true,
+      toBack: true,
+      alpha: 1
+    }
+
+    this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
+      console.log(res);
+      this.cameraPreview.show();
+    }, err => {
+      console.log(err);
+    });
+
+    this.keyboard.onKeyboardShow().subscribe(res => {
+      console.log(res);
+      this.mainBtn.state = 'minimised';
+    }, err => {
+      console.log(err);
+    });
+  }
+
+  openCamera() {
+    this.navCtrl.push(CameraPage, null, {
+      animate: false,
+      animation: 'md-transition',
+    });
+  }
+
+  goBack() {
+    this.navCtrl.pop();
+  }
+
   // debug function for scaling main button
-  debugScaleMainBtn(){
+  debugScaleMainBtn() {
     this.mainBtn.state = (this.mainBtn.state == 'minimised') ? 'normal' : 'minimised';
   }
 
-  toggleChatOptions(){
+  toggleChatOptions() {
     this.chatOptions.state = (this.chatOptions.state == 'spined') ? 'default' : 'spined';
     this.bgState.state = (this.bgState.state == 'stretched') ? 'compressed' : 'stretched';
 
-    if(this.bgState.state == 'stretched'){
+    if (this.bgState.state == 'stretched') {
       for(let i = 0; i < this.chatBtns.state.length; i++){
         setTimeout(() => {
           this.chatBtns.state[i] = 'btnShown';
         }, chatAnim/3 + (i*50));
       }
-    }else {
+    } else {
       for(let i = 0; i < this.chatBtns.state.length; i++){
         this.chatBtns.state[i] = 'btnHidden';
       }
@@ -143,7 +158,7 @@ export class UndercoverPage {
       this.mainBtn.state = 'normal';
     }
   }
-  
+
   getActiveStyle(){
     // if(this.showStyle) {
     //   return "yellow";

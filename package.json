@@ -24,6 +24,7 @@
     "@ionic-native/geolocation": "^3.2.2",
     "@ionic-native/keyboard": "^3.4.3",
     "@ionic/storage": "1.1.7",
+    "angular2-moment": "^1.3.3",
     "dragula": "^3.7.2",
     "ionic-angular": "2.1.0",
     "ionic-native": "2.4.1",

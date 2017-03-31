@@ -22,6 +22,8 @@ import { NetworkContactListPage } from '../pages/network-contact-list/network-co
 
 import { UndercoverPage } from '../pages/undercover/undercover';
 
+import { CameraPage } from '../pages/camera/camera';
+
 // Services
 import { User } from '../providers/user';
 import { Api } from '../providers/api';
@@ -56,6 +58,8 @@ let pages = [
   NetworkContactListPage,
 
   UndercoverPage,
+
+  CameraPage,
 ];
 
 export function declarations() {

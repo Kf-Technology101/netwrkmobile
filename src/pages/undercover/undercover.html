@@ -56,8 +56,12 @@
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 
-    <input id="textInput" type="text" placeholder="On this spot...">
-    <button ion-button item-right clear>
+    <!-- <input id="textInput" type="text" placeholder="On this spot..."> -->
+    <div #chatInput class="ion-content" id="textInput" contenteditable="true" (click)="toggleKeyboard()">
+      <span [hidden]="hidePlaceholder" item-content id="chatPlaceholder">Input text...</span>
+      <span #chat item-content id="chat"></span>
+    </div>
+    <button ion-button item-right clear (click)="sendMessage()">
       <ion-icon ios="ios-text-outline" md="ios-text-outline"></ion-icon>
     </button>
   </ion-item>

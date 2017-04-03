@@ -49,6 +49,7 @@ export class UndercoverPage {
   backbgoundTransparent = true;
 
   @ViewChild('galleryCont') gCont;
+  @ViewChild('chatInput') chInpt;
 
   chatOptions: any = {
     state: 'default'
@@ -72,6 +73,8 @@ export class UndercoverPage {
     imgHeight: undefined
   };
 
+  hidePlaceholder = false;
+
   imgesSrc = [];
 
   constructor(
@@ -86,8 +89,8 @@ export class UndercoverPage {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
       y: 0,
-      width: 300,
-      height: 400,
+      width: window.screen.width,
+      height: window.screen.height,
       camera: 'rear',
       tapPhoto: false,
       previewDrag: true,
@@ -178,6 +181,16 @@ export class UndercoverPage {
     // } else {
     //   return "";
     // }
+  }
+
+  toggleKeyboard(){
+    this.hidePlaceholder = true;
+    console.log(this.chInpt);
+    this.keyboard.show();
+  }
+
+  sendMessage(){
+    let ch = this.chInpt;
   }
 
   ionViewDidLoad() {

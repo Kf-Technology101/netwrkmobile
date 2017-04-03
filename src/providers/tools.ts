@@ -77,7 +77,7 @@ export class Tools {
   }
 
   private changeBodyClass(add?: boolean) {
-    let body = document.getElementsByTagName('body')[0];
+    let body = document.getElementsByTagName('html')[0];
     let className = 'transparent-background';
     add ? body.classList.add(className) : body.classList.remove(className);
   }

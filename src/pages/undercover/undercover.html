@@ -1,16 +1,29 @@
-<ion-header>
+<ion-header class="incognito-header">
   <ion-toolbar>
     <span class="top-profile">
-      <span class="label">
-        <span>Nataliya Miller</span>
-        <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
-      </span>
-      <img class="avatar" src="assets/images/Layer0.png">
+      <ion-list id="profile-list-sliding">
+        <ion-item-sliding has-bouncing="false">
+
+          <ion-item class="avatar-container">
+            <img class="avatar" src="assets/images/Layer0.png">
+          </ion-item>
+
+          <ion-item class="profile-slider-info">
+            <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+            <span>Nataliya Miller</span>
+          </ion-item>
+
+          <ion-item-options side="left">
+            <button ion-button class="slide-item-bg-button"></button>
+          </ion-item-options>
+
+        </ion-item-sliding>
+      </ion-list>
     </span>
   </ion-toolbar>
 </ion-header>
 
-<ion-content has-main-btn has-main-btn-label isScrolling="false">
+<ion-content has-main-btn has-main-btn-label>
 
 </ion-content>
 

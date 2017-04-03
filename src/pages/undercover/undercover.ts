@@ -86,8 +86,8 @@ export class UndercoverPage {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
       y: 0,
-      width: window.screen.width,
-      height: window.screen.height,
+      width: 300,
+      height: 400,
       camera: 'rear',
       tapPhoto: false,
       previewDrag: true,
@@ -155,7 +155,6 @@ export class UndercoverPage {
       }, chatAnim/2);
     }
     if(!visibility) {
-      // this.imagePicker.requestReadPermission();
       this.gallery.state = (this.gallery.state == 'on') ? 'off' : 'on';
       if(this.gallery.state){
         this.gallery.stateBool = true;

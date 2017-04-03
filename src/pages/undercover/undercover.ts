@@ -207,12 +207,17 @@ export class UndercoverPage {
     }
   }
 
-  getActiveStyle(){
-    // if(this.showStyle) {
-    //   return "yellow";
-    // } else {
-    //   return "";
-    // }
+  findSurrogatePair(point) {
+    // assumes point > 0xffff
+    var offset = point - 0x10000,
+        lead = 0xd800 + (offset >> 10),
+        trail = 0xdc00 + (offset & 0x3ff);
+    return [lead.toString(16), trail.toString(16)];
+  }
+
+  debugIconTest(){
+    this.txtIn.nativeElement.value = String.fromCodePoint(0x1F604);
+    console.log(this.txtIn);
   }
 
   sendMessage(){

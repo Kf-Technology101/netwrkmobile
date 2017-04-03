@@ -32,6 +32,12 @@
     <ion-img *ngFor="let imgSrc of imagesSrc" [src]="imgSrc" [style.height.px]="gallery.imgHeight"></ion-img>
   </div>
 
+  <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="!emoji.stateBool" [@galleryState]="emoji.state">
+    <span item-content (click)="debugIconTest()">Icon</span>
+  </div>
+
+  <!-- \xF0\x9F\x98\x81 -->
+
   <button isScrolling="false" [hidden]="hiddenMainBtn" [@mainBtnState]="mainBtn.state" ion-button color="bk"
   class="main-action-btn has-footer transparent chatMainBtn" outline isScrolling="false"></button>
 
@@ -56,12 +62,9 @@
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 
-    <!-- <input id="textInput" type="text" placeholder="On this spot..."> -->
-    <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div>
+    <input #textInput id="textInput" type="text" placeholder="On this spot...">
+    <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
-    <button ion-button item-right clear>
-      <ion-icon ios="ios-apps-outline" md="ios-apps-outline"></ion-icon>
-    </button>
     <button ion-button item-right clear (click)="sendMessage()">
       <ion-icon ios="ios-text-outline" md="ios-text-outline"></ion-icon>
     </button>

@@ -7,6 +7,7 @@ import {
   CameraPreviewOptions,
   // CameraPreviewDimensions
 } from '@ionic-native/camera-preview';
+import { Camera, CameraOptions } from '@ionic-native/camera';
 
 import { ImagePicker } from '@ionic-native/image-picker';
 
@@ -79,22 +80,19 @@ export class UndercoverPage {
     private cameraPreview: CameraPreview,
     public tools: Tools,
     private keyboard: Keyboard,
-    private imagePicker: ImagePicker
+    private imagePicker: ImagePicker,
+    private camera: Camera
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
       y: 0,
-      width: window.screen.width,
-      height: window.screen.height,
+      width: 300,
+      height: 400,
       camera: 'rear',
       tapPhoto: false,
       previewDrag: true,
       toBack: true,
       alpha: 1
-    }
-
-    const imagePickerOpts = {
-      maximumImagesCount: 18
     }
 
     this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
@@ -108,16 +106,6 @@ export class UndercoverPage {
       console.log(res);
       this.mainBtn.state = 'minimised';
     }, err => {
-      console.log(err);
-    });
-
-    this.imagePicker.getPictures(imagePickerOpts).then((results) => {
-      for (var i = 0; i < results.length; i++) {
-        console.log('Image URI: ' + results[i]);
-      }
-      this.imgesSrc = results;
-      console.log('pictures get!');
-    }, (err) => {
       console.log(err);
     });
   }
@@ -155,15 +143,18 @@ export class UndercoverPage {
     }
   }
 
-  toggleImageGallery(visibility){
-    if(visibility == 'hide'){
+  toggleImageGallery(visibility) {
+    // const imagePickerOpts = {
+    //   maximumImagesCount: 18
+    // }
+
+    if(visibility == 'hide') {
       this.gallery.state = 'off';
       setTimeout(() => {
         this.gallery.stateBool = false;
       }, chatAnim/2);
     }
-    if(!visibility)
-    {
+    if(!visibility) {
       this.gallery.state = (this.gallery.state == 'on') ? 'off' : 'on';
       if(this.gallery.state){
         this.gallery.stateBool = true;
@@ -173,9 +164,10 @@ export class UndercoverPage {
         }, chatAnim/2);
       }
     }
-    if(this.gallery.state == 'on'){
+
+    if(this.gallery.state == 'on') {
       this.mainBtn.state = 'moved-n-scaled';
-    }else{
+    } else {
       this.mainBtn.state = 'normal';
     }
   }

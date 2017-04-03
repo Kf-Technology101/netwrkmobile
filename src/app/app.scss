@@ -296,3 +296,10 @@ ion-app .ion-page .content {
 html, body, ion-app, ion-content, ion-page, .nav-decor {
   background-color: transparent !important;
 }
+
+form,
+.introduction {
+  max-width: 300px;
+  margin: 0 auto;
+  margin-top: 15px;
+}

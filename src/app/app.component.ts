@@ -3,14 +3,14 @@ import { Platform, Events, App } from 'ionic-angular';
 import { StatusBar, Splashscreen, Sim } from 'ionic-native';
 
 // Pages
-// import { LogInPage } from '../pages/log-in/log-in';
+import { LogInPage } from '../pages/log-in/log-in';
 // import { HomePage } from '../pages/home/home';
 // import { ProfilePage } from '../pages/profile/profile';
 // import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
-import { UndercoverPage } from '../pages/undercover/undercover';
-import { CameraPage } from '../pages/camera/camera';
+// import { UndercoverPage } from '../pages/undercover/undercover';
+// import { CameraPage } from '../pages/camera/camera';
 
 // Providers
 import { User } from '../providers/user';
@@ -71,10 +71,10 @@ export class MyApp {
           break;
       }
     } else {
-      // this.rootPage = LogInPage;
+      this.rootPage = LogInPage;
       // this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
-      this.rootPage = UndercoverPage;
+      // this.rootPage = UndercoverPage;
       // this.rootPage = CameraPage;
     }
   }

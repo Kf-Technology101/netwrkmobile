@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import {
   NavController,
   NavParams
@@ -19,9 +19,11 @@ import { Tools } from '../../providers/tools';
   templateUrl: 'sign-up-after-fb.html'
 })
 export class SignUpAfterFbPage {
+  @ViewChild('focusBirthday') birthdayInput;
+
   date_of_birthday: string;
   hiddenMainBtn: boolean = false;
-  maxBirthday: number;
+  public maxBirthday: string;
 
   private validBirthdayErrorString: string;
 
@@ -31,8 +33,12 @@ export class SignUpAfterFbPage {
     public user: User,
     public tools: Tools
   ) {
-    this.maxBirthday = new Date().getFullYear() - 1;
+    this.maxBirthday = this.tools.getToday();
     this.validBirthdayErrorString = 'Please fill all fields';
+
+    setTimeout(() => {
+      this.birthdayInput.open();
+    }, 1500);
   }
 
   doSignUp(form: any) {

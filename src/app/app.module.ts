@@ -39,6 +39,9 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
 import { Camera } from '@ionic-native/camera';
 
+// Custom pipes
+// import { EmojiFilter } from '../pipes/emoji-filter.pipe';
+
 let pages = [
   MyApp,
 
@@ -58,18 +61,22 @@ let pages = [
   NetworkCreatePage,
   NetworkContactListPage,
 
+  // EmojiFilter,
+
   UndercoverPage,
 
   CameraPage
 ];
 
-export function declarations() {
-  return pages;
-}
-
-export function entryComponents() {
-  return pages;
-}
+// export function declarations() {
+//   // let declarations = pages;
+//
+//   return pages;
+// }
+//
+// export function entryComponents() {
+//   return pages;
+// }
 
 export function providers() {
   return [
@@ -94,12 +101,12 @@ export function providers() {
 }
 
 @NgModule({
-  declarations: declarations(),
+  declarations: pages,
   imports: [
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
-  entryComponents: entryComponents(),
+  entryComponents: pages,
   providers: providers()
 })
 export class AppModule {}

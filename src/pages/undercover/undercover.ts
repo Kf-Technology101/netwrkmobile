@@ -28,7 +28,6 @@ import {
   toggleGallery
 } from '../../includes/animations';
 
-
 @Component({
   selector: 'page-undercover',
   templateUrl: 'undercover.html',
@@ -77,7 +76,7 @@ export class UndercoverPage {
     imgHeight: undefined
   };
 
-  emoji: any = {
+  emojiContainer: any = {
     state: 'off',
     stateBool: false
   };
@@ -85,6 +84,21 @@ export class UndercoverPage {
   hidePlaceholder = false;
 
   imgesSrc = [];
+
+  emojis = [
+    0x1F601,
+    0x1F602,
+    0x1F603,
+    0x1F604,
+    0x1F605,
+    0x1F606,
+    0x1F607,
+    0x1F608,
+    0x1F609,
+    0x1F610
+  ];
+
+  caretPos: number = 0;
 
   constructor(
     public navCtrl: NavController,
@@ -184,44 +198,50 @@ export class UndercoverPage {
 
   toggleEmoji(visibility) {
     if(visibility == 'hide') {
-      this.emoji.state = 'off';
+      this.emojiContainer.state = 'off';
       setTimeout(() => {
-        this.emoji.stateBool = false;
+        this.emojiContainer.stateBool = false;
       }, chatAnim/2);
     }
     if(!visibility) {
-      this.emoji.state = (this.emoji.state == 'on') ? 'off' : 'on';
-      if(this.emoji.state){
-        this.emoji.stateBool = true;
+      this.emojiContainer.state = (this.emojiContainer.state == 'on') ? 'off' : 'on';
+      if(this.emojiContainer.state){
+        this.emojiContainer.stateBool = true;
       }else{
         setTimeout(() => {
-          this.emoji.stateBool = false;
+          this.emojiContainer.stateBool = false;
         }, chatAnim/2);
       }
     }
 
-    if(this.emoji.state == 'on') {
+    if(this.emojiContainer.state == 'on') {
       this.mainBtn.state = 'moved-n-scaled';
     } else {
       this.mainBtn.state = 'normal';
     }
   }
 
-  findSurrogatePair(point) {
-    // assumes point > 0xffff
-    var offset = point - 0x10000,
-        lead = 0xd800 + (offset >> 10),
-        trail = 0xdc00 + (offset & 0x3ff);
-    return [lead.toString(16), trail.toString(16)];
+  debugIconTest(emoji){
+    let inputVal = this.txtIn.nativeElement.value;
+    console.log(inputVal);
+    inputVal = inputVal.split("");
+    inputVal.splice(this.caretPos, 0, String.fromCodePoint(emoji));
+    this.txtIn.nativeElement.value = inputVal.join("");
+    console.log(this.txtIn);
   }
 
-  debugIconTest(){
-    this.txtIn.nativeElement.value = String.fromCodePoint(0x1F604);
-    console.log(this.txtIn);
+  convertEmoji(code){
+    return String.fromCodePoint(code);
   }
 
   sendMessage(){
     console.log(this.txtIn);
+  }
+
+  getCaretPos(oField){
+    if (oField.selectionStart || oField.selectionStart == '0') {
+      this.caretPos = oField.selectionStart;
+    }
   }
 
   ionViewDidLoad() {

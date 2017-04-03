@@ -54,7 +54,8 @@ export const rotateChatPlus: any = trigger('rotState', [
 // Toggle chat options buttons
 export const toggleChatOptionsBg: any = trigger('bgState', [
   state('stretched', style({
-    width: '100%'
+    width: '100%',
+    'pointer-events': 'auto'
   })),
   state('compressed', style({
     width: '0%'

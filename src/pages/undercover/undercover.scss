@@ -155,6 +155,9 @@ ion-item.text{
     bottom: 0;
     border-radius: 12px;
   }
+  #textInpBtns{
+    pointer-events: none;
+  }
   #plus-btn{
     &{
       z-index: 50;
@@ -213,13 +216,13 @@ div.gallery-container{
 }
 
 div.emoji-container{
-  span{
+  &{
+    text-align: left;
+  }
+  .emoji-item{
     &{
-      float: left;
-    }
-    .emoji{
-      position: inherit;
-      transform: scale(0.812);
+      font-size: 39px;
+      text-align: center;
     }
   }
 }

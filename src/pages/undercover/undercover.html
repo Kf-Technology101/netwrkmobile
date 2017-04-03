@@ -32,8 +32,8 @@
     <ion-img *ngFor="let imgSrc of imagesSrc" [src]="imgSrc" [style.height.px]="gallery.imgHeight"></ion-img>
   </div>
 
-  <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="!emoji.stateBool" [@galleryState]="emoji.state">
-    <span item-content (click)="debugIconTest()">Icon</span>
+  <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="!emojiContainer.stateBool" [@galleryState]="emojiContainer.state">
+    <span item-content *ngFor="let emoji of emojis" (click)="debugIconTest(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
   </div>
 
   <!-- \xF0\x9F\x98\x81 -->
@@ -62,7 +62,7 @@
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 
-    <input #textInput id="textInput" type="text" placeholder="On this spot...">
+    <input #textInput id="textInput" type="text" placeholder="On this spot..." (click)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)">
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
     <button ion-button item-right clear (click)="sendMessage()">

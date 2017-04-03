@@ -49,7 +49,11 @@ export class UndercoverPage {
   backbgoundTransparent = true;
 
   @ViewChild('galleryCont') gCont;
-  @ViewChild('chatInput') chInpt;
+  @ViewChild('emojiCont') emCont;
+
+  @ViewChild('textInput') txtIn;
+
+  public myMessageString: string = '';
 
   chatOptions: any = {
     state: 'default'
@@ -71,6 +75,11 @@ export class UndercoverPage {
     state: 'off',
     stateBool: false,
     imgHeight: undefined
+  };
+
+  emoji: any = {
+    state: 'off',
+    stateBool: false
   };
 
   hidePlaceholder = false;
@@ -97,6 +106,8 @@ export class UndercoverPage {
       toBack: true,
       alpha: 1
     }
+
+    this.myMessageString = "Hello, :smile: friend :smile_cat:";
 
     this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
       console.log(res);
@@ -147,10 +158,6 @@ export class UndercoverPage {
   }
 
   toggleImageGallery(visibility) {
-    // const imagePickerOpts = {
-    //   maximumImagesCount: 18
-    // }
-
     if(visibility == 'hide') {
       this.gallery.state = 'off';
       setTimeout(() => {
@@ -175,6 +182,31 @@ export class UndercoverPage {
     }
   }
 
+  toggleEmoji(visibility) {
+    if(visibility == 'hide') {
+      this.emoji.state = 'off';
+      setTimeout(() => {
+        this.emoji.stateBool = false;
+      }, chatAnim/2);
+    }
+    if(!visibility) {
+      this.emoji.state = (this.emoji.state == 'on') ? 'off' : 'on';
+      if(this.emoji.state){
+        this.emoji.stateBool = true;
+      }else{
+        setTimeout(() => {
+          this.emoji.stateBool = false;
+        }, chatAnim/2);
+      }
+    }
+
+    if(this.emoji.state == 'on') {
+      this.mainBtn.state = 'moved-n-scaled';
+    } else {
+      this.mainBtn.state = 'normal';
+    }
+  }
+
   getActiveStyle(){
     // if(this.showStyle) {
     //   return "yellow";
@@ -183,14 +215,8 @@ export class UndercoverPage {
     // }
   }
 
-  toggleKeyboard(){
-    this.hidePlaceholder = true;
-    console.log(this.chInpt);
-    this.keyboard.show();
-  }
-
   sendMessage(){
-    let ch = this.chInpt;
+    console.log(this.txtIn);
   }
 
   ionViewDidLoad() {

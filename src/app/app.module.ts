@@ -60,7 +60,7 @@ let pages = [
 
   UndercoverPage,
 
-  CameraPage,
+  CameraPage
 ];
 
 export function declarations() {

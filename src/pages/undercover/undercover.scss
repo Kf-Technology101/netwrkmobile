@@ -211,3 +211,15 @@ div.gallery-container{
     border: 3px solid #fff;
   }
 }
+
+div.emoji-container{
+  span{
+    &{
+      float: left;
+    }
+    .emoji{
+      position: inherit;
+      transform: scale(0.812);
+    }
+  }
+}

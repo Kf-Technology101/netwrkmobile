@@ -157,5 +157,13 @@
         },
         "is_top_level": true,
         "variables": {}
+    },
+    "cordova-plugin-native-keyboard": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-native-keyboard"
+        },
+        "is_top_level": true,
+        "variables": {}
     }
 }

@@ -216,3 +216,59 @@ page-undercover {
     }
   }
 }
+
+ion-toggle.undercoverToggle,
+ion-toggle.undercoverToggle.toggle-ios{
+  .toggle-icon{
+    & {
+      width: 220px;
+      height: 20px;
+      margin: 20px auto;
+      background: #fff;
+    }
+    &:before {
+      display: none;
+    }
+    i{
+      display: inline-block;
+      font-family: "Ionicons";
+      -moz-osx-font-smoothing: grayscale;
+      -webkit-font-smoothing: antialiased;
+      font-style: normal;
+      font-variant: normal;
+      font-weight: normal;
+      line-height: 1;
+      text-rendering: auto;
+      text-transform: none;
+      speak: none;
+
+      font-size: 1.5em;
+      transform: rotate(180deg);
+      margin: 0 5px;
+      color: #b7b7b7;
+      vertical-align: middle;
+      &:before{
+        content: "\f1b2";
+      }
+    }
+    .toggle-custom {
+      font-size: 1.2em;
+      vertical-align: middle;
+    }
+  }
+  .toggle-inner{
+    &{
+      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      top: -11px;
+      left: -12px;
+      box-shadow: none;
+      background: url(../assets/images/Layer0.png) no-repeat center;
+      background-size: contain;
+    }
+  }
+  .toggle-checked .toggle-inner{
+    transform: translate3d(204px, 0 ,0);
+  }
+}

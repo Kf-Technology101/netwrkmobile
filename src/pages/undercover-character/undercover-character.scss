@@ -1,0 +1,57 @@
+page-undercover-character {
+  ion-slides {
+    height: 200px;
+
+    .swiper-slide {
+      height: 100%;
+
+      .title {
+        height: 42px;
+        font-size: 14px;
+        color: #fff;
+      }
+
+      .avatar {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: auto;
+        transition: 0.2s all;
+      }
+    }
+
+    .swiper-slide-active {
+      transform: translate(-50%);
+      .title,
+      .avatar {
+      }
+    }
+
+    .swiper-slide-next {
+      z-index: 1;
+      .avatar {
+        transform: scale(1.4);
+      }
+
+    }
+
+    .swiper-slide-duplicate-prev {
+      transform: translate(50%);
+      .title,
+      .avatar {
+      }
+    }
+
+    .swiper-slide-duplicate-active {
+      transform: translate(50%);
+      .title,
+      .avatar {
+      }
+    }
+  }
+
+  .content {
+    background: #302f2f;
+  }
+}

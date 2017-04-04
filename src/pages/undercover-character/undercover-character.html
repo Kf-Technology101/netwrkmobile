@@ -1,0 +1,57 @@
+<ion-header class="incognito-header" isScrolling="false">
+  <ion-toolbar>
+    <span class="top-profile">
+      <ion-list id="profile-list-sliding">
+        <ion-item-sliding>
+
+          <ion-item class="avatar-container">
+            <img class="avatar" src="assets/images/Layer0.png">
+          </ion-item>
+
+          <ion-item class="profile-slider-info">
+            <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+            <span>Choose a character</span>
+          </ion-item>
+
+          <ion-item-options side="left">
+            <button ion-button class="slide-item-bg-button"></button>
+          </ion-item-options>
+
+        </ion-item-sliding>
+        Don't worry, you can change this later
+      </ion-list>
+    </span>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <h1>We agree, some things shouldn't have your name on it.</h1>
+  <ion-slides slidesPerView="3"
+    loop="true"
+    initialSlide="1"
+    spaceBetween="10">
+    <ion-slide>
+      <h4 class="title">Captain America</h4>
+      <div class="avatar">
+        <img class="sun-icon" src="assets/images/cap.png">
+      </div>
+    </ion-slide>
+
+    <ion-slide>
+      <h4 class="title">Doctor Strange</h4>
+      <div class="avatar">
+        <img class="sun-icon" src="assets/images/doc.png">
+      </div>
+    </ion-slide>
+
+    <ion-slide>
+      <h4 class="title">Hulk</h4>
+      <div class="avatar">
+        <img class="sun-icon" src="assets/images/hulk.png">
+      </div>
+    </ion-slide>
+  </ion-slides>
+  <div>
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque magna est, porttitor dapibus tellus at, dictum sodales purus. Nulla non aliquam ipsum. Pellentesque vitae purus a est tempus blandit ac quis nisl.
+  </div>
+</ion-content>

@@ -21,6 +21,7 @@ import { NetworkCreatePage } from '../pages/network-create/network-create';
 import { NetworkContactListPage } from '../pages/network-contact-list/network-contact-list';
 
 import { UndercoverPage } from '../pages/undercover/undercover';
+import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 
 import { CameraPage } from '../pages/camera/camera';
 
@@ -64,6 +65,7 @@ let pages = [
   // EmojiFilter,
 
   UndercoverPage,
+  UndercoverCharacterPage,
 
   CameraPage
 ];

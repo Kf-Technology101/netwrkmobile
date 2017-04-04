@@ -11,6 +11,7 @@ import { NetworkFindPage } from '../pages/network-find/network-find';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
 import { UndercoverPage } from '../pages/undercover/undercover';
 // import { CameraPage } from '../pages/camera/camera';
+import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 
 // Providers
 import { User } from '../providers/user';
@@ -74,8 +75,9 @@ export class MyApp {
       // this.rootPage = LogInPage;
       // this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
-      this.rootPage = UndercoverPage;
+      // this.rootPage = UndercoverPage;
       // this.rootPage = CameraPage;
+      this.rootPage = UndercoverCharacterPage;
     }
   }
 

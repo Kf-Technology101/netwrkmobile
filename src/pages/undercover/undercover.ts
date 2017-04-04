@@ -70,7 +70,7 @@ export class UndercoverPage {
     state: 'normal'
   };
 
-  gallery: any = {
+  galleryContainer: any = {
     state: 'off',
     stateBool: false,
     imgHeight: undefined
@@ -85,18 +85,10 @@ export class UndercoverPage {
 
   imgesSrc = [];
 
-  emojis = [
-    0x1F601,
-    0x1F602,
-    0x1F603,
-    0x1F604,
-    0x1F605,
-    0x1F606,
-    0x1F607,
-    0x1F608,
-    0x1F609,
-    0x1F610
-  ];
+  emoticY = ['1F60', '1F61', '1F62', '1F63', '1F64'];
+  emoticX = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C'];
+
+  emojis = [];
 
   caretPos: number = 0;
 
@@ -133,9 +125,29 @@ export class UndercoverPage {
     this.keyboard.onKeyboardShow().subscribe(res => {
       console.log(res);
       this.mainBtn.state = 'minimised';
+
+      this.emojiContainer.state = 'off';
+      setTimeout(() => {
+        this.emojiContainer.stateBool = false;
+      }, chatAnim/2);
     }, err => {
       console.log(err);
     });
+
+    // this.keyboard.onKeyboardHide().subscribe(res => {
+    //
+    // }, err => {
+    //   console.log(err);
+    // });
+  }
+
+  generateEmoticons(){
+    for(let i = 0; i < this.emoticX.length; i++){
+      for(let j = 0; j < this.emoticY.length; j++){
+        this.emojis.push('0x' + this.emoticY[j] + this.emoticX[i]);
+      }
+    }
+    console.log(this.emojis);
   }
 
   openCamera() {
@@ -171,50 +183,26 @@ export class UndercoverPage {
     }
   }
 
-  toggleImageGallery(visibility) {
-    if(visibility == 'hide') {
-      this.gallery.state = 'off';
+  toggleContainer(container, visibility) {
+    console.log(container);
+    if (visibility == 'hide') {
+      container.state = 'off';
       setTimeout(() => {
-        this.gallery.stateBool = false;
+        container.stateBool = false;
       }, chatAnim/2);
     }
-    if(!visibility) {
-      this.gallery.state = (this.gallery.state == 'on') ? 'off' : 'on';
-      if(this.gallery.state){
-        this.gallery.stateBool = true;
-      }else{
+    if (!visibility) {
+      container.state = (container.state == 'on') ? 'off' : 'on';
+      if (container.state) {
+        container.stateBool = true;
+      } else {
         setTimeout(() => {
-          this.gallery.stateBool = false;
+          container.stateBool = false;
         }, chatAnim/2);
       }
     }
 
-    if(this.gallery.state == 'on') {
-      this.mainBtn.state = 'moved-n-scaled';
-    } else {
-      this.mainBtn.state = 'normal';
-    }
-  }
-
-  toggleEmoji(visibility) {
-    if(visibility == 'hide') {
-      this.emojiContainer.state = 'off';
-      setTimeout(() => {
-        this.emojiContainer.stateBool = false;
-      }, chatAnim/2);
-    }
-    if(!visibility) {
-      this.emojiContainer.state = (this.emojiContainer.state == 'on') ? 'off' : 'on';
-      if(this.emojiContainer.state){
-        this.emojiContainer.stateBool = true;
-      }else{
-        setTimeout(() => {
-          this.emojiContainer.stateBool = false;
-        }, chatAnim/2);
-      }
-    }
-
-    if(this.emojiContainer.state == 'on') {
+    if(container.state == 'on') {
       this.mainBtn.state = 'moved-n-scaled';
     } else {
       this.mainBtn.state = 'normal';
@@ -223,15 +211,16 @@ export class UndercoverPage {
 
   debugIconTest(emoji){
     let inputVal = this.txtIn.nativeElement.value;
-    console.log(inputVal);
-    inputVal = inputVal.split("");
+    inputVal = inputVal.split('');
     inputVal.splice(this.caretPos, 0, String.fromCodePoint(emoji));
-    this.txtIn.nativeElement.value = inputVal.join("");
-    console.log(this.txtIn);
+    this.txtIn.nativeElement.value = inputVal.join('');
+
+    // this.txtIn.selectionStart++;
+    // this.getCaretPos(this.txtIn);
   }
 
-  convertEmoji(code){
-    return String.fromCodePoint(code);
+  convertEmoji(unicode){
+    return String.fromCodePoint(unicode);
   }
 
   sendMessage(){
@@ -245,9 +234,10 @@ export class UndercoverPage {
   }
 
   ionViewDidLoad() {
+    this.generateEmoticons();
     if(this.imgesSrc.length > 0){
       setTimeout(() => {
-        this.gallery.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
+        this.galleryContainer.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
       }, 100);
     }
     console.log('ionViewDidLoad UndercoverPage');

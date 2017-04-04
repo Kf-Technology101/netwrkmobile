@@ -218,11 +218,15 @@ div.gallery-container{
 div.emoji-container{
   &{
     text-align: left;
+    overflow: scroll;
   }
   .emoji-item{
     &{
       font-size: 39px;
       text-align: center;
+      width: 14.28%;
+      display: block;
+      float: left;
     }
   }
 }

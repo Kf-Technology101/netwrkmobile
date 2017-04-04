@@ -28,8 +28,8 @@
 </ion-content>
 
 <ion-footer class="has-input chatFooter" isScrolling="false">
-  <div #galleryCont item-content  class="gallery-container" [hidden]="!gallery.stateBool" [@galleryState]="gallery.state">
-    <ion-img *ngFor="let imgSrc of imagesSrc" [src]="imgSrc" [style.height.px]="gallery.imgHeight"></ion-img>
+  <div #galleryCont item-content  class="gallery-container" [hidden]="!galleryContainer.stateBool" [@galleryState]="galleryContainer.state">
+    <ion-img *ngFor="let imgSrc of imagesSrc" [src]="imgSrc" [style.height.px]="galleryContainer.imgHeight"></ion-img>
   </div>
 
   <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="!emojiContainer.stateBool" [@galleryState]="emojiContainer.state">
@@ -46,19 +46,19 @@
       <button ion-button [@inputState]="chatBtns.state[0]" (click)="openCamera()">
         <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[1]" (click)="toggleImageGallery()">
+      <button ion-button [@inputState]="chatBtns.state[1]" (click)="toggleContainer(galleryContainer)">
          <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
       </button>
       <button ion-button [@inputState]="chatBtns.state[2]">
         <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[3]" (click)="toggleEmoji(); toggleChatOptions()">
+      <button ion-button [@inputState]="chatBtns.state[3]" (click)="toggleContainer(emojiContainer); toggleChatOptions()">
         <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
       </button>
       <button ion-button [@inputState]="chatBtns.state[4]"></button>
     </div>
 
-    <button (click)="toggleChatOptions(); toggleImageGallery('hide'); toggleEmoji('hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
+    <button (click)="toggleChatOptions(); toggleContainer(galleryContainer, 'hide'); toggleContainer(emojiContainer, 'hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 

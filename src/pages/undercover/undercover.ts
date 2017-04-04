@@ -52,6 +52,8 @@ export class UndercoverPage {
 
   @ViewChild('textInput') txtIn;
 
+  @ViewChild('customToggle') toggler;
+
   public myMessageString: string = '';
 
   chatOptions: any = {
@@ -235,8 +237,14 @@ export class UndercoverPage {
     }
   }
 
+  generateUndercoverToggler(){
+    console.log(this.toggler);
+    this.toggler._elementRef.nativeElement.childNodes[0].insertAdjacentHTML('beforeend', '<i></i> <span class="toggle-custom">Nataliya Miller</span>');
+  }
+
   ionViewDidLoad() {
     this.generateEmoticons();
+    this.generateUndercoverToggler();
     if(this.imgesSrc.length > 0){
       setTimeout(() => {
         this.galleryContainer.imgHeight = this.gCont.nativeElement.children[0].clientWidth;

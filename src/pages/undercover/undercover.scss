@@ -201,7 +201,6 @@ div.gallery-container{
     top: 100%;
     padding: 7px;
     padding-top: 0;
-    padding-bottom: 70px;
     box-sizing: border-box;
     border-top: 7px solid #fff;
   }
@@ -219,6 +218,9 @@ div.emoji-container{
   &{
     text-align: left;
     overflow: scroll;
+    background-color: #f5f2f4;
+    border-bottom: 75px solid;
+    border-color: #f5f2f4;
   }
   .emoji-item{
     &{

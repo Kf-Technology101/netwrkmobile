@@ -305,3 +305,22 @@ form,
   margin: 0 auto;
   margin-top: 15px;
 }
+
+ion-header.incognito-header {
+  & {
+    z-index: 11;
+    position: fixed;
+  }
+  span.top-profile {
+    padding: 0;
+
+    .profile-list-sliding {
+      .label{
+        padding: 0 35px;
+      }
+    }
+    .avatar {
+      top: 1px;
+    }
+  }
+}

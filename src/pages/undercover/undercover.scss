@@ -82,8 +82,8 @@ page-undercover {
     }
   }
 
-  #textInpBtns{
-    &{
+  #textInpBtns {
+    & {
       position: absolute;
       left: 0;
       width: 100px;
@@ -101,8 +101,8 @@ page-undercover {
       flex-direction: row;
       justify-content: space-between;
     }
-    button{
-      &{
+    button {
+      & {
         position: relative;
         opacity: 0;
         padding: 0;
@@ -113,52 +113,35 @@ page-undercover {
         background: #fff;
         box-shadow: none;
       }
-      ion-icon{
+      ion-icon {
         line-height: 26px;
       }
-      ion-icon.ion-ios-camera-outline{
+      ion-icon.ion-ios-camera-outline {
         font-size: 33px;
       }
     }
   }
 
-  .chatMainBtn{
+  .chatMainBtn {
     bottom: 70px;
   }
 
-  ion-footer.chatFooter.has-input{
+  ion-footer.chatFooter.has-input {
     height: 100%;
   }
 
-  ion-header.incognito-header{
-    &{
-      z-index: 11;
-      position: fixed;
-    }
-    span.top-profile{
-      padding: 0;
-      #profile-list-sliding{
-        .label{
-          padding: 0 35px;
-        }
-      }
-      .avatar{
-        top: 1px;
-      }
-    }
-  }
-
-  ion-item.text{
-    &{
+  ion-item.text {
+    & {
       position: absolute;
       bottom: 0;
     }
-    #textInpBtns{
+    #textInpBtns {
       pointer-events: none;
       border-radius: 12px;
     }
-    #plus-btn{
-      &{
+    #plus-btn {
+      & {
+        padding: 0;
         z-index: 50;
         position: absolute;
         top: 0;
@@ -170,15 +153,15 @@ page-undercover {
         margin-left: 0;
         border-radius: 0;
       }
-      ion-icon{
+      ion-icon {
         font-size: 37px;
       }
     }
-    ion-icon{
+    ion-icon {
       color: color($colors, chat-icon);
     }
-    #textInput{
-      &{
+    #textInput {
+      & {
         // margin-left: 47px;
         padding-left: 47px;
         box-sizing: border-box;
@@ -192,8 +175,8 @@ page-undercover {
     }
   }
 
-  div.gallery-container{
-    &{
+  div.gallery-container {
+    & {
       position: absolute;
       z-index: 0;
       background: color($colors, white);
@@ -204,7 +187,7 @@ page-undercover {
       box-sizing: border-box;
       border-top: 7px solid #fff;
     }
-    ion-img{
+    ion-img {
       float: left;
       width: 33.3%;
       display: block;

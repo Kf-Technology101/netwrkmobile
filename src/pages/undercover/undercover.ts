@@ -149,7 +149,6 @@ export class UndercoverPage {
         this.emojis.push('0x' + this.emoticY[j] + this.emoticX[i]);
       }
     }
-    console.log(this.emojis);
   }
 
   openCamera() {
@@ -211,18 +210,15 @@ export class UndercoverPage {
   }
 
   insertEmoji(emoji){
-    console.log(this.txtIn);
-
+    this.txtIn.nativeElement.focus();
+    let emojiDecoded = String.fromCodePoint(emoji);
     let inputVal = this.txtIn.nativeElement.value;
     inputVal = inputVal.split('');
-    inputVal.splice(this.caretPos, 0, String.fromCodePoint(emoji));
+    this.getCaretPos(this.txtIn.nativeElement);
+    inputVal.splice(this.caretPos, 0, emojiDecoded);
     this.txtIn.nativeElement.value = inputVal.join('');
-
-    if (this.txtIn.nativeElement.setSelectionRange) {
-      this.caretPos += 2;
-      this.txtIn.nativeElement.setSelectionRange(this.caretPos, this.caretPos);
-    }
-    this.txtIn.nativeElement.focus();
+    this.txtIn.nativeElement.selectionStart = this.caretPos + emojiDecoded.length;
+    this.txtIn.nativeElement.selectionEnd = this.caretPos + emojiDecoded.length;
   }
 
   convertEmoji(unicode){

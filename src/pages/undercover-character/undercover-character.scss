@@ -1,6 +1,6 @@
 page-undercover-character {
   ion-slides {
-    height: 200px;
+    height: 230px;
 
     .swiper-slide {
       height: 100%;
@@ -21,11 +21,12 @@ page-undercover-character {
       }
     }
 
+    .swiper-slide-prev {
+      transform: translate(-50%);
+    }
+
     .swiper-slide-active {
       transform: translate(-50%);
-      .title,
-      .avatar {
-      }
     }
 
     .swiper-slide-next {
@@ -38,16 +39,10 @@ page-undercover-character {
 
     .swiper-slide-duplicate-prev {
       transform: translate(50%);
-      .title,
-      .avatar {
-      }
     }
 
     .swiper-slide-duplicate-active {
       transform: translate(50%);
-      .title,
-      .avatar {
-      }
     }
   }
 

@@ -21,8 +21,11 @@ export class UndercoverCharacterPage {
   ionViewDidLoad() {
     console.log(this.slides);
     // this.slides.slideTo(2, 500);
-    this.slides.ionSlideDidChange.subscribe(() => {
+    this.slides.ionSlideWillChange.subscribe(() => {
       console.log(this.slides);
+      console.log(document.getElementsByClassName('swiper-slide-next'));
+      let activeSlide = document.getElementsByClassName('swiper-slide-next')[0];
+      activeSlide.className += " active-character";
     });
 
     this.slides.initialSlide = 2;

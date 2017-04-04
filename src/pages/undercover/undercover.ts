@@ -85,10 +85,12 @@ export class UndercoverPage {
 
   imgesSrc = [];
 
-  emoticY = ['1F60', '1F61', '1F62', '1F63', '1F64'];
   emoticX = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C'];
+  emoticY = ['1F60', '1F61', '1F62', '1F63', '1F64'];
 
   emojis = [];
+
+  txtFocus: boolean = false;
 
   caretPos: number = 0;
 
@@ -139,10 +141,6 @@ export class UndercoverPage {
     // }, err => {
     //   console.log(err);
     // });
-  }
-
-  setCursorPosition(){
-    ;
   }
 
   generateEmoticons(){
@@ -213,15 +211,18 @@ export class UndercoverPage {
   }
 
   insertEmoji(emoji){
+    console.log(this.txtIn);
+
     let inputVal = this.txtIn.nativeElement.value;
     inputVal = inputVal.split('');
     inputVal.splice(this.caretPos, 0, String.fromCodePoint(emoji));
     this.txtIn.nativeElement.value = inputVal.join('');
 
-    if(this.txtIn.nativeElement.setSelectionRange){
+    if (this.txtIn.nativeElement.setSelectionRange) {
       this.caretPos += 2;
       this.txtIn.nativeElement.setSelectionRange(this.caretPos, this.caretPos);
     }
+    this.txtIn.nativeElement.focus();
   }
 
   convertEmoji(unicode){

@@ -153,10 +153,10 @@ ion-item.text{
   &{
     position: absolute;
     bottom: 0;
-    border-radius: 12px;
   }
   #textInpBtns{
     pointer-events: none;
+    border-radius: 12px;
   }
   #plus-btn{
     &{
@@ -188,6 +188,7 @@ ion-item.text{
       -webkit-appearance: none;
       border-radius:0;
       box-shadow: none;
+      width: 100%;
     }
   }
 }

@@ -122,23 +122,27 @@ export class UndercoverPage {
       console.log(err);
     });
 
-    this.keyboard.onKeyboardShow().subscribe(res => {
-      console.log(res);
-      this.mainBtn.state = 'minimised';
-
-      this.emojiContainer.state = 'off';
-      setTimeout(() => {
-        this.emojiContainer.stateBool = false;
-      }, chatAnim/2);
-    }, err => {
-      console.log(err);
-    });
+    // this.keyboard.onKeyboardShow().subscribe(res => {
+    //   console.log(res);
+    //   this.mainBtn.state = 'minimised';
+    //
+    //   this.emojiContainer.state = 'off';
+    //   setTimeout(() => {
+    //     this.emojiContainer.stateBool = false;
+    //   }, chatAnim/2);
+    // }, err => {
+    //   console.log(err);
+    // });
 
     // this.keyboard.onKeyboardHide().subscribe(res => {
     //
     // }, err => {
     //   console.log(err);
     // });
+  }
+
+  setCursorPosition(){
+    ;
   }
 
   generateEmoticons(){
@@ -184,7 +188,6 @@ export class UndercoverPage {
   }
 
   toggleContainer(container, visibility) {
-    console.log(container);
     if (visibility == 'hide') {
       container.state = 'off';
       setTimeout(() => {
@@ -209,14 +212,16 @@ export class UndercoverPage {
     }
   }
 
-  debugIconTest(emoji){
+  insertEmoji(emoji){
     let inputVal = this.txtIn.nativeElement.value;
     inputVal = inputVal.split('');
     inputVal.splice(this.caretPos, 0, String.fromCodePoint(emoji));
     this.txtIn.nativeElement.value = inputVal.join('');
 
-    // this.txtIn.selectionStart++;
-    // this.getCaretPos(this.txtIn);
+    if(this.txtIn.nativeElement.setSelectionRange){
+      this.caretPos += 2;
+      this.txtIn.nativeElement.setSelectionRange(this.caretPos, this.caretPos);
+    }
   }
 
   convertEmoji(unicode){

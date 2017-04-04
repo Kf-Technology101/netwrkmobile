@@ -33,7 +33,7 @@
   </div>
 
   <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="!emojiContainer.stateBool" [@galleryState]="emojiContainer.state">
-    <span item-content *ngFor="let emoji of emojis" (click)="debugIconTest(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
+    <span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
   </div>
 
   <!-- \xF0\x9F\x98\x81 -->

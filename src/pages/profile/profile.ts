@@ -6,6 +6,7 @@ import { ProfileSettingPage } from '../profile-setting/profile-setting';
 
 // Providers
 import { Social } from '../../providers/social';
+import { Tools } from '../../providers/tools';
 
 @Component({
   selector: 'page-profile',
@@ -14,7 +15,6 @@ import { Social } from '../../providers/social';
 export class ProfilePage {
   greeting: string;
   testSlides: string[] = [];
-  hiddenMainBtn: boolean = false;
   @ViewChild('fbSlider') fbSlider: Slides;
   @ViewChild('incognitoSlider') incoSlider;
 
@@ -28,7 +28,8 @@ export class ProfilePage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public social: Social
+    public social: Social,
+    public tools: Tools
   ) {
     setTimeout(()=>{
       for (var i = 0; i < 6; i++) {
@@ -66,38 +67,38 @@ export class ProfilePage {
   }
 
   openProfile() {
-    let navOptions = {
-      animate: true,
-      animation: 'ios-transition',
-      direction: 'forward'
-    }
-
-    this.hiddenMainBtn = true;
-    this.navCtrl.push(ProfileSettingPage, null, navOptions);
+    this.tools.pushPage(ProfileSettingPage);
   }
 
   connectToFacebook() {
     this.social.connectToFacebook().then(res => {
       this.connect.facebook = this.social.getFacebookData();
+      this.tools.showToast('Facebook already connected');
     });
   }
 
   connectToInstagram() {
     this.social.connectToInstagram().then(() => {
       this.connect.instagram = this.social.getInstagramData();
+      this.tools.showToast('Instagram already connected');
     });
   }
 
   connectToTwitter() {
     this.social.connectToTwitter().then(res => {
       this.connect.twitter = this.social.getTwitterData();
+      this.tools.showToast('Twitter already connected');
     });
+  }
+
+  connectToLinkedIn() {
+    this.tools.showToast('LinkedIn isn\'t connected');
   }
 
   connectToSnapchat() {
 
   }
 
-  ionViewWillEnter() { this.hiddenMainBtn = false; }
+  goBack() { this.tools.popPage(); }
 
 }

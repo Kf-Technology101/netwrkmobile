@@ -169,12 +169,13 @@ export class UndercoverPage {
           animate: false,
           animation: 'md-transition',
         });
+        this.tools.pushPage(CameraPage);
       }, chatAnim/2);
     }, animSpeed.fadeIn/2);
   }
 
   goBack() {
-    this.navCtrl.pop();
+    this.tools.popPage();
   }
 
   // debug function for scaling main button

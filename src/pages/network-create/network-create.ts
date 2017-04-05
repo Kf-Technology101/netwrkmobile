@@ -5,6 +5,8 @@ import { NavController, NavParams } from 'ionic-angular';
 import { ProfilePage } from '../profile/profile';
 import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 
+import { Tools } from '../../providers/tools';
+
 @Component({
   selector: 'page-network-create',
   templateUrl: 'network-create.html'
@@ -13,29 +15,26 @@ export class NetworkCreatePage {
 
   constructor(
     public navCtrl: NavController,
-    public navParams: NavParams
+    public navParams: NavParams,
+    public tools: Tools
   ) {}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad NetworkCreatePage');
-  }
-
   goToProfile() {
-    this.navCtrl.push(ProfilePage);
+    this.tools.pushPage(ProfilePage);
   }
 
   sendEmails() {
-    this.navCtrl.push(NetworkContactListPage, { type: 'emails' });
+    this.tools.pushPage(NetworkContactListPage, { type: 'emails' });
   }
 
   sendSMS() {
-    this.navCtrl.push(NetworkContactListPage, { type: 'phones' });
+    this.tools.pushPage(NetworkContactListPage, { type: 'phones' });
   }
 
   doAction() {
-    
+
   }
 
-  goBack() { this.navCtrl.pop(); }
+  goBack() { this.tools.popPage(); }
 
 }

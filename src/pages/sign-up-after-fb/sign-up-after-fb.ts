@@ -5,9 +5,6 @@ import {
 } from 'ionic-angular';
 
 // Pages
-// import { HomePage } from '../home/home';
-// import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
-// import { ProfileSettingPage } from '../profile-setting/profile-setting';
 import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
@@ -22,7 +19,6 @@ export class SignUpAfterFbPage {
   @ViewChild('focusBirthday') birthdayInput;
 
   date_of_birthday: string;
-  hiddenMainBtn: boolean = false;
   public maxBirthday: string;
 
   private validBirthdayErrorString: string;
@@ -50,11 +46,7 @@ export class SignUpAfterFbPage {
       this.user.update(this.user.fbResponseData.id, updateObj, 'fb')
         .map(res => res.json()).subscribe(res => {
           this.tools.hideLoader();
-          this.navCtrl.push(NetworkFindPage);
-          // this.tools.getLoginPage(ProfileSettingPage, NetworkContactListPage).then(
-          //   res => this.navCtrl.push(res),
-          //   err => this.navCtrl.push(ProfileSettingPage)
-          // );
+          this.tools.pushPage(NetworkFindPage);
         }, err => {
           this.tools.hideLoader();
           this.tools.showToast(JSON.stringify(err));
@@ -64,10 +56,6 @@ export class SignUpAfterFbPage {
     }
   }
 
-  goBack() { this.navCtrl.pop(); }
-
-  ionViewDidLoad() { this.hiddenMainBtn = true; }
-  ionViewWillEnter() { this.hiddenMainBtn = false; }
-  ionViewWillLeave() { this.hiddenMainBtn = true; }
+  goBack() { this.tools.popPage(); }
 
 }

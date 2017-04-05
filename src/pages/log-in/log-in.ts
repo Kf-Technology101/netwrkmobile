@@ -82,7 +82,7 @@ export class LogInPage {
     this.user.login(this.account).map(res => res.json()).subscribe(resp => {
       console.log(resp);
       this.tools.hideLoader();
-      this.navCtrl.push(NetworkFindPage);
+      this.tools.pushPage(NetworkFindPage);
     }, err => {
       this.tools.showToast(this.textStrings.login);
       this.tools.hideLoader();
@@ -97,16 +97,16 @@ export class LogInPage {
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
-          this.navCtrl.push(NetworkFindPage);
+          this.tools.pushPage(NetworkFindPage);
         }
-      } else this.navCtrl.push(SignUpAfterFbPage);
+      } else this.tools.pushPage(SignUpAfterFbPage);
     }, err => {
       this.tools.hideLoader();
       this.tools.showToast(this.textStrings.fb);
     });
   }
 
-  goToSignUp() { this.navCtrl.push(SignUpPage); }
+  goToSignUp() { this.tools.pushPage(SignUpPage); }
 
   ionViewDidLoad() {
     this.hiddenMainBtn = true;

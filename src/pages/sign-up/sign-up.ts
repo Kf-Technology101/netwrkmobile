@@ -161,7 +161,7 @@ export class SignUpPage {
             this.updateActiveStates();
           } else {
             this.account.type = res.login_type;
-            this.navCtrl.push(SignUpConfirmPage);
+            this.tools.pushPage(SignUpConfirmPage);
           }
 
           this.tools.showToast(res.login_message);
@@ -170,7 +170,7 @@ export class SignUpPage {
         if (this.platform.is('cordova')) {
           this.tools.showToast(this.textStrings.login);
         } else {
-          this.navCtrl.push(SignUpConfirmPage);
+          this.tools.pushPage(SignUpConfirmPage);
         }
       });
     }
@@ -182,9 +182,9 @@ export class SignUpPage {
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
-          this.navCtrl.push(NetworkFindPage);
+          this.tools.pushPage(NetworkFindPage);
         }
-      } else this.navCtrl.push(SignUpAfterFbPage);
+      } else this.tools.pushPage(SignUpAfterFbPage);
     }, err => {
       this.tools.showToast(this.textStrings.fb);
     });
@@ -192,7 +192,7 @@ export class SignUpPage {
 
   goBack() {
     if (this.activeStateId == 0) {
-      this.navCtrl.pop();
+      this.tools.popPage();
     } else {
       this.activeStateId--;
       this.updateActiveStates();
@@ -272,7 +272,6 @@ export class SignUpPage {
   ionViewDidLoad() {
     console.log('ionViewDidLoad');
     this.activeStateId++;
-    this.hiddenMainBtn = true;
     this.updateStates();
   }
 
@@ -283,12 +282,10 @@ export class SignUpPage {
       this.activeStateId--;
       this.updateActiveStates();
     }
-    this.hiddenMainBtn = false;
   }
 
   ionViewWillLeave() {
     console.log('ionViewWillLeave');
-    this.hiddenMainBtn = true;
   }
 
   ionViewWillUnload() {

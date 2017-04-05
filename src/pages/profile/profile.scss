@@ -65,7 +65,9 @@ page-profile {
       }
 
       .avatar {
-        padding: 4px;
+        width: 42px;
+        height: 42px;
+        margin: 0 auto 3px;
 
         img {
           border-radius: 100%;
@@ -73,7 +75,7 @@ page-profile {
       }
 
       .swiper-container {
-        padding-top: 20px;
+        padding-top: 23px;
 
         .swiper-pagination {
           display: block !important;
@@ -121,32 +123,41 @@ page-profile {
           }
 
           .icon {
-            font-size: 43px;
             color: #fff;
-            width: 45px;
-            height: 45px;
-            border-radius: 7px;
+            width: 42px;
+            height: 42px;
+            border-radius: 6px;
+            display: block;
+            margin: 0 auto 3px;
+            font-size: 36px;
+            padding: 4px 0px;
           }
 
           &.fb {
             .icon {
-              padding: 1px 7px;
               background: #3b5998;
             }
           }
 
           &.in {
             .icon {
-              background: #9b51a0;
-              padding: 0px;
+              background: -webkit-radial-gradient(32% 106%, circle cover, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), -webkit-linear-gradient(-45deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
+            	background: -moz-radial-gradient(32% 106%, circle cover, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), -moz-linear-gradient(-45deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
+            	background: -ms-radial-gradient(32% 106%, circle cover, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), -ms-linear-gradient(-45deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
+            	background: -o-radial-gradient(32% 106%, circle cover, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), -o-linear-gradient(-45deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
+            	background: radial-gradient(circle farthest-corner at 32% 106%, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), linear-gradient(135deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
             }
           }
 
           &.tw {
             .icon {
               background: #00a1f2;
-              font-size: 37px;
-              padding: 5px 7px;
+            }
+          }
+
+          &.li {
+            .icon {
+              background: #0083be;
             }
           }
 

@@ -39,6 +39,7 @@ import { Permission } from '../providers/permission';
 import { Facebook } from 'ionic-native';
 import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
+import { Diagnostic } from '@ionic-native/diagnostic';
 
 let pages = [
   MyApp,
@@ -89,6 +90,7 @@ export function providers() {
     Facebook,
     Geolocation,
     CameraPreview,
+    Diagnostic,
 
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }

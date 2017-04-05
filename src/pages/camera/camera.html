@@ -2,11 +2,12 @@
   <ion-grid>
     <ion-row bottom>
       <ion-col>
-        <div class="tooltip">
+        <div class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
           Type for a picture
           <div></div>
         </div>
-        <button class="take-photo" ion-button (click)="takePhoto()" color="white"
+        <button [@cameraUIstate]="cameraUI.button"
+          class="take-photo" ion-button (click)="takePhoto()" color="white"
           outline color="bk">
           <div class="white"></div>
         </button>

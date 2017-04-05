@@ -1,8 +1,24 @@
 <ion-header class="incognito-header" isScrolling="false">
-  <!-- <ion-toolbar> -->
-    <ion-toggle class="undercoverToggle" #customToggle>
-    </ion-toggle>
-  <!-- </ion-toolbar> -->
+  <span class="top-profile">
+    <ion-list id="profile-list-sliding">
+      <ion-item-sliding  #slidingItem (ionDrag)="onDrag($event, slidingItem)">
+
+        <ion-item class="avatar-container" (click)="goToProfile($event)">
+          <img class="avatar" src="assets/images/Layer0.png">
+        </ion-item>
+
+        <ion-item class="profile-slider-info">
+          <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+          <span>Nataliya Miller</span>
+        </ion-item>
+
+        <ion-item-options side="left">
+          <button ion-button class="slide-item-bg-button"></button>
+        </ion-item-options>
+
+      </ion-item-sliding>
+    </ion-list>
+  </span>
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label>
@@ -18,12 +34,10 @@
     <span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
   </div>
 
-  <!-- \xF0\x9F\x98\x81 -->
-
   <button isScrolling="false" [hidden]="hiddenMainBtn" [@mainBtnState]="mainBtn.state" ion-button color="bk"
   class="main-action-btn has-footer transparent chatMainBtn" outline isScrolling="false"></button>
 
-  <ion-item class="text">
+  <ion-item class="text" #inputItem [@fadeState]="mainInput.state" [hidden]="mainInput.hidden">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">
       <button ion-button [@inputState]="chatBtns.state[0]" (click)="openCamera()">
         <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>

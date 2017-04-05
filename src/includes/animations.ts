@@ -85,11 +85,17 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
     bottom: 'calc(50% - 25px)',
     transform: 'scale(0.381)'
   })),
+
+  state('minimisedForCamera', style({
+    transform: 'scale(0.381)',
+    bottom: '-11px'
+  })),
   transition('normal => minimised', animate(chatAnim/2 + 'ms ease-in')),
   transition('minimised => normal', animate(chatAnim/2 + 'ms ease-in')),
   transition('* => hidden', animate(chatAnim/3 + 'ms ease-out')),
   transition('* => moved-n-scaled', animate(chatAnim/2 + 'ms ease-in')),
-  transition('moved-n-scaled => normal', animate(chatAnim/2 + 'ms ease-in'))
+  transition('moved-n-scaled => normal', animate(chatAnim/2 + 'ms ease-in')),
+  transition('* => minimisedForCamera', animate(chatAnim/2 + 'ms ease-in'))
 ]);
 
 export const toggleGallery: any = trigger('galleryState', [
@@ -102,4 +108,47 @@ export const toggleGallery: any = trigger('galleryState', [
     height: 0
   })),
   transition('* => *', animate(chatAnim/2 + 'ms ease-in'))
+]);
+
+export const toggleFade: any = trigger('fadeState', [
+  state('fadeIn', style({
+    opacity: '1'
+  })),
+  state('fadeOut', style({
+    opacity: '0'
+  })),
+  state('fadeInfast', style({
+    opacity: '1'
+  })),
+  state('fadeOutfast', style({
+    opacity: '0'
+  })),
+  transition('* => fadeIn', animate(animSpeed.fadeIn + 'ms ease-in')),
+  transition('* => fadeOut', animate(animSpeed.fadeIn + 'ms ease-in')),
+  transition('* => fadeOutfast', animate(animSpeed.fadeIn/2 + 'ms ease-in')),
+  transition('* => fadeInfast', animate(animSpeed.fadeIn/2 + 'ms ease-in')),
+]);
+
+export const cameraUIanimation: any = trigger('cameraUIstate', [
+  state('photoButtonFadeIn', style({
+    opacity: '1',
+    bottom: '30px',
+    transform: 'scale(1)'
+  })),
+  state('photoButtonFadeOut', style({
+    opacity: '0',
+    bottom: '100px',
+    transform: 'scale(0.9)'
+  })),
+
+  state('tooltipFadeOut', style({
+    opacity: '0',
+    transform: 'scaleX(0.85)'
+  })),
+  state('tooltipFadeIn', style({
+    opacity: '1',
+    transform: 'scaleX(1)'
+  })),
+
+  transition('* => *', animate(animSpeed.fadeIn/2 + 'ms ease-in'))
 ]);

@@ -12,7 +12,9 @@
           <ion-list>
 
             <ion-item [hidden]="!states.date_of_birthday.bool" [@inputState]="states.date_of_birthday.str">
-              <ion-datetime #focusBirthday placeholder="Birthday..."
+              <ion-datetime
+                (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                #focusBirthday placeholder="Birthday..."
                 displayFormat="MMMM D, YYYY"
                 pickerFormat="MMMM D YYYY"
                 [max]="maxBirthday"
@@ -24,7 +26,9 @@
             </ion-item>
 
             <ion-item [hidden]="!states.login.bool" [@inputState]="states.login.str">
-              <ion-input type="text"
+              <ion-input
+                (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                type="text"
                 placeholder="Email/Phone number..."
                 [formControl]="signUpForm.controls['login']"
                 [ngClass]="{'error-border':!signUpForm.controls['login'].valid}"
@@ -33,7 +37,9 @@
             </ion-item>
 
             <ion-item [hidden]="!states.password.bool" [@inputState]="states.password.str">
-              <ion-input type="password"
+              <ion-input
+                (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                type="password"
                 placeholder="Password..."
                 name="password"
                 [formControl]="signUpForm.controls['password']"
@@ -42,7 +48,9 @@
             </ion-item>
 
             <ion-item [hidden]="!states.password.bool" [@inputState]="states.password.str">
-              <ion-input type="password"
+              <ion-input
+                (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                type="password"
                 placeholder="Confirm password..."
                 name="confirm_password"
                 [formControl]="signUpForm.controls['confirm_password']"
@@ -75,7 +83,7 @@
 </ion-content>
 
 <ion-footer>
-  <button [hidden]="hiddenMainBtn" ion-button color="bk"
+  <button [hidden]="hiddenMainBtn" [@mainBtnState] = "mainBtn.state" ion-button color="bk"
     class="main-action-btn has-label"
     (click)="doSignUp(signUpForm)" outline></button>
   <span [hidden]="hiddenMainBtn" class="main-action-text" color="bk">

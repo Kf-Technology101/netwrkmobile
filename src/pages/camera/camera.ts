@@ -9,11 +9,39 @@ import {
 
 import { UndercoverPage } from '../undercover/undercover';
 
+// Animations
+import {
+  animSpeed,
+  chatAnim,
+  toggleInputsFade,
+  rotateChatPlus,
+  toggleChatOptionsBg,
+  scaleMainBtn,
+  toggleGallery,
+  toggleFade,
+  cameraUIanimation
+} from '../../includes/animations';
+
 @Component({
   selector: 'page-camera',
-  templateUrl: 'camera.html'
+  templateUrl: 'camera.html',
+  animations: [
+    toggleInputsFade,
+    rotateChatPlus,
+    toggleChatOptionsBg,
+    scaleMainBtn,
+    toggleGallery,
+    toggleFade,
+    cameraUIanimation
+  ]
 })
+
 export class CameraPage {
+
+  cameraUI: any = {
+    tooltip: 'tooltipFadeOut',
+    button: 'photoButtonFadeOut'
+  };
 
   constructor(
     public navCtrl: NavController,
@@ -71,6 +99,10 @@ export class CameraPage {
   }
 
   ionViewDidLoad() {
+    this.cameraUI.button = 'photoButtonFadeIn';
+    setTimeout(() => {
+      this.cameraUI.tooltip = 'tooltipFadeIn';
+    }, animSpeed.fadeIn/2);
     console.log('ionViewDidLoad CameraPage');
   }
 

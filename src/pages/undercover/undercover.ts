@@ -17,12 +17,14 @@ import { Keyboard } from '@ionic-native/keyboard';
 
 // Animations
 import {
+  animSpeed,
   chatAnim,
   toggleInputsFade,
   rotateChatPlus,
   toggleChatOptionsBg,
   scaleMainBtn,
-  toggleGallery
+  toggleGallery,
+  toggleFade
 } from '../../includes/animations';
 
 @Component({
@@ -33,7 +35,8 @@ import {
     rotateChatPlus,
     toggleChatOptionsBg,
     scaleMainBtn,
-    toggleGallery
+    toggleGallery,
+    toggleFade
   ],
   providers: [
     Keyboard,
@@ -49,7 +52,7 @@ export class UndercoverPage {
 
   @ViewChild('textInput') txtIn;
 
-  @ViewChild('customToggle') toggler;
+  @ViewChild('slidingItems') toggler;
 
   public myMessageString: string = '';
 
@@ -88,6 +91,11 @@ export class UndercoverPage {
   emoticY = ['1F60', '1F61', '1F62', '1F63', '1F64'];
 
   emojis = [];
+
+  mainInput: any = {
+    state: 'fadeIn',
+    hidden: false
+  };
 
   txtFocus: boolean = false;
 
@@ -141,6 +149,8 @@ export class UndercoverPage {
     // });
   }
 
+  dragContent = true;
+
   generateEmoticons(){
     for(let i = 0; i < this.emoticX.length; i++){
       for(let j = 0; j < this.emoticY.length; j++){
@@ -150,10 +160,17 @@ export class UndercoverPage {
   }
 
   openCamera() {
-    this.navCtrl.push(CameraPage, null, {
-      animate: false,
-      animation: 'md-transition',
-    });
+    this.mainInput.state = 'fadeOutfast';
+    setTimeout(() => {
+      this.mainInput.hidden = true;
+      this.mainBtn.state = 'minimisedForCamera';
+      setTimeout(() => {
+        this.navCtrl.push(CameraPage, null, {
+          animate: false,
+          animation: 'md-transition',
+        });
+      }, chatAnim/2);
+    }, animSpeed.fadeIn/2);
   }
 
   goBack() {
@@ -233,14 +250,24 @@ export class UndercoverPage {
     }
   }
 
-  generateUndercoverToggler(){
-    console.log(this.toggler);
-    this.toggler._elementRef.nativeElement.childNodes[0].insertAdjacentHTML('beforeend', '<i></i> <span class="toggle-custom">Nataliya Miller</span>');
+  onDrag(ev, element){
+    let percent = element.getSlidingPercent();
+    // console.log(ev);
+    // console.log(percent);
+    if (percent < -1){
+      this.dragContent = false;
+      setTimeout(() => {
+        this.dragContent = true;
+      }, 100);
+    }
+  }
+
+  goToProfile(ev){
+    console.log("going to profile page");
   }
 
   ionViewDidLoad() {
     this.generateEmoticons();
-    this.generateUndercoverToggler();
     if(this.imgesSrc.length > 0){
       setTimeout(() => {
         this.galleryContainer.imgHeight = this.gCont.nativeElement.children[0].clientWidth;

@@ -1,6 +1,6 @@
 <ion-content padding has-main-btn has-main-btn-label>
 
-  <ion-grid>
+  <ion-grid [@fadeState]="contentState" class="login-grid">
     <ion-row>
       <ion-col text-center>
         <img src="assets/icon/logo.png">
@@ -12,12 +12,14 @@
           <ion-list>
 
             <ion-item>
-              <ion-input #focusInput type="text" placeholder="Email/Phone number..."
+              <ion-input #focusInput (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                type="text" placeholder="Email/Phone number..."
                 [(ngModel)]="account.login" name="login" required></ion-input>
             </ion-item>
 
             <ion-item>
-              <ion-input type="password" placeholder="Password..."
+              <ion-input (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                type="password" placeholder="Password..."
                 [(ngModel)]="account.password" name="password" required></ion-input>
             </ion-item>
 
@@ -53,6 +55,6 @@
 </ion-content>
 
 <ion-footer [hidden]="hiddenMainBtn">
-  <button [@inputState]="mainBtnState" ion-button color="bk" class="main-action-btn has-label" (click)="goToSignUp()" outline></button>
+    <button isScrolling="false" [@mainBtnState] = "mainBtn.state" ion-button color="bk" class="main-action-btn has-label" (click)="goToSignUp()" outline></button>
   <span class="main-action-text" color="bk">New? Tap to get started</span>
 </ion-footer>

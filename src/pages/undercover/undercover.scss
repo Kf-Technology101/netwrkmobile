@@ -128,6 +128,7 @@ page-undercover {
 
   ion-footer.chatFooter.has-input {
     height: 100%;
+    // background: lightseagreen;
   }
 
   ion-item.text {
@@ -225,6 +226,7 @@ ion-toggle.undercoverToggle.toggle-ios{
       height: 20px;
       margin: 20px auto;
       background: #fff;
+      text-align: center;
     }
     &:before {
       display: none;

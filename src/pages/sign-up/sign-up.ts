@@ -26,13 +26,17 @@ import { Tools } from '../../providers/tools';
 import { ResponseAuthData } from '../../interfaces/user';
 
 // Animations
-import { animSpeed } from '../../includes/animations';
-import { toggleInputsFade } from '../../includes/animations';
+import {
+  animSpeed,
+  scaleMainBtn,
+  toggleInputsFade
+} from '../../includes/animations';
 
 @Component({
   selector: 'page-sign-up',
   templateUrl: 'sign-up.html',
   animations: [
+    scaleMainBtn,
     toggleInputsFade
   ]
 })
@@ -65,6 +69,11 @@ export class SignUpPage {
   activeStateId: number = -1;
 
   hiddenMainBtn: boolean = false;
+
+  mainBtn: any = {
+    state: 'normal'
+  }
+
   public maxBirthday: string;
 
   private textStrings: any = {};
@@ -266,6 +275,7 @@ export class SignUpPage {
     this.hiddenMainBtn = true;
     this.updateStates();
   }
+
   ionViewWillEnter() {
     console.log('ionViewWillEnter');
     if (this.activeStateId == 3) {
@@ -275,18 +285,21 @@ export class SignUpPage {
     }
     this.hiddenMainBtn = false;
   }
+
   ionViewWillLeave() {
     console.log('ionViewWillLeave');
     this.hiddenMainBtn = true;
   }
+
   ionViewWillUnload() {
     console.log('ionViewWillUnload');
   }
+
   ionViewDidLeave() {
     console.log('ionViewDidLeave');
   }
+
   ionViewDidEnter() {
     console.log('ionViewDidEnter');
   }
-
 }

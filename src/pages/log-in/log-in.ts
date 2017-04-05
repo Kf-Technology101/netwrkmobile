@@ -21,27 +21,36 @@ import { Tools } from '../../providers/tools';
 import { ResponseAuthData } from '../../interfaces/user';
 
 // Animations
-// import { animSpeed } from '../../includes/animations';
-import { toggleInputsFade } from '../../includes/animations';
+import {
+  scaleMainBtn,
+  toggleFade
+} from '../../includes/animations';
 
 @Component({
   selector: 'page-log-in',
   templateUrl: 'log-in.html',
   animations: [
-    toggleInputsFade
+    scaleMainBtn,
+    toggleFade
   ]
 })
+
 export class LogInPage {
 
-  account: {login: string, password: string} = {
+  account: { login: string, password: string } = {
     login: '',
     password: ''
     // login: '+380971460376',
     // password: '11111111',
   };
 
+  contentState: string = 'fadeOut';
+
   hiddenMainBtn: boolean = false;
-  mainBtnState: string = 'hidden';
+  // mainBtnState: string = 'hidden';
+  mainBtn: any = {
+    state: 'normal'
+  };
 
   private textStrings: any = {};
 
@@ -100,13 +109,11 @@ export class LogInPage {
   goToSignUp() { this.navCtrl.push(SignUpPage); }
 
   ionViewDidLoad() {
-    setTimeout(() => {
-      this.mainBtnState = 'shown';
-    }, 1);
     this.hiddenMainBtn = true;
+  }
+  ngOnInit(){
+    this.contentState = 'fadeIn';
   }
   ionViewWillEnter() { this.hiddenMainBtn = false; }
   ionViewWillLeave() { this.hiddenMainBtn = true; }
-
-
 }

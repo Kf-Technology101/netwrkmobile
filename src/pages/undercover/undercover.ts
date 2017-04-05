@@ -3,11 +3,8 @@ import { NavController, NavParams } from 'ionic-angular';
 
 import {
   CameraPreview,
-  // PictureOptions,
-  CameraPreviewOptions,
-  // CameraPreviewDimensions
+  CameraPreviewOptions
 } from '@ionic-native/camera-preview';
-import { Camera, CameraOptions } from '@ionic-native/camera';
 
 import { ImagePicker } from '@ionic-native/image-picker';
 
@@ -102,8 +99,7 @@ export class UndercoverPage {
     private cameraPreview: CameraPreview,
     public tools: Tools,
     private keyboard: Keyboard,
-    private imagePicker: ImagePicker,
-    private camera: Camera
+    private imagePicker: ImagePicker
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,

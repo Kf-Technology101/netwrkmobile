@@ -40,23 +40,7 @@ import { toggleInputsFade } from '../../includes/animations';
 export class SignUpPage {
   @ViewChild('focusBirthday') birthdayInput;
 
-  account: {
-    login: string,
-    password: string,
-    confirm_password: string,
-    date_of_birthday: string,
-    type: string
-  } = {
-    login: '',
-    password: '',
-    confirm_password: '',
-    date_of_birthday: '',
-    // login: '+380971460376',
-    // password: '11111111',
-    // confirm_password: '11111111',
-    // date_of_birthday: '1993-10-02',
-    type: ''
-  };
+  public account: any;
 
   // object for toggling input elements relative to registration steps
   states: any = {
@@ -101,6 +85,8 @@ export class SignUpPage {
     this.textStrings.login = 'Please enter valid phone or email';
     this.textStrings.password = 'The passwords not match!';
     this.textStrings.require = 'Please fill all fields';
+    this.textStrings.email = 'Email is not valid';
+    this.textStrings.phone = 'Phone is not valid';
 
     this.signUpForm = formBuilder.group({
 		  'login' : [
@@ -131,18 +117,26 @@ export class SignUpPage {
   }
 
   doSignUp(form: any) {
-    console.log(form, this.account);
-
     let valid = this.formValidate(form);
     if (!valid) return;
 
-    console.log(form, this.account);
+    if (this.activeStateId == 0) {
+      let valid = this.validateLogin(form.controls.login.value);
+      if (!valid) return;
+    }
 
     if (this.activeStateId == 1) this.openDatePicker();
 
     this.activeStateId++;
 
     this.updateActiveStates();
+
+    this.account = {
+      login: form.controls.login.value,
+      password: form.controls.password.value,
+      date_of_birthday: form.controls.date_of_birthday.value,
+      type: ''
+    }
 
     if (this.activeStateId == 3) {
       this.tools.showLoader();
@@ -151,11 +145,15 @@ export class SignUpPage {
         .map(res => res.json())
         .subscribe(res => {
           console.log(res);
-          this.activeStateId--;
           this.tools.hideLoader();
 
-          this.account.type = res.login_type;
-          this.navCtrl.push(SignUpConfirmPage);
+          if (res.login_type == 'error') {
+            this.activeStateId = 0;
+            this.updateActiveStates();
+          } else {
+            this.account.type = res.login_type;
+            this.navCtrl.push(SignUpConfirmPage);
+          }
 
           this.tools.showToast(res.login_message);
       }, err => {
@@ -247,6 +245,19 @@ export class SignUpPage {
     setTimeout(() => {
       this.birthdayInput.open();
     }, 1500);
+  }
+
+  private validateLogin(value: string): boolean {
+    let valid = null;
+    if (value.indexOf('@') !== -1) {
+      valid = this.tools.validateEmail(value);
+      if (!valid) this.tools.showToast(this.textStrings.email);
+    } else {
+      valid = this.tools.validatePhone(value);
+      if (!valid) this.tools.showToast(this.textStrings.phone);
+    }
+
+    return valid;
   }
 
   ionViewDidLoad() {

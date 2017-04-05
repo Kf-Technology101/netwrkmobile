@@ -58,6 +58,18 @@ export class Tools {
     this.loader.dismiss();
   }
 
+  public validateEmail(phone: string): any {
+    let regexEmail = /^[A-Za-z0-9](\.?[A-Za-z0-9_-]){0,}@[a-z0-9-]+\.([a-z]{1,6}\.)?[a-z]{2,6}$/g;
+    let result = phone.match(regexEmail);
+    return result;
+  }
+
+  public validatePhone(phone: string): any {
+    let regexPhone = /^[(]{0,1}[0-9]{3}[)]{0,1}[-\s\.]{0,1}[0-9]{3}[-\s\.]{0,1}[0-9]{4}$/;
+    let result = phone.match(regexPhone);
+    return result;
+  }
+
   public getToday(): string {
     let myDate = new Date();
     let year = myDate.getFullYear();

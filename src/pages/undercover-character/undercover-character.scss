@@ -17,19 +17,15 @@ page-undercover-character {
         border-radius: 50%;
         overflow: hidden;
         margin: auto;
-        transition: 0.2s all;
+        transition: 0.5s all;
       }
     }
 
-    .swiper-slide-prev {
+    .prev-character {
       transform: translate(-50%);
     }
 
-    .swiper-slide-active {
-      transform: translate(-50%);
-    }
-
-    .swiper-slide-next {
+    .active-character {
       z-index: 1;
       .avatar {
         transform: scale(1.4);
@@ -37,11 +33,7 @@ page-undercover-character {
 
     }
 
-    .swiper-slide-duplicate-prev {
-      transform: translate(50%);
-    }
-
-    .swiper-slide-duplicate-active {
+    .next-character {
       transform: translate(50%);
     }
   }

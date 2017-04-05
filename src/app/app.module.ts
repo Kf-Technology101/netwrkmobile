@@ -33,15 +33,12 @@ import { Tools } from '../providers/tools';
 import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
 import { Gps } from '../providers/gps';
+import { Permission } from '../providers/permission';
 
 // Native services
 import { Facebook } from 'ionic-native';
 import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
-import { Camera } from '@ionic-native/camera';
-
-// Custom pipes
-// import { EmojiFilter } from '../pipes/emoji-filter.pipe';
 
 let pages = [
   MyApp,
@@ -62,23 +59,19 @@ let pages = [
   NetworkCreatePage,
   NetworkContactListPage,
 
-  // EmojiFilter,
-
   UndercoverPage,
   UndercoverCharacterPage,
 
   CameraPage
 ];
 
-// export function declarations() {
-//   // let declarations = pages;
-//
-//   return pages;
-// }
-//
-// export function entryComponents() {
-//   return pages;
-// }
+export function declarations() {
+  return pages;
+}
+
+export function entryComponents() {
+  return pages;
+}
 
 export function providers() {
   return [
@@ -91,11 +84,11 @@ export function providers() {
     ContactsProvider,
     Social,
     Gps,
+    Permission,
 
     Facebook,
     Geolocation,
     CameraPreview,
-    Camera,
 
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
@@ -103,12 +96,12 @@ export function providers() {
 }
 
 @NgModule({
-  declarations: pages,
+  declarations: declarations(),
   imports: [
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],
-  entryComponents: pages,
+  entryComponents: entryComponents(),
   providers: providers()
 })
 export class AppModule {}

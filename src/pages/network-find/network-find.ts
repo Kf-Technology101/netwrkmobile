@@ -36,7 +36,12 @@ export class NetworkFindPage {
           this.navCtrl.push(NetworkNoPage);
         }
       }, err => console.log(err) );
-    }, err => console.log(err) );
+    }, err => {
+      console.log(err);
+      if (err.code && err.code == 1) {
+        this.tools.showToast(err.message, null, 'bottom');
+      }
+    });
   }
 
   go() {

@@ -23,7 +23,6 @@ import { Tools } from '../../providers/tools';
 export class NetworkContactListPage {
   contacts: Array<any>;
   selectAll: boolean = false;
-  hiddenMainBtn: boolean = false;
 
   public listType: string;
   private selectErrorString: string;
@@ -138,7 +137,7 @@ export class NetworkContactListPage {
             null
           ).map(res => res.json()).subscribe(res => {
               this.tools.hideLoader();
-              this.navCtrl.pop();
+              this.tools.popPage();
             }, err => {
               this.tools.hideLoader();
               this.tools.showToast(JSON.stringify(err));
@@ -152,10 +151,6 @@ export class NetworkContactListPage {
     }
   }
 
-  goBack() { this.navCtrl.pop(); }
-
-  ionViewDidLoad() { this.hiddenMainBtn = true; }
-  ionViewWillEnter() { this.hiddenMainBtn = false; }
-  ionViewWillLeave() { this.hiddenMainBtn = true; }
+  goBack() { this.tools.popPage(); }
 
 }

@@ -5,7 +5,8 @@ import 'rxjs/add/operator/map';
 import {
   Events,
   ToastController,
-  LoadingController
+  LoadingController,
+  App
 } from 'ionic-angular';
 
 import { User } from './user';
@@ -20,7 +21,8 @@ export class Tools {
     public events: Events,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
-    public user: User
+    public user: User,
+    public app: App
   ) {}
 
   doBackButton(page: string, callback: any) {
@@ -56,6 +58,14 @@ export class Tools {
 
   hideLoader() {
     this.loader.dismiss();
+  }
+
+  public pushPage(page: any, params?: any, animate?: boolean) {
+    this.app.getActiveNav().push(page, params, { animate: animate ? animate : false });
+  }
+
+  public popPage(animate?: boolean) {
+    this.app.getActiveNav().pop({ animate: animate ? animate : false });
   }
 
   public validateEmail(phone: string): any {

@@ -1,13 +1,15 @@
 import { Component, ElementRef, ViewChild, Renderer } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
+// Providers
+import { Tools } from '../../providers/tools';
+
 @Component({
   selector: 'page-profile-setting',
   templateUrl: 'profile-setting.html'
 })
 export class ProfileSettingPage {
   userName: string;
-  hiddenMainBtn: boolean;
 
   /**
    * Native upload button (hidden)
@@ -18,7 +20,8 @@ export class ProfileSettingPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private renderer: Renderer
+    private renderer: Renderer,
+    public tools: Tools
   ) {}
 
   /**
@@ -45,16 +48,7 @@ export class ProfileSettingPage {
   }
 
   goBack() {
-    let navOptions = {
-      animate: true,
-      animation: 'ios-transition',
-      direction: 'back'
-    }
- 
-    this.hiddenMainBtn = true;
-    this.navCtrl.pop(navOptions);
+    this.tools.popPage();
   }
-
-  ionViewDidEnter() { this.hiddenMainBtn = false; }
 
 }

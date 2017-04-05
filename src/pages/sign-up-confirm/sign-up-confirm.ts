@@ -6,7 +6,6 @@ import {
 } from 'ionic-angular';
 
 // Pages
-// import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
@@ -19,7 +18,6 @@ import { Tools } from '../../providers/tools';
 })
 export class SignUpConfirmPage {
   confirmCode: number;
-  hiddenMainBtn: boolean = false;
 
   private signUpErrorString: string;
   private codeErrorString: string;
@@ -45,7 +43,7 @@ export class SignUpConfirmPage {
         .subscribe((resp) => {
           this.tools.hideLoader();
           console.log(resp);
-          this.navCtrl.push(NetworkFindPage);
+          this.tools.pushPage(NetworkFindPage);
         }, (err) => {
           this.tools.hideLoader();
           this.tools.showToast(this.signUpErrorString);
@@ -76,15 +74,11 @@ export class SignUpConfirmPage {
       if (this.platform.is('cordova')) {
         this.tools.showToast(this.codeErrorString);
       } else {
-        this.navCtrl.push(NetworkFindPage);
+        this.tools.pushPage(NetworkFindPage);
       }
     });
   }
 
-  goBack() { this.navCtrl.pop(); }
-
-  ionViewDidLoad() { this.hiddenMainBtn = true; }
-  ionViewWillEnter() { this.hiddenMainBtn = false; }
-  ionViewWillLeave() { this.hiddenMainBtn = true; }
+  goBack() { this.tools.popPage(); }
 
 }

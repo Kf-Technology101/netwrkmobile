@@ -6,31 +6,30 @@ import { UndercoverPage } from '../undercover/undercover';
 import { NetworkFaqPage } from '../network-faq/network-faq';
 import { NetworkCreatePage } from '../network-create/network-create';
 
+// Providers
+import { Tools } from '../../providers/tools';
+
 @Component({
   selector: 'page-network-no',
   templateUrl: 'network-no.html'
 })
 export class NetworkNoPage {
-
   constructor(
     public navCtrl: NavController,
-    public navParams: NavParams
+    public navParams: NavParams,
+    public tools: Tools
   ) {}
 
-  ionViewDidLoad() {
-    console.log('ionViewDidLoad NetworkNoPage');
-  }
-
   doFounder() {
-    this.navCtrl.push(NetworkCreatePage);
+    this.tools.pushPage(NetworkCreatePage);
   }
 
   goUndercover() {
-    this.navCtrl.push(UndercoverPage);
+    this.tools.pushPage(UndercoverPage);
   }
 
   goFaq() {
-    this.navCtrl.push(NetworkFaqPage);
+    this.tools.pushPage(NetworkFaqPage);
   }
 
 }

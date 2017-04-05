@@ -7,6 +7,7 @@ import { NetworkNoPage } from '../network-no/network-no';
 // Providers
 import { Tools } from '../../providers/tools';
 import { Gps } from '../../providers/gps';
+import { Permission } from '../../providers/permission';
 
 // Interfaces
 import { GeolocationInterface } from '../../interfaces/gps';
@@ -23,33 +24,37 @@ export class NetworkFindPage {
     public navParams: NavParams,
     public gps: Gps,
     public tools: Tools,
-    private platform: Platform
+    private platform: Platform,
+    public permission: Permission
   ) {}
-
-  ionViewDidLoad() {
-    this.hideSearch = false;
-    this.gps.getMyZipCode().then( (res: GeolocationInterface) => {
-      console.log(res);
-      this.gps.getNetwrk(res.zip_code).map(res => res.json()).subscribe(res => {
-        console.log(res);
-        if (res.message == 'Network not found') {
-          this.navCtrl.push(NetworkNoPage);
-        }
-      }, err => console.log(err) );
-    }, err => {
-      console.log(err);
-      if (err.code && err.code == 1) {
-        this.tools.showToast(err.message, null, 'bottom');
-      }
-    });
-  }
 
   go() {
     if (this.platform.is('cordova')) {
       this.tools.showToast('Please wait...', null, 'bottom');
     } else {
-      this.navCtrl.push(NetworkNoPage);
+      this.tools.pushPage(NetworkNoPage);
     }
+  }
+
+  ionViewDidLoad() {
+    this.hideSearch = false;
+    this.gps.getMyZipCode().then( (res: GeolocationInterface) => {
+      console.log(res);
+      this.gps.getNetwrk(res.zip_code).map(res => res.json()).subscribe(
+        res => {
+          console.log(res);
+          if (res.message == 'Network not found') {
+            this.tools.pushPage(NetworkNoPage);
+          }
+        }, err => console.log(err)
+      );
+    }, err => {
+      console.log(err);
+      if (err.code && err.code == 1) {
+        this.tools.showToast(err.message, null, 'bottom');
+        this.permission.geolocationPermission();
+      }
+    });
   }
 
 }

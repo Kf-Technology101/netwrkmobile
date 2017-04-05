@@ -68,7 +68,7 @@ ion-app .ion-page .content {
 }
 
 .header-ios {
-  top: 12px;
+  padding-top: 16px;
 }
 
 .footer-back-button {
@@ -242,12 +242,12 @@ ion-app .ion-page .content {
         }
 
         .card-title {
-          font-size: 1.2rem;
+          font-size: 14px;
           color: #4e4e4e;
         }
 
         p {
-          font-size: 1.0rem;
+          font-size: 12px;
           margin-bottom: 5px;
         }
       }
@@ -259,15 +259,9 @@ ion-app .ion-page .content {
         margin-bottom: 8px;
         padding: 0;
 
-        .icon {
-          background: #5682aa;
-          padding: 3px 4px;
-          border-radius: 100%;
-          font-size: 1.4rem;
-
-          &.icon-ios[name="bulb"] {
-            padding: 3px 6px;
-          }
+        .icon-img {
+          width: 26px;
+          height: 26px;
         }
       }
 

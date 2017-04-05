@@ -150,14 +150,11 @@ export class UndercoverPage {
   }
 
   openCamera() {
-    this.navCtrl.push(CameraPage, null, {
-      animate: false,
-      animation: 'md-transition',
-    });
+    this.tools.pushPage(CameraPage);
   }
 
   goBack() {
-    this.navCtrl.pop();
+    this.tools.popPage();
   }
 
   // debug function for scaling main button

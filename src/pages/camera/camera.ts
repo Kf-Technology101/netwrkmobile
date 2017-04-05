@@ -8,6 +8,7 @@ import {
 } from '@ionic-native/camera-preview';
 
 import { UndercoverPage } from '../undercover/undercover';
+import { Tools } from '../../providers/tools';
 
 @Component({
   selector: 'page-camera',
@@ -19,6 +20,7 @@ export class CameraPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private cameraPreview: CameraPreview,
+    public tools: Tools
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -64,10 +66,7 @@ export class CameraPage {
   }
 
   goBack(params?: any) {
-    this.navCtrl.push(UndercoverPage, params, {
-      animate: false,
-      animation: 'md-transition',
-    });
+    this.tools.popPage();
   }
 
   ionViewDidLoad() {

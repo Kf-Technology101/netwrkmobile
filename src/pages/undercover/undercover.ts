@@ -205,26 +205,25 @@ export class UndercoverPage {
 
   toggleContainer(container, visibility) {
     if (visibility == 'hide') {
+      this.mainBtn.state = 'normal';
       container.state = 'off';
       setTimeout(() => {
         container.stateBool = false;
       }, chatAnim/2);
     }
+
     if (!visibility) {
-      container.state = (container.state == 'on') ? 'off' : 'on';
-      if (container.state) {
+      if(container.state == 'off'){
+        this.mainBtn.state = 'moved-n-scaled';
         container.stateBool = true;
-      } else {
+        container.state = 'on';
+      }else{
+        this.mainBtn.state = 'normal'
+        container.state = 'off';
         setTimeout(() => {
           container.stateBool = false;
         }, chatAnim/2);
       }
-    }
-
-    if(container.state == 'on') {
-      this.mainBtn.state = 'moved-n-scaled';
-    } else {
-      this.mainBtn.state = 'normal';
     }
   }
 

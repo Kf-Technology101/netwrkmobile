@@ -42,7 +42,7 @@
   </div>
 
   <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="!emojiContainer.stateBool" [@galleryState]="emojiContainer.state">
-    <span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
+    <span item-content *ngFor="let emoji of emojis" (tap)="insertEmoji(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
   </div>
 
   <button isScrolling="false" tapable [hidden]="mainBtn.hidden" [@mainBtnState]="mainBtn.state" color="bk"
@@ -50,29 +50,29 @@
 
   <ion-item class="text" #inputItem [@fadeState]="mainInput.state" [hidden]="mainInput.hidden">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">
-      <button ion-button [@inputState]="chatBtns.state[0]" (click)="openCamera()">
+      <button ion-button [@inputState]="chatBtns.state[0]" (tap)="openCamera()">
         <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[1]" (click)="toggleContainer(galleryContainer)">
+      <button ion-button [@inputState]="chatBtns.state[1]" (tap)="toggleContainer(galleryContainer)">
          <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
       </button>
       <button ion-button [@inputState]="chatBtns.state[2]">
         <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[3]" (click)="toggleContainer(emojiContainer); toggleChatOptions()">
+      <button ion-button [@inputState]="chatBtns.state[3]" (tap)="toggleContainer(emojiContainer); toggleChatOptions()">
         <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
       </button>
       <button ion-button [@inputState]="chatBtns.state[4]"></button>
     </div>
 
-    <button ion-button (click)="toggleChatOptions(); toggleContainer(galleryContainer, 'hide'); toggleContainer(emojiContainer, 'hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
+    <button ion-button (tap)="toggleChatOptions(); toggleContainer(galleryContainer, 'hide'); toggleContainer(emojiContainer, 'hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 
-    <input #textInput id="textInput" type="text" placeholder="On this spot..." (click)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)">
+    <input #textInput id="textInput" type="text" placeholder="On this spot..." (tap)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)">
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
-    <button ion-button item-right clear (click)="sendMessage()">
+    <button ion-button item-right clear (tap)="sendMessage()">
       <ion-icon ios="ios-text-outline" md="ios-text-outline"></ion-icon>
     </button>
   </ion-item>

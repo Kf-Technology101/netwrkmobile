@@ -45,7 +45,7 @@
     <span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
   </div>
 
-  <button isScrolling="false" tapable [hidden]="mainBtn.hidden" [@mainBtnState]="mainBtn.state" ion-button color="bk"
+  <button isScrolling="false" tapable [hidden]="mainBtn.hidden" [@mainBtnState]="mainBtn.state" color="bk"
   class="main-action-btn has-footer transparent chatMainBtn"></button>
 
   <ion-item class="text" #inputItem [@fadeState]="mainInput.state" [hidden]="mainInput.hidden">
@@ -65,7 +65,7 @@
       <button ion-button [@inputState]="chatBtns.state[4]"></button>
     </div>
 
-    <button (click)="toggleChatOptions(); toggleContainer(galleryContainer, 'hide'); toggleContainer(emojiContainer, 'hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
+    <button ion-button (click)="toggleChatOptions(); toggleContainer(galleryContainer, 'hide'); toggleContainer(emojiContainer, 'hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 

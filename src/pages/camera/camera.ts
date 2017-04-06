@@ -7,12 +7,11 @@ import {
   // CameraPreviewDimensions
 } from '@ionic-native/camera-preview';
 
-import { UndercoverPage } from '../undercover/undercover';
+// import { UndercoverPage } from '../undercover/undercover';
 
 // Animations
 import {
   animSpeed,
-  chatAnim,
   toggleInputsFade,
   rotateChatPlus,
   toggleChatOptionsBg,

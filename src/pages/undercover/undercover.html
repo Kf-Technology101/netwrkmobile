@@ -36,7 +36,7 @@
 
 </ion-content>
 
-<ion-footer class="has-input chatFooter" isScrolling="false">
+<ion-footer class="has-input chatFooter">
   <div #galleryCont item-content  class="gallery-container" [hidden]="!galleryContainer.stateBool" [@galleryState]="galleryContainer.state">
     <ion-img *ngFor="let imgSrc of imagesSrc" [src]="imgSrc" [style.height.px]="galleryContainer.imgHeight"></ion-img>
   </div>
@@ -45,8 +45,8 @@
     <span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
   </div>
 
-  <button isScrolling="false" [hidden]="hiddenMainBtn" [@mainBtnState]="mainBtn.state" ion-button color="bk"
-  class="main-action-btn has-footer transparent chatMainBtn" outline isScrolling="false"></button>
+  <button isScrolling="false" tapable [hidden]="mainBtn.hidden" [@mainBtnState]="mainBtn.state" ion-button color="bk"
+  class="main-action-btn has-footer transparent chatMainBtn"></button>
 
   <ion-item class="text" #inputItem [@fadeState]="mainInput.state" [hidden]="mainInput.hidden">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">

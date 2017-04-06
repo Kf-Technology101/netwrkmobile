@@ -69,7 +69,8 @@ export class UndercoverPage {
   };
 
   mainBtn: any = {
-    state: 'normal'
+    state: 'normal',
+    hidden: false
   };
 
   galleryContainer: any = {
@@ -170,6 +171,7 @@ export class UndercoverPage {
       this.mainInput.hidden = true;
       this.mainBtn.state = 'minimisedForCamera';
       setTimeout(() => {
+        this.mainBtn.hidden = true;
         this.tools.pushPage(CameraPage);
       }, chatAnim/2);
     }, animSpeed.fadeIn/2);
@@ -296,11 +298,14 @@ export class UndercoverPage {
       this.selectedItem = null;
     }
   }
-
-  ionViewDidLoad() {
+  ionViewDidEnter() {
     this.mainInput.state = 'fadeIn';
     this.mainInput.hidden = false;
     this.mainBtn.state = 'normal';
+    this.mainBtn.hidden = false;
+  }
+
+  ionViewDidLoad() {
 
     this.generateEmoticons();
     if(this.imgesSrc.length > 0){
@@ -322,7 +327,7 @@ export class UndercoverPage {
       self._dragDestroy(ev);
     });
 
-    console.log('ionViewDidLoad UndercoverPage');
+    console.log('ionViewDidLoad - UndercoverPage');
   }
 
   ionViewWillLeave() {

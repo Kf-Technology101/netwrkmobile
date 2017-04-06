@@ -1,9 +1,9 @@
 <ion-header class="incognito-header" isScrolling="false">
-  <span class="top-profile">
+  <!-- <span class="top-profile">
     <ion-list id="profile-list-sliding">
       <ion-item-sliding  #slidingItem (ionDrag)="onDrag($event, slidingItem)">
 
-        <ion-item class="avatar-container" (click)="goToProfile($event)">
+        <ion-item class="avatar-container" (tap)="goToProfile($event)">
           <img class="avatar" src="assets/images/Layer0.png">
         </ion-item>
 
@@ -12,13 +12,24 @@
           <span>Nataliya Miller</span>
         </ion-item>
 
-        <ion-item-options side="left">
+        <ion-item-options side="left" (tap)="onClickOptions($event)">
           <button ion-button class="slide-item-bg-button"></button>
         </ion-item-options>
 
       </ion-item-sliding>
     </ion-list>
-  </span>
+  </span> -->
+
+  <div class="drag-container">
+    <div class="dragline">
+      <span class="info">
+        <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
+        <span class="username">Nataliya Miller</span>
+      </span>
+      <img id="draggable-element" src="assets/images/Layer0.png">
+    </div>
+  </div>
+
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label>

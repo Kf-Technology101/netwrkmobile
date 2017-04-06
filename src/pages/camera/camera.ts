@@ -92,10 +92,7 @@ export class CameraPage {
   }
 
   goBack(params?: any) {
-    this.navCtrl.push(UndercoverPage, params, {
-      animate: false,
-      animation: 'md-transition',
-    });
+    this.navCtrl.pop({ animate: false });
   }
 
   ionViewDidLoad() {

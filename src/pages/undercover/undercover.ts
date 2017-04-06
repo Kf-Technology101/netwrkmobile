@@ -101,6 +101,13 @@ export class UndercoverPage {
 
   caretPos: number = 0;
 
+  selectedItem: any = null;
+  x_pos: number = 0;
+  x_elem: number = 0;
+
+  dStart: number = -21;
+  dEnd: number = 158 + 21;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -120,8 +127,6 @@ export class UndercoverPage {
       toBack: true,
       alpha: 1
     }
-
-    this.myMessageString = "Hello, :smile: friend :smile_cat:";
 
     this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
       console.log(res);
@@ -165,10 +170,6 @@ export class UndercoverPage {
       this.mainInput.hidden = true;
       this.mainBtn.state = 'minimisedForCamera';
       setTimeout(() => {
-        this.navCtrl.push(CameraPage, null, {
-          animate: false,
-          animation: 'md-transition',
-        });
         this.tools.pushPage(CameraPage);
       }, chatAnim/2);
     }, animSpeed.fadeIn/2);
@@ -267,14 +268,76 @@ export class UndercoverPage {
     console.log("going to profile page");
   }
 
+  _dragInit(elem){
+    this.selectedItem = elem;
+    this.x_elem = this.x_pos - this.selectedItem.offsetLeft;
+  }
+
+  _moveElem(e) {
+    this.x_pos = e.touches[0].pageX;
+    if (this.selectedItem !== null && e.target.id == "draggable-element") {
+    	this.selectedItem.classList.remove('transition');
+    	if(this.x_pos - this.x_elem >= this.dStart && this.x_pos - this.x_elem <= this.dEnd){
+      	this.selectedItem.style.left = (this.x_pos - this.x_elem) + 'px';
+      }
+    }
+  }
+
+  _dragDestroy(e){
+    if (e.target.id == "draggable-element") {
+      if (this.x_pos - this.x_elem <= this.dEnd/2 + 3) {
+        this.selectedItem.style.left = this.dStart + 'px';
+        this.selectedItem.classList.add('transition');
+      }
+      if (this.x_pos - this.x_elem > this.dEnd/2 + 3) {
+        this.selectedItem.style.left = this.dEnd + 'px';
+        this.selectedItem.classList.add('transition');
+      }
+      this.selectedItem = null;
+    }
+  }
+
   ionViewDidLoad() {
+    this.mainInput.state = 'fadeIn';
+    this.mainInput.hidden = false;
+    this.mainBtn.state = 'normal';
+
     this.generateEmoticons();
     if(this.imgesSrc.length > 0){
       setTimeout(() => {
         this.galleryContainer.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
       }, 100);
     }
+
+    let self = this;
+    document.getElementById('draggable-element').addEventListener("touchstart", function(ev){
+      self._moveElem(ev);
+      self._dragInit(ev.target);
+      return false;
+    });
+    document.addEventListener("touchmove", function(ev){
+      self._moveElem(ev);
+    });
+    document.addEventListener("touchend", function(ev){
+      self._dragDestroy(ev);
+    });
+
     console.log('ionViewDidLoad UndercoverPage');
+  }
+
+  ionViewWillLeave() {
+    let self = this;
+    document.getElementById('draggable-element').removeEventListener("touchstart", function(ev){
+      self._moveElem(ev);
+      self._dragInit(ev.target);
+      return false;
+    });
+    document.removeEventListener("touchmove", function(ev){
+      self._moveElem(ev);
+    });
+    document.removeEventListener("touchend", function(ev){
+      self._dragDestroy(ev);
+    });
   }
 
 }

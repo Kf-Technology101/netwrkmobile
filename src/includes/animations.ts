@@ -82,8 +82,8 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
   })),
 
   state('moved-n-scaled', style({
-    bottom: 'calc(50% - 25px)',
-    transform: 'scale(0.381)'
+    transform: 'scale(0.381)',
+    bottom: 'calc(50% - 25px)'
   })),
 
   state('minimisedForCamera', style({

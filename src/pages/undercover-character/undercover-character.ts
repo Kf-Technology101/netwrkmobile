@@ -3,7 +3,12 @@ import { NavController, NavParams } from 'ionic-angular';
 
 import { Slides } from 'ionic-angular';
 
+// Pages
+import { UndercoverPage } from '../undercover/undercover';
+
+// Providers
 import { UndercoverProvider } from '../../providers/undercover';
+import { Tools } from '../../providers/tools';
 
 @Component({
   selector: 'page-undercover-character',
@@ -21,7 +26,8 @@ export class UndercoverCharacterPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public undercover: UndercoverProvider
+    public undercover: UndercoverProvider,
+    public tools: Tools
   ) {
     this.persons = [
       {
@@ -48,7 +54,8 @@ export class UndercoverCharacterPage {
   }
 
   public choosePerson() {
-
+    this.undercover.setPerson(this.activePerson);
+    this.tools.pushPage(UndercoverPage);
   }
 
   ionViewDidLoad() {

@@ -278,15 +278,6 @@ ion-app .ion-page .content {
   }
 }
 
-.transparent-background {
-  ion-app,
-  .ion-page,
-  .content {
-    background: transparent;
-    // background: #ccc;
-  }
-}
-
 .transparent-background{
   &, body, ion-app, ion-content, ion-page, .nav-decor {
     background-color: transparent !important;

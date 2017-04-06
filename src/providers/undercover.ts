@@ -1,13 +1,16 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
+
+import { LocalStorage } from './local-storage';
 
 @Injectable()
 export class UndercoverProvider {
   private person: any;
 
-  constructor(public http: Http) {
+  constructor(
+    public localStorage: LocalStorage
+  ) {
     console.log('Hello Undercover Provider');
+    this.person = this.localStorage.get('undercover_person');
   }
 
   public getPerson(): any {
@@ -15,7 +18,7 @@ export class UndercoverProvider {
   }
 
   public setPerson(person: any) {
-    this.person = person;
+    this.person = this.localStorage.set('undercover_person', person);
   }
 
 }

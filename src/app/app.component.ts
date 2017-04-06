@@ -73,9 +73,9 @@ export class MyApp {
       }
     } else {
       // this.rootPage = LogInPage;
-      // this.rootPage = NetworkFindPage;
+      this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
-      this.rootPage = UndercoverPage;
+      // this.rootPage = UndercoverPage;
       // this.rootPage = CameraPage;
       // this.rootPage = UndercoverCharacterPage;
     }

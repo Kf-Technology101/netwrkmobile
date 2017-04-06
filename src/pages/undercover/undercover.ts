@@ -12,6 +12,7 @@ import { CameraPage } from '../camera/camera';
 
 // Providers
 import { Tools } from '../../providers/tools';
+import { UndercoverProvider } from '../../providers/undercover';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
@@ -45,16 +46,10 @@ import {
 })
 
 export class UndercoverPage {
-  backbgoundTransparent = true;
-
   @ViewChild('galleryCont') gCont;
   @ViewChild('emojiCont') emCont;
-
   @ViewChild('textInput') txtIn;
-
   @ViewChild('slidingItems') toggler;
-
-  public myMessageString: string = '';
 
   chatOptions: any = {
     state: 'default'
@@ -109,13 +104,16 @@ export class UndercoverPage {
   dStart: number = -21;
   dEnd: number = 158 + 21;
 
+  public user: any;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private cameraPreview: CameraPreview,
     public tools: Tools,
     private keyboard: Keyboard,
-    private imagePicker: ImagePicker
+    private imagePicker: ImagePicker,
+    public undercover: UndercoverProvider
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -136,23 +134,8 @@ export class UndercoverPage {
       console.log(err);
     });
 
-    // this.keyboard.onKeyboardShow().subscribe(res => {
-    //   console.log(res);
-    //   this.mainBtn.state = 'minimised';
-    //
-    //   this.emojiContainer.state = 'off';
-    //   setTimeout(() => {
-    //     this.emojiContainer.stateBool = false;
-    //   }, chatAnim/2);
-    // }, err => {
-    //   console.log(err);
-    // });
+    this.user = this.undercover.getPerson();
 
-    // this.keyboard.onKeyboardHide().subscribe(res => {
-    //
-    // }, err => {
-    //   console.log(err);
-    // });
   }
 
   dragContent = true;
@@ -276,7 +259,7 @@ export class UndercoverPage {
 
   _moveElem(e) {
     this.x_pos = e.touches[0].pageX;
-    if (this.selectedItem !== null && e.target.id == "draggable-element") {
+    if (this.selectedItem !== null && e.target.id == 'draggable-element') {
     	this.selectedItem.classList.remove('transition');
     	if(this.x_pos - this.x_elem >= this.dStart && this.x_pos - this.x_elem <= this.dEnd){
       	this.selectedItem.style.left = (this.x_pos - this.x_elem) + 'px';
@@ -285,7 +268,7 @@ export class UndercoverPage {
   }
 
   _dragDestroy(e){
-    if (e.target.id == "draggable-element") {
+    if (e.target.id == 'draggable-element') {
       if (this.x_pos - this.x_elem <= this.dEnd/2 + 3) {
         this.selectedItem.style.left = this.dStart + 'px';
         this.selectedItem.classList.add('transition');
@@ -297,6 +280,7 @@ export class UndercoverPage {
       this.selectedItem = null;
     }
   }
+
   ionViewDidEnter() {
     this.mainInput.state = 'fadeIn';
     this.mainInput.hidden = false;

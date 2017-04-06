@@ -38,6 +38,8 @@ import {
 
 export class CameraPage {
 
+  hiddenMainBtn = false;
+
   cameraUI: any = {
     tooltip: 'tooltipFadeOut',
     button: 'photoButtonFadeOut'
@@ -92,6 +94,7 @@ export class CameraPage {
   }
 
   goBack(params?: any) {
+    this.hiddenMainBtn = true;
     this.navCtrl.pop({ animate: false });
   }
 

@@ -1,12 +1,15 @@
 page-undercover-character {
   ion-slides {
     height: 230px;
+    margin-left: -90px;
+    margin-right: -90px;
+    width: calc(100% + 180px);
 
     .swiper-slide {
       height: 100%;
+      transition: 0.5s all;
 
       .title {
-        height: 42px;
         font-size: 14px;
         color: #fff;
       }
@@ -17,28 +20,28 @@ page-undercover-character {
         border-radius: 50%;
         overflow: hidden;
         margin: auto;
-        transition: 0.5s all;
       }
-    }
-
-    .prev-character {
-      transform: translate(-50%);
     }
 
     .active-character {
       z-index: 1;
-      .avatar {
-        transform: scale(1.4);
-      }
-
-    }
-
-    .next-character {
-      transform: translate(50%);
+      transform: scale(1.4);
     }
   }
 
   .content {
-    background: #302f2f;
+    background: #5c5c5c;
+
+    h1 {
+      font-size: 20px;
+      color: #fff;
+      text-align: center;
+      font-weight: 400;
+    }
+
+    .person-description {
+      color: #fff;
+      text-align: center;
+    }
   }
 }

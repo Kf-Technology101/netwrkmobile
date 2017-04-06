@@ -34,6 +34,7 @@ import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
 import { Gps } from '../providers/gps';
 import { Permission } from '../providers/permission';
+import { UndercoverProvider } from '../providers/undercover';
 
 // Native services
 import { Facebook } from 'ionic-native';
@@ -86,6 +87,7 @@ export function providers() {
     Social,
     Gps,
     Permission,
+    UndercoverProvider,
 
     Facebook,
     Geolocation,

@@ -15,6 +15,8 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 
+import { ProfilePage } from '../profile/profile';
+
 import { Keyboard } from '@ionic-native/keyboard';
 
 // Animations
@@ -137,7 +139,7 @@ export class UndercoverPage {
   generateEmoticons(){
     for(let i = 0; i < this.emoticX.length; i++){
       for(let j = 0; j < this.emoticY.length; j++){
-        this.emojis.push('0x' + this.emoticY[j] + this.emoticX[i]);
+        this.emojis.push('0x' + this.emoticY[j].concat(this.emoticX[i]));
       }
     }
   }
@@ -232,6 +234,7 @@ export class UndercoverPage {
 
   goToProfile(ev){
     console.log("going to profile page");
+    this.tools.pushPage(ProfilePage);
   }
 
   ionViewDidEnter() {

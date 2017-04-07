@@ -243,18 +243,28 @@ page-undercover {
           left: 0;
           right: 0;
         }
-        ion-icon{
-          font-size: 1.5em;
-          transform: rotate(180deg);
-          margin: 0 5px;
-          color: #b7b7b7;
-        }
         .username{
-          position: relative;
-          top: -4px;
           font-size: 1.2em;
-          vertical-align: middle;
+          overflow:hidden;
+          white-space:nowrap;
+          text-overflow: ellipsis;
+          display: inline-block;
+          max-width: 100px;
         }
+      }
+      ion-icon{
+        position: absolute;
+        font-size: 1.5em;
+        transform: rotate(180deg);
+        margin: 0 5px;
+        color: #b7b7b7;
+        left: 20px;
+        width: 21px;
+      }
+      ion-icon.right{
+        right: 20px;
+        left: auto;
+        transform: rotate(0deg);
       }
     }
     .draggable-element {
@@ -262,10 +272,12 @@ page-undercover {
       position: relative; /* important (all position that's not `static`) */
       width: 42px;
       height: 42px;
-      top: -10px;
+      top: -19px;
       left: -21px;
       border-radius: 50%;
-      background-color: lightseagreen;
+      background-color: transparent;
+      border: 8px solid transparent;
+      box-sizing: content-box;
     }
 
     .transition{

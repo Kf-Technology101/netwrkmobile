@@ -131,6 +131,24 @@ export class UndercoverPage {
       console.log(err);
     });
 
+    this.keyboard.onKeyboardShow().subscribe(res => {
+      console.log(res);
+      this.mainBtn.state = 'minimised';
+
+      this.emojiContainer.state = 'off';
+      setTimeout(() => {
+        this.emojiContainer.stateBool = false;
+      }, chatAnim/2);
+    }, err => {
+      console.log(err);
+    });
+
+    this.keyboard.onKeyboardHide().subscribe(res => {
+
+    }, err => {
+      console.log(err);
+    });
+
     this.user = this.undercover.getPerson();
   }
 

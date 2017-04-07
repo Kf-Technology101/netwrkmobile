@@ -8,7 +8,7 @@
     initialSlide="1"
     spaceBetween="10">
     <ion-slide></ion-slide>
-    <ion-slide *ngFor="let p of persons">
+    <ion-slide [ngClass]="{'transition': sliderLoaded}" *ngFor="let p of persons">
       <h4 class="title">{{ p.name }}</h4>
       <div class="avatar">
         <img class="sun-icon" src="{{ p.imageUrl }}">

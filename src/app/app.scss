@@ -322,9 +322,10 @@ ion-header.incognito-header {
 .drag-container{
   &{
     width: 200px;
-    // height: 80px;
+    height: auto;
     position: relative;
     margin: 0 auto;
+    margin-top: 40px;
   }
   .dragline{
     &{
@@ -351,7 +352,6 @@ ion-header.incognito-header {
         text-overflow: ellipsis;
         display: inline-block;
         max-width: 100px;
-        line-height: 21px;
       }
     }
     ion-icon{

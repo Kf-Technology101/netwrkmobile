@@ -21,6 +21,7 @@ export class UndercoverCharacterPage {
     name: '',
     description: '',
     imageUrl: '',
+    active: false
   };
 
   constructor(

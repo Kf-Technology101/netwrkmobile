@@ -4,21 +4,19 @@ import { LocalStorage } from './local-storage';
 
 @Injectable()
 export class UndercoverProvider {
-  private person: any;
-
+  public sliderState: boolean =  false;
   constructor(
     public localStorage: LocalStorage
   ) {
     console.log('Hello Undercover Provider');
-    this.person = this.localStorage.get('undercover_person');
   }
 
   public getPerson(): any {
-    return this.person;
+    return this.localStorage.get('undercover_person');
   }
 
   public setPerson(person: any) {
-    this.person = this.localStorage.set('undercover_person', person);
+    person.active = true;
+    this.localStorage.set('undercover_person', person);
   }
-
 }

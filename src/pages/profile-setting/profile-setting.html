@@ -1,12 +1,14 @@
 <ion-header>
   <ion-toolbar>
-    <span class="top-profile" (click)="goBack()">
-      <span class="label">
-        <span>Nataliya Miller</span>
-        <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
-      </span>
-      <img class="avatar" src="assets/images/Layer0.png">
-    </span>
+    <div class="drag-container">
+      <div class="dragline">
+        <span class="info">
+          <span class="username">{{ user.name }}</span>
+        </span>
+        <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
+        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goBack()">
+      </div>
+    </div>
 
     <ion-buttons end>
       <button ion-button icon-only clear class="setting">

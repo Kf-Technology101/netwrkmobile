@@ -35,6 +35,7 @@ import { Social } from '../providers/social';
 import { Gps } from '../providers/gps';
 // import { Permission } from '../providers/permission';
 import { UndercoverProvider } from '../providers/undercover';
+import { SlideAvatar } from '../providers/slide-avatar';
 
 // Native services
 import { Facebook } from 'ionic-native';
@@ -89,6 +90,7 @@ export function providers() {
     Gps,
     // Permission,
     UndercoverProvider,
+    SlideAvatar,
 
     Facebook,
     Geolocation,

@@ -13,6 +13,9 @@ import { CameraPage } from '../camera/camera';
 // Providers
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
+import { SlideAvatar } from '../../providers/slide-avatar';
+
+import { ProfilePage } from '../profile/profile';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
@@ -97,13 +100,6 @@ export class UndercoverPage {
 
   caretPos: number = 0;
 
-  selectedItem: any = null;
-  x_pos: number = 0;
-  x_elem: number = 0;
-
-  dStart: number = -21;
-  dEnd: number = 158 + 21;
-
   public user: any;
 
   constructor(
@@ -113,7 +109,8 @@ export class UndercoverPage {
     public tools: Tools,
     private keyboard: Keyboard,
     private imagePicker: ImagePicker,
-    public undercover: UndercoverProvider
+    public undercover: UndercoverProvider,
+    public slideAvatar: SlideAvatar
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -135,7 +132,6 @@ export class UndercoverPage {
     });
 
     this.user = this.undercover.getPerson();
-
   }
 
   dragContent = true;
@@ -143,7 +139,7 @@ export class UndercoverPage {
   generateEmoticons(){
     for(let i = 0; i < this.emoticX.length; i++){
       for(let j = 0; j < this.emoticY.length; j++){
-        this.emojis.push('0x' + this.emoticY[j] + this.emoticX[i]);
+        this.emojis.push('0x' + this.emoticY[j].concat(this.emoticX[i]));
       }
     }
   }
@@ -236,49 +232,9 @@ export class UndercoverPage {
     }
   }
 
-  onDrag(ev, element){
-    let percent = element.getSlidingPercent();
-    // console.log(ev);
-    // console.log(percent);
-    if (percent < -1){
-      this.dragContent = false;
-      setTimeout(() => {
-        this.dragContent = true;
-      }, 100);
-    }
-  }
-
   goToProfile(ev){
     console.log("going to profile page");
-  }
-
-  _dragInit(elem){
-    this.selectedItem = elem;
-    this.x_elem = this.x_pos - this.selectedItem.offsetLeft;
-  }
-
-  _moveElem(e) {
-    this.x_pos = e.touches[0].pageX;
-    if (this.selectedItem !== null && e.target.id == 'draggable-element') {
-    	this.selectedItem.classList.remove('transition');
-    	if(this.x_pos - this.x_elem >= this.dStart && this.x_pos - this.x_elem <= this.dEnd){
-      	this.selectedItem.style.left = (this.x_pos - this.x_elem) + 'px';
-      }
-    }
-  }
-
-  _dragDestroy(e){
-    if (e.target.id == 'draggable-element') {
-      if (this.x_pos - this.x_elem <= this.dEnd/2 + 3) {
-        this.selectedItem.style.left = this.dStart + 'px';
-        this.selectedItem.classList.add('transition');
-      }
-      if (this.x_pos - this.x_elem > this.dEnd/2 + 3) {
-        this.selectedItem.style.left = this.dEnd + 'px';
-        this.selectedItem.classList.add('transition');
-      }
-      this.selectedItem = null;
-    }
+    this.tools.pushPage(ProfilePage);
   }
 
   ionViewDidEnter() {
@@ -289,43 +245,19 @@ export class UndercoverPage {
   }
 
   ionViewDidLoad() {
-
+    console.log('ionViewDidLoad - UndercoverPage');
+    this.slideAvatar.startSliderEvents();
     this.generateEmoticons();
+
     if(this.imgesSrc.length > 0){
       setTimeout(() => {
         this.galleryContainer.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
       }, 100);
     }
-
-    let self = this;
-    document.getElementById('draggable-element').addEventListener("touchstart", function(ev){
-      self._moveElem(ev);
-      self._dragInit(ev.target);
-      return false;
-    });
-    document.addEventListener("touchmove", function(ev){
-      self._moveElem(ev);
-    });
-    document.addEventListener("touchend", function(ev){
-      self._dragDestroy(ev);
-    });
-
-    console.log('ionViewDidLoad - UndercoverPage');
   }
 
   ionViewWillLeave() {
-    let self = this;
-    document.getElementById('draggable-element').removeEventListener("touchstart", function(ev){
-      self._moveElem(ev);
-      self._dragInit(ev.target);
-      return false;
-    });
-    document.removeEventListener("touchmove", function(ev){
-      self._moveElem(ev);
-    });
-    document.removeEventListener("touchend", function(ev){
-      self._dragDestroy(ev);
-    });
+    console.log('ionViewWillLeave - UndercoverPage');
+    this.slideAvatar.stopSliderEvents();
   }
-
 }

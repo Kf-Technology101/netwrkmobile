@@ -23,7 +23,7 @@ export class UndercoverCharacterPage {
     name: '',
     description: '',
     imageUrl: '',
-    active: true
+    active: false
   };
   public sliderLoaded: boolean = false;
 

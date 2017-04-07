@@ -1,42 +1,23 @@
 <ion-header>
   <ion-toolbar>
-    <!-- <span class="top-profile" (click)="openProfile()">
-      <img class="avatar" src="assets/images/Layer0.png">
-      <span class="label">
-        <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
-        <span>Nataliya Miller</span>
-      </span>
-    </span> -->
 
-    <span class="top-profile" (click)="openProfile()">
-      <ion-list id="profile-list-sliding">
-        <ion-item-sliding #incognitoSlider
-        (touchend)="ondrag($event, incognitoSlider)">
-
-          <ion-item class="avatar-container">
-            <img class="avatar" src="assets/images/Layer0.png">
-          </ion-item>
-
-          <ion-item class="profile-slider-info">
-            <ion-icon ios="ios-log-out" md="md-log-out"></ion-icon>
-            <span>Nataliya Miller</span>
-          </ion-item>
-
-          <ion-item-options side="left">
-            <button ion-button class="slide-item-bg-button"></button>
-          </ion-item-options>
-
-        </ion-item-sliding>
-      </ion-list>
-    </span>
+    <div class="drag-container">
+      <div class="dragline">
+        <span class="info">
+          <span class="username">{{ user.name }}</span>
+        </span>
+        <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
+        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile()">
+      </div>
+    </div>
 
     <ion-buttons end>
-      <button ion-button icon-only clear class="setting">
+      <button ion-button icon-only clear class="setting" (tap)="openSettings()">
         <ion-icon name="settings" color="dark"></ion-icon>
       </button>
     </ion-buttons>
-  </ion-toolbar>
 
+  </ion-toolbar>
 </ion-header>
 
 

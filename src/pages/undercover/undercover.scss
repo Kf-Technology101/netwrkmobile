@@ -136,6 +136,7 @@ page-undercover {
     & {
       position: absolute;
       bottom: 0;
+      transition: none;
     }
     #textInpBtns {
       &{
@@ -157,10 +158,10 @@ page-undercover {
         bottom: 0;
         background-color: #fff;
         height: 100%;
-        width: 47px;
+        width: 44px;
         margin: 0;
         margin-left: 0;
-        border-radius: 0;
+        border-radius: 50%;
       }
       ion-icon {
         font-size: 37px;
@@ -228,9 +229,10 @@ page-undercover {
   .drag-container{
     &{
       width: 200px;
-      height: 80px;
+      height: auto;
       position: relative;
       margin: 0 auto;
+      margin-top: 40px;
     }
     .dragline{
       &{

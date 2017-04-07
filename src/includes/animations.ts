@@ -42,8 +42,7 @@ export const toggleInputsFade:any = trigger('inputState', [
 export const rotateChatPlus: any = trigger('rotState', [
   state('spined', style({
     transform: 'rotate(405deg)',
-    right: 0,
-    'border-radius': '50%'
+    right: 0
   })),
   state('default', style({
     transform: 'rotate(0deg)'

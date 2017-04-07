@@ -138,8 +138,15 @@ page-undercover {
       bottom: 0;
     }
     #textInpBtns {
-      pointer-events: none;
-      border-radius: 12px;
+      &{
+        transition: none;
+        pointer-events: none;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      button{
+        transition: none;
+      }
     }
     #plus-btn {
       & {

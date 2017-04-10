@@ -4,6 +4,11 @@ page-profile {
       background: none;
     }
 
+    ion-buttons{
+      position: absolute;
+      right: 0;
+    }
+
     .setting {
       [name='settings'] {
         font-size: 30px;

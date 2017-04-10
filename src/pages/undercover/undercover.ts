@@ -73,14 +73,19 @@ export class UndercoverPage {
 
   galleryContainer: any = {
     state: 'off',
-    stateBool: false,
+    hidden: true,
     imgHeight: undefined
   };
 
   emojiContainer: any = {
     state: 'off',
-    stateBool: false
+    hidden: true
   };
+
+  shareContainer: any = {
+    state: 'off',
+    hidden: true
+  }
 
   hidePlaceholder = false;
 
@@ -137,7 +142,7 @@ export class UndercoverPage {
 
       this.emojiContainer.state = 'off';
       setTimeout(() => {
-        this.emojiContainer.stateBool = false;
+        this.emojiContainer.hidden = true;
       }, chatAnim/2);
     }, err => {
       console.log(err);
@@ -154,9 +159,9 @@ export class UndercoverPage {
 
   dragContent = true;
 
-  generateEmoticons(){
-    for(let i = 0; i < this.emoticX.length; i++){
-      for(let j = 0; j < this.emoticY.length; j++){
+  generateEmoticons() {
+    for (let i = 0; i < this.emoticX.length; i++) {
+      for (let j = 0; j < this.emoticY.length; j++) {
         this.emojis.push('0x' + this.emoticY[j].concat(this.emoticX[i]));
       }
     }
@@ -188,13 +193,13 @@ export class UndercoverPage {
     this.bgState.state = (this.bgState.state == 'stretched') ? 'compressed' : 'stretched';
 
     if (this.bgState.state == 'stretched') {
-      for(let i = 0; i < this.chatBtns.state.length; i++){
+      for (let i = 0; i < this.chatBtns.state.length; i++) {
         setTimeout(() => {
           this.chatBtns.state[i] = 'btnShown';
         }, chatAnim/3 + (i*50));
       }
     } else {
-      for(let i = 0; i < this.chatBtns.state.length; i++){
+      for (let i = 0; i < this.chatBtns.state.length; i++) {
         this.chatBtns.state[i] = 'btnHidden';
       }
     }
@@ -205,26 +210,26 @@ export class UndercoverPage {
       this.mainBtn.state = 'normal';
       container.state = 'off';
       setTimeout(() => {
-        container.stateBool = false;
+        container.hidden = true;
       }, chatAnim/2);
     }
 
     if (!visibility) {
-      if(container.state == 'off'){
+      if (container.state == 'off') {
         this.mainBtn.state = 'moved-n-scaled';
-        container.stateBool = true;
+        container.hidden = false;
         container.state = 'on';
-      }else{
+      } else {
         this.mainBtn.state = 'normal'
         container.state = 'off';
         setTimeout(() => {
-          container.stateBool = false;
+          container.hidden = true;
         }, chatAnim/2);
       }
     }
   }
 
-  insertEmoji(emoji){
+  insertEmoji(emoji) {
     this.txtIn.nativeElement.focus();
     let emojiDecoded = String.fromCodePoint(emoji);
     let inputVal = this.txtIn.nativeElement.value;
@@ -236,23 +241,25 @@ export class UndercoverPage {
     this.txtIn.nativeElement.selectionEnd = this.caretPos + emojiDecoded.length;
   }
 
-  convertEmoji(unicode){
+  convertEmoji(unicode) {
     return String.fromCodePoint(unicode);
   }
 
-  sendMessage(){
+  sendMessage() {
     console.log(this.txtIn);
   }
 
-  getCaretPos(oField){
+  getCaretPos(oField) {
     if (oField.selectionStart || oField.selectionStart == '0') {
       this.caretPos = oField.selectionStart;
     }
   }
 
-  goToProfile(ev){
-    console.log("going to profile page");
-    this.tools.pushPage(ProfilePage);
+  goToProfile(ev) {
+    console.log(">>> [GO] Profile Page");
+    setTimeout(() => {
+      this.tools.pushPage(ProfilePage);
+    }, 100);
   }
 
   ionViewDidEnter() {
@@ -260,14 +267,16 @@ export class UndercoverPage {
     this.mainInput.hidden = false;
     this.mainBtn.state = 'normal';
     this.mainBtn.hidden = false;
+
+    this.slideAvatar.sliderInit();
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad - UndercoverPage');
-    this.slideAvatar.startSliderEvents();
+    console.log('[UNDERCOVER.ts] viewDidLoad');
+    // this.slideAvatar.startSliderEvents();
     this.generateEmoticons();
 
-    if(this.imgesSrc.length > 0){
+    if (this.imgesSrc.length > 0) {
       setTimeout(() => {
         this.galleryContainer.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
       }, 100);
@@ -275,7 +284,7 @@ export class UndercoverPage {
   }
 
   ionViewWillLeave() {
-    console.log('ionViewWillLeave - UndercoverPage');
-    this.slideAvatar.stopSliderEvents();
+    console.log('[UNDERCOVER.ts] viewWillLeave');
+    // this.slideAvatar.stopSliderEvents();
   }
 }

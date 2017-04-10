@@ -61,11 +61,11 @@ export class ProfileSettingPage {
   goBack() { this.tools.popPage(); }
 
   ionViewDidLoad() {
-    this.slideAvatar.startSliderEvents();
+    // this.slideAvatar.startSliderEvents();
   }
 
   ionViewWillLeave() {
-    this.slideAvatar.stopSliderEvents();
+    // this.slideAvatar.stopSliderEvents();
   }
 
   logOut() {

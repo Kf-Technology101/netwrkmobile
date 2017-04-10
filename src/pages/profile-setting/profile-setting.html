@@ -1,13 +1,12 @@
 <ion-header>
   <ion-toolbar>
-
     <div class="drag-container">
       <div class="dragline">
         <span class="info">
           <span class="username">{{ user.name }}</span>
         </span>
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
-        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile()">
+        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goBack()">
       </div>
     </div>
 

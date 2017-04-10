@@ -109,12 +109,18 @@ export class ProfilePage {
 
   goBack() { this.tools.popPage(); }
 
+  ionViewDidEnter() {
+    console.log("[PROFILE.ts] viewDidEnter");
+    this.slideAvatar.sliderInit();
+  }
+
   ionViewDidLoad() {
-    this.slideAvatar.startSliderEvents();
+    console.log("[PROFILE.ts] viewDidLoad");
+    // this.slideAvatar.startSliderEvents();
   }
 
   ionViewWillLeave() {
-    this.slideAvatar.stopSliderEvents();
+    console.log("[PROFILE.ts] viewWillLeave");
   }
 
 }

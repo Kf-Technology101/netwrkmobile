@@ -26,6 +26,41 @@
   </div>
 
   <div #shareCont item-content class="gallery-container share-container" [hidden]="shareContainer.hidden" [@galleryState]="shareContainer.state">
+    <ion-toolbar>
+      <div class="slide-container sl-facebook">
+        <div #slfb [ngClass]="{'active': checkbox.facebook}" class="toggle-el" (tap)="toggleShareSlider('facebook')">
+          <span class="toggle-state" *ngIf="checkbox.facebook">on</span>
+          <span class="toggle-state" *ngIf="!checkbox.facebook">off</span>
+          <div [ngClass]="{'right': checkbox.facebook}" class="toggleable">
+            <ion-icon ios="logo-facebook" md="logo-facebook"></ion-icon>
+          </div>
+          <input type="checkbox" [checked]="checkbox.facebook">
+        </div>
+      </div>
+
+      <div class="slide-container sl-linkedin">
+        <div #slln [ngClass]="{'active': checkbox.linkedin}" class="toggle-el" (tap)="toggleShareSlider('linkedin')">
+          <span class="toggle-state" *ngIf="checkbox.linkedin">on</span>
+          <span class="toggle-state" *ngIf="!checkbox.linkedin">off</span>
+          <div [ngClass]="{'right': checkbox.linkedin}" class="toggleable">
+            <ion-icon ios="logo-linkedin" md="logo-linkedin"></ion-icon>
+          </div>
+          <input type="checkbox" [checked]="checkbox.linkedin">
+        </div>
+      </div>
+
+      <div class="slide-container sl-twitter">
+        <div #sltw [ngClass]="{'active': checkbox.twitter}" class="toggle-el" (tap)="toggleShareSlider('twitter')">
+          <span class="toggle-state" *ngIf="checkbox.twitter">on</span>
+          <span class="toggle-state" *ngIf="!checkbox.twitter">off</span>
+          <div [ngClass]="{'right': checkbox.twitter}" class="toggleable">
+            <ion-icon ios="logo-twitter" md="logo-twitter"></ion-icon>
+          </div>
+          <input type="checkbox" [checked]="checkbox.twitter">
+        </div>
+      </div>
+
+    </ion-toolbar>
   </div>
 
   <button isScrolling="false" tapable [hidden]="mainBtn.hidden" [@mainBtnState]="mainBtn.state" color="bk"
@@ -36,10 +71,10 @@
       <button ion-button [@inputState]="chatBtns.state[0]" (tap)="openCamera()">
         <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[1]" (tap)="toggleContainer(galleryContainer)">
+      <button ion-button [@inputState]="chatBtns.state[1]" (tap)="toggleContainer(galleryContainer); toggleChatOptions()">
          <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[2]">
+      <button ion-button [@inputState]="chatBtns.state[2]" (tap)="toggleContainer(shareContainer); toggleChatOptions()">
         <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
       </button>
       <button ion-button [@inputState]="chatBtns.state[3]" (tap)="toggleContainer(emojiContainer); toggleChatOptions()">

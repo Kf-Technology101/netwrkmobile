@@ -47,6 +47,9 @@ page-undercover {
   }
 
   .footer {
+    &{
+      background: lightseagreen;
+    }
     .main-action-btn {
       bottom: 70px;
       border: 3px solid #5b87aa;
@@ -225,4 +228,105 @@ page-undercover {
       }
     }
   }
+
+  div.share-container{
+    &{
+      border-top: none;
+    }
+  }
+
+  .share-container {
+    .toolbar{
+      &{
+        position: absolute;
+        left: 0;
+        top: 0;
+        padding: 0;
+        background: #e0e0e0;
+      }
+      .toolbar-background{
+        border: none;
+        background: transparent;
+      }
+    }
+    .slide-container {
+      & {
+        width: 33.3%;
+        height: 26px;
+        position: relative;
+        float: left;
+        ;
+      }
+      input[type="checkbox"]{
+        width: 0;
+        height: 0;
+      }
+      .toggle-el {
+        & {
+          max-width: 110px;
+          margin: 0 auto;
+          border-radius: 13px;
+          height: 26px;
+          background: #fff;
+          transition: all 0.3s ease-out;
+        }
+        &.active{
+          .toggle-state{
+            color: #fff;
+          }
+        }
+        .toggle-state {
+          line-height: 26px;
+          color: #000;
+          font-size: 9px;
+          text-transform: uppercase;
+          transition: all 0.3s ease-out;
+        }
+        .toggleable {
+          & {
+            width: 26px;
+            height: 26px;
+            position: absolute;
+            left: 3px;
+            top: 0;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0px 5px 9px -4px rgba(0, 0, 0, .3);
+            transition: all 0.3s ease-out;
+          }
+          &.right{
+            left: 98px;
+          }
+          ion-icon {
+            line-height: 26px;
+          }
+        }
+      }
+    }
+    .slide-container.sl-facebook {
+      .toggle-el.active {
+        background: #195e99;
+      }
+      ion-icon {
+        color: #195e99;
+      }
+    }
+    .slide-container.sl-twitter {
+      .toggle-el.active {
+        background: #0093ee;
+      }
+      ion-icon {
+        color: #0093ee;
+      }
+    }
+    .slide-container.sl-linkedin {
+      .toggle-el.active {
+        background: #0077b5;
+      }
+      ion-icon {
+        color: #0077b5;
+      }
+    }
+  }
+
 }

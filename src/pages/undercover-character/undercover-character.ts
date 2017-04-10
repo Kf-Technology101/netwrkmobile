@@ -10,6 +10,8 @@ import { UndercoverPage } from '../undercover/undercover';
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
 
+import { heroes } from '../../includes/heroes';
+
 @Component({
   selector: 'page-undercover-character',
   templateUrl: 'undercover-character.html'
@@ -23,6 +25,7 @@ export class UndercoverCharacterPage {
     imageUrl: '',
     active: false
   };
+  public sliderLoaded: boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -30,28 +33,7 @@ export class UndercoverCharacterPage {
     public undercover: UndercoverProvider,
     public tools: Tools
   ) {
-    this.persons = [
-      {
-        name: 'Captain America',
-        description: 'Captain America is a fictional superhero appearing in American comic books published by Marvel Comics.',
-        imageUrl: 'assets/images/cap.png',
-      },
-      {
-        name: 'Doctor Strange',
-        description: 'Dr. Stephen Vincent Strange, M.D. (known as Doctor Strange) is a fictional superhero appearing in American comic books published by Marvel Comics.',
-        imageUrl: 'assets/images/doc.png',
-      },
-      {
-        name: 'Hulk',
-        description: 'The Hulk is a fictional superhero created by writer Stan Lee and artist Jack Kirby, who first appeared in the debut issue of the comic book The Incredible Hulk in May 1962 published by Marvel Comics.',
-        imageUrl: 'assets/images/hulk.png',
-      },
-      {
-        name: 'Doctor Strange',
-        description: 'Dr. Stephen Vincent Strange, M.D. (known as Doctor Strange) is a fictional superhero appearing in American comic books published by Marvel Comics.',
-        imageUrl: 'assets/images/doc.png',
-      },
-    ];
+    this.persons = heroes;
   }
 
   public choosePerson() {
@@ -61,9 +43,11 @@ export class UndercoverCharacterPage {
 
   ionViewDidLoad() {
     this.slides.ionSlideWillChange.subscribe(() => {
-      if (this.persons[this.slides.getActiveIndex()])
-        this.activePerson = this.persons[this.slides.getActiveIndex()];
-      this.changeSlider();
+      let activeIndex = this.slides.getActiveIndex();
+
+      if (!this.sliderLoaded) setTimeout(() => { this.sliderLoaded = true; }, 500);
+      if (this.persons[activeIndex]) this.activePerson = this.persons[activeIndex];
+      if (activeIndex !== this.slides.length() - 2) this.changeSlider();
     });
 
     console.log('ionViewDidLoad UndercoverCharacterPage');
@@ -73,24 +57,9 @@ export class UndercoverCharacterPage {
     let allSlides = document.getElementsByClassName('swiper-slide');
     let activeSlide = document.getElementsByClassName('swiper-slide-next')[0];
 
-    let min = true;
     for(var i = 0; i < allSlides.length;i++) {
-      allSlides[i].className = allSlides[i].className
-        .replace('prev-character', '')
-        .replace('active-character', '')
-        .replace('next-character', '')
-
-      if (min) {
-        allSlides[i].className += ' prev-character';
-      } else {
-        allSlides[i].className += ' next-character';
-      }
-
-      if(allSlides[i] == activeSlide) {
-        allSlides[i].className = allSlides[i].className.replace('prev-character', '')
-        allSlides[i].className += ' active-character';
-        min = false;
-      }
+      allSlides[i].className = allSlides[i].className.replace('active-character', '')
+      if(allSlides[i] == activeSlide) allSlides[i].className += ' active-character';
     }
   }
 

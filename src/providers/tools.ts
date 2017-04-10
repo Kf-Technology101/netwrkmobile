@@ -25,11 +25,8 @@ export class Tools {
     public app: App
   ) {}
 
-  doBackButton(page: string, callback: any) {
-    // this.events.unsubscribe('backButton:clicked');
-    // this.events.subscribe('backButton:clicked', () => {
-    //   callback(page);
-    // });
+  public doBackButton() {
+    console.log(this.app.getActiveNav());
   }
 
   getLoginPage(DefaultPage: any, InvitationPage: any): Promise<any> {

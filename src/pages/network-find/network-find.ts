@@ -7,7 +7,7 @@ import { NetworkNoPage } from '../network-no/network-no';
 // Providers
 import { Tools } from '../../providers/tools';
 import { Gps } from '../../providers/gps';
-import { Permission } from '../../providers/permission';
+// import { Permission } from '../../providers/permission';
 
 // Interfaces
 import { GeolocationInterface } from '../../interfaces/gps';
@@ -25,7 +25,7 @@ export class NetworkFindPage {
     public gps: Gps,
     public tools: Tools,
     private platform: Platform,
-    public permission: Permission
+    // public permission: Permission
   ) {}
 
   go() {
@@ -52,7 +52,7 @@ export class NetworkFindPage {
       console.log(err);
       if (err.code && err.code == 1) {
         this.tools.showToast(err.message, null, 'bottom');
-        this.permission.geolocationPermission();
+        // this.permission.geolocationPermission();
       }
     });
   }

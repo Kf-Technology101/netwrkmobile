@@ -3,6 +3,8 @@ import { NavController, NavParams } from 'ionic-angular';
 
 // Providers
 import { Tools } from '../../providers/tools';
+import { UndercoverProvider } from '../../providers/undercover';
+import { SlideAvatar } from '../../providers/slide-avatar';
 
 @Component({
   selector: 'page-profile-setting',
@@ -16,13 +18,18 @@ export class ProfileSettingPage {
    */
   @ViewChild("input")
   private nativeInputBtn: ElementRef;
+  public user: any;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private renderer: Renderer,
-    public tools: Tools
-  ) {}
+    public tools: Tools,
+    public undercover: UndercoverProvider,
+    public slideAvatar: SlideAvatar
+  ) {
+    this.user = this.undercover.getPerson();
+  }
 
   /**
    * Callback executed when the visible button is pressed
@@ -44,11 +51,16 @@ export class ProfileSettingPage {
   public filesAdded(event: Event): void {
     let files: FileList = this.nativeInputBtn.nativeElement.files;
     console.log("Added files", files);
-    // this.btnCallback(files);
   }
 
-  goBack() {
-    this.tools.popPage();
+  goBack() { this.tools.popPage(); }
+
+  ionViewDidLoad() {
+    // this.slideAvatar.startSliderEvents();
+  }
+
+  ionViewWillLeave() {
+    // this.slideAvatar.stopSliderEvents();
   }
 
 }

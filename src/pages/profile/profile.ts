@@ -7,6 +7,8 @@ import { ProfileSettingPage } from '../profile-setting/profile-setting';
 // Providers
 import { Social } from '../../providers/social';
 import { Tools } from '../../providers/tools';
+import { UndercoverProvider } from '../../providers/undercover';
+import { SlideAvatar } from '../../providers/slide-avatar';
 
 @Component({
   selector: 'page-profile',
@@ -25,17 +27,23 @@ export class ProfilePage {
     snapchat: false
   };
 
+  public user: any;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public social: Social,
-    public tools: Tools
+    public tools: Tools,
+    public undercover: UndercoverProvider,
+    public slideAvatar: SlideAvatar
   ) {
     setTimeout(()=>{
       for (var i = 0; i < 6; i++) {
         this.testSlides.push(i.toString());
       }
     },100);
+
+    this.user = this.undercover.getPerson();
   }
 
   ondrag(event, item) {
@@ -64,10 +72,6 @@ export class ProfilePage {
 
     this.fbSlider.pager = true;
     this.fbSlider.slidesPerView = 5;
-  }
-
-  openProfile() {
-    this.tools.pushPage(ProfileSettingPage);
   }
 
   connectToFacebook() {
@@ -99,6 +103,24 @@ export class ProfilePage {
 
   }
 
+  openSettings() {
+    this.tools.pushPage(ProfileSettingPage);
+  }
+
   goBack() { this.tools.popPage(); }
+
+  ionViewDidEnter() {
+    console.log("[PROFILE.ts] viewDidEnter");
+    this.slideAvatar.sliderInit();
+  }
+
+  ionViewDidLoad() {
+    console.log("[PROFILE.ts] viewDidLoad");
+    // this.slideAvatar.startSliderEvents();
+  }
+
+  ionViewWillLeave() {
+    console.log("[PROFILE.ts] viewWillLeave");
+  }
 
 }

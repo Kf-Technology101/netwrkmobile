@@ -45,9 +45,6 @@ export class LogInPage {
   };
 
   contentState: string = 'fadeOut';
-
-  hiddenMainBtn: boolean = false;
-  // mainBtnState: string = 'hidden';
   mainBtn: any = {
     state: 'normal'
   };
@@ -108,12 +105,7 @@ export class LogInPage {
 
   goToSignUp() { this.tools.pushPage(SignUpPage); }
 
-  ionViewDidLoad() {
-    this.hiddenMainBtn = true;
-  }
   ngOnInit(){
     this.contentState = 'fadeIn';
   }
-  ionViewWillEnter() { this.hiddenMainBtn = false; }
-  ionViewWillLeave() { this.hiddenMainBtn = true; }
 }

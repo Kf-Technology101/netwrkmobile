@@ -1,15 +1,15 @@
 <ion-header class="incognito-header" isScrolling="false">
-
-  <div class="drag-container">
-    <div class="dragline">
-      <span class="info">
-        <span class="username">{{ user.name }}</span>
-      </span>
-      <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
-      <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile()">
+  <ion-toolbar>
+    <div class="drag-container">
+      <div class="dragline">
+        <span class="info">
+          <span class="username">{{ user.name }}</span>
+        </span>
+        <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
+        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile()">
+      </div>
     </div>
-  </div>
-
+  </ion-toolbar>
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label>
@@ -17,12 +17,15 @@
 </ion-content>
 
 <ion-footer class="has-input chatFooter">
-  <div #galleryCont item-content  class="gallery-container" [hidden]="!galleryContainer.stateBool" [@galleryState]="galleryContainer.state">
+  <div #galleryCont item-content  class="gallery-container" [hidden]="galleryContainer.hidden" [@galleryState]="galleryContainer.state">
     <ion-img *ngFor="let imgSrc of imagesSrc" [src]="imgSrc" [style.height.px]="galleryContainer.imgHeight"></ion-img>
   </div>
 
-  <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="!emojiContainer.stateBool" [@galleryState]="emojiContainer.state">
+  <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="emojiContainer.hidden" [@galleryState]="emojiContainer.state">
     <span item-content *ngFor="let emoji of emojis" (tap)="insertEmoji(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
+  </div>
+
+  <div #shareCont item-content class="gallery-container share-container" [hidden]="shareContainer.hidden" [@galleryState]="shareContainer.state">
   </div>
 
   <button isScrolling="false" tapable [hidden]="mainBtn.hidden" [@mainBtnState]="mainBtn.state" color="bk"
@@ -45,7 +48,7 @@
       <button ion-button [@inputState]="chatBtns.state[4]"></button>
     </div>
 
-    <button ion-button (tap)="toggleChatOptions(); toggleContainer(galleryContainer, 'hide'); toggleContainer(emojiContainer, 'hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
+    <button ion-button (tap)="toggleChatOptions(); toggleContainer(galleryContainer, 'hide'); toggleContainer(emojiContainer, 'hide'); toggleContainer(shareContainer, 'hide')" [@rotState]="chatOptions.state" ion-button item-left clear id="plus-btn">
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 

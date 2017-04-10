@@ -1,4 +1,4 @@
-import { NgModule, ErrorHandler } from '@angular/core';
+import { NgModule, ErrorHandler, enableProdMode } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 
 // Pages
@@ -33,7 +33,7 @@ import { Tools } from '../providers/tools';
 import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
 import { Gps } from '../providers/gps';
-import { Permission } from '../providers/permission';
+// import { Permission } from '../providers/permission';
 import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
 
@@ -41,7 +41,8 @@ import { SlideAvatar } from '../providers/slide-avatar';
 import { Facebook } from 'ionic-native';
 import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
-import { Diagnostic } from '@ionic-native/diagnostic';
+
+enableProdMode();
 
 let pages = [
   MyApp,
@@ -87,14 +88,13 @@ export function providers() {
     ContactsProvider,
     Social,
     Gps,
-    Permission,
+    // Permission,
     UndercoverProvider,
     SlideAvatar,
 
     Facebook,
     Geolocation,
     CameraPreview,
-    Diagnostic,
 
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }

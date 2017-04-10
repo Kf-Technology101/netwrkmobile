@@ -7,7 +7,15 @@ page-undercover-character {
 
     .swiper-slide {
       height: 100%;
-      transition: 0.5s all;
+
+      &.active-character {
+        z-index: 1;
+        transform: scale(1.4);
+      }
+
+      &.transition {
+        transition: 0.5s all;
+      }
 
       .title {
         font-size: 14px;
@@ -21,11 +29,6 @@ page-undercover-character {
         overflow: hidden;
         margin: auto;
       }
-    }
-
-    .active-character {
-      z-index: 1;
-      transform: scale(1.4);
     }
   }
 

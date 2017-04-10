@@ -12,12 +12,26 @@ import { NetworkFindPage } from '../network-find/network-find';
 import { User } from '../../providers/user';
 import { Tools } from '../../providers/tools';
 
+// Animations
+import {
+  scaleMainBtn,
+  toggleFade
+} from '../../includes/animations';
+
 @Component({
   selector: 'page-sign-up-confirm',
-  templateUrl: 'sign-up-confirm.html'
+  templateUrl: 'sign-up-confirm.html',
+  animations: [
+    scaleMainBtn,
+    toggleFade
+  ]
 })
 export class SignUpConfirmPage {
   confirmCode: number;
+  contentState: string = 'fadeOut';
+  mainBtn: any = {
+    state: 'normal'
+  };
 
   private signUpErrorString: string;
   private codeErrorString: string;

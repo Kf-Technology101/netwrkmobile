@@ -51,8 +51,12 @@ import {
 export class UndercoverPage {
   @ViewChild('galleryCont') gCont;
   @ViewChild('emojiCont') emCont;
+  @ViewChild('shareCont') shCont;
   @ViewChild('textInput') txtIn;
   @ViewChild('slidingItems') toggler;
+  @ViewChild('slfb') checkFb;
+  @ViewChild('sltw') checkTw;
+  @ViewChild('slln') checkIn;
 
   chatOptions: any = {
     state: 'default'
@@ -106,6 +110,12 @@ export class UndercoverPage {
   caretPos: number = 0;
 
   public user: any;
+
+  public checkbox: any = {
+    facebook: false,
+    twitter: true,
+    linkedin: false
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -262,6 +272,24 @@ export class UndercoverPage {
     }, 100);
   }
 
+  setShareCheckbox(){
+    // for (let i in this.checkbox) {
+    //   if (this.checkbox[i]) {
+    //     this.checkbox[i].children['0'].innerHTML = 'on';
+    //     this.checkbox[i].children['1'].style.left = '98px';
+    //     this.checkbox[i].classList.add('active');
+    //   } else {
+    //     this.checkbox[i].children['0'].innerHTML = 'off';
+    //     this.checkbox[i].children['1'].style.left = '3px';
+    //     this.checkbox[i].classList.remove('active');
+    //   }
+    // }
+  }
+
+  toggleShareSlider(mess){
+    this.checkbox[mess] = !this.checkbox[mess];
+  }
+
   ionViewDidEnter() {
     this.mainInput.state = 'fadeIn';
     this.mainInput.hidden = false;
@@ -269,6 +297,7 @@ export class UndercoverPage {
     this.mainBtn.hidden = false;
 
     this.slideAvatar.sliderInit();
+    this.setShareCheckbox();
   }
 
   ionViewDidLoad() {

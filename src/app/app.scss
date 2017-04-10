@@ -26,7 +26,7 @@
   bottom: 10px;
   text-align: center;
   border-width: 3px;
-  border-radius: 14px;
+  border-radius: 10px;
   background: #fff;
   box-shadow: 0 0 10px rgba(255,255,255,0.8);
   // transition: all 0.5s ease;
@@ -294,10 +294,16 @@ ion-app .ion-page .content {
 }
 
 form,
-.introduction {
+.custom-center-block {
   max-width: 300px;
   margin: 0 auto;
   margin-top: 15px;
+}
+
+.custom-center-block {
+  .label {
+    margin: 0;
+  }
 }
 
 ion-header.incognito-header {
@@ -325,7 +331,6 @@ ion-header.incognito-header {
     height: auto;
     position: relative;
     margin: 0 auto;
-    margin-top: 40px;
   }
   .dragline{
     &{

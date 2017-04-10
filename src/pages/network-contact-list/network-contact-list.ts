@@ -133,15 +133,14 @@ export class NetworkContactListPage {
         res => {
           this.user.update(
             this.user.getAuthData().id,
-            { user: { invitation_sent: true } },
-            null
+            { user: { invitation_sent: true } }
           ).map(res => res.json()).subscribe(res => {
-              this.tools.hideLoader();
-              this.tools.popPage();
-            }, err => {
-              this.tools.hideLoader();
-              this.tools.showToast(JSON.stringify(err));
-            });
+            this.tools.hideLoader();
+            this.tools.popPage();
+          }, err => {
+            this.tools.hideLoader();
+            this.tools.showToast(JSON.stringify(err));
+          });
         },
         err => this.tools.hideLoader()
       );

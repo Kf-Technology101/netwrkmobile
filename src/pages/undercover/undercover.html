@@ -1,15 +1,15 @@
 <ion-header class="incognito-header" isScrolling="false">
-
-  <div class="drag-container">
-    <div class="dragline">
-      <span class="info">
-        <span class="username">{{ user.name }}</span>
-      </span>
-      <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
-      <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile()">
+  <ion-toolbar>
+    <div class="drag-container">
+      <div class="dragline">
+        <span class="info">
+          <span class="username">{{ user.name }}</span>
+        </span>
+        <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
+        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile()">
+      </div>
     </div>
-  </div>
-
+  </ion-toolbar>
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label>

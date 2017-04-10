@@ -37,8 +37,21 @@ export class UndercoverCharacterPage {
   }
 
   public choosePerson() {
-    this.undercover.setPerson(this.activePerson);
-    this.tools.pushPage(UndercoverPage);
+    this.undercover.setPerson(this.activePerson).then(() => {
+      this.tools.pushPage(UndercoverPage);
+    }, err => {
+      
+    });
+  }
+
+  private changeSlider() {
+    let allSlides = document.getElementsByClassName('swiper-slide');
+    let activeSlide = document.getElementsByClassName('swiper-slide-next')[0];
+
+    for(var i = 0; i < allSlides.length;i++) {
+      allSlides[i].classList.remove('active-character')
+      if(allSlides[i] == activeSlide) allSlides[i].classList.add('active-character');
+    }
   }
 
   ionViewDidLoad() {
@@ -51,16 +64,6 @@ export class UndercoverCharacterPage {
     });
 
     console.log('ionViewDidLoad UndercoverCharacterPage');
-  }
-
-  private changeSlider() {
-    let allSlides = document.getElementsByClassName('swiper-slide');
-    let activeSlide = document.getElementsByClassName('swiper-slide-next')[0];
-
-    for(var i = 0; i < allSlides.length;i++) {
-      allSlides[i].className = allSlides[i].className.replace('active-character', '')
-      if(allSlides[i] == activeSlide) allSlides[i].className += ' active-character';
-    }
   }
 
 }

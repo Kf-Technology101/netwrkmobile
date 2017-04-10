@@ -18,7 +18,7 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 import { ProfilePage } from '../profile/profile';
 
 import { Keyboard } from '@ionic-native/keyboard';
-
+ 
 // Animations
 import {
   animSpeed,

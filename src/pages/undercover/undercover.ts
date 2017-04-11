@@ -92,7 +92,13 @@ export class UndercoverPage {
   shareContainer: any = {
     state: 'off',
     hidden: true
-  }
+  };
+
+  toggContainers: any = [
+    this.galleryContainer,
+    this.emojiContainer,
+    this.shareContainer
+  ];
 
   hidePlaceholder = false;
 
@@ -245,11 +251,20 @@ export class UndercoverPage {
     }
 
     if (!visibility) {
-      if (container.state == 'off') {
+      if (container.hidden) {
         this.mainBtn.state = 'moved-n-scaled';
         container.hidden = false;
         container.state = 'on';
         this.setContentPadding(true);
+        for (let i = 0; i < this.toggContainers.length; i++) {
+          if (!this.toggContainers[i].hidden &&
+            container != this.toggContainers[i]){
+              this.toggContainers[i].state = 'off';
+            setTimeout(() => {
+              this.toggContainers[i].hidden = true;
+            }, chatAnim/2);
+          }
+        }
       } else {
         this.setContentPadding(false);
         this.mainBtn.state = 'normal'
@@ -313,6 +328,7 @@ export class UndercoverPage {
     this.slideAvatar.sliderInit();
     this.contentBlock = document.getElementsByClassName("scroll-content")['0'];
     this.setContentPadding(false);
+    this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
   }
 
   ionViewDidLoad() {

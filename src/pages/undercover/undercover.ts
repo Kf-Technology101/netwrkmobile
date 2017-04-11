@@ -15,6 +15,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Share } from '../../providers/share';
+import { User } from '../../providers/user';
 
 import { ProfilePage } from '../profile/profile';
 
@@ -139,7 +140,8 @@ export class UndercoverPage {
     private imagePicker: ImagePicker,
     public undercover: UndercoverProvider,
     public slideAvatar: SlideAvatar,
-    public share: Share
+    public share: Share,
+    public userProvider: User
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -295,6 +297,19 @@ export class UndercoverPage {
   postMessage() {
     let message = this.txtIn.nativeElement.value;
     if (message.trim() != '') {
+      let data = {
+        text: message,
+        user_id: this.userProvider.getAuthData().id,
+        image: ''
+      }
+
+      this.undercover.sendMessage(data)
+        .map(res => res.json())
+        .subscribe(res => {
+          console.log(res);
+        }, err => {
+        });
+      this.txtIn.setFocus();
       setTimeout(() => { this.postMessages.push(message); }, 100);
 
       this.txtIn.nativeElement.value = '';

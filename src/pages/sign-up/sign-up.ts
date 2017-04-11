@@ -68,8 +68,6 @@ export class SignUpPage {
   // id of the active state (this.states[n].id). Default: -1
   activeStateId: number = -1;
 
-  hiddenMainBtn: boolean = false;
-
   mainBtn: any = {
     state: 'normal'
   }

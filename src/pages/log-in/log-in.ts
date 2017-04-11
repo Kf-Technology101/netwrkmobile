@@ -46,7 +46,7 @@ export class LogInPage {
 
   contentState: string = 'fadeOut';
   mainBtn: any = {
-    state: 'normal' 
+    state: 'normal'
   };
 
   private textStrings: any = {};

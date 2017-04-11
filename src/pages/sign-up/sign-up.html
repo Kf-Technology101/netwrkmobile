@@ -83,7 +83,7 @@
 </ion-content>
 
 <ion-footer>
-  <button [hidden]="hiddenMainBtn" [@mainBtnState] = "mainBtn.state" ion-button color="bk"
+  <button [@mainBtnState]="mainBtn.state" ion-button color="bk"
           class="main-action-btn medium has-label"
           (click)="doSignUp(signUpForm)" outline></button>
   <span class="main-action-text" color="bk">

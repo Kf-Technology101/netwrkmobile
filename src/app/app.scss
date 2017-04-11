@@ -32,16 +32,11 @@
     box-shadow: none;
   }
 
-  &.has-label {
-    bottom: 40px;
-  }
-
   &.big {
     width: 68px;
     height: 110px;
     border-width: 5px;
     border-radius: 11px;
-    margin-bottom: 5px;
   }
 
   &.medium {
@@ -49,7 +44,6 @@
     height: 68px;
     border-width: 3px;
     border-radius: 7px;
-    margin-bottom: 3px;
   }
 
   &.small {
@@ -57,7 +51,6 @@
     height: 42px;
     border-width: 3px;
     border-radius: 4px;
-    margin-bottom: 5px;
   }
 
   button {

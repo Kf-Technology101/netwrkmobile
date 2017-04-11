@@ -14,6 +14,7 @@ import { CameraPage } from '../camera/camera';
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
+import { Share } from '../../providers/share';
 
 import { ProfilePage } from '../profile/profile';
 
@@ -125,7 +126,8 @@ export class UndercoverPage {
     private keyboard: Keyboard,
     private imagePicker: ImagePicker,
     public undercover: UndercoverProvider,
-    public slideAvatar: SlideAvatar
+    public slideAvatar: SlideAvatar,
+    public share: Share
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,

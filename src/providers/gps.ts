@@ -8,6 +8,10 @@ import { Api } from './api';
 
 @Injectable()
 export class Gps {
+  public coords: any = {
+    lat: null,
+    lng: null
+  }
 
   constructor(
     private http: Http,
@@ -34,6 +38,8 @@ export class Gps {
           latlng: resp.coords.latitude + ',' + resp.coords.longitude,
           sensor: true,
         }).share();
+        this.coords.lat = resp.coords.latitude;
+        this.coords.lng = resp.coords.longitude;
         seq.map(res => res.json()).subscribe(
           res => {
             let zipCode: string = this.parseGoogleAddress(res.results);

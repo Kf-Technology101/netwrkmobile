@@ -15,6 +15,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Share } from '../../providers/share';
+import { User } from '../../providers/user';
 
 import { ProfilePage } from '../profile/profile';
 
@@ -92,7 +93,13 @@ export class UndercoverPage {
   shareContainer: any = {
     state: 'off',
     hidden: true
-  }
+  };
+
+  toggContainers: any = [
+    this.galleryContainer,
+    this.emojiContainer,
+    this.shareContainer
+  ];
 
   hidePlaceholder = false;
 
@@ -133,7 +140,8 @@ export class UndercoverPage {
     private imagePicker: ImagePicker,
     public undercover: UndercoverProvider,
     public slideAvatar: SlideAvatar,
-    public share: Share
+    public share: Share,
+    public userProvider: User
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -245,11 +253,20 @@ export class UndercoverPage {
     }
 
     if (!visibility) {
-      if (container.state == 'off') {
+      if (container.hidden) {
         this.mainBtn.state = 'moved-n-scaled';
         container.hidden = false;
         container.state = 'on';
         this.setContentPadding(true);
+        for (let i = 0; i < this.toggContainers.length; i++) {
+          if (!this.toggContainers[i].hidden &&
+            container != this.toggContainers[i]){
+              this.toggContainers[i].state = 'off';
+            setTimeout(() => {
+              this.toggContainers[i].hidden = true;
+            }, chatAnim/2);
+          }
+        }
       } else {
         this.setContentPadding(false);
         this.mainBtn.state = 'normal'
@@ -280,6 +297,19 @@ export class UndercoverPage {
   postMessage() {
     let message = this.txtIn.nativeElement.value;
     if (message.trim() != '') {
+      let data = {
+        text: message,
+        user_id: this.userProvider.getAuthData().id,
+        image: ''
+      }
+
+      this.undercover.sendMessage(data)
+        .map(res => res.json())
+        .subscribe(res => {
+          console.log(res);
+        }, err => {
+        });
+      this.txtIn.setFocus();
       setTimeout(() => { this.postMessages.push(message); }, 100);
 
       this.txtIn.nativeElement.value = '';
@@ -320,6 +350,7 @@ export class UndercoverPage {
     this.slideAvatar.sliderInit();
     this.contentBlock = document.getElementsByClassName("scroll-content")['0'];
     this.setContentPadding(false);
+    this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
   }
 
   ionViewDidLoad() {

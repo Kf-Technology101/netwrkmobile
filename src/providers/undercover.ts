@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 import { LocalStorage } from './local-storage';
 import { User } from './user';
 import { Tools } from './tools';
+import { Api } from './api';
+import { Gps } from './gps';
 
 @Injectable()
 export class UndercoverProvider {
@@ -11,7 +13,9 @@ export class UndercoverProvider {
   constructor(
     public localStorage: LocalStorage,
     public user: User,
-    public tools: Tools
+    public tools: Tools,
+    public api: Api,
+    public gps: Gps
   ) {
     console.log('Hello Undercover Provider');
   }
@@ -51,5 +55,18 @@ export class UndercoverProvider {
         reject(err);
       });
     });
+  }
+
+  public sendMessage(data: any): any {
+    let seq = this.api.post('messages', {
+      image: data.image,
+      text: data.text,
+      user_id: data.user_id,
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng,
+      undercover: true,
+    }).share();
+
+    return seq;
   }
 }

@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Content } from 'ionic-angular';
 
 import {
   CameraPreview,
@@ -58,6 +58,8 @@ export class UndercoverPage {
   @ViewChild('slfb') checkFb;
   @ViewChild('sltw') checkTw;
   @ViewChild('slln') checkIn;
+  @ViewChild('chatContainer') chatCont;
+  @ViewChild(Content) content: Content;
 
   chatOptions: any = {
     state: 'default'
@@ -109,6 +111,10 @@ export class UndercoverPage {
   txtFocus: boolean = false;
 
   caretPos: number = 0;
+
+  postMessages: any = [];
+
+  contentBlock: any = undefined;
 
   public user: any;
 
@@ -168,7 +174,8 @@ export class UndercoverPage {
 
     this.user = this.undercover.getPerson();
 
-    // The netwrk haven't been created yet
+    for (let i = 0; i < 10; i++)
+      this.postMessages.push("Message #" + i);
   }
 
   dragContent = true;
@@ -219,10 +226,19 @@ export class UndercoverPage {
     }
   }
 
+  setContentPadding(status){
+    if (status) {
+      this.contentBlock.style.padding = '0 0 ' + window.screen.height/2 + 'px';
+    } else {
+      this.contentBlock.style.padding = '0 0 180px';
+    }
+  }
+
   toggleContainer(container, visibility) {
     if (visibility == 'hide') {
       this.mainBtn.state = 'normal';
       container.state = 'off';
+      this.setContentPadding(false);
       setTimeout(() => {
         container.hidden = true;
       }, chatAnim/2);
@@ -233,7 +249,9 @@ export class UndercoverPage {
         this.mainBtn.state = 'moved-n-scaled';
         container.hidden = false;
         container.state = 'on';
+        this.setContentPadding(true);
       } else {
+        this.setContentPadding(false);
         this.mainBtn.state = 'normal'
         container.state = 'off';
         setTimeout(() => {
@@ -259,8 +277,14 @@ export class UndercoverPage {
     return String.fromCodePoint(unicode);
   }
 
-  sendMessage() {
-    console.log(this.txtIn);
+  postMessage() {
+    let message = this.txtIn.nativeElement.value;
+    if (message.trim() != '') {
+      setTimeout(() => { this.postMessages.push(message); }, 100);
+
+      this.txtIn.nativeElement.value = '';
+      this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
+    }
   }
 
   getCaretPos(oField) {
@@ -276,20 +300,6 @@ export class UndercoverPage {
     }, 100);
   }
 
-  setShareCheckbox(){
-    // for (let i in this.checkbox) {
-    //   if (this.checkbox[i]) {
-    //     this.checkbox[i].children['0'].innerHTML = 'on';
-    //     this.checkbox[i].children['1'].style.left = '98px';
-    //     this.checkbox[i].classList.add('active');
-    //   } else {
-    //     this.checkbox[i].children['0'].innerHTML = 'off';
-    //     this.checkbox[i].children['1'].style.left = '3px';
-    //     this.checkbox[i].classList.remove('active');
-    //   }
-    // }
-  }
-
   toggleShareSlider(mess){
     this.checkbox[mess] = !this.checkbox[mess];
   }
@@ -301,7 +311,8 @@ export class UndercoverPage {
     this.mainBtn.hidden = false;
 
     this.slideAvatar.sliderInit();
-    this.setShareCheckbox();
+    this.contentBlock = document.getElementsByClassName("scroll-content")['0'];
+    this.setContentPadding(false);
   }
 
   ionViewDidLoad() {

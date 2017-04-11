@@ -14,6 +14,7 @@ import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
 import { ProfilePage } from '../pages/profile/profile';
 import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 
+import { NetworkPage } from '../pages/network/network';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 import { NetworkNoPage } from '../pages/network-no/network-no';
 import { NetworkFaqPage } from '../pages/network-faq/network-faq';
@@ -59,6 +60,7 @@ let pages = [
   ProfilePage,
   ProfileSettingPage,
 
+  NetworkPage,
   NetworkFindPage,
   NetworkNoPage,
   NetworkFaqPage,

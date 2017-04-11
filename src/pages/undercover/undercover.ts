@@ -304,12 +304,19 @@ export class UndercoverPage {
     this.checkbox[mess] = !this.checkbox[mess];
   }
 
+  changeCallback(positionLeft?: boolean) {
+    if (positionLeft) {
+      this.tools.showToast('Test...');
+    }
+  }
+
   ionViewDidEnter() {
     this.mainInput.state = 'fadeIn';
     this.mainInput.hidden = false;
     this.mainBtn.state = 'normal';
     this.mainBtn.hidden = false;
 
+    this.slideAvatar.changeCallback = this.changeCallback.bind(this);
     this.slideAvatar.sliderInit();
     this.contentBlock = document.getElementsByClassName("scroll-content")['0'];
     this.setContentPadding(false);

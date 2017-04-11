@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, Platform } from 'ionic-angular';
 
 import { Slides } from 'ionic-angular';
 
@@ -35,7 +35,8 @@ export class UndercoverCharacterPage {
     public navParams: NavParams,
     public undercover: UndercoverProvider,
     public tools: Tools,
-    public slideAvatar: SlideAvatar
+    public slideAvatar: SlideAvatar,
+    public platform: Platform
   ) {
     this.persons = heroes;
     // this.undercover.setActivePerson(true);
@@ -44,12 +45,15 @@ export class UndercoverCharacterPage {
   }
 
   choosePerson() {
-    console.log('click');
-    this.undercover.setPerson(this.activePerson).then(() => {
+    if (this.platform.is('cordova')) {
+      this.undercover.setPerson(this.activePerson).then(() => {
+        this.tools.pushPage(UndercoverPage);
+      }, err => {
+        this.tools.showToast(this.textError);
+      });
+    } else {
       this.tools.pushPage(UndercoverPage);
-    }, err => {
-      this.tools.showToast(this.textError);
-    });
+    }
   }
 
   private changeSlider() {

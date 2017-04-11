@@ -36,11 +36,13 @@ import { Gps } from '../providers/gps';
 // import { Permission } from '../providers/permission';
 import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
+import { Share } from '../providers/share';
 
 // Native services
 import { Facebook } from 'ionic-native';
 import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 enableProdMode();
 
@@ -91,10 +93,12 @@ export function providers() {
     // Permission,
     UndercoverProvider,
     SlideAvatar,
+    Share,
 
     Facebook,
     Geolocation,
     CameraPreview,
+    SocialSharing,
 
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }

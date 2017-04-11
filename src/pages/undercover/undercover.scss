@@ -262,7 +262,8 @@ page-undercover {
       }
       .toggle-el {
         & {
-          max-width: 110px;
+          position: relative;
+          width: 110px;
           margin: 0 auto;
           border-radius: 13px;
           height: 26px;
@@ -286,7 +287,7 @@ page-undercover {
             width: 26px;
             height: 26px;
             position: absolute;
-            left: 3px;
+            left: 0px;
             top: 0;
             border-radius: 50%;
             background: #fff;
@@ -294,7 +295,7 @@ page-undercover {
             transition: all 0.3s ease-out;
           }
           &.right{
-            left: 98px;
+            left: 85px;
           }
           ion-icon {
             line-height: 26px;
@@ -380,9 +381,9 @@ page-undercover {
           position: relative;
         }
         img {
-          max-height: 250px;
           width: 100%;
-          object-fit: cover;
+          // max-height: 250px;
+          // object-fit: cover;
         }
         .social-ico {
           left: 15px;

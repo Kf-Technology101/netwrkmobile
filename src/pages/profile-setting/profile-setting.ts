@@ -1,7 +1,11 @@
 import { Component, ElementRef, ViewChild, Renderer } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
+// Pages
+import { LogInPage } from '../log-in/log-in';
+
 // Providers
+import { User } from '../../providers/user';
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
@@ -26,7 +30,8 @@ export class ProfileSettingPage {
     private renderer: Renderer,
     public tools: Tools,
     public undercover: UndercoverProvider,
-    public slideAvatar: SlideAvatar
+    public slideAvatar: SlideAvatar,
+    public userProvider: User
   ) {
     this.user = this.undercover.getPerson();
   }
@@ -61,6 +66,11 @@ export class ProfileSettingPage {
 
   ionViewWillLeave() {
     // this.slideAvatar.stopSliderEvents();
+  }
+
+  logOut() {
+    this.userProvider.logout();
+    this.tools.pushPage(LogInPage);
   }
 
 }

@@ -10,8 +10,6 @@ page-profile {
     }
 
     .setting {
-      margin-right: 12px;
-
       [name='settings'] {
         font-size: 30px;
         color: #fff;
@@ -53,6 +51,11 @@ page-profile {
           color: #b7b7b7;
         }
       }
+    }
+
+    .bar-buttons {
+      position: absolute;
+      right: 10px;
     }
   }
 

@@ -77,7 +77,7 @@ export class User {
     return seq;
   }
 
-  update(id: number, accountInfo: any, type: string) {
+  update(id: number, accountInfo: any, type?: string) {
     let seq = this.api.patch('registrations/' + id, accountInfo).share();
     seq.map(res => res.json()).subscribe(
       res => {

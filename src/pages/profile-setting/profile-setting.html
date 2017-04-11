@@ -10,11 +10,11 @@
       </div>
     </div>
 
-    <ion-buttons end>
+    <!-- <ion-buttons end>
       <button ion-button icon-only clear class="setting">
         <ion-icon name="settings" color="dark"></ion-icon>
       </button>
-    </ion-buttons>
+    </ion-buttons> -->
   </ion-toolbar>
 
 </ion-header>
@@ -38,7 +38,7 @@
         [ngClass]="{'has-value' : userName}"></ion-input>
     </ion-col>
   </ion-row>
-  <ion-row class="points-section bad-rating">
+  <ion-row class="points-section bad-rating" hidden>
     <ion-col text-center>
       <span>- 67 points</span>
     </ion-col>
@@ -100,6 +100,9 @@
       </ion-row>
     </ion-col>
   </ion-row>
+  <div text-center>
+    <button ion-button (click)="logOut()" color="light" outline>Log Out</button>
+  </div>
 </ion-content>
 
 <ion-footer>

@@ -28,9 +28,12 @@ export class NetworkNoPage {
   }
 
   goUndercover() {
-    this.undercover.getPerson() ?
-      this.tools.pushPage(UndercoverPage) :
+    if (this.undercover.getPerson()) {
+      this.undercover.setActivePerson(true);
+      this.tools.pushPage(UndercoverPage);
+    } else {
       this.tools.pushPage(UndercoverCharacterPage);
+    }
   }
 
   goFaq() {

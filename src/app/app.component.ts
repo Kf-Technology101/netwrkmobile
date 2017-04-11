@@ -79,6 +79,7 @@ export class MyApp {
       // this.rootPage = CameraPage;
       // this.rootPage = UndercoverCharacterPage;
       // this.rootPage = SignUpConfirmPage;
+      // this.rootPage = NetworkNoPage;
     }
   }
 

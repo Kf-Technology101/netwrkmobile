@@ -28,6 +28,7 @@ export class UndercoverCharacterPage {
   };
   public sliderLoaded: boolean = false;
   public changeError: string;
+  public textError: string;
 
   constructor(
     public navCtrl: NavController,
@@ -37,15 +38,17 @@ export class UndercoverCharacterPage {
     public slideAvatar: SlideAvatar
   ) {
     this.persons = heroes;
-    this.undercover.setActivePerson(true);
-    this.changeError = 'You can\'t go from Undercover mode in this time';
+    // this.undercover.setActivePerson(true);
+    this.changeError = 'You can\'t leave Undercover mode right now';
+    this.textError = 'Something went wrong, please try again later';
   }
 
-  public choosePerson() {
+  choosePerson() {
+    console.log('click');
     this.undercover.setPerson(this.activePerson).then(() => {
       this.tools.pushPage(UndercoverPage);
     }, err => {
-
+      this.tools.showToast(this.textError);
     });
   }
 
@@ -83,6 +86,7 @@ export class UndercoverCharacterPage {
   ionViewDidEnter() {
     this.slideAvatar.changeCallback = this.changeCallback.bind(this);
     this.slideAvatar.sliderInit();
+    this.slideAvatar.setSliderPosition(true);
   }
 
 }

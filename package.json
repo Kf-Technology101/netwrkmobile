@@ -25,6 +25,7 @@
     "@ionic-native/diagnostic": "^3.4.4",
     "@ionic-native/geolocation": "^3.2.2",
     "@ionic-native/image-picker": "^3.4.4",
+    "@ionic-native/instagram": "^3.4.4",
     "@ionic-native/keyboard": "^3.4.3",
     "@ionic-native/social-sharing": "^3.4.4",
     "@ionic/storage": "1.1.7",

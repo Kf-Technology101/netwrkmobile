@@ -27,6 +27,7 @@ export class UndercoverProvider {
   }
 
   public setPerson(person: any): any {
+    console.log(person)
     let updateObj: any = {
       role_name: person.name,
       role_description: person.description,
@@ -35,20 +36,20 @@ export class UndercoverProvider {
     }
 
     return new Promise((resolve, reject) => {
-      // this.tools.showLoader();
-      // this.user.update(
-      //   this.user.getAuthData().id,
-      //   { user: updateObj }
-      // ).map(res => res.json()).subscribe(res => {
-      //   this.tools.hideLoader();
-      //   person.active = true;
-      //   this.localStorage.set('undercover_person', person);
-      //   resolve(res);
-      // }, err => {
-      //   this.tools.hideLoader();
-      //   this.tools.showToast(JSON.stringify(err));
-      //   reject(err);
-      // });
+      this.tools.showLoader();
+      this.user.update(
+        this.user.getAuthData().id,
+        { user: updateObj }
+      ).map(res => res.json()).subscribe(res => {
+        this.tools.hideLoader();
+        person.active = true;
+        this.localStorage.set('undercover_person', person);
+        resolve(res);
+      }, err => {
+        this.tools.hideLoader();
+        this.tools.showToast(JSON.stringify(err));
+        reject(err);
+      });
     });
   }
 }

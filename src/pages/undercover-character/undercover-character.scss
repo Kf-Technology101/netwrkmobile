@@ -1,5 +1,9 @@
 page-undercover-character {
   .header {
+    &::after {
+      background: none;
+    }
+
     .toolbar-background {
       background: transparent;
       border: none;

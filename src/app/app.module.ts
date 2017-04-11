@@ -44,7 +44,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
 import { SocialSharing } from '@ionic-native/social-sharing';
 
-enableProdMode();
+// enableProdMode();
 
 let pages = [
   MyApp,

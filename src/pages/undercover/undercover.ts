@@ -167,6 +167,8 @@ export class UndercoverPage {
     });
 
     this.user = this.undercover.getPerson();
+
+    // The netwrk haven't been created yet
   }
 
   dragContent = true;

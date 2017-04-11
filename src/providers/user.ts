@@ -156,5 +156,16 @@ export class User {
   private saveAuthData(authData: any, type: string) {
     this.storage.set('auth_type', type);
     this.storage.set('auth_data', authData);
+
+    let undercover = {
+      name: authData.role_name,
+      description: authData.role_description,
+      imageUrl: authData.role_image_url,
+      active: false
+    };
+
+    if (undercover.name && undercover.description && undercover.imageUrl) {
+      this.storage.set('undercover_person', undercover);
+    }
   }
 }

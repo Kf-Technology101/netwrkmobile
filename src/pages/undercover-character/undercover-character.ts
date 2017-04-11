@@ -9,6 +9,7 @@ import { UndercoverPage } from '../undercover/undercover';
 // Providers
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
+import { SlideAvatar } from '../../providers/slide-avatar';
 
 import { heroes } from '../../includes/heroes';
 
@@ -26,21 +27,25 @@ export class UndercoverCharacterPage {
     active: false
   };
   public sliderLoaded: boolean = false;
+  public changeError: string;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     public undercover: UndercoverProvider,
-    public tools: Tools
+    public tools: Tools,
+    public slideAvatar: SlideAvatar
   ) {
     this.persons = heroes;
+    this.undercover.setActivePerson(true);
+    this.changeError = 'You can\'t go from Undercover mode in this time';
   }
 
   public choosePerson() {
     this.undercover.setPerson(this.activePerson).then(() => {
       this.tools.pushPage(UndercoverPage);
     }, err => {
-      
+
     });
   }
 
@@ -54,6 +59,15 @@ export class UndercoverCharacterPage {
     }
   }
 
+  changeCallback(positionLeft?: boolean) {
+    if (positionLeft) {
+      setTimeout(() => {
+        this.slideAvatar.setSliderPosition(true);
+      }, 300)
+      this.tools.showToast(this.changeError);
+    }
+  }
+
   ionViewDidLoad() {
     this.slides.ionSlideWillChange.subscribe(() => {
       let activeIndex = this.slides.getActiveIndex();
@@ -64,6 +78,11 @@ export class UndercoverCharacterPage {
     });
 
     console.log('ionViewDidLoad UndercoverCharacterPage');
+  }
+
+  ionViewDidEnter() {
+    this.slideAvatar.changeCallback = this.changeCallback.bind(this);
+    this.slideAvatar.sliderInit();
   }
 
 }

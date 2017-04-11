@@ -8,6 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { Api } from './api';
 import { LocalStorage } from './local-storage';
 import { Social } from './social';
+// import { UndercoverProvider } from './undercover';
 
 import { Facebook } from 'ionic-native';
 
@@ -21,7 +22,8 @@ export class User {
     public http: Http,
     public api: Api,
     public storage: LocalStorage,
-    public social: Social
+    public social: Social,
+    // public undercover: UndercoverProvider
   ) {}
 
   verification(accountInfo: any) {

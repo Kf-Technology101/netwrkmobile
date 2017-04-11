@@ -17,19 +17,15 @@
 
 .main-action-btn {
   position: absolute;
-  bottom: 10px;
-  height: 110px;
-  width: 68px;
+  bottom: 68px;
   left: 0;
   right: 0;
   margin: auto;
-  bottom: 10px;
   text-align: center;
-  border-width: 3px;
-  border-radius: 10px;
   background: #fff;
   box-shadow: 0 0 10px rgba(255,255,255,0.8);
-  // transition: all 0.5s ease;
+  padding: 0;
+  box-sizing: content-box;
 
   &.transparent {
     background: transparent;
@@ -40,12 +36,28 @@
     bottom: 40px;
   }
 
+  &.big {
+    width: 68px;
+    height: 110px;
+    border-width: 5px;
+    border-radius: 11px;
+    margin-bottom: 5px;
+  }
+
+  &.medium {
+    width: 42px;
+    height: 68px;
+    border-width: 3px;
+    border-radius: 7px;
+    margin-bottom: 3px;
+  }
+
   &.small {
     width: 26px;
     height: 42px;
-    border-width: 2px;
-    border-radius: 6px;
-    padding: 0;
+    border-width: 3px;
+    border-radius: 4px;
+    margin-bottom: 5px;
   }
 
   button {
@@ -338,11 +350,13 @@ ion-header.incognito-header {
       top: 0;
       bottom: 0;
       width: 100%;
-      height: 17px;
+      height: 15px;
       margin: auto;
       background: #fff;
       border-radius: 20px;
       text-align: center;
+      border: 1px solid #fff;
+      box-sizing: content-box;
     }
     .info{
       &{
@@ -351,13 +365,13 @@ ion-header.incognito-header {
         right: 0;
       }
       .username{
-        font-size: 14px;
+        font-size: 12px;
         overflow:hidden;
         white-space:nowrap;
         text-overflow: ellipsis;
         display: inline-block;
         max-width: 100px;
-        line-height: 18px;
+        line-height: 15px;
       }
     }
     ion-icon{
@@ -380,7 +394,7 @@ ion-header.incognito-header {
     position: relative; /* important (all position that's not `static`) */
     width: 26px;
     height: 26px;
-    top: -22px;
+    top: -23px;
     left: -13px;
     border-radius: 50%;
     background-color: transparent;

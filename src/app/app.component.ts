@@ -9,7 +9,7 @@ import { LogInPage } from '../pages/log-in/log-in';
 // import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
-import { UndercoverPage } from '../pages/undercover/undercover';
+// import { UndercoverPage } from '../pages/undercover/undercover';
 // import { CameraPage } from '../pages/camera/camera';
 // import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 // import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
@@ -72,10 +72,10 @@ export class MyApp {
           break;
       }
     } else {
-      // this.rootPage = LogInPage;
+      this.rootPage = LogInPage;
       // this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
-      this.rootPage = UndercoverPage;
+      // this.rootPage = UndercoverPage;
       // this.rootPage = CameraPage;
       // this.rootPage = UndercoverCharacterPage;
       // this.rootPage = SignUpConfirmPage;

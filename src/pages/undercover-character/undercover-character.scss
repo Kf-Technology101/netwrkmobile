@@ -1,4 +1,29 @@
 page-undercover-character {
+  .header {
+    .toolbar-background {
+      background: transparent;
+      border: none;
+    }
+
+    .warning {
+      color: #BDBDBD;
+      font-size: 12px;
+    }
+
+    .drag-container {
+      .dragline {
+        background: transparent;
+        color: #ccc;
+
+        .info {
+          .username {
+            max-width: 100%;
+          }
+        }
+      }
+    }
+  }
+
   ion-slides {
     height: 230px;
     margin-left: -90px;
@@ -35,16 +60,22 @@ page-undercover-character {
   .content {
     background: #5c5c5c;
 
-    h1 {
-      font-size: 20px;
-      color: #fff;
-      text-align: center;
-      font-weight: 400;
-    }
+    .row {
+      height: 100%;
 
-    .person-description {
-      color: #fff;
-      text-align: center;
+      h1 {
+        font-size: 20px;
+        color: #fff;
+        text-align: center;
+        font-weight: 400;
+      }
+
+      .person-description {
+        color: #fff;
+        text-align: center;
+        overflow: hidden;
+        height: 97px;
+      }
     }
   }
 }

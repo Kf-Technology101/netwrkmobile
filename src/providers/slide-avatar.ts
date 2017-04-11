@@ -19,6 +19,8 @@ export class SlideAvatar {
 
   private firedOnce: boolean = true;
 
+  public changeCallback: (positionLeft?: boolean) => void;
+
   constructor(
     public app: App,
     public undercoverProvider: UndercoverProvider
@@ -67,7 +69,7 @@ export class SlideAvatar {
     this.dEnd = dragLineW - dragEl.offsetWidth/2;
   }
 
-  private setSliderPosition(state) {
+  public setSliderPosition(state) {
     let slider = document.getElementsByClassName('draggable-element active');
     this.arrowIcon = slider['0'].parentElement.children['1'];
     this.arrowIcon.style.opacity = '1';
@@ -119,6 +121,7 @@ export class SlideAvatar {
     if (e.target.classList.contains('draggable-element')) {
       this.selectedItem = e.target;
       if (this.xPos - this.xElem <= this.dEnd/2 + 3) {
+        if (this.changeCallback) this.changeCallback(true);
         this.selectedItem.style.left = this.dStart + 'px';
         this.selectedItem.classList.add('transition');
         setTimeout(() => {
@@ -128,6 +131,7 @@ export class SlideAvatar {
         this.sliderState = false;
       }
       if (this.xPos - this.xElem > this.dEnd/2 + 3) {
+        if (this.changeCallback) this.changeCallback(false);
         this.selectedItem.style.left = this.dEnd + 'px';
         this.selectedItem.classList.add('transition');
         setTimeout(() => {

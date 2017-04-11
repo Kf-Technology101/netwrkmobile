@@ -72,7 +72,7 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
   })),
   state('normal', style({
     transform: 'scale(1)',
-    bottom: '70px'
+    bottom: '68px'
   })),
 
   state('hidden', style({

@@ -72,7 +72,7 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
   })),
   state('normal', style({
     transform: 'scale(1)',
-    bottom: '70px'
+    bottom: '68px'
   })),
 
   state('hidden', style({
@@ -99,11 +99,9 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
 
 export const toggleGallery: any = trigger('galleryState', [
   state('on', style({
-    top: '50%',
-    height: '50%'
+    height: window.screen.height/2
   })),
   state('off', style({
-    top: '100%',
     height: 0
   })),
   transition('* => *', animate(chatAnim/2 + 'ms ease-in'))

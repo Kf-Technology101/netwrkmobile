@@ -13,7 +13,13 @@
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label>
-
+  <div class="chat-container" #chatContainer>
+    <p class="message" *ngFor="let i of postMessages">
+      <img src="{{ user.imageUrl }}" class="chat-avatar">
+      <span class="username">{{ user.name }}</span>
+      <span class="text">{{ i }}</span>
+    </p>
+  </div>
 </ion-content>
 
 <ion-footer class="has-input chatFooter">
@@ -117,7 +123,7 @@
     <input #textInput id="textInput" type="text" placeholder="On this spot..." (tap)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)">
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
-    <button ion-button item-right clear (tap)="sendMessage()">
+    <button ion-button item-right clear (tap)="postMessage()">
       <ion-icon ios="ios-text-outline" md="ios-text-outline"></ion-icon>
     </button>
   </ion-item>

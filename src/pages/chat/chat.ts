@@ -308,7 +308,6 @@ export class ChatPage {
   }
 
   postMessage() {
-    // ""
     console.log(this.txtIn);
     let message = {
       text: this.txtIn.value,
@@ -341,7 +340,7 @@ export class ChatPage {
           this.txtIn.setFocus();
           this.txtIn.value = '';
         }
-      }, 100);
+      }, 80);
 
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.camera.takenImage = undefined;

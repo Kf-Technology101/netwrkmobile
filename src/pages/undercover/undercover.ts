@@ -285,15 +285,16 @@ export class UndercoverPage {
   }
 
   insertEmoji(emoji) {
-    this.txtIn.nativeElement.focus();
-    let emojiDecoded = String.fromCodePoint(emoji);
-    let inputVal = this.txtIn.nativeElement.value;
-    inputVal = inputVal.split('');
-    this.getCaretPos(this.txtIn.nativeElement);
-    inputVal.splice(this.caretPos, 0, emojiDecoded);
-    this.txtIn.nativeElement.value = inputVal.join('');
-    this.txtIn.nativeElement.selectionStart = this.caretPos + emojiDecoded.length;
-    this.txtIn.nativeElement.selectionEnd = this.caretPos + emojiDecoded.length;
+    console.log(this.txtIn);
+    // this.txtIn.nativeElement.focus();
+    // let emojiDecoded = String.fromCodePoint(emoji);
+    // let inputVal = this.txtIn.nativeElement.value;
+    // inputVal = inputVal.split('');
+    // this.getCaretPos(this.txtIn.nativeElement);
+    // inputVal.splice(this.caretPos, 0, emojiDecoded);
+    // this.txtIn.nativeElement.value = inputVal.join('');
+    // this.txtIn.nativeElement.selectionStart = this.caretPos + emojiDecoded.length;
+    // this.txtIn.nativeElement.selectionEnd = this.caretPos + emojiDecoded.length;
   }
 
   convertEmoji(unicode) {
@@ -309,6 +310,7 @@ export class UndercoverPage {
     };
     if (this.camera.takenImage) {
       message.image = this.camera.takenImage;
+      this.camera.takenImage = null;
     }
     if (message.text.trim() != '' || message.image) {
       if (this.userProvider.getAuthData()) {
@@ -328,9 +330,11 @@ export class UndercoverPage {
           });
       }
       let self = this;
-      setTimeout(() => { this.postMessages.push(message); self.txtIn.setFocus(); }, 100);
+      if (!message.image) {
+        setTimeout(() => { this.postMessages.push(message); self.txtIn.setFocus(); }, 100);
 
-      this.txtIn.value = '';
+        this.txtIn.value = '';
+      }
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
     }
   }

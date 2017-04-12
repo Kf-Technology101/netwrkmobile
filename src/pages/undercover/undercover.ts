@@ -36,7 +36,7 @@ import {
 
 @Component({
   selector: 'page-undercover',
-  templateUrl: 'chat.html',
+  templateUrl: 'undercover.html',
   animations: [
     toggleInputsFade,
     rotateChatPlus,
@@ -51,7 +51,7 @@ import {
   ]
 })
 
-export class ChatPage {
+export class UndercoverPage {
   @ViewChild('galleryCont') gCont;
   @ViewChild('emojiCont') emCont;
   @ViewChild('shareCont') shCont;
@@ -141,7 +141,7 @@ export class ChatPage {
     public tools: Tools,
     private keyboard: Keyboard,
     private imagePicker: ImagePicker,
-    public undercoverPrvd: UndercoverProvider,
+    public undercover: UndercoverProvider,
     public slideAvatar: SlideAvatar,
     public share: Share,
     public userProvider: User,
@@ -184,13 +184,7 @@ export class ChatPage {
       console.log(err);
     });
 
-    this.user = this.undercoverPrvd.getPerson();
-    if (!this.user) {
-      this.user = {
-        name: '',
-        imageUrl: '',
-      }
-    }
+    this.user = this.undercover.getPerson();
 
     // for (let i = 0; i < 10; i++)
     //   this.postMessages.push("Message #" + i);
@@ -317,6 +311,7 @@ export class ChatPage {
     if (this.camera.takenImage) {
       message.image = this.camera.takenImage;
       this.camera.takenImage = null;
+      console.log("message");
     }
     if (message.text.trim() != '' || message.image) {
       if (this.userProvider.getAuthData()) {
@@ -326,7 +321,7 @@ export class ChatPage {
           image: message.image
         }
 
-        this.undercoverPrvd.sendMessage(data)
+        this.undercover.sendMessage(data)
           .map(res => res.json())
           .subscribe(res => {
             console.log(res);

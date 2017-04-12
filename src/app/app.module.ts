@@ -34,7 +34,7 @@ import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
 import { Gps } from '../providers/gps';
 // import { Permission } from '../providers/permission';
-import { Undercover } from '../providers/undercover';
+import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
 import { Share } from '../providers/share';
 import { Network } from '../providers/network';

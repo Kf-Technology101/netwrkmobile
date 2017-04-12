@@ -9,7 +9,7 @@ import { UndercoverCharacterPage } from '../undercover-character/undercover-char
 
 // Providers
 import { Tools } from '../../providers/tools';
-import { Undercover } from '../../providers/undercover';
+import { UndercoverProvider } from '../../providers/undercover';
 
 @Component({
   selector: 'page-network-no',
@@ -20,7 +20,7 @@ export class NetworkNoPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public tools: Tools,
-    public undercoverPrvd: Undercover
+    public undercoverPrvd: UndercoverProvider
   ) {}
 
   doFounder() {

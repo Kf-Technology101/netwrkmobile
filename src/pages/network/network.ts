@@ -8,7 +8,7 @@ import { NetworkContactListPage } from '../network-contact-list/network-contact-
 
 // Providers
 import { Tools } from '../../providers/tools';
-import { Undercover } from '../../providers/undercover';
+import { UndercoverProvider } from '../../providers/undercover';
 import { Network } from '../../providers/network';
 import { Gps } from '../../providers/gps';
 
@@ -24,7 +24,7 @@ export class NetworkPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public tools: Tools,
-    public undercoverPrvd: Undercover,
+    public undercoverPrvd: UndercoverProvider,
     public gps: Gps,
     public networkPrvd: Network
   ) {

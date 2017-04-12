@@ -7,7 +7,7 @@ import { Slides } from 'ionic-angular';
 import { ChatPage } from '../chat/chat';
 
 // Providers
-import { Undercover } from '../../providers/undercover';
+import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
 
@@ -33,7 +33,7 @@ export class UndercoverCharacterPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public undercoverPrvd: Undercover,
+    public undercoverPrvd: UndercoverProvider,
     public tools: Tools,
     public slideAvatar: SlideAvatar,
     public platform: Platform

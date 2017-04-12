@@ -4,15 +4,19 @@
       <img class="sun-icon" src="assets/images/sun_icon.png">
       <ion-card>
         <ion-card-content>
-          <span color="bk">
+          <span color="bk" *ngIf="action == 'join'">
             <p>Please tap the button to connect to this netwrk.</p>
             <p></p>
+          </span>
+          <span color="bk" *ngIf="action == 'create'">
+            <p>To become a founder, at least 20 people must be invited from your contact list or by email, and at least 10 need to join.</p>
+            <p>10 people are needed to found a netwrk. Click the email button to contact your email list, or send a text message to your phone book.</p>
           </span>
         </ion-card-content>
       </ion-card>
     </ion-col>
   </ion-row>
-  <ion-row class="action-buttons" hidden>
+  <ion-row class="action-buttons">
     <ion-col text-left>
       <button ion-button clear (tap)="sendEmails()">
         <span color="bk">Send emails</span>
@@ -24,7 +28,7 @@
       </button>
     </ion-col>
   </ion-row>
-  <ion-row class="count-people">
+  <ion-row class="count-people" *ngIf="people.length && people.length <= 10">
     <ion-col text-center>
       <span color="bk">{{ people.length }}/10</span>
     </ion-col>
@@ -46,7 +50,7 @@
 <ion-footer>
   <button ion-button color="bk"
     class="main-action-btn medium has-label"
-    (tap)="goToNetwork()" outline></button>
+    (tap)="doAction()" outline></button>
   <span class="main-action-text" color="bk">
     Tap to continue
   </span>

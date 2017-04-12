@@ -7,7 +7,7 @@ import { ProfileSettingPage } from '../profile-setting/profile-setting';
 // Providers
 import { Social } from '../../providers/social';
 import { Tools } from '../../providers/tools';
-import { UndercoverProvider } from '../../providers/undercover';
+import { Undercover } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 
 @Component({
@@ -34,7 +34,7 @@ export class ProfilePage {
     public navParams: NavParams,
     public social: Social,
     public tools: Tools,
-    public undercover: UndercoverProvider,
+    public undercoverPrvd: Undercover,
     public slideAvatar: SlideAvatar
   ) {
     setTimeout(()=>{
@@ -43,7 +43,7 @@ export class ProfilePage {
       }
     },100);
 
-    this.user = this.undercover.getPerson();
+    this.user = this.undercoverPrvd.getPerson();
   }
 
   ondrag(event, item) {

@@ -4,10 +4,10 @@ import { NavController, NavParams, Platform } from 'ionic-angular';
 import { Slides } from 'ionic-angular';
 
 // Pages
-import { UndercoverPage } from '../undercover/undercover';
+import { ChatPage } from '../chat/chat';
 
 // Providers
-import { UndercoverProvider } from '../../providers/undercover';
+import { Undercover } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
 
@@ -33,7 +33,7 @@ export class UndercoverCharacterPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public undercover: UndercoverProvider,
+    public undercoverPrvd: Undercover,
     public tools: Tools,
     public slideAvatar: SlideAvatar,
     public platform: Platform
@@ -46,13 +46,13 @@ export class UndercoverCharacterPage {
 
   choosePerson() {
     if (this.platform.is('cordova')) {
-      this.undercover.setPerson(this.activePerson).then(() => {
-        this.tools.pushPage(UndercoverPage);
+      this.undercoverPrvd.setPerson(this.activePerson).then(() => {
+        this.tools.pushPage(ChatPage);
       }, err => {
         this.tools.showToast(this.textError);
       });
     } else {
-      this.tools.pushPage(UndercoverPage);
+      this.tools.pushPage(ChatPage);
     }
   }
 

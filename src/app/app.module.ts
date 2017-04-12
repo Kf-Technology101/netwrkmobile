@@ -18,10 +18,9 @@ import { NetworkPage } from '../pages/network/network';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 import { NetworkNoPage } from '../pages/network-no/network-no';
 import { NetworkFaqPage } from '../pages/network-faq/network-faq';
-import { NetworkCreatePage } from '../pages/network-create/network-create';
 import { NetworkContactListPage } from '../pages/network-contact-list/network-contact-list';
 
-import { UndercoverPage } from '../pages/undercover/undercover';
+import { ChatPage } from '../pages/chat/chat';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 
 import { CameraPage } from '../pages/camera/camera';
@@ -35,7 +34,7 @@ import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
 import { Gps } from '../providers/gps';
 // import { Permission } from '../providers/permission';
-import { UndercoverProvider } from '../providers/undercover';
+import { Undercover } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
 import { Share } from '../providers/share';
 import { Network } from '../providers/network';
@@ -65,10 +64,9 @@ let pages = [
   NetworkFindPage,
   NetworkNoPage,
   NetworkFaqPage,
-  NetworkCreatePage,
   NetworkContactListPage,
 
-  UndercoverPage,
+  ChatPage,
   UndercoverCharacterPage,
 
   CameraPage
@@ -94,7 +92,7 @@ export function providers() {
     Social,
     Gps,
     // Permission,
-    UndercoverProvider,
+    Undercover,
     SlideAvatar,
     Share,
     Network,

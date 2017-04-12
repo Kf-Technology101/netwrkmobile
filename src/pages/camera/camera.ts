@@ -7,7 +7,7 @@ import {
   // CameraPreviewDimensions
 } from '@ionic-native/camera-preview';
 
-// import { UndercoverPage } from '../undercover/undercover';
+// import { ChatPage } from '../chat/chat';
 
 // Animations
 import {

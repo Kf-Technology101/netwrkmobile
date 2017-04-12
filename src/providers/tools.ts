@@ -87,7 +87,7 @@ export class Tools {
 
   public subscribeViewDidEnter(view: any) {
     let transparentPages: Array<string> = [
-      'UndercoverPage',
+      'ChatPage',
       'CameraPage',
     ];
     let name: string = view.instance.constructor.name;

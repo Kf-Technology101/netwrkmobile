@@ -8,8 +8,9 @@ import { Api } from './api';
 import { Gps } from './gps';
 
 @Injectable()
-export class UndercoverProvider {
+export class Undercover {
   public sliderState: boolean =  false;
+
   constructor(
     public localStorage: LocalStorage,
     public user: User,

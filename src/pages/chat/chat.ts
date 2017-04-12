@@ -338,7 +338,7 @@ export class ChatPage {
       setTimeout(() => { this.postMessages.push(message); self.txtIn.setFocus(); }, 100);
       this.txtIn.value = '';
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
-      this.camera.takenImage = undefio;
+      this.camera.takenImage = undefined;
     }
   }
 

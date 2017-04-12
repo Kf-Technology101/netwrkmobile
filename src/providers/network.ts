@@ -22,4 +22,9 @@ export class Network {
     return seq;
   }
 
+  public getUsers(data: any): any {
+    let seq = this.api.get('networks_users', data).share();
+    return seq;
+  }
+
 }

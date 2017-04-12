@@ -81,9 +81,23 @@ export class NetworkPage {
       });
   }
 
+  private getUsers() {
+    let data = { post_code: this.gps.zipCode };
+    this.networkPrvd.getUsers(data)
+      .map(res => res.json())
+      .subscribe(res => {
+        console.log(res);
+        // this.undercover.setActivePerson(false);
+        // this.tools.pushPage(ChatPage);
+      }, err => {
+        console.log(err);
+      });
+  }
+
   goBack() { this.tools.popPage(); }
 
   ionViewDidLoad() {
+    this.getUsers();
     console.log('ionViewDidLoad NetworkPage');
   }
 

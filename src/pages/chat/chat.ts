@@ -333,12 +333,12 @@ export class ChatPage {
             this.tools.showToast(this.sendError);
           });
       }
-      let self = this;
       setTimeout(() => {
         this.postMessages.push(message);
         if (message.text.trim() != '') {
-          this.txtIn.setFocus();
           this.txtIn.value = '';
+          this.txtIn.setFocus();
+          this.keyboard.show();
         }
       }, 80);
 

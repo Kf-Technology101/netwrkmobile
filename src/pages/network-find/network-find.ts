@@ -3,6 +3,7 @@ import { NavController, NavParams, Platform } from 'ionic-angular';
 
 // Page
 import { NetworkNoPage } from '../network-no/network-no';
+import { NetworkPage } from '../network/network';
 
 // Providers
 import { Tools } from '../../providers/tools';
@@ -45,6 +46,8 @@ export class NetworkFindPage {
           console.log(res);
           if (res.message == 'Network not found') {
             this.tools.pushPage(NetworkNoPage);
+          } else {
+            this.tools.pushPage(NetworkPage, { zipCode: res.post_code });
           }
         }, err => console.log(err)
       );

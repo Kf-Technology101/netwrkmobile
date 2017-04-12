@@ -17,7 +17,8 @@
     <p class="message" *ngFor="let i of postMessages">
       <img src="{{ user.imageUrl }}" class="chat-avatar">
       <span class="username">{{ user.name }}</span>
-      <span class="text">{{ i }}</span>
+      <span class="text">{{ i.text }}</span>
+      <img *ngIf="i.image" src="{{ i.image }}">
     </p>
   </div>
 </ion-content>
@@ -97,7 +98,7 @@
   </div>
 
   <button isScrolling="false" tapable [hidden]="mainBtn.hidden" [@mainBtnState]="mainBtn.state" color="bk"
-  class="main-action-btn has-footer transparent chatMainBtn"></button>
+  class="main-action-btn big has-footer transparent chatMainBtn"></button>
 
   <ion-item class="text" #inputItem [@fadeState]="mainInput.state" [hidden]="mainInput.hidden">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">
@@ -130,7 +131,7 @@
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 
-    <input #textInput id="textInput" type="text" placeholder="On this spot..." (tap)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)">
+    <ion-input #textInput id="textInput" type="text" placeholder="On this spot..." (tap)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)"></ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
     <button ion-button item-right clear (tap)="postMessage()">

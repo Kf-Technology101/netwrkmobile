@@ -24,16 +24,26 @@ export class UndercoverProvider {
     return this.localStorage.get('undercover_person');
   }
 
+  public setActivePerson(status: boolean): any {
+    let person = this.getPerson();
+    person ? person.active = status : person = { active: status };
+    return this.localStorage.set('undercover_person', person);
+  }
+
   public setPerson(person: any): any {
+    console.log(person)
+    let updateObj: any = {
+      role_name: person.name,
+      role_description: person.description,
+      role_image_url: person.imageUrl,
+      active: null,
+    }
+
     return new Promise((resolve, reject) => {
       this.tools.showLoader();
       this.user.update(
         this.user.getAuthData().id,
-        { user: {
-          role_name: person.name,
-          role_description: person.description,
-          role_image_url: person.imageUrl,
-        } }
+        { user: updateObj }
       ).map(res => res.json()).subscribe(res => {
         this.tools.hideLoader();
         person.active = true;

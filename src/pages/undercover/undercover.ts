@@ -16,6 +16,7 @@ import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Share } from '../../providers/share';
 import { User } from '../../providers/user';
+import { Camera } from '../../providers/camera';
 
 import { ProfilePage } from '../profile/profile';
 
@@ -129,7 +130,9 @@ export class UndercoverPage {
     facebook: false,
     twitter: true,
     linkedin: false
-  }
+  };
+
+  public sendError: string;
 
   constructor(
     public navCtrl: NavController,
@@ -141,7 +144,8 @@ export class UndercoverPage {
     public undercover: UndercoverProvider,
     public slideAvatar: SlideAvatar,
     public share: Share,
-    public userProvider: User
+    public userProvider: User,
+    public camera: Camera
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -182,8 +186,10 @@ export class UndercoverPage {
 
     this.user = this.undercover.getPerson();
 
-    for (let i = 0; i < 10; i++)
-      this.postMessages.push("Message #" + i);
+    // for (let i = 0; i < 10; i++)
+    //   this.postMessages.push("Message #" + i);
+
+    this.sendError = 'Error sending message';
   }
 
   dragContent = true;
@@ -295,25 +301,37 @@ export class UndercoverPage {
   }
 
   postMessage() {
-    let message = this.txtIn.nativeElement.value;
-    if (message.trim() != '') {
-      // let data = {
-      //   text: message,
-      //   user_id: this.userProvider.getAuthData().id,
-      //   image: ''
-      // }
+    // ""
+    console.log(this.txtIn);
+    let message = {
+      text: this.txtIn.value,
+      image: ''
+    };
+    if (this.camera.takenImage) {
+      message.image = this.camera.takenImage;
+    }
+    if (message.text.trim() != '' || message.image) {
+      if (this.userProvider.getAuthData()) {
+        let data = {
+          text: message.text,
+          user_id: this.userProvider.getAuthData().id,
+          image: message.image
+        }
 
-      // this.undercover.sendMessage(data)
-      //   .map(res => res.json())
-      //   .subscribe(res => {
-      //     console.log(res);
-      //   }, err => {
-      //   });
-      setTimeout(() => { this.postMessages.push(message); }, 100);
+        this.undercover.sendMessage(data)
+          .map(res => res.json())
+          .subscribe(res => {
+            console.log(res);
+          }, err => {
+            console.log(err);
+            this.tools.showToast(this.sendError);
+          });
+      }
+      let self = this;
+      setTimeout(() => { this.postMessages.push(message); self.txtIn.setFocus(); }, 100);
 
-      this.txtIn.nativeElement.value = '';
+      this.txtIn.value = '';
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
-      this.txtIn.nativeElement.focus();
     }
   }
 
@@ -334,16 +352,27 @@ export class UndercoverPage {
     this.checkbox[mess] = !this.checkbox[mess];
   }
 
+  changeCallback(positionLeft?: boolean) {
+    if (positionLeft) {
+      this.tools.showToast('Test...');
+    }
+  }
+
   ionViewDidEnter() {
     this.mainInput.state = 'fadeIn';
     this.mainInput.hidden = false;
     this.mainBtn.state = 'normal';
     this.mainBtn.hidden = false;
 
+    this.slideAvatar.changeCallback = this.changeCallback.bind(this);
     this.slideAvatar.sliderInit();
     this.contentBlock = document.getElementsByClassName("scroll-content")['0'];
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
+
+    if (this.camera.takenImage) {
+      this.postMessage();
+    }
   }
 
   ionViewDidLoad() {

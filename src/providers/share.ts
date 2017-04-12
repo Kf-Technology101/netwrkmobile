@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
 
 import { SocialSharing } from '@ionic-native/social-sharing';
 
@@ -8,7 +6,6 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 export class Share {
 
   constructor(
-    public http: Http,
     private socialSharing: SocialSharing
   ) {
     console.log('Hello Share Provider');

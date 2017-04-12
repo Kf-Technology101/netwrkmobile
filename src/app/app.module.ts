@@ -14,6 +14,7 @@ import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
 import { ProfilePage } from '../pages/profile/profile';
 import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 
+import { NetworkPage } from '../pages/network/network';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 import { NetworkNoPage } from '../pages/network-no/network-no';
 import { NetworkFaqPage } from '../pages/network-faq/network-faq';
@@ -37,6 +38,8 @@ import { Gps } from '../providers/gps';
 import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
 import { Share } from '../providers/share';
+import { Network } from '../providers/network';
+import { Camera } from '../providers/camera';
 
 // Native services
 import { Facebook } from 'ionic-native';
@@ -44,7 +47,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
 import { SocialSharing } from '@ionic-native/social-sharing';
 
-enableProdMode();
+// enableProdMode();
 
 let pages = [
   MyApp,
@@ -59,6 +62,7 @@ let pages = [
   ProfilePage,
   ProfileSettingPage,
 
+  NetworkPage,
   NetworkFindPage,
   NetworkNoPage,
   NetworkFaqPage,
@@ -94,6 +98,8 @@ export function providers() {
     UndercoverProvider,
     SlideAvatar,
     Share,
+    Network,
+    Camera,
 
     Facebook,
     Geolocation,

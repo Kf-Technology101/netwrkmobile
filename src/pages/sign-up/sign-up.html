@@ -1,7 +1,7 @@
 <ion-content padding has-main-btn has-main-btn-label isScrolling="false" no-bounce>
 
   <ion-grid>
-    <ion-row>
+    <ion-row hidden>
       <ion-col text-center>
         <img src="assets/icon/logo.png">
       </ion-col>
@@ -83,8 +83,8 @@
 </ion-content>
 
 <ion-footer>
-  <button [hidden]="hiddenMainBtn" [@mainBtnState] = "mainBtn.state" ion-button color="bk"
-          class="main-action-btn has-label"
+  <button [@mainBtnState]="mainBtn.state" ion-button color="bk"
+          class="main-action-btn medium has-label"
           (click)="doSignUp(signUpForm)" outline></button>
   <span class="main-action-text" color="bk">
     Tap to continue

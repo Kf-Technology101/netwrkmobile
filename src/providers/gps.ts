@@ -11,7 +11,8 @@ export class Gps {
   public coords: any = {
     lat: null,
     lng: null
-  }
+  };
+  public zipCode: string = null;
 
   constructor(
     private http: Http,
@@ -68,19 +69,15 @@ export class Gps {
   }
 
   private parseGoogleAddress(data: any): string {
-    let zipCode = null;
-    for (let i = 0; i < data.length; i++) {
-      for (let j = 0; j < data[i].address_components.length; j++) {
-        for (let z = 0; z < data[i].address_components[j].types.length; z++) {
+    for (let i = 0; i < data.length; i++)
+      for (let j = 0; j < data[i].address_components.length; j++)
+        for (let z = 0; z < data[i].address_components[j].types.length; z++)
           if (data[i].address_components[j].types[z] == 'postal_code') {
-            zipCode = data[i].address_components[j].long_name;
+            this.zipCode = data[i].address_components[j].long_name;
             break;
           }
-        }
-      }
-    }
 
-    return zipCode;
+    return this.zipCode;
   }
 
 }

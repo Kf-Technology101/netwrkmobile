@@ -81,7 +81,7 @@ export class CameraPage {
     // take a picture
     this.cameraPreview.takePicture(pictureOpts).then(imageData => {
       console.log(imageData);
-      this.camera.takenImage = imageData[0];
+      this.camera.takenImage = 'data:image/jpeg;base64,' + imageData[0];
       this.goBack();
     }, err => {
       console.log(err);

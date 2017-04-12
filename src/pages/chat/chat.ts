@@ -316,9 +316,8 @@ export class ChatPage {
     };
     if (this.camera.takenImage) {
       message.image = this.camera.takenImage;
-      this.camera.takenImage = null;
     }
-    if (message.text.trim() != '' || message.image) {
+    if (message.text.trim() != '') {
       if (this.userProvider.getAuthData()) {
         let data = {
           text: message.text,
@@ -336,12 +335,10 @@ export class ChatPage {
           });
       }
       let self = this;
-      if (!message.image) {
-        setTimeout(() => { this.postMessages.push(message); self.txtIn.setFocus(); }, 100);
-
-        this.txtIn.value = '';
-      }
+      setTimeout(() => { this.postMessages.push(message); self.txtIn.setFocus(); }, 100);
+      this.txtIn.value = '';
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
+      this.camera.takenImage = undefined;
     }
   }
 

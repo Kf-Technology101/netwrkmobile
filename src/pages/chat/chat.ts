@@ -12,7 +12,7 @@ import { CameraPage } from '../camera/camera';
 
 // Providers
 import { Tools } from '../../providers/tools';
-import { Undercover } from '../../providers/undercover';
+import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Share } from '../../providers/share';
 import { User } from '../../providers/user';
@@ -141,7 +141,7 @@ export class ChatPage {
     public tools: Tools,
     private keyboard: Keyboard,
     private imagePicker: ImagePicker,
-    public undercoverPrvd: Undercover,
+    public undercoverPrvd: UndercoverProvider,
     public slideAvatar: SlideAvatar,
     public share: Share,
     public userProvider: User,
@@ -317,7 +317,7 @@ export class ChatPage {
     if (this.camera.takenImage) {
       message.image = this.camera.takenImage;
     }
-    if (message.text.trim() != '') {
+    if (message.text.trim() != '' || message.image) {
       if (this.userProvider.getAuthData()) {
         let data = {
           text: message.text,
@@ -335,8 +335,14 @@ export class ChatPage {
           });
       }
       let self = this;
-      setTimeout(() => { this.postMessages.push(message); self.txtIn.setFocus(); }, 100);
-      this.txtIn.value = '';
+      setTimeout(() => {
+        this.postMessages.push(message);
+        if (message.text.trim() != '') {
+          this.txtIn.setFocus();
+          this.txtIn.value = '';
+        }
+      }, 100);
+
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.camera.takenImage = undefined;
     }

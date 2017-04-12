@@ -6,7 +6,7 @@
           <span class="username">{{ user.name }}</span>
         </span>
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
-        <img class="draggable-element" src="assets/images/persons/{{ user.imageUrl }}" (tap)="goToProfile()">
+        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile()">
       </div>
     </div>
   </ion-toolbar>
@@ -15,9 +15,10 @@
 <ion-content has-main-btn has-main-btn-label>
   <div class="chat-container" #chatContainer>
     <p class="message" *ngFor="let i of postMessages">
-      <img src="assets/images/persons/{{ user.imageUrl }}" class="chat-avatar">
+      <img src="{{ user.imageUrl }}" class="chat-avatar">
       <span class="username">{{ user.name }}</span>
-      <span class="text">{{ i }}</span>
+      <span class="text">{{ i.text }}</span>
+      <img *ngIf="i.image" src="{{ i.image }}">
     </p>
   </div>
 </ion-content>
@@ -130,7 +131,7 @@
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 
-    <input #textInput id="textInput" type="text" placeholder="On this spot..." (tap)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)">
+    <ion-input #textInput id="textInput" type="text" placeholder="On this spot..." (tap)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)"></ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
     <button ion-button item-right clear (tap)="postMessage()">

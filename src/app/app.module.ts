@@ -38,6 +38,7 @@ import { Undercover } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
 import { Share } from '../providers/share';
 import { Network } from '../providers/network';
+import { Camera } from '../providers/camera';
 
 // Native services
 import { Facebook } from 'ionic-native';
@@ -96,6 +97,7 @@ export function providers() {
     SlideAvatar,
     Share,
     Network,
+    Camera,
 
     Facebook,
     Geolocation,

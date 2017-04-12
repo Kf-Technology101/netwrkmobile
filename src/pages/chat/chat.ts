@@ -16,6 +16,7 @@ import { Undercover } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Share } from '../../providers/share';
 import { User } from '../../providers/user';
+import { Camera } from '../../providers/camera';
 
 import { ProfilePage } from '../profile/profile';
 
@@ -143,7 +144,8 @@ export class ChatPage {
     public undercoverPrvd: Undercover,
     public slideAvatar: SlideAvatar,
     public share: Share,
-    public userProvider: User
+    public userProvider: User,
+    public camera: Camera
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -183,9 +185,15 @@ export class ChatPage {
     });
 
     this.user = this.undercoverPrvd.getPerson();
+    if (!this.user) {
+      this.user = {
+        name: '',
+        imageUrl: '',
+      }
+    }
 
-    for (let i = 0; i < 10; i++)
-      this.postMessages.push("Message #" + i);
+    // for (let i = 0; i < 10; i++)
+    //   this.postMessages.push("Message #" + i);
 
     this.sendError = 'Error sending message';
   }
@@ -299,26 +307,36 @@ export class ChatPage {
   }
 
   postMessage() {
-    let message = this.txtIn.nativeElement.value;
-    if (message.trim() != '') {
-      let data = {
-        text: message,
-        user_id: this.userProvider.getAuthData().id,
-        image: ''
+    // ""
+    console.log(this.txtIn);
+    let message = {
+      text: this.txtIn.value,
+      image: ''
+    };
+    if (this.camera.takenImage) {
+      message.image = this.camera.takenImage;
+    }
+    if (message.text.trim() != '' || message.image) {
+      if (this.userProvider.getAuthData()) {
+        let data = {
+          text: message.text,
+          user_id: this.userProvider.getAuthData().id,
+          image: message.image
+        }
+
+        this.undercoverPrvd.sendMessage(data)
+          .map(res => res.json())
+          .subscribe(res => {
+            console.log(res);
+          }, err => {
+            console.log(err);
+            this.tools.showToast(this.sendError);
+          });
       }
+      let self = this;
+      setTimeout(() => { this.postMessages.push(message); self.txtIn.setFocus(); }, 100);
 
-      this.undercoverPrvd.sendMessage(data)
-        .map(res => res.json())
-        .subscribe(res => {
-          console.log(res);
-        }, err => {
-          console.log(err);
-          this.tools.showToast(this.sendError);
-        });
-      this.txtIn.nativeElement.focus()
-      setTimeout(() => { this.postMessages.push(message); }, 100);
-
-      this.txtIn.nativeElement.value = '';
+      this.txtIn.value = '';
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
     }
   }
@@ -357,6 +375,10 @@ export class ChatPage {
     this.contentBlock = document.getElementsByClassName("scroll-content")['0'];
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
+
+    if (this.camera.takenImage) {
+      this.postMessage();
+    }
   }
 
   ionViewDidLoad() {

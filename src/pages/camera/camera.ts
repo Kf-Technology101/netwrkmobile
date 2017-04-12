@@ -7,7 +7,8 @@ import {
   // CameraPreviewDimensions
 } from '@ionic-native/camera-preview';
 
-// import { ChatPage } from '../chat/chat';
+import { Tools } from '../../providers/tools';
+import { Camera } from '../../providers/camera';
 
 // Animations
 import {
@@ -37,8 +38,6 @@ import {
 
 export class CameraPage {
 
-  hiddenMainBtn = false;
-
   cameraUI: any = {
     tooltip: 'tooltipFadeOut',
     button: 'photoButtonFadeOut'
@@ -48,6 +47,8 @@ export class CameraPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     private cameraPreview: CameraPreview,
+    public camera: Camera,
+    public tools: Tools
   ) {
     const cameraPreviewOpts: CameraPreviewOptions = {
       x: 0,
@@ -78,13 +79,13 @@ export class CameraPage {
     }
 
     // take a picture
-    this.cameraPreview.takePicture(pictureOpts).then((imageData) => {
+    this.cameraPreview.takePicture(pictureOpts).then(imageData => {
       console.log(imageData);
-      this.goBack({
-        image: imageData[0],
-      });
-    }, (err) => {
+      this.camera.takenImage = imageData[0];
+      this.goBack();
+    }, err => {
       console.log(err);
+      // this.goBack();
     });
   }
 
@@ -93,8 +94,7 @@ export class CameraPage {
   }
 
   goBack(params?: any) {
-    this.hiddenMainBtn = true;
-    this.navCtrl.pop({ animate: false });
+    this.tools.popPage();
   }
 
   ionViewDidLoad() {

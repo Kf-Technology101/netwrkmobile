@@ -12,7 +12,7 @@ import { CameraPage } from '../camera/camera';
 
 // Providers
 import { Tools } from '../../providers/tools';
-import { UndercoverProvider } from '../../providers/undercover';
+import { Undercover } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Share } from '../../providers/share';
 import { User } from '../../providers/user';
@@ -36,7 +36,7 @@ import {
 
 @Component({
   selector: 'page-undercover',
-  templateUrl: 'undercover.html',
+  templateUrl: 'chat.html',
   animations: [
     toggleInputsFade,
     rotateChatPlus,
@@ -51,7 +51,7 @@ import {
   ]
 })
 
-export class UndercoverPage {
+export class ChatPage {
   @ViewChild('galleryCont') gCont;
   @ViewChild('emojiCont') emCont;
   @ViewChild('shareCont') shCont;
@@ -141,7 +141,7 @@ export class UndercoverPage {
     public tools: Tools,
     private keyboard: Keyboard,
     private imagePicker: ImagePicker,
-    public undercover: UndercoverProvider,
+    public undercoverPrvd: Undercover,
     public slideAvatar: SlideAvatar,
     public share: Share,
     public userProvider: User,
@@ -184,7 +184,13 @@ export class UndercoverPage {
       console.log(err);
     });
 
-    this.user = this.undercover.getPerson();
+    this.user = this.undercoverPrvd.getPerson();
+    if (!this.user) {
+      this.user = {
+        name: '',
+        imageUrl: '',
+      }
+    }
 
     // for (let i = 0; i < 10; i++)
     //   this.postMessages.push("Message #" + i);
@@ -320,7 +326,7 @@ export class UndercoverPage {
           image: message.image
         }
 
-        this.undercover.sendMessage(data)
+        this.undercoverPrvd.sendMessage(data)
           .map(res => res.json())
           .subscribe(res => {
             console.log(res);

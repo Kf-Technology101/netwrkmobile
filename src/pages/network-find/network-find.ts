@@ -44,10 +44,17 @@ export class NetworkFindPage {
       this.gps.getNetwrk(res.zip_code).map(res => res.json()).subscribe(
         res => {
           console.log(res);
+          let params: any = {
+            zipCode: res.post_code,
+            action: null
+          };
+
           if (res.message == 'Network not found') {
-            this.tools.pushPage(NetworkNoPage);
+            params.action = 'create';
+            this.tools.pushPage(NetworkNoPage, params);
           } else {
-            this.tools.pushPage(NetworkPage, { zipCode: res.post_code });
+            params.action = 'join';
+            this.tools.pushPage(NetworkPage, params);
           }
         }, err => console.log(err)
       );

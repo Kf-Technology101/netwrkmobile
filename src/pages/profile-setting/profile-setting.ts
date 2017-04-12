@@ -7,7 +7,7 @@ import { LogInPage } from '../log-in/log-in';
 // Providers
 import { User } from '../../providers/user';
 import { Tools } from '../../providers/tools';
-import { UndercoverProvider } from '../../providers/undercover';
+import { Undercover } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 
 @Component({
@@ -29,11 +29,11 @@ export class ProfileSettingPage {
     public navParams: NavParams,
     private renderer: Renderer,
     public tools: Tools,
-    public undercover: UndercoverProvider,
+    public undercoverPrvd: Undercover,
     public slideAvatar: SlideAvatar,
     public userProvider: User
   ) {
-    this.user = this.undercover.getPerson();
+    this.user = this.undercoverPrvd.getPerson();
   }
 
   /**

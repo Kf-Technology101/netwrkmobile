@@ -8,8 +8,6 @@ import {
 } from '@ionic-native/camera-preview';
 
 import { Tools } from '../../providers/tools';
-
-// import { UndercoverPage } from '../undercover/undercover';
 import { Camera } from '../../providers/camera';
 
 // Animations

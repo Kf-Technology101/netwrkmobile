@@ -2,14 +2,14 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 // Pages
-import { UndercoverPage } from '../undercover/undercover';
+import { ChatPage } from '../chat/chat';
 import { NetworkFaqPage } from '../network-faq/network-faq';
-import { NetworkCreatePage } from '../network-create/network-create';
+import { NetworkPage } from '../network/network';
 import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 
 // Providers
 import { Tools } from '../../providers/tools';
-import { UndercoverProvider } from '../../providers/undercover';
+import { Undercover } from '../../providers/undercover';
 
 @Component({
   selector: 'page-network-no',
@@ -20,17 +20,22 @@ export class NetworkNoPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public tools: Tools,
-    public undercover: UndercoverProvider
+    public undercoverPrvd: Undercover
   ) {}
 
   doFounder() {
-    this.tools.pushPage(NetworkCreatePage);
+    let params: any = {
+      action: this.navParams.get('action'),
+      zipCode: this.navParams.get('zipCode'),
+    };
+
+    this.tools.pushPage(NetworkPage, params);
   }
 
   goUndercover() {
-    if (this.undercover.getPerson()) {
-      this.undercover.setActivePerson(true);
-      this.tools.pushPage(UndercoverPage);
+    if (this.undercoverPrvd.getPerson()) {
+      this.undercoverPrvd.setActivePerson(true);
+      this.tools.pushPage(ChatPage);
     } else {
       this.tools.pushPage(UndercoverCharacterPage);
     }

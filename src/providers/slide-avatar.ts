@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { App } from 'ionic-angular';
 
-import { UndercoverProvider } from '../providers/undercover';
+import { Undercover } from '../providers/undercover';
 
 @Injectable()
 export class SlideAvatar {
@@ -23,7 +23,7 @@ export class SlideAvatar {
 
   constructor(
     public app: App,
-    public undercoverProvider: UndercoverProvider
+    public undercoverPrvd: Undercover
   ) {
     this.app.viewDidLoad.subscribe((view) => {
       console.log("<SLIDER.ts> viewDidLoad");
@@ -50,7 +50,7 @@ export class SlideAvatar {
         }
       }
 
-      let person = this.undercoverProvider.getPerson();
+      let person = this.undercoverPrvd.getPerson();
       this.sliderState = person ? person.active : false;
 
       this.setSliderDimentions();

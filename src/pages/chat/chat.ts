@@ -335,8 +335,14 @@ export class ChatPage {
           });
       }
       let self = this;
-      setTimeout(() => { this.postMessages.push(message); self.txtIn.setFocus(); }, 100);
-      this.txtIn.value = '';
+      setTimeout(() => {
+        this.postMessages.push(message);
+        if (message.text.trim() != '') {
+          self.txtIn.setFocus();
+          this.txtIn.value = '';
+        }
+      }, 100);
+
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.camera.takenImage = undefined;
     }

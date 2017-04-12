@@ -311,6 +311,10 @@ form,
   }
 }
 
+.toolbar-md {
+    min-height: 44px;
+}
+
 ion-header.incognito-header {
   & {
     z-index: 11;

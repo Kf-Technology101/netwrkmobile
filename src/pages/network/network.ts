@@ -7,6 +7,8 @@ import { UndercoverPage } from '../undercover/undercover';
 // Providers
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
+import { Network } from '../../providers/network';
+import { Gps } from '../../providers/gps';
 
 @Component({
   selector: 'page-network',
@@ -19,7 +21,9 @@ export class NetworkPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public tools: Tools,
-    public undercover: UndercoverProvider
+    public undercover: UndercoverProvider,
+    public gps: Gps,
+    public network: Network
   ) {
     this.people = [
       {
@@ -74,8 +78,18 @@ export class NetworkPage {
   }
 
   goToNetwork() {
-    this.undercover.setActivePerson(false);
-    this.tools.pushPage(UndercoverPage);
+    let data = { post_code: this.gps.zipCode };
+    this.network.join(data)
+      .map(res => res.json())
+      .subscribe(res => {
+        console.log(res);
+        // this.undercover.setActivePerson(false);
+        // this.tools.pushPage(UndercoverPage);
+      }, err => {
+        console.log(err);
+      });
+    // this.undercover.setActivePerson(false);
+    // this.tools.pushPage(UndercoverPage);
   }
 
   ionViewDidLoad() {

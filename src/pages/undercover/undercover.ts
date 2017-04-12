@@ -129,7 +129,9 @@ export class UndercoverPage {
     facebook: false,
     twitter: true,
     linkedin: false
-  }
+  };
+
+  public sendError: string;
 
   constructor(
     public navCtrl: NavController,
@@ -184,6 +186,8 @@ export class UndercoverPage {
 
     for (let i = 0; i < 10; i++)
       this.postMessages.push("Message #" + i);
+
+    this.sendError = 'Error sending message';
   }
 
   dragContent = true;
@@ -308,8 +312,10 @@ export class UndercoverPage {
         .subscribe(res => {
           console.log(res);
         }, err => {
+          console.log(err);
+          this.tools.showToast(this.sendError);
         });
-      this.txtIn.setFocus();
+      this.txtIn.nativeElement.focus()
       setTimeout(() => { this.postMessages.push(message); }, 100);
 
       this.txtIn.nativeElement.value = '';

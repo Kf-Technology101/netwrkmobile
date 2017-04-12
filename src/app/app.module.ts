@@ -38,6 +38,7 @@ import { Gps } from '../providers/gps';
 import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
 import { Share } from '../providers/share';
+import { Network } from '../providers/network';
 
 // Native services
 import { Facebook } from 'ionic-native';
@@ -96,6 +97,7 @@ export function providers() {
     UndercoverProvider,
     SlideAvatar,
     Share,
+    Network,
 
     Facebook,
     Geolocation,

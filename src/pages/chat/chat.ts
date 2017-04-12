@@ -317,7 +317,7 @@ export class ChatPage {
     if (this.camera.takenImage) {
       message.image = this.camera.takenImage;
     }
-    if (message.text.trim() != '') {
+    if (message.text.trim() != '' || message.image) {
       if (this.userProvider.getAuthData()) {
         let data = {
           text: message.text,

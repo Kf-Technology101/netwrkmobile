@@ -93,7 +93,7 @@ export function providers() {
     Social,
     Gps,
     // Permission,
-    Undercover,
+    UndercoverProvider,
     SlideAvatar,
     Share,
     Network,

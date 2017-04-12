@@ -297,23 +297,23 @@ export class UndercoverPage {
   postMessage() {
     let message = this.txtIn.nativeElement.value;
     if (message.trim() != '') {
-      let data = {
-        text: message,
-        user_id: this.userProvider.getAuthData().id,
-        image: ''
-      }
+      // let data = {
+      //   text: message,
+      //   user_id: this.userProvider.getAuthData().id,
+      //   image: ''
+      // }
 
-      this.undercover.sendMessage(data)
-        .map(res => res.json())
-        .subscribe(res => {
-          console.log(res);
-        }, err => {
-        });
-      this.txtIn.setFocus();
+      // this.undercover.sendMessage(data)
+      //   .map(res => res.json())
+      //   .subscribe(res => {
+      //     console.log(res);
+      //   }, err => {
+      //   });
       setTimeout(() => { this.postMessages.push(message); }, 100);
 
       this.txtIn.nativeElement.value = '';
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
+      this.txtIn.nativeElement.focus();
     }
   }
 

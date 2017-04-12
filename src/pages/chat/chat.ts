@@ -310,7 +310,7 @@ export class ChatPage {
   postMessage() {
     console.log(this.txtIn);
     let message = {
-      text: this.txtIn.value,
+      text: this.txtIn.nativeElement.value,
       image: ''
     };
     if (this.camera.takenImage) {
@@ -336,11 +336,10 @@ export class ChatPage {
       setTimeout(() => {
         this.postMessages.push(message);
         if (message.text.trim() != '') {
-          this.txtIn.value = '';
-          this.txtIn.setFocus();
-          this.keyboard.show();
+          this.txtIn.nativeElement.value = '';
+          this.txtIn.nativeElement.focus();
         }
-      }, 80);
+      }, 100);
 
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.camera.takenImage = undefined;

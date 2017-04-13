@@ -2,11 +2,11 @@
   <ion-grid>
     <ion-row bottom>
       <ion-col>
-        <div *ngIf="!takenImage" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
+        <div [hidden]="takenImage" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
           Tap for a picture
           <div></div>
         </div>
-        <button *ngIf="!takenImage" [@cameraUIstate]="cameraUI.button"
+        <button [hidden]="takenImage" [@cameraUIstate]="cameraUI.button"
           class="take-photo" ion-button (click)="takePhoto()" color="white"
           outline color="bk">
           <div class="white"></div>
@@ -26,8 +26,11 @@
   <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
   </button>
 
-  <button *ngIf="takenImage" class="win98 left" (tap)="saveImage()">Will do</button>
-  <button *ngIf="takenImage" class="win98 right" (tap)="takenImage = ''">Nah...</button>
-  <button *ngIf="takenImage" class="win98 center" (tap)="goBack()">Go home</button>
+  <button isScrolling="false" tapable *ngIf="takenImage" [@mainBtnState]="mainBtn.state" color="bk"
+  class="main-action-btn big has-footer transparent chatMainBtn" (tap)="saveImage()"></button>
+
+  <button *ngIf="takenImage" ion-button class="footer-back-button" (tap)="cancelSave()">
+    <span color="bk">Cancel</span>
+  </button>
 
 </ion-footer>

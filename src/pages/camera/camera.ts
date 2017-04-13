@@ -41,6 +41,11 @@ export class CameraPage {
   takenImage: string;
   savedImage: string;
 
+  mainBtn = {
+    state: 'minimisedForCamera',
+    hidden: false
+  }
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -69,13 +74,15 @@ export class CameraPage {
     this.cameraPreview.takePicture(pictureOpts).then(imageData => {
       console.log(imageData);
       // this.cameraPrvd.takenImage = data:image/jpeg;base64,' + imageData[0];
+      this.mainBtn.state =  'normal';
       this.takenImage = 'url(data:image/jpeg;base64,' + imageData[0] + ')';
       this.savedImage = 'data:image/jpeg;base64,' + imageData[0];
       // this.goBack();
     }, err => {
       console.log(err);
-      // this.takenImage = 'url(https://backlab.files.wordpress.com/2015/04/windows_98_logo.png)';
-      // this.savedImage = 'https://backlab.files.wordpress.com/2015/04/windows_98_logo.png';
+      this.mainBtn.state =  'normal';
+      this.takenImage = 'url(https://backlab.files.wordpress.com/2015/04/windows_98_logo.png)';
+      this.savedImage = 'https://backlab.files.wordpress.com/2015/04/windows_98_logo.png';
       // this.goBack();
     });
   }
@@ -90,7 +97,15 @@ export class CameraPage {
 
   saveImage(){
     console.log("Saving image:", this.savedImage);
-    this.cameraPrvd.takenImage.push(this.savedImage);
+    if(this.cameraPrvd.takenImage.length < 3){
+      this.cameraPrvd.takenImage.push(this.savedImage);
+    } else {
+      this.tools.showToast('You can\'t append more pictures');
+    }
+  }
+
+  cancelSave(){
+
   }
 
   ionViewDidLoad() {

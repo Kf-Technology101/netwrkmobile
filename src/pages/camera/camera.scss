@@ -107,6 +107,10 @@ page-camera {
   .main-action-btn {
     bottom: 22px;
   }
+  .main-action-btn.chatMainBtn {
+    bottom: 68px;
+    border: 3px solid #5b87aa;
+  }
 
   .win98{
     & {

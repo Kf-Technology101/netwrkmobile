@@ -294,7 +294,7 @@ export class ChatPage {
   postMessage() {
     console.log(this.txtIn);
     let message = {
-      text: this.txtIn.nativeElement.value,
+      text: this.txtIn.value,
       images: []
     };
     if (this.cameraPrvd.takenPictures) {
@@ -319,8 +319,8 @@ export class ChatPage {
       setTimeout(() => {
         this.postMessages.push(message);
         if (message.text.trim() != '') {
-          this.txtIn.nativeElement.value = '';
-          // this.txtIn.nativeElement.focus();
+          this.txtIn.value = '';
+          // this.txtIn.focus();
         }
       }, 100);
       this.mainBtn.state = 'minimised';
@@ -328,7 +328,7 @@ export class ChatPage {
       setTimeout(() => {
         this.appendContainer.hidden = true;
       }, chatAnim/2);
-      
+
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.cameraPrvd.takenPictures = [];
     }

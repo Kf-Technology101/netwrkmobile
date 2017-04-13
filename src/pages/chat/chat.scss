@@ -227,8 +227,9 @@ page-undercover {
       }
       button {
         display: block;
-        box-sizing: border-box;
+        box-sizing: content-box;
         position: absolute;
+        padding: 0;
         width: 26px;
         height: 26px;
         top: -13px;

@@ -24,7 +24,10 @@ export class UndercoverProvider {
   }
 
   public getPerson(): any {
-    return this.localStorage.get('undercover_person');
+    let person = this.localStorage.get('undercover_person');
+    let result = person && person.name && person.description && person.imageUrl
+      ? person : null;
+    return result;
   }
 
   public setActivePerson(status: boolean): any {

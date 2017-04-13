@@ -19,21 +19,26 @@ export class Social {
     public api: Api
   ) {}
 
-  connectToFacebook() {
-    let connect = Facebook.getLoginStatus().then((data: any) => {
-      if (data.status && data.status == 'connected') {
-        this.setSocialAuth(data.authResponse, Social.FACEBOOK);
-      } else {
-        Facebook.login(['public_profile']).then((data: any) => {
+  public connectToFacebook(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      Facebook.getLoginStatus().then((data: any) => {
+        if (data.status && data.status == 'connected') {
           this.setSocialAuth(data.authResponse, Social.FACEBOOK);
-        }, err => {
-          console.log(err);
-        });
-      }
-    }, err => {
-      console.log(err);
-    });
-    return connect;
+          resolve(data);
+        } else {
+          Facebook.login(['public_profile']).then((data: any) => {
+            this.setSocialAuth(data.authResponse, Social.FACEBOOK);
+            resolve(data);
+          }, err => {
+            console.log(err);
+            reject(err);
+          });
+        }
+      }, err => {
+        console.log(err);
+        reject(err);
+      });
+    })
   }
 
   connectToTwitter() {

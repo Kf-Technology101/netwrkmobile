@@ -31,12 +31,12 @@ export class UndercoverCharacterPage {
   public textError: string;
 
   constructor(
+    public platform: Platform,
     public navCtrl: NavController,
     public navParams: NavParams,
     public undercoverPrvd: UndercoverProvider,
-    public tools: Tools,
-    public slideAvatar: SlideAvatar,
-    public platform: Platform
+    public toolsPrvd: Tools,
+    public slideAvatarPrvd: SlideAvatar
   ) {
     this.persons = heroes;
     // this.undercover.setActivePerson(true);
@@ -47,12 +47,12 @@ export class UndercoverCharacterPage {
   choosePerson() {
     if (this.platform.is('cordova')) {
       this.undercoverPrvd.setPerson(this.activePerson).then(() => {
-        this.tools.pushPage(ChatPage);
+        this.toolsPrvd.pushPage(ChatPage);
       }, err => {
-        this.tools.showToast(this.textError);
+        this.toolsPrvd.showToast(this.textError);
       });
     } else {
-      this.tools.pushPage(ChatPage);
+      this.toolsPrvd.pushPage(ChatPage);
     }
   }
 
@@ -69,9 +69,9 @@ export class UndercoverCharacterPage {
   changeCallback(positionLeft?: boolean) {
     if (positionLeft) {
       setTimeout(() => {
-        this.slideAvatar.setSliderPosition(true);
+        this.slideAvatarPrvd.setSliderPosition(true);
       }, 300)
-      this.tools.showToast(this.changeError);
+      this.toolsPrvd.showToast(this.changeError);
     }
   }
 
@@ -88,9 +88,9 @@ export class UndercoverCharacterPage {
   }
 
   ionViewDidEnter() {
-    this.slideAvatar.changeCallback = this.changeCallback.bind(this);
-    this.slideAvatar.sliderInit();
-    this.slideAvatar.setSliderPosition(true);
+    this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+    this.slideAvatarPrvd.sliderInit();
+    this.slideAvatarPrvd.setSliderPosition(true);
   }
 
 }

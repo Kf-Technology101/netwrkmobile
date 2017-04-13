@@ -99,16 +99,43 @@ export class Auth {
     });
   }
 
-  logout() {
+  public logout() {
     this.storage.rm('auth_type');
     this.storage.rm('auth_data');
   }
 
-  getAuthType():any { return this.storage.get('auth_type'); }
+  public getAuthType():any { return this.storage.get('auth_type'); }
 
-  getAuthData():any { return this.storage.get('auth_data'); }
+  public getAuthData():any { return this.storage.get('auth_data'); }
 
-  saveRegisterData(data: any) { this.registerData = data; }
+  public saveRegisterData(data: any) { this.registerData = data; }
+
+  public saveAuthData(authData: any, type: string) {
+    this.storage.set('auth_type', type);
+    this.storage.set('auth_data', authData);
+
+    let undercover = {
+      name: authData.role_name,
+      description: authData.role_description,
+      imageUrl: authData.role_image_url,
+      active: false
+    };
+
+    if (undercover.name && undercover.description && undercover.imageUrl) {
+      this.storage.set('undercover_person', undercover);
+    }
+
+    this.network.saveInviteAccess(authData.invitation_sent);
+  }
+
+  public getFbLoginStatus() { return Facebook.getLoginStatus(); }
+
+  public getFbConnected() {
+    let authData = this.getAuthData();
+    let result = authData.provider_name && authData.provider_id
+      ? Facebook.getLoginStatus() : null;
+    return result;
+  }
 
   private loginWithFacebook(data: any, resolve, reject) {
     this.social.setSocialAuth(data.authResponse, Social.FACEBOOK);
@@ -135,25 +162,5 @@ export class Auth {
       }, err => reject(err)
     );
   }
-
-  public saveAuthData(authData: any, type: string) {
-    this.storage.set('auth_type', type);
-    this.storage.set('auth_data', authData);
-
-    let undercover = {
-      name: authData.role_name,
-      description: authData.role_description,
-      imageUrl: authData.role_image_url,
-      active: false
-    };
-
-    if (undercover.name && undercover.description && undercover.imageUrl) {
-      this.storage.set('undercover_person', undercover);
-    }
-
-    this.network.saveInviteAccess(authData.invitation_sent);
-  }
-
-  getFbLoginStatus() { return Facebook.getLoginStatus(); }
 
 }

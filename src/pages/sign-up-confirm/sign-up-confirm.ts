@@ -6,7 +6,7 @@ import {
 } from 'ionic-angular';
 
 // Pages
-import { NetworkFindPage } from '../network-find/network-find';
+import { SignUpFacebookPage } from '../sign-up-facebook/sign-up-facebook';
 
 // Providers
 import { Auth } from '../../providers/auth';
@@ -57,7 +57,7 @@ export class SignUpConfirmPage {
         .subscribe((resp) => {
           this.tools.hideLoader();
           console.log(resp);
-          this.tools.pushPage(NetworkFindPage);
+          this.tools.pushPage(SignUpFacebookPage);
         }, (err) => {
           this.tools.hideLoader();
           this.tools.showToast(this.signUpErrorString);
@@ -88,7 +88,7 @@ export class SignUpConfirmPage {
       if (this.platform.is('cordova')) {
         this.tools.showToast(this.codeErrorString);
       } else {
-        this.tools.pushPage(NetworkFindPage);
+        this.tools.pushPage(SignUpFacebookPage);
       }
     });
   }

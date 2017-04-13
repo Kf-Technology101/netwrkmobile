@@ -9,7 +9,7 @@ import {
   App
 } from 'ionic-angular';
 
-import { User } from './user';
+import { Auth } from './auth';
 
 @Injectable()
 export class Tools {
@@ -21,7 +21,7 @@ export class Tools {
     public events: Events,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
-    public user: User,
+    public auth: Auth,
     public app: App
   ) {}
 
@@ -31,7 +31,7 @@ export class Tools {
 
   getLoginPage(DefaultPage: any, InvitationPage: any): Promise<any> {
     return new Promise((resolve, reject) => {
-      let userData = this.user.getAuthData();
+      let userData = this.auth.getAuthData();
       userData.invitation_sent ? resolve(DefaultPage) : resolve(InvitationPage);
     });
   }

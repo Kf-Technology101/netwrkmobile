@@ -3,7 +3,7 @@
     <div class="drag-container">
       <div class="dragline">
         <span class="info">
-          <span class="username">Choose a character</span>
+          <span class="username" color="bk">Choose a character</span>
         </span>
         <ion-icon></ion-icon>
         <img class="draggable-element" src="assets/images/incognito.png">
@@ -18,27 +18,27 @@
 <ion-content isScrolling="false" no-bounce has-main-btn>
   <ion-row center>
     <ion-col text-center>
-      <h1>We agree, some things shouldn't have your name on it.</h1>
+      <h1 color="bk">We agree, some things shouldn't have your name on it.</h1>
       <ion-slides slidesPerView="3"
         initialSlide="1"
         spaceBetween="10">
         <ion-slide></ion-slide>
         <ion-slide [ngClass]="{'transition': sliderLoaded}" *ngFor="let p of persons">
-          <h4 class="title">{{ p.name }}</h4>
+          <h4 class="title" color="bk">{{ p.name }}</h4>
           <div class="avatar">
-            <img class="sun-icon" src="assets/images/persons/{{ p.imageUrl }}">
+            <img class="sun-icon" src="{{ p.imageUrl }}">
           </div>
         </ion-slide>
         <ion-slide></ion-slide>
       </ion-slides>
-      <div class="custom-center-block person-description">
+      <span class="custom-center-block person-description" color="bk">
         {{ activePerson.description }}
-      </div>
+      </span>
     </ion-col>
   </ion-row>
 </ion-content>
 
 <ion-footer>
-  <button ion-button color="bk" class="main-action-btn medium transparent" outline 
+  <button ion-button color="bk" class="main-action-btn medium transparent" outline
     (click)="choosePerson()"></button>
 </ion-footer>

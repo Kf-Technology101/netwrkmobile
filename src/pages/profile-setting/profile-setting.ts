@@ -5,7 +5,7 @@ import { NavController, NavParams } from 'ionic-angular';
 import { LogInPage } from '../log-in/log-in';
 
 // Providers
-import { User } from '../../providers/user';
+import { Auth } from '../../providers/auth';
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
@@ -31,7 +31,7 @@ export class ProfileSettingPage {
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider,
     public slideAvatar: SlideAvatar,
-    public userProvider: User
+    public auth: Auth
   ) {
     this.user = this.undercoverPrvd.getPerson();
   }
@@ -69,7 +69,7 @@ export class ProfileSettingPage {
   }
 
   logOut() {
-    this.userProvider.logout();
+    this.auth.logout();
     this.tools.pushPage(LogInPage);
   }
 

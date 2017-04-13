@@ -9,6 +9,7 @@ import {
 // import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
+import { Auth } from '../../providers/auth';
 import { User } from '../../providers/user';
 import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
@@ -33,7 +34,8 @@ export class NetworkContactListPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public platform: Platform,
-    public user: User,
+    public auth: Auth,
+    public userPrvd: User,
     public contactsPrvd: ContactsProvider,
     public tools: Tools,
     public networkPrvd: Network
@@ -133,8 +135,8 @@ export class NetworkContactListPage {
       this.contactsPrvd.sendInvitations(checkedContacts)
         .map(res => res.json()).subscribe(
         res => {
-          this.user.update(
-            this.user.getAuthData().id,
+          this.userPrvd.update(
+            this.auth.getAuthData().id,
             { user: { invitation_sent: true } }
           ).map(res => res.json()).subscribe(res => {
             this.tools.hideLoader();

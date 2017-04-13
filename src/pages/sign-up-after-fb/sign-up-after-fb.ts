@@ -8,6 +8,7 @@ import {
 import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
+import { Auth } from '../../providers/auth';
 import { User } from '../../providers/user';
 import { Tools } from '../../providers/tools';
 
@@ -26,6 +27,7 @@ export class SignUpAfterFbPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    public auth: Auth,
     public user: User,
     public tools: Tools
   ) {
@@ -43,7 +45,7 @@ export class SignUpAfterFbPage {
       this.tools.showLoader();
       let updateObj = { user: { date_of_birthday: this.date_of_birthday } };
 
-      this.user.update(this.user.fbResponseData.id, updateObj, 'fb')
+      this.user.update(this.auth.fbResponseData.id, updateObj, 'fb')
         .map(res => res.json()).subscribe(res => {
           this.tools.hideLoader();
           this.tools.pushPage(NetworkFindPage);

@@ -13,7 +13,7 @@ import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
 import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
-import { User } from '../../providers/user';
+import { Auth } from '../../providers/auth';
 import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
 
@@ -53,7 +53,7 @@ export class LogInPage {
 
   constructor(
     public navCtrl: NavController,
-    public user: User,
+    public auth: Auth,
     public navParams: NavParams,
     public events: Events,
     public contactsPrvd: ContactsProvider,
@@ -76,7 +76,7 @@ export class LogInPage {
     }
 
     this.tools.showLoader();
-    this.user.login(this.account).map(res => res.json()).subscribe(resp => {
+    this.auth.login(this.account).map(res => res.json()).subscribe(resp => {
       console.log(resp);
       this.tools.hideLoader();
       this.tools.pushPage(NetworkFindPage);
@@ -88,7 +88,7 @@ export class LogInPage {
 
   doFbLogin() {
     this.tools.showLoader();
-    this.user.signUpFacebook().then((data: ResponseAuthData) => {
+    this.auth.signUpFacebook().then((data: ResponseAuthData) => {
       console.log(data);
       this.tools.hideLoader();
       if (data.date_of_birthday) {

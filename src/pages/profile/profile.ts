@@ -9,6 +9,7 @@ import { Social } from '../../providers/social';
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
+import { User } from '../../providers/user';
 
 @Component({
   selector: 'page-profile',
@@ -27,7 +28,15 @@ export class ProfilePage {
     snapchat: false
   };
 
-  public user: any;
+  public user: {
+    id: number,
+    name: string,
+    imageUrl: string,
+  } = {
+    id: null,
+    name: null,
+    imageUrl: null,
+  };
 
   constructor(
     public navCtrl: NavController,
@@ -35,15 +44,18 @@ export class ProfilePage {
     public social: Social,
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider,
-    public slideAvatar: SlideAvatar
+    public slideAvatar: SlideAvatar,
+    public userPrvd: User
   ) {
+    this.user.id = this.navParams.get('id');
+
     setTimeout(()=>{
       for (var i = 0; i < 6; i++) {
         this.testSlides.push(i.toString());
       }
     },100);
 
-    this.user = this.undercoverPrvd.getPerson();
+    // this.user = this.undercoverPrvd.getPerson();
   }
 
   ondrag(event, item) {
@@ -115,6 +127,12 @@ export class ProfilePage {
   }
 
   ionViewDidLoad() {
+    this.userPrvd.getUserData(this.user.id).subscribe(
+      res => {
+        console.log(res);
+      },
+      err => console.error('ERROR', err)
+    );
     console.log("[PROFILE.ts] viewDidLoad");
     // this.slideAvatar.startSliderEvents();
   }

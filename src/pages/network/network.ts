@@ -17,7 +17,7 @@ import { Gps } from '../../providers/gps';
   templateUrl: 'network.html'
 })
 export class NetworkPage {
-  public people: Array<any> = [];
+  public users: Array<any> = [];
   public action: string;
   private textStrings: any = {};
   private networkParams: any = {};
@@ -35,21 +35,22 @@ export class NetworkPage {
     this.textStrings.actionError = 'Something went wrong, please reload app and try again';
     this.textStrings.inviteError = 'Please, invite 20 or more friends for create netwrk';
     this.textStrings.created = 'The netwrk already created, please wait for connections';
+    this.textStrings.joined = 'You have already joined, please wait for connections';
   }
 
-  goToProfile(data: any) {
+  public goToProfile(data: any) {
     this.tools.pushPage(ProfilePage, { id: data.id });
   }
 
-  sendEmails() {
+  public sendEmails() {
     this.tools.pushPage(NetworkContactListPage, { type: 'emails' });
   }
 
-  sendSMS() {
+  public sendSMS() {
     this.tools.pushPage(NetworkContactListPage, { type: 'phones' });
   }
 
-  doAction() {
+  public doAction() {
     switch(this.action) {
       case 'create':
         this.doCreate();
@@ -69,43 +70,44 @@ export class NetworkPage {
       return false;
     }
 
-    this.networkPrvd.create(this.networkParams)
-      .map(res => res.json())
-      .subscribe(res => {
-        console.log(res);
-        // this.undercover.setActivePerson(false);
-        // this.tools.pushPage(ChatPage);
-        this.tools.pushPage(ChatPage);
-        this.tools.showToast(this.textStrings.created);
-      }, err => {
-        console.log(err);
-        this.tools.pushPage(ChatPage);
-        this.tools.showToast(this.textStrings.created);
-      });
+    this.networkPrvd.create(this.networkParams).subscribe(res => {
+      console.log(res);
+      this.users = res.users;
+      this.tools.showToast(this.textStrings.created);
+    }, err => {
+      console.log(err);
+      this.tools.showToast(this.textStrings.created);
+    });
   }
 
   private doJoin() {
-    this.networkPrvd.join(this.networkParams)
-      .map(res => res.json())
-      .subscribe(res => {
-        console.log(res);
-        // this.undercover.setActivePerson(false);
-        this.tools.pushPage(ChatPage);
-      }, err => {
-        console.log(err);
-        this.tools.pushPage(ChatPage);
-      });
+
+    this.networkPrvd.join(this.networkParams).subscribe(res => {
+      console.log(res);
+      this.users = res.users;
+      this.afterJoin();
+    }, err => {
+      console.log(err);
+      this.afterJoin();
+    });
+  }
+
+  private afterJoin() {
+    if (this.users.length >= 10) {
+      this.tools.pushPage(ChatPage);
+    } else {
+      this.tools.showToast(this.textStrings.joined);
+    }
   }
 
   private getUsers() {
-    this.networkPrvd.getUsers(this.networkParams)
-      .map(res => res.json())
-      .subscribe(res => {
-        console.log(res);
-        this.people = res;
-      }, err => {
-        console.log(err);
-      });
+    if (this.action == 'create') return;
+    this.networkPrvd.getUsers(this.networkParams).subscribe(res => {
+      console.log(res);
+      this.users = res;
+    }, err => {
+      console.log(err);
+    });
   }
 
   goBack() { this.tools.popPage(); }

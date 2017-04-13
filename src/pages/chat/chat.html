@@ -25,7 +25,7 @@
 
 <ion-footer class="has-input chatFooter">
   <div #galleryCont item-content  class="gallery-container" [hidden]="galleryContainer.hidden" [@galleryState]="galleryContainer.state">
-    <img class="img-preview" *ngFor="let i of cameraPrvd.takenImage" [src]="i" [style.height.px]="galleryContainer.imgHeight"/>
+    <img class="img-preview" *ngFor="let i of cameraPrvd.takenPictures" [src]="i" [style.height.px]="galleryContainer.imgHeight"/>
   </div>
 
   <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="emojiContainer.hidden" [@galleryState]="emojiContainer.state">

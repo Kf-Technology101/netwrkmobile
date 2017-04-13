@@ -68,11 +68,13 @@ export class UndercoverProvider {
       image: data.image,
       text: data.text,
       user_id: data.user_id,
+      post_code: this.gps.zipCode,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       undercover: true,
     }).share();
+    let seqMap = seq.map(res => res.json());
 
-    return seq;
+    return seqMap;
   }
 }

@@ -18,21 +18,31 @@
       <img src="{{ user.imageUrl }}" class="chat-avatar">
       <span class="username">{{ user.name }}</span>
       <span class="text">{{ i.text }}</span>
-      <img *ngIf="i.image" src="{{ i.image }}">
+      <img *ngFor="let j of i.image" [src]="j"/>
     </p>
   </div>
 </ion-content>
 
 <ion-footer class="has-input chatFooter">
-  <div #galleryCont item-content  class="gallery-container" [hidden]="galleryContainer.hidden" [@galleryState]="galleryContainer.state">
-    <img class="img-preview" *ngFor="let i of cameraPrvd.takenPictures" [src]="i" [style.height.px]="galleryContainer.imgHeight"/>
+
+  <div item-content class="appended-pictures-container" [hidden]="appendContainer.hidden" [@containerState]="appendContainer.state">
+    <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures" >
+      <img class="img-preview" [src]="i"/>
+      <button (tap)="removeAppendedImage(index)">
+        <ion-icon ios="ios-close" md="ios-close"></ion-icon>
+      </button>
+    </div>
   </div>
 
-  <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="emojiContainer.hidden" [@galleryState]="emojiContainer.state">
+  <div #galleryCont item-content  class="gallery-container" [hidden]="galleryContainer.hidden" [@containerState]="galleryContainer.state">
+
+  </div>
+
+  <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="emojiContainer.hidden" [@containerState]="emojiContainer.state">
     <span item-content *ngFor="let emoji of emojis" (tap)="insertEmoji(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
   </div>
 
-  <div #shareCont item-content class="gallery-container share-container" [hidden]="shareContainer.hidden" [@galleryState]="shareContainer.state">
+  <div #shareCont item-content class="gallery-container share-container" [hidden]="shareContainer.hidden" [@containerState]="shareContainer.state">
     <ion-toolbar>
       <div class="slide-container sl-facebook">
         <div #slfb [ngClass]="{'active': checkbox.facebook}" class="toggle-el" (tap)="toggleShareSlider('facebook')">

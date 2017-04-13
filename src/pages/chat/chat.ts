@@ -99,6 +99,11 @@ export class ChatPage {
     this.shareContainer
   ];
 
+  appendContainer: any = {
+    state: 'off',
+    hidden: true
+  }
+
   // hidePlaceholder = false;
 
   imgesSrc = [];
@@ -233,7 +238,9 @@ export class ChatPage {
 
   toggleContainer(container, visibility) {
     if (visibility == 'hide') {
-      this.mainBtn.state = 'normal';
+      if (this.appendContainer.hidden) {
+        this.mainBtn.state = 'normal';
+      }
       container.state = 'off';
       this.setContentPadding(false);
       setTimeout(() => {
@@ -288,17 +295,17 @@ export class ChatPage {
     console.log(this.txtIn);
     let message = {
       text: this.txtIn.nativeElement.value,
-      image: ''
+      images: []
     };
     if (this.cameraPrvd.takenPictures) {
-      message.image = this.cameraPrvd.takenPictures[0];
+      message.images = this.cameraPrvd.takenPictures;
     }
-    if (message.text.trim() != '' || message.image) {
+    if (message.text.trim() != '' || message.images) {
       if (this.auth.getAuthData()) {
         let data = {
           text: message.text,
           user_id: this.auth.getAuthData().id,
-          image: message.image
+          image: message.images
         }
 
         this.undercoverPrvd.sendMessage(data)
@@ -345,6 +352,17 @@ export class ChatPage {
     }
   }
 
+  removeAppendedImage(index) {
+    this.cameraPrvd.takenPictures.splice(index, 1);
+    if (this.cameraPrvd.takenPictures.length < 1) {
+      this.appendContainer.state = 'off';
+      this.mainBtn.state = 'normal';
+      setTimeout(() => {
+        this.appendContainer.hidden = true;
+      }, chatAnim/2);
+    }
+  }
+
   ionViewDidEnter() {
     this.mainInput.state = 'fadeIn';
     this.mainInput.hidden = false;
@@ -357,6 +375,12 @@ export class ChatPage {
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
+
+    if (this.cameraPrvd.takenPictures.length > 0) {
+      this.appendContainer.hidden = false;
+      this.appendContainer.state = 'on_append';
+      this.mainBtn.state = 'above_append';
+    }
     // if (this.cameraPrvd.takenPictures) {
     //   this.postMessage();
     // }
@@ -366,7 +390,6 @@ export class ChatPage {
     console.log('[UNDERCOVER.ts] viewDidLoad');
     // this.slideAvatar.startSliderEvents();
     this.generateEmoticons();
-
     if (this.imgesSrc.length > 0) {
       setTimeout(() => {
         this.galleryContainer.imgHeight = this.gCont.nativeElement.children[0].clientWidth;

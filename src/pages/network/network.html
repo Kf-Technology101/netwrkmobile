@@ -28,7 +28,7 @@
       </button>
     </ion-col>
   </ion-row>
-  <ion-row class="count-people" *ngIf="people.length && people.length <= 10">
+  <ion-row class="count-people" *ngIf="people.length > 0 && people.length <= 10">
     <ion-col text-center>
       <span color="bk">{{ people.length }}/10</span>
     </ion-col>
@@ -38,9 +38,10 @@
       <ion-list>
         <ion-item (tap)="goToProfile(p)" *ngFor="let p of people">
           <ion-avatar item-left>
-            <img src="{{ p.imageUrl }}">
+            <img src="assets/images/incognito.png">
           </ion-avatar>
-          <h2 color="bk">{{ p.name }}</h2>
+          <h2 color="bk" *ngIf="p.first_name || p.last_name">{{ p.first_name }} {{ p.last_name }}</h2>
+          <h2 color="bk" *ngIf="!p.first_name && !p.last_name">{{ p.email }}</h2>
         </ion-item>
       </ion-list>
     </ion-col>

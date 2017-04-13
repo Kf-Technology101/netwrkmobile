@@ -17,8 +17,10 @@ import { Gps } from '../../providers/gps';
   templateUrl: 'network.html'
 })
 export class NetworkPage {
-  public people: Array<any>;
+  public people: Array<any> = [];
   public action: string;
+  private textStrings: any = {};
+  private networkParams: any = {};
 
   constructor(
     public navCtrl: NavController,
@@ -29,10 +31,14 @@ export class NetworkPage {
     public networkPrvd: Network
   ) {
     this.action = this.navParams.get('action');
+    this.networkParams = { post_code: this.gps.zipCode };
+    this.textStrings.actionError = 'Something went wrong, please reload app and try again';
+    this.textStrings.inviteError = 'Please, invite 20 or more friends for create netwrk';
+    this.textStrings.created = 'The netwrk already created, please wait for connections';
   }
 
-  goToProfile() {
-    this.tools.pushPage(ProfilePage);
+  goToProfile(data: any) {
+    this.tools.pushPage(ProfilePage, { id: data.id });
   }
 
   sendEmails() {
@@ -51,44 +57,52 @@ export class NetworkPage {
       case 'join':
         this.doJoin();
       break;
-      default: this.tools.showToast('Error');
+      default: this.tools.showToast(this.textStrings.actionError);
     }
   }
 
   private doCreate() {
-    let data = { post_code: this.gps.zipCode };
-    this.networkPrvd.create(data)
+    let access = this.networkPrvd.getInviteAccess();
+    console.log(access);
+    if (!access) {
+      this.tools.showToast(this.textStrings.inviteError);
+      return false;
+    }
+
+    this.networkPrvd.create(this.networkParams)
       .map(res => res.json())
       .subscribe(res => {
         console.log(res);
         // this.undercover.setActivePerson(false);
         // this.tools.pushPage(ChatPage);
+        this.tools.pushPage(ChatPage);
+        this.tools.showToast(this.textStrings.created);
       }, err => {
         console.log(err);
+        this.tools.pushPage(ChatPage);
+        this.tools.showToast(this.textStrings.created);
       });
   }
 
   private doJoin() {
-    let data = { post_code: this.gps.zipCode };
-    this.networkPrvd.join(data)
+    this.networkPrvd.join(this.networkParams)
       .map(res => res.json())
       .subscribe(res => {
         console.log(res);
         // this.undercover.setActivePerson(false);
-        // this.tools.pushPage(ChatPage);
+        this.tools.pushPage(ChatPage);
       }, err => {
         console.log(err);
+        this.tools.pushPage(ChatPage);
       });
   }
 
   private getUsers() {
-    let data = { post_code: this.gps.zipCode };
-    this.networkPrvd.getUsers(data)
+    this.networkPrvd.getUsers(this.networkParams)
       .map(res => res.json())
       .subscribe(res => {
         console.log(res);
-        // this.undercover.setActivePerson(false);
-        // this.tools.pushPage(ChatPage);
+        this.people = res;
       }, err => {
         console.log(err);
       });

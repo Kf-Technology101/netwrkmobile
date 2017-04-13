@@ -12,6 +12,7 @@ import {
 import { User } from '../../providers/user';
 import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
+import { Network } from '../../providers/network';
 
 // Pipes
 // import { ContactListPipe } from '../../pipes/contact-list';
@@ -34,14 +35,15 @@ export class NetworkContactListPage {
     public platform: Platform,
     public user: User,
     public contactsPrvd: ContactsProvider,
-    public tools: Tools
+    public tools: Tools,
+    public networkPrvd: Network
   ) {
     this.listType = this.navParams.get('type');
     console.log(this.listType);
 
-    if (!this.platform.is('cordova')) {
+    // if (!this.platform.is('cordova')) {
       this.contacts = [];
-      for (let i = 0; i < 15; i++) {
+      for (let i = 0; i < 20; i++) {
         this.contacts.push({
           name: {
             formatted: `Test ${i}`,
@@ -54,13 +56,13 @@ export class NetworkContactListPage {
           }],
           checked: false
         });
-      }
+      // }
       this.setErrorMessages(this.contacts);
     }
 
     this.contactsPrvd.getContacts(this.listType).then(data => {
       console.log(data);
-      this.contacts = data;
+      // this.contacts = data;
       this.setErrorMessages(this.contacts);
     }, err => {
       console.log(err);
@@ -137,6 +139,7 @@ export class NetworkContactListPage {
           ).map(res => res.json()).subscribe(res => {
             this.tools.hideLoader();
             this.tools.popPage();
+            this.networkPrvd.saveInviteAccess(true);
           }, err => {
             this.tools.hideLoader();
             this.tools.showToast(JSON.stringify(err));

@@ -10,7 +10,7 @@ import { NetworkFindPage } from '../pages/network-find/network-find';
 // import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
 // import { NetworkPage } from '../pages/network/network';
-// import { ChatPage } from '../pages/chat/chat';
+import { ChatPage } from '../pages/chat/chat';
 // import { CameraPage } from '../pages/camera/camera';
 // import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 // import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
@@ -73,10 +73,10 @@ export class MyApp {
           break;
       }
     } else {
-      this.rootPage = LogInPage;
+      // this.rootPage = LogInPage;
       // this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
-      // this.rootPage = ChatPage;
+      this.rootPage = ChatPage;
       // this.rootPage = CameraPage;
       // this.rootPage = UndercoverCharacterPage;
       // this.rootPage = SignUpConfirmPage;

@@ -8,6 +8,7 @@ import 'rxjs/add/operator/toPromise';
 import { Api } from './api';
 import { LocalStorage } from './local-storage';
 import { Social } from './social';
+import { Network } from './network';
 // import { UndercoverProvider } from './undercover';
 
 import { Facebook } from 'ionic-native';
@@ -23,10 +24,11 @@ export class User {
     public api: Api,
     public storage: LocalStorage,
     public social: Social,
+    public network: Network
     // public undercover: UndercoverProvider
   ) {}
 
-  verification(accountInfo: any) {
+  public verification(accountInfo: any) {
     let data = {
       country_code: this.storage.get('country_code'),
       login: accountInfo.login,
@@ -42,7 +44,7 @@ export class User {
     return seq;
   }
 
-  login(accountInfo: any) {
+  public login(accountInfo: any) {
     let user = { user: accountInfo };
 
     let seq = this.api.post('sessions', user).share();
@@ -54,7 +56,7 @@ export class User {
     return seq;
   }
 
-  signup(accountInfo: any) {
+  public signup(accountInfo: any) {
     let info = {
       user: {
         date_of_birthday: accountInfo.date_of_birthday,
@@ -79,7 +81,7 @@ export class User {
     return seq;
   }
 
-  update(id: number, accountInfo: any, type?: string) {
+  public update(id: number, accountInfo: any, type?: string) {
     let seq = this.api.patch('registrations/' + id, accountInfo).share();
     seq.map(res => res.json()).subscribe(
       res => {
@@ -94,7 +96,7 @@ export class User {
     return seq;
   }
 
-  signUpFacebook(): Promise<any> {
+  public signUpFacebook(): Promise<any> {
 
     return new Promise((resolve, reject) => {
       Facebook.getLoginStatus().then((data: any) => {
@@ -167,5 +169,7 @@ export class User {
     if (undercover.name && undercover.description && undercover.imageUrl) {
       this.storage.set('undercover_person', undercover);
     }
+
+    this.network.saveInviteAccess(authData.invitation_sent);
   }
 }

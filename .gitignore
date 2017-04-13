@@ -46,6 +46,8 @@ platforms/
 
 build/
 
+gradle*
+local.properties
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate

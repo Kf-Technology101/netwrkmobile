@@ -1,12 +1,9 @@
 import { Component, ViewChild } from '@angular/core';
 import { NavController, NavParams, Content } from 'ionic-angular';
 
-import {
-  CameraPreview,
-  CameraPreviewOptions
-} from '@ionic-native/camera-preview';
+import { CameraPreview } from '@ionic-native/camera-preview';
 
-import { ImagePicker } from '@ionic-native/image-picker';
+// import { ImagePicker } from '@ionic-native/image-picker';
 
 import { CameraPage } from '../camera/camera';
 
@@ -14,7 +11,7 @@ import { CameraPage } from '../camera/camera';
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
-import { Share } from '../../providers/share';
+// import { Share } from '../../providers/share';
 import { User } from '../../providers/user';
 import { Camera } from '../../providers/camera';
 
@@ -47,20 +44,20 @@ import {
   ],
   providers: [
     Keyboard,
-    ImagePicker
+    // ImagePicker
   ]
 })
 
 export class ChatPage {
   @ViewChild('galleryCont') gCont;
-  @ViewChild('emojiCont') emCont;
-  @ViewChild('shareCont') shCont;
+  // @ViewChild('emojiCont') emCont;
+  // @ViewChild('shareCont') shCont;
   @ViewChild('textInput') txtIn;
-  @ViewChild('slidingItems') toggler;
-  @ViewChild('slfb') checkFb;
-  @ViewChild('sltw') checkTw;
-  @ViewChild('slln') checkIn;
-  @ViewChild('chatContainer') chatCont;
+  // @ViewChild('slidingItems') toggler;
+  // @ViewChild('slfb') checkFb;
+  // @ViewChild('sltw') checkTw;
+  // @ViewChild('slln') checkIn;
+  // @ViewChild('chatContainer') chatCont;
   @ViewChild(Content) content: Content;
 
   chatOptions: any = {
@@ -102,7 +99,7 @@ export class ChatPage {
     this.shareContainer
   ];
 
-  hidePlaceholder = false;
+  // hidePlaceholder = false;
 
   imgesSrc = [];
 
@@ -116,7 +113,7 @@ export class ChatPage {
     hidden: false
   };
 
-  txtFocus: boolean = false;
+  // txtFocus: boolean = false;
 
   caretPos: number = 0;
 
@@ -140,26 +137,15 @@ export class ChatPage {
     private cameraPreview: CameraPreview,
     public tools: Tools,
     private keyboard: Keyboard,
-    private imagePicker: ImagePicker,
+    // private imagePicker: ImagePicker,
     public undercoverPrvd: UndercoverProvider,
     public slideAvatar: SlideAvatar,
-    public share: Share,
+    // public share: Share,
     public userProvider: User,
-    public camera: Camera
+    public cameraPrvd: Camera
   ) {
-    const cameraPreviewOpts: CameraPreviewOptions = {
-      x: 0,
-      y: 0,
-      width: window.screen.width,
-      height: window.screen.height,
-      camera: 'rear',
-      tapPhoto: false,
-      previewDrag: true,
-      toBack: true,
-      alpha: 1
-    }
-
-    this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
+    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
+    this.cameraPreview.startCamera(cameraOptions).then(res => {
       console.log(res);
       this.cameraPreview.show();
     }, err => {
@@ -179,26 +165,21 @@ export class ChatPage {
     });
 
     this.keyboard.onKeyboardHide().subscribe(res => {
-
+      console.log(res);
     }, err => {
       console.log(err);
     });
 
     this.user = this.undercoverPrvd.getPerson();
-    if (!this.user) {
-      this.user = {
-        name: '',
-        imageUrl: '',
-      }
+    if (!this.user) this.user = {
+      name: '',
+      imageUrl: '',
     }
-
-    // for (let i = 0; i < 10; i++)
-    //   this.postMessages.push("Message #" + i);
 
     this.sendError = 'Error sending message';
   }
 
-  dragContent = true;
+  // dragContent = true;
 
   generateEmoticons() {
     for (let i = 0; i < this.emoticX.length; i++) {
@@ -220,14 +201,10 @@ export class ChatPage {
     }, animSpeed.fadeIn/2);
   }
 
-  goBack() {
-    this.tools.popPage();
-  }
-
   // debug function for scaling main button
-  debugScaleMainBtn() {
-    this.mainBtn.state = (this.mainBtn.state == 'minimised') ? 'normal' : 'minimised';
-  }
+  // debugScaleMainBtn() {
+  //   this.mainBtn.state = (this.mainBtn.state == 'minimised') ? 'normal' : 'minimised';
+  // }
 
   toggleChatOptions() {
     this.chatOptions.state = (this.chatOptions.state == 'spined') ? 'default' : 'spined';
@@ -313,8 +290,8 @@ export class ChatPage {
       text: this.txtIn.nativeElement.value,
       image: ''
     };
-    if (this.camera.takenImage) {
-      message.image = this.camera.takenImage;
+    if (this.cameraPrvd.takenImage) {
+      message.image = this.cameraPrvd.takenImage;
     }
     if (message.text.trim() != '' || message.image) {
       if (this.userProvider.getAuthData()) {
@@ -342,7 +319,7 @@ export class ChatPage {
       }, 100);
 
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
-      this.camera.takenImage = undefined;
+      this.cameraPrvd.takenImage = undefined;
     }
   }
 
@@ -365,7 +342,7 @@ export class ChatPage {
 
   changeCallback(positionLeft?: boolean) {
     if (positionLeft) {
-      this.tools.showToast('Test...');
+      
     }
   }
 
@@ -381,7 +358,7 @@ export class ChatPage {
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
-    if (this.camera.takenImage) {
+    if (this.cameraPrvd.takenImage) {
       this.postMessage();
     }
   }

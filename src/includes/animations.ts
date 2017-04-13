@@ -89,6 +89,11 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
     transform: 'scale(0.381)',
     bottom: '-11px'
   })),
+
+  state('above_append', style({
+    transform: 'scale(0.381)',
+    bottom: '178px'
+  })),
   transition('* => minimised', animate(chatAnim/2 + 'ms ease-in')),
   transition('* => normal', animate(chatAnim/2 + 'ms ease-in')),
   transition('* => hidden', animate(chatAnim/3 + 'ms ease-out')),
@@ -97,12 +102,16 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
   transition('* => minimisedForCamera', animate(chatAnim/2 + 'ms ease-in'))
 ]);
 
-export const toggleGallery: any = trigger('galleryState', [
+export const toggleGallery: any = trigger('containerState', [
   state('on', style({
     height: window.screen.height/2
   })),
   state('off', style({
     height: 0
+  })),
+
+  state('on_append', style({
+    height: '205px'
   })),
   transition('* => *', animate(chatAnim/2 + 'ms ease-in'))
 ]);

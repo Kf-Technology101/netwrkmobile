@@ -4,6 +4,7 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { Tools } from '../../providers/tools';
 import { Camera } from '../../providers/camera';
+import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
 
 // Animations
 import {
@@ -28,6 +29,9 @@ import {
     toggleGallery,
     toggleFade,
     cameraUIanimation
+  ],
+  providers: [
+    Base64ToGallery
   ]
 })
 
@@ -51,7 +55,8 @@ export class CameraPage {
     public navParams: NavParams,
     private cameraPreview: CameraPreview,
     public cameraPrvd: Camera,
-    public tools: Tools
+    public tools: Tools,
+    private base64ToGallery: Base64ToGallery
   ) {
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: true });
     this.cameraPreview.startCamera(cameraOptions).then(res => {
@@ -77,6 +82,15 @@ export class CameraPage {
       this.mainBtn.state =  'normal';
       this.imgBg = 'url(data:image/jpeg;base64,' + imageData[0] + ')';
       this.imgUrl = 'data:image/jpeg;base64,' + imageData[0];
+
+      this.base64ToGallery.base64ToGallery(this.imgUrl, { prefix: '_img' }).then(
+        res => {
+          console.log('Saved image to gallery ', res);
+          this.imgUrl = res;
+        },
+        err => console.log('Error saving image to gallery ', err)
+      );
+
       // this.goBack();
     }, err => {
       console.log(err);

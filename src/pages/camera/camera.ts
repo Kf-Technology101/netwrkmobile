@@ -38,6 +38,8 @@ import {
 
 export class CameraPage {
 
+  @ViewChild(Content) content: Content;
+
   cameraUI: any = {
     tooltip: 'tooltipFadeOut',
     button: 'photoButtonFadeOut'

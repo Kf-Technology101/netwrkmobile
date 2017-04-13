@@ -337,7 +337,7 @@ export class ChatPage {
         this.postMessages.push(message);
         if (message.text.trim() != '') {
           this.txtIn.nativeElement.value = '';
-          this.txtIn.nativeElement.focus();
+          // this.txtIn.nativeElement.focus();
         }
       }, 100);
 

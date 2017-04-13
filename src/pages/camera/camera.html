@@ -1,12 +1,13 @@
-<ion-content padding isScrolling="false" no-bounce [style.backgroundImage]="takenImage ? takenImage : 'transparent'">
+<ion-content padding isScrolling="false" no-bounce>
+  <div [hidden]="!imgBg" class="img-preview" [style.backgroundImage]="imgBg ? imgBg : 'transparent'"></div>
   <ion-grid>
     <ion-row bottom>
       <ion-col>
-        <div [hidden]="takenImage" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
+        <div [hidden]="imgBg" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
           Tap for a picture
           <div></div>
         </div>
-        <button [hidden]="takenImage" [@cameraUIstate]="cameraUI.button"
+        <button [hidden]="imgBg" [@cameraUIstate]="cameraUI.button"
           class="take-photo" ion-button (click)="takePhoto()" color="white"
           outline color="bk">
           <div class="white"></div>
@@ -17,19 +18,19 @@
 </ion-content>
 
 <ion-footer>
-  <button *ngIf="!takenImage" class="switch-camera" ion-button clear (click)="switchCamera()">
+  <button *ngIf="!imgBg" class="switch-camera" ion-button clear (click)="switchCamera()">
     <img class="sun-icon" src="assets/images/switch_camera_icon.png">
   </button>
-  <button *ngIf="!takenImage" ion-button color="bk"
+  <button *ngIf="!imgBg" ion-button color="bk"
     class="main-action-btn transparent small"
     (click)="goBack()" outline>
   <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
   </button>
 
-  <button isScrolling="false" tapable *ngIf="takenImage" [@mainBtnState]="mainBtn.state" color="bk"
-  class="main-action-btn big has-footer transparent chatMainBtn" (tap)="saveImage()"></button>
+  <button isScrolling="false" tapable *ngIf="imgBg" [@mainBtnState]="mainBtn.state" color="bk"
+  class="main-action-btn big has-footer transparent border" (tap)="saveImage()"></button>
 
-  <button *ngIf="takenImage" ion-button class="footer-back-button" (tap)="cancelSave()">
+  <button *ngIf="imgBg" ion-button class="footer-back-button" (tap)="cancelSave()">
     <span color="bk">Cancel</span>
   </button>
 

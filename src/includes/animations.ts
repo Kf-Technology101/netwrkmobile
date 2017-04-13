@@ -129,12 +129,12 @@ export const toggleFade: any = trigger('fadeState', [
 export const cameraUIanimation: any = trigger('cameraUIstate', [
   state('photoButtonFadeIn', style({
     opacity: '1',
-    bottom: '30px',
+    bottom: '68px',
     transform: 'scale(1)'
   })),
   state('photoButtonFadeOut', style({
     opacity: '0',
-    bottom: '100px',
+    bottom: '158px',
     transform: 'scale(0.9)'
   })),
 

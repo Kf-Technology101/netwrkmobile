@@ -290,8 +290,8 @@ export class ChatPage {
       text: this.txtIn.nativeElement.value,
       image: ''
     };
-    if (this.cameraPrvd.takenImage) {
-      message.image = this.cameraPrvd.takenImage[0];
+    if (this.cameraPrvd.takenPictures) {
+      message.image = this.cameraPrvd.takenPictures[0];
     }
     if (message.text.trim() != '' || message.image) {
       if (this.auth.getAuthData()) {
@@ -319,7 +319,7 @@ export class ChatPage {
       }, 100);
 
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
-      this.cameraPrvd.takenImage = undefined;
+      this.cameraPrvd.takenPictures = undefined;
     }
   }
 
@@ -358,7 +358,7 @@ export class ChatPage {
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
-    // if (this.cameraPrvd.takenImage) {
+    // if (this.cameraPrvd.takenPictures) {
     //   this.postMessage();
     // }
   }

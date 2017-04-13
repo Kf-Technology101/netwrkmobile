@@ -1,6 +1,14 @@
 page-camera {
   &.ion-page ion-content.content {
     background: -webkit-linear-gradient(top, transparent 75%, rgba(0, 0, 0, 0.5) 100%);
+  }
+
+  .img-preview {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
@@ -19,7 +27,7 @@ page-camera {
         position: absolute;
         left: 0;
         right: 0;
-        bottom: 146px;
+        bottom: 184px;
         text-align: center;
         margin: auto;
         line-height: 46px;
@@ -104,12 +112,11 @@ page-camera {
     height: 26px;
   }
 
-  .main-action-btn {
+  .footer .main-action-btn {
     bottom: 22px;
   }
-  .main-action-btn.chatMainBtn {
-    bottom: 68px;
-    border: 3px solid #5b87aa;
+  .footer .main-action-btn {
+    border: 6px solid #5b87aa;
   }
 
   .win98{

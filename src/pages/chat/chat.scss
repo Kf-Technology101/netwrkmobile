@@ -226,6 +226,8 @@ page-undercover {
         object-fit: cover;
       }
       button {
+        display: block;
+        box-sizing: border-box;
         position: absolute;
         width: 26px;
         height: 26px;
@@ -449,6 +451,7 @@ page-undercover {
           border-radius: 13px;
           background: #fff;
           padding: 5px 15px;
+          padding-bottom: 15px;
           position: relative;
           margin: 10px;
           margin-left: 40px;
@@ -474,6 +477,7 @@ page-undercover {
         .text {
           display: block;
           margin-top: 5px;
+          margin-bottom: 15px;
         }
       }
       img {

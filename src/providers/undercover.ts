@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 // Providers
 import { LocalStorage } from './local-storage';
+import { Auth } from './auth';
 import { User } from './user';
 import { Tools } from './tools';
 import { Api } from './api';
@@ -13,6 +14,7 @@ export class UndercoverProvider {
 
   constructor(
     public localStorage: LocalStorage,
+    public auth: Auth,
     public user: User,
     public tools: Tools,
     public api: Api,
@@ -43,7 +45,7 @@ export class UndercoverProvider {
     return new Promise((resolve, reject) => {
       this.tools.showLoader();
       this.user.update(
-        this.user.getAuthData().id,
+        this.auth.getAuthData().id,
         { user: updateObj }
       ).map(res => res.json()).subscribe(res => {
         this.tools.hideLoader();

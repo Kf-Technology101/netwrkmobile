@@ -28,15 +28,15 @@
       </button>
     </ion-col>
   </ion-row>
-  <ion-row class="count-people" *ngIf="people.length > 0 && people.length <= 10">
+  <ion-row class="count-people" *ngIf="users.length > 0 && users.length <= 10">
     <ion-col text-center>
-      <span color="bk">{{ people.length }}/10</span>
+      <span color="bk">{{ users.length }}/10</span>
     </ion-col>
   </ion-row>
   <ion-row>
     <ion-col>
       <ion-list>
-        <ion-item (tap)="goToProfile(p)" *ngFor="let p of people">
+        <ion-item (tap)="goToProfile(p)" *ngFor="let p of users">
           <ion-avatar item-left>
             <img src="assets/images/incognito.png">
           </ion-avatar>

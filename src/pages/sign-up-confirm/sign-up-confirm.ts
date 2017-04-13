@@ -9,7 +9,7 @@ import {
 import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
-import { User } from '../../providers/user';
+import { Auth } from '../../providers/auth';
 import { Tools } from '../../providers/tools';
 
 // Animations
@@ -38,7 +38,7 @@ export class SignUpConfirmPage {
 
   constructor(
     public navCtrl: NavController,
-    public user: User,
+    public auth: Auth,
     public navParams: NavParams,
     public platform: Platform,
     public tools: Tools
@@ -48,11 +48,11 @@ export class SignUpConfirmPage {
   }
 
   doSignUp() {
-    console.log('data', this.user.registerData);
+    console.log('data', this.auth.registerData);
     console.log('sms', this.confirmCode);
     this.tools.showLoader();
-    if (this.confirmCode == this.user.confirmCode) {
-      this.user.signup(this.user.registerData)
+    if (this.confirmCode == this.auth.confirmCode) {
+      this.auth.signup(this.auth.registerData)
         .map(res => res.json())
         .subscribe((resp) => {
           this.tools.hideLoader();
@@ -70,15 +70,15 @@ export class SignUpConfirmPage {
 
   sendCode() {
     this.tools.showLoader();
-    this.user.verification(this.user.registerData)
+    this.auth.verification(this.auth.registerData)
       .map(res => res.json())
       .subscribe(res => {
         this.tools.hideLoader();
         switch (res.login_type) {
           case 'email':
           case 'phone':
-            this.user.registerData.type = res.login_type;
-            this.user.saveRegisterData(this.user.registerData);
+            this.auth.registerData.type = res.login_type;
+            this.auth.saveRegisterData(this.auth.registerData);
             break;
           default: this.tools.showToast(this.codeErrorString);
         }

@@ -12,7 +12,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 // import { Share } from '../../providers/share';
-import { User } from '../../providers/user';
+import { Auth } from '../../providers/auth';
 import { Camera } from '../../providers/camera';
 
 import { ProfilePage } from '../profile/profile';
@@ -141,7 +141,7 @@ export class ChatPage {
     public undercoverPrvd: UndercoverProvider,
     public slideAvatar: SlideAvatar,
     // public share: Share,
-    public userProvider: User,
+    public auth: Auth,
     public cameraPrvd: Camera
   ) {
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
@@ -294,10 +294,10 @@ export class ChatPage {
       message.image = this.cameraPrvd.takenImage;
     }
     if (message.text.trim() != '' || message.image) {
-      if (this.userProvider.getAuthData()) {
+      if (this.auth.getAuthData()) {
         let data = {
           text: message.text,
-          user_id: this.userProvider.getAuthData().id,
+          user_id: this.auth.getAuthData().id,
           image: message.image
         }
 
@@ -342,7 +342,7 @@ export class ChatPage {
 
   changeCallback(positionLeft?: boolean) {
     if (positionLeft) {
-      
+
     }
   }
 

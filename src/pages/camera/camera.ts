@@ -63,7 +63,7 @@ export class CameraPage {
     const pictureOpts = {
       width: 1280,
       height: 1280,
-      quality: 85
+      quality: 100
     }
 
     // take a picture

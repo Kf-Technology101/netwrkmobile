@@ -15,54 +15,10 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 
-.main-action-btn {
-  position: absolute;
-  bottom: 68px;
-  left: 0;
-  right: 0;
-  margin: auto;
-  text-align: center;
-  background: #fff;
-  box-shadow: 0 0 10px rgba(255,255,255,0.8);
-  padding: 0;
-  box-sizing: content-box;
-
-  &.transparent {
-    background: transparent;
-    box-shadow: none;
-  }
-
-  &.big {
-    width: 68px;
-    height: 110px;
-    border-width: 5px;
-    border-radius: 11px;
-  }
-
-  &.medium {
-    width: 42px;
-    height: 68px;
-    border-width: 3px;
-    border-radius: 7px;
-  }
-
-  &.small {
-    width: 26px;
-    height: 42px;
-    border-width: 3px;
-    border-radius: 4px;
-  }
-
-  button {
-    width: 100%;
-    height: 100%;
-  }
-}
-
 ion-app .ion-page .content {
   &[has-main-btn] {
     .scroll-content {
-      padding-bottom: 120px;
+      padding-bottom: 142px;
       margin-bottom: 0px !important;
     }
 
@@ -76,35 +32,80 @@ ion-app .ion-page .content {
   padding-top: 16px;
 }
 
-.footer-back-button {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  padding: 0 10px;
-  height: 40px;
-  margin: 0;
-  background: none;
-  box-shadow: none;
-
-  &.activated {
-    background: none;
-  }
-}
-
-.main-action-text {
-  font-size: 14px;
-  background: #fff;
-  padding: 1px 5px;
-  border-radius: 5px;
-}
-
 .footer {
   text-align: center;
-  height: 38px;
   border-top: none;
 
   &.has-input {
     height: auto;
+  }
+
+  .main-action-btn {
+    position: absolute;
+    bottom: 68px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(255,255,255,0.8);
+    padding: 0;
+    box-sizing: content-box;
+
+    &.transparent {
+      background: transparent;
+      box-shadow: none;
+    }
+
+    &.big {
+      width: 68px;
+      height: 110px;
+      border-width: 5px;
+      border-radius: 11px;
+    }
+
+    &.medium {
+      width: 42px;
+      height: 68px;
+      border-width: 3px;
+      border-radius: 7px;
+    }
+
+    &.small {
+      width: 26px;
+      height: 42px;
+      border-width: 3px;
+      border-radius: 4px;
+    }
+
+    button {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .main-action-text {
+    font-size: 14px;
+    background: #fff;
+    padding: 1px 5px;
+    border-radius: 5px;
+    position: relative;
+    bottom: 48px;
+  }
+
+  .footer-back-button {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    padding: 0 10px;
+    height: 40px;
+    margin: 0;
+    background: none;
+    box-shadow: none;
+
+    &.activated {
+      background: none;
+    }
   }
 }
 

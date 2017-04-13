@@ -10,13 +10,14 @@ import { NetworkFindPage } from '../pages/network-find/network-find';
 // import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
 // import { NetworkPage } from '../pages/network/network';
-import { ChatPage } from '../pages/chat/chat';
+// import { ChatPage } from '../pages/chat/chat';
 // import { CameraPage } from '../pages/camera/camera';
 // import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 // import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
+import { SignUpFacebookPage } from '../pages/sign-up-facebook/sign-up-facebook';
 
 // Providers
-import { User } from '../providers/user';
+import { Auth } from '../providers/auth';
 import { LocalStorage } from '../providers/local-storage';
 import { Tools } from '../providers/tools';
 
@@ -28,7 +29,7 @@ export class MyApp {
 
   constructor(
     platform: Platform,
-    public user: User,
+    public auth: Auth,
     public localStorage: LocalStorage,
     public events: Events,
     public tools: Tools,
@@ -52,13 +53,13 @@ export class MyApp {
   }
 
   private getLogin() {
-    let authType = this.user.getAuthType();
-    let authData = this.user.getAuthData();
+    let authType = this.auth.getAuthType();
+    let authData = this.auth.getAuthData();
 
     if (authType && authData) {
       switch (authType) {
         case 'facebook':
-          this.user.getFbLoginStatus().then((data) => {
+          this.auth.getFbLoginStatus().then((data) => {
             if (data.status && data.status == 'connected') {
               this.rootPage = NetworkFindPage;
             } else {
@@ -76,10 +77,11 @@ export class MyApp {
       // this.rootPage = LogInPage;
       // this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
-      this.rootPage = ChatPage;
+      // this.rootPage = ChatPage;
       // this.rootPage = CameraPage;
       // this.rootPage = UndercoverCharacterPage;
       // this.rootPage = SignUpConfirmPage;
+      this.rootPage = SignUpFacebookPage;
     }
   }
 

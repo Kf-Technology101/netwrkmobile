@@ -19,7 +19,7 @@ import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
 import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
-import { User } from '../../providers/user';
+import { Auth } from '../../providers/auth';
 import { Tools } from '../../providers/tools';
 
 // Interfaces
@@ -80,7 +80,7 @@ export class SignUpPage {
 
   constructor(
     public navCtrl: NavController,
-    public user: User,
+    public auth: Auth,
     public navParams: NavParams,
     public platform: Platform,
     public tools: Tools,
@@ -147,8 +147,8 @@ export class SignUpPage {
 
     if (this.activeStateId == 3) {
       this.tools.showLoader();
-      this.user.saveRegisterData(this.account);
-      this.user.verification(this.account)
+      this.auth.saveRegisterData(this.account);
+      this.auth.verification(this.account)
         .map(res => res.json())
         .subscribe(res => {
           console.log(res);
@@ -175,7 +175,7 @@ export class SignUpPage {
   }
 
   doFbLogin() {
-    this.user.signUpFacebook().then((data: ResponseAuthData) => {
+    this.auth.signUpFacebook().then((data: ResponseAuthData) => {
       console.log(data);
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);

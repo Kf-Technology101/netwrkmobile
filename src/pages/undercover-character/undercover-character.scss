@@ -10,14 +10,16 @@ page-undercover-character {
     }
 
     .warning {
-      color: #BDBDBD;
+      color: color($colors, 'bk-stone');
       font-size: 12px;
+      margin-top: -6px;
     }
 
     .drag-container {
       .dragline {
         background: transparent;
         color: #ccc;
+        border-color: color($colors, 'bk');
 
         .info {
           .username {
@@ -48,7 +50,6 @@ page-undercover-character {
 
       .title {
         font-size: 14px;
-        color: #fff;
       }
 
       .avatar {
@@ -62,20 +63,19 @@ page-undercover-character {
   }
 
   .content {
-    background: #5c5c5c;
+    background: #fff;
 
     .row {
       height: 100%;
 
       h1 {
         font-size: 20px;
-        color: #fff;
         text-align: center;
         font-weight: 400;
       }
 
       .person-description {
-        color: #fff;
+        display: block;
         text-align: center;
         overflow: hidden;
         height: 97px;

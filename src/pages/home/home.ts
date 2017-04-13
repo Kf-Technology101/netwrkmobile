@@ -6,7 +6,7 @@ import { NavController } from 'ionic-angular';
 import { LogInPage } from '../log-in/log-in';
 
 // Providers
-import { User } from '../../providers/user';
+import { Auth } from '../../providers/auth';
 import { Tools } from '../../providers/tools';
 
 @Component({
@@ -17,7 +17,7 @@ export class HomePage {
 
   constructor(
     public navCtrl: NavController,
-    public user: User,
+    public auth: Auth,
     public tools: Tools
   ) {
     // tools.doBackButton('home', (page) => {
@@ -26,7 +26,7 @@ export class HomePage {
   }
 
   logOut() {
-    this.user.logout();
+    this.auth.logout();
     this.navCtrl.push(LogInPage);
   }
 

@@ -10,7 +10,7 @@ export class SlideAvatar {
 
   private selectedItem: any = null;
   private arrowIcon: any = null;
-  private activateOnce: any = true;
+  // private activateOnce: any = true;
   private xPos: number = 0;
   private xElem: number = 0;
 

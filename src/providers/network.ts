@@ -15,15 +15,21 @@ export class Network {
   }
 
   public create(data: any): any {
-    return this.api.post('networks', data).share();
+    let seq = this.api.post('networks', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
   }
 
   public join(data: any): any {
-    return this.api.post('members', data).share();
+    let seq = this.api.post('members', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
   }
 
   public getUsers(data: any): any {
-    return this.api.get('networks_users', data).share();
+    let seq = this.api.get('networks_users', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
   }
 
   public getInviteAccess(): boolean {

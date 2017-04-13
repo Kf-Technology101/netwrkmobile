@@ -4,7 +4,7 @@ import { CameraPreviewOptions } from '@ionic-native/camera-preview';
 
 @Injectable()
 export class Camera {
-  public takenImage: string;
+  public takenImage = [];
   private cameraPreviewOpts: CameraPreviewOptions;
 
   constructor() {

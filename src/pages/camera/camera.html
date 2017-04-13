@@ -2,11 +2,11 @@
   <ion-grid>
     <ion-row bottom>
       <ion-col>
-        <div class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
+        <div *ngIf="!takenImage" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
           Tap for a picture
           <div></div>
         </div>
-        <button [@cameraUIstate]="cameraUI.button"
+        <button *ngIf="!takenImage" [@cameraUIstate]="cameraUI.button"
           class="take-photo" ion-button (click)="takePhoto()" color="white"
           outline color="bk">
           <div class="white"></div>
@@ -17,13 +17,17 @@
 </ion-content>
 
 <ion-footer>
-  <button class="switch-camera" ion-button clear (click)="switchCamera()">
+  <button *ngIf="!takenImage" class="switch-camera" ion-button clear (click)="switchCamera()">
     <img class="sun-icon" src="assets/images/switch_camera_icon.png">
   </button>
-  <button ion-button color="bk"
+  <button *ngIf="!takenImage" ion-button color="bk"
     class="main-action-btn transparent small"
     (click)="goBack()" outline>
   <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
   </button>
+
+  <button *ngIf="takenImage" class="win98 left" (tap)="saveImage()">Will do</button>
+  <button *ngIf="takenImage" class="win98 right" (tap)="takenImage = ''">Nah...</button>
+  <button *ngIf="takenImage" class="win98 center" (tap)="goBack()">Go home</button>
 
 </ion-footer>

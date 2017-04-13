@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content } from 'ionic-angular';
+import { Component } from '@angular/core';
+import { NavController, NavParams } from 'ionic-angular';
 import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { Tools } from '../../providers/tools';
@@ -33,14 +33,13 @@ import {
 
 export class CameraPage {
 
-  // @ViewChild(Content) content: Content;
-
   cameraUI: any = {
     tooltip: 'tooltipFadeOut',
     button: 'photoButtonFadeOut'
   };
 
   takenImage: string;
+  savedImage: string;
 
   constructor(
     public navCtrl: NavController,
@@ -63,19 +62,20 @@ export class CameraPage {
     const pictureOpts = {
       width: 1280,
       height: 1280,
-      quality: 85
+      quality: 100
     }
 
     // take a picture
     this.cameraPreview.takePicture(pictureOpts).then(imageData => {
       console.log(imageData);
       // this.cameraPrvd.takenImage = data:image/jpeg;base64,' + imageData[0];
-      // this.goBack();
       this.takenImage = 'url(data:image/jpeg;base64,' + imageData[0] + ')';
+      this.savedImage = 'data:image/jpeg;base64,' + imageData[0];
+      // this.goBack();
     }, err => {
       console.log(err);
-      // let content = document.getElementsByClassName('photo-preview')['0'];
-      // console.log(content);
+      // this.takenImage = 'url(https://backlab.files.wordpress.com/2015/04/windows_98_logo.png)';
+      // this.savedImage = 'https://backlab.files.wordpress.com/2015/04/windows_98_logo.png';
       // this.goBack();
     });
   }
@@ -86,6 +86,11 @@ export class CameraPage {
 
   goBack(params?: any) {
     this.tools.popPage();
+  }
+
+  saveImage(){
+    console.log("Saving image:", this.savedImage);
+    this.cameraPrvd.takenImage.push(this.savedImage);
   }
 
   ionViewDidLoad() {

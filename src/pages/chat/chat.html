@@ -18,7 +18,7 @@
       <img src="{{ user.imageUrl }}" class="chat-avatar">
       <span class="username">{{ user.name }}</span>
       <span class="text">{{ i.text }}</span>
-      <img *ngFor="let j of i.image" [src]="j"/>
+      <img *ngFor="let j of i.images" [src]="j"/>
     </p>
   </div>
 </ion-content>

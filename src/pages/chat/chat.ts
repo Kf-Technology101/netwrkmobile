@@ -324,9 +324,14 @@ export class ChatPage {
           // this.txtIn.nativeElement.focus();
         }
       }, 100);
-
+      this.mainBtn.state = 'minimised';
+      this.appendContainer.state = 'off';
+      setTimeout(() => {
+        this.appendContainer.hidden = true;
+      }, chatAnim/2);
+      
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
-      this.cameraPrvd.takenPictures = undefined;
+      this.cameraPrvd.takenPictures = [];
     }
   }
 
@@ -355,9 +360,9 @@ export class ChatPage {
 
   removeAppendedImage(index) {
     this.cameraPrvd.takenPictures.splice(index, 1);
-    if (this.cameraPrvd.takenPictures.length < 1) {
-      this.appendContainer.state = 'off';
+    if (!this.cameraPrvd.takenPictures) {
       this.mainBtn.state = 'normal';
+      this.appendContainer.state = 'off';
       setTimeout(() => {
         this.appendContainer.hidden = true;
       }, chatAnim/2);
@@ -377,7 +382,7 @@ export class ChatPage {
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
 
-    if (this.cameraPrvd.takenPictures.length > 0) {
+    if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
       this.appendContainer.hidden = false;
       this.appendContainer.state = 'on_append';
       this.mainBtn.state = 'above_append';

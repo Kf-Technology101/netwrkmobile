@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavController, NavParams, Content } from 'ionic-angular';
 import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { Tools } from '../../providers/tools';
@@ -33,12 +33,14 @@ import {
 
 export class CameraPage {
 
-  @ViewChild(Content) content: Content;
+  // @ViewChild(Content) content: Content;
 
   cameraUI: any = {
     tooltip: 'tooltipFadeOut',
     button: 'photoButtonFadeOut'
   };
+
+  takenImage: string;
 
   constructor(
     public navCtrl: NavController,
@@ -67,10 +69,13 @@ export class CameraPage {
     // take a picture
     this.cameraPreview.takePicture(pictureOpts).then(imageData => {
       console.log(imageData);
-      this.cameraPrvd.takenImage = 'data:image/jpeg;base64,' + imageData[0];
-      this.goBack();
+      // this.cameraPrvd.takenImage = data:image/jpeg;base64,' + imageData[0];
+      // this.goBack();
+      this.takenImage = 'url(data:image/jpeg;base64,' + imageData[0] + ')';
     }, err => {
       console.log(err);
+      // let content = document.getElementsByClassName('photo-preview')['0'];
+      // console.log(content);
       // this.goBack();
     });
   }

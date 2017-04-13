@@ -208,14 +208,18 @@ page-undercover {
       padding-top: 0;
       box-sizing: border-box;
       border-top: 7px solid #fff;
+      padding-bottom: 75px;
     }
-    ion-img {
+    .img-preview {
       float: left;
       width: 33.3%;
+      height: 100%;
       display: block;
-      background: magenta;
       box-sizing: border-box;
       border: 3px solid #fff;
+      background-size: contain;
+      background-repeat: no-repeat;
+      box-shadow: 0px 5px 9px -4px rgba(0, 0, 0, .3);
     }
   }
 
@@ -226,6 +230,7 @@ page-undercover {
       background-color: #f5f2f4;
       border-bottom: 75px solid;
       border-color: #f5f2f4;
+      padding-bottom: 0;
     }
     .emoji-item{
       &{

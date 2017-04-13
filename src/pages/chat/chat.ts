@@ -291,7 +291,7 @@ export class ChatPage {
       image: ''
     };
     if (this.cameraPrvd.takenImage) {
-      message.image = this.cameraPrvd.takenImage;
+      message.image = this.cameraPrvd.takenImage[0];
     }
     if (message.text.trim() != '' || message.image) {
       if (this.auth.getAuthData()) {
@@ -358,9 +358,9 @@ export class ChatPage {
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
-    if (this.cameraPrvd.takenImage) {
-      this.postMessage();
-    }
+    // if (this.cameraPrvd.takenImage) {
+    //   this.postMessage();
+    // }
   }
 
   ionViewDidLoad() {

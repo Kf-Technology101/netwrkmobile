@@ -187,7 +187,7 @@ export class ChatPage {
     this.sendError = 'Error sending message';
 
     let action = this.navParams.get('action');
-    this.isUndercover = action && action == 'undercover' ? true : 
+    this.isUndercover = action && action == 'undercover' ? true : false;
 
   }
 

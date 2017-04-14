@@ -91,6 +91,7 @@ export class LogInPage {
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
+          this.authPrvd.setFbConnected();
           let page = this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage);
           this.tools.pushPage(page);
         }

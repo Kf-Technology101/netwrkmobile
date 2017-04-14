@@ -130,15 +130,18 @@ export class Auth {
 
   public getFbLoginStatus() { return Facebook.getLoginStatus(); }
 
+  public setFbConnected() {
+    this.storage.set('facebook_connected', true);
+  }
+
   public getFbConnected() {
-    let authData = this.getAuthData();
-    let result = authData.provider_name && authData.provider_id
-      ? Facebook.getLoginStatus() : null;
+    let authData = this.storage.get('facebook_connected');;
+    let result = authData ? Facebook.getLoginStatus() : null;
     return result;
   }
 
   public connectAccountToFb(accountInfo: any) {
-    let seq = this.api.patch('registrations/', accountInfo).share();
+    let seq = this.api.post('providers', accountInfo).share();
     let seqMap = seq.map(res => res.json());
 
     return seqMap;

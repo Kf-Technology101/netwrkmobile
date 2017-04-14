@@ -56,10 +56,12 @@ export class NetworkFindPage {
             this.tools.pushPage(NetworkNoPage, params);
           } else {
             if (this.chatPrvd.chatZipCode() == res.network.post_code) {
+              this.chatPrvd.setZipCode(res.post_code);
               params.action = this.chatPrvd.getState();
               this.tools.pushPage(NetworkPage, params);
             } else {
               params.action = 'join';
+              this.chatPrvd.setZipCode(res.post_code);
               this.tools.pushPage(NetworkPage, params);
             }
           }

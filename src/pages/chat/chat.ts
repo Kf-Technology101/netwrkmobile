@@ -14,6 +14,7 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 // import { Share } from '../../providers/share';
 import { Auth } from '../../providers/auth';
 import { Camera } from '../../providers/camera';
+import { Chat } from '../../providers/chat';
 
 import { ProfilePage } from '../profile/profile';
 
@@ -153,7 +154,8 @@ export class ChatPage {
     public slideAvatar: SlideAvatar,
     // public share: Share,
     public auth: Auth,
-    public cameraPrvd: Camera
+    public cameraPrvd: Camera,
+    public chat: Chat
   ) {
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
     this.cameraPreview.startCamera(cameraOptions).then(res => {
@@ -195,8 +197,13 @@ export class ChatPage {
       }
     }, 100);
 
-    // let action = this.navParams.get('action');
-    // this.isUndercover = action && action == 'undercover' ? true : false;
+    let action = this.navParams.get('action');
+    if (action) {
+      this.chat.setState(action);
+      this.isUndercover = action && action == 'undercover' ? true : false;
+    } else {
+      this.isUndercover = this.chat.getState() == 'undercover' ? true : false;
+    }
   }
 
   // dragContent = true;
@@ -368,6 +375,9 @@ export class ChatPage {
 
   changeCallback(positionLeft?: boolean) {
     this.isUndercover = !positionLeft;
+    if (positionLeft) {
+      this.chat.setState('netwrk');
+    }
     console.log("isUndercover", this.isUndercover);
   }
 

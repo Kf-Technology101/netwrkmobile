@@ -31,12 +31,15 @@ export class SignUpFacebookPage {
   public connectToFacebook() {
     this.socialPrvd.connectToFacebook().then(res => {
       let data: any = {
-        provider_id: res.authResponse.userID,
-        provider_name: 'fb'
+        provider: {
+          name: 'fb',
+          token: res.authResponse.accessToken
+        }
       };
 
       this.authPrvd.connectAccountToFb(data).subscribe(
         res => {
+          this.authPrvd.setFbConnected();
           this.toolsPrvd.showToast('Facebook already connected');
           this.toolsPrvd.pushPage(UndercoverCharacterPage);
         }, err => console.error('ERROR', err)

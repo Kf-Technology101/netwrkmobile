@@ -13,6 +13,11 @@
           <div class="white"></div>
         </button>
       </ion-col>
+
+      <button *ngIf="imgBg" ion-button class="camera-cancel-button" (tap)="cancelSave()">
+        <ion-icon ios="ios-close" md="ios-close"></ion-icon>
+      </button>
+
     </ion-row>
   </ion-grid>
 </ion-content>
@@ -29,9 +34,5 @@
 
   <button isScrolling="false" tapable *ngIf="imgBg" [@mainBtnState]="mainBtn.state" color="bk"
   class="main-action-btn big has-footer transparent border" (tap)="saveImage()"></button>
-
-  <button *ngIf="imgBg" ion-button class="footer-back-button" (tap)="cancelSave()">
-    <span color="bk">Cancel</span>
-  </button>
 
 </ion-footer>

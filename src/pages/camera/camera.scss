@@ -62,7 +62,19 @@ page-camera {
           }
         }
       }
-
+      .camera-cancel-button {
+        position: absolute;
+        top: 16px;
+        left: 16px;
+        padding: 0 10px;
+        height: 26px;
+        width: 26px;
+        margin: 0;
+        background: rgba(91, 135, 170, .6);
+        box-shadow: none;
+        border-radius: 50%;
+        font-size: 20px;
+      }
       .take-photo {
         border-radius: 50%;
         width: 98px;
@@ -114,8 +126,6 @@ page-camera {
 
   .footer .main-action-btn {
     bottom: 22px;
-  }
-  .footer .main-action-btn {
     border: 6px solid #5b87aa;
   }
 

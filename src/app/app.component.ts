@@ -61,32 +61,15 @@ export class MyApp {
     if (authType && authData) {
       switch (authType) {
         case 'facebook':
-          this.authPrvd.getFbLoginStatus().then((data) => {
-            if (data.status && data.status == 'connected') {
-              let person = this.undercoverPrvd.getPerson();
-              if (!person) {
-                this.rootPage = UndercoverCharacterPage;
-              } else {
-                this.rootPage = NetworkFindPage;
-              }
-            } else {
-              this.rootPage = LogInPage;
-            }
+          this.authPrvd.getFbLoginStatus().then(data => {
+            this.rootPage = data.status && data.status == 'connected' ? this.getPerson() : LogInPage;
+
             Splashscreen.hide();
           });
           break;
         case 'email':
           let fbConnected = this.authPrvd.getFbConnected();
-          if (!fbConnected) {
-            this.rootPage = SignUpFacebookPage;
-          } else {
-            let person = this.undercoverPrvd.getPerson();
-            if (!person) {
-              this.rootPage = UndercoverCharacterPage;
-            } else {
-              this.rootPage = NetworkFindPage;
-            }
-          }
+          this.rootPage = fbConnected ? this.getPerson() : SignUpFacebookPage;
 
           Splashscreen.hide();
           break;
@@ -102,6 +85,18 @@ export class MyApp {
       // this.rootPage = SignUpFacebookPage;
     }
   }
+
+  private getPerson(): any {
+    let person = this.undercoverPrvd.getPerson();
+    let result = !person ? UndercoverCharacterPage : NetworkFindPage;
+    return result;
+  }
+
+  // private getChatPage(): any {
+  //   let person = this.undercoverPrvd.getPerson();
+  //   let result = !person ? UndercoverCharacterPage : NetworkFindPage;
+  //   return result;
+  // }
 
   private getSimInfo() {
     Sim.getSimInfo().then(

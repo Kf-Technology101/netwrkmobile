@@ -316,7 +316,6 @@ export class ChatPage {
         }
 
         this.undercoverPrvd.sendMessage(data)
-          .map(res => res.json())
           .subscribe(res => {
             console.log(res);
           }, err => {

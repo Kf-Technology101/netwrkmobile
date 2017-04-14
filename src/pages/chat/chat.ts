@@ -362,6 +362,17 @@ export class ChatPage {
     }, 100);
   }
 
+  mainBtnOnTap() {
+    if (!this.isUndercover) {
+      this.isUndercover = true;
+      setTimeout(() => {
+        this.slideAvatar.sliderInit();
+      }, 100);
+    } else {
+
+    }
+  }
+
   toggleShareSlider(mess){
     this.checkbox[mess] = !this.checkbox[mess];
   }

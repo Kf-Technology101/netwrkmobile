@@ -127,7 +127,7 @@
   </div>
 
   <button isScrolling="false" tapable [hidden]="mainBtn.hidden" [@mainBtnState]="mainBtn.state" color="bk"
-  class="main-action-btn big has-footer transparent chatMainBtn"></button>
+  class="main-action-btn big has-footer transparent chatMainBtn" (tap)="mainBtnOnTap()"></button>
 
   <ion-item class="text" #inputItem [@fadeState]="mainInput.state" [hidden]="mainInput.hidden">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">

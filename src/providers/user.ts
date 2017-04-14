@@ -31,5 +31,4 @@ export class User {
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }
-
 }

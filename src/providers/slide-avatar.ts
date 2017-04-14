@@ -65,22 +65,26 @@ export class SlideAvatar {
 
   private setSliderDimentions() {
     let dragEl = document.getElementsByClassName('draggable-element active')['0'];
-    let dragLineW = dragEl.parentElement.clientWidth;
+    if (dragEl) {
+      let dragLineW = dragEl.parentElement.clientWidth;
 
-    this.dStart = 0 - dragEl.offsetWidth/2;
-    this.dEnd = dragLineW - dragEl.offsetWidth/2;
+      this.dStart = 0 - dragEl.offsetWidth/2;
+      this.dEnd = dragLineW - dragEl.offsetWidth/2;
+    }
   }
 
   public setSliderPosition(state) {
     let slider = document.getElementsByClassName('draggable-element active');
-    this.arrowIcon = slider['0'].parentElement.children['1'];
-    this.arrowIcon.style.opacity = '1';
-    if (state) {
-      slider['0'].style.left = this.dEnd + 'px';
-      this.arrowIcon.classList.add('right');
-    } else {
-      slider['0'].style.left = this.dStart + 'px';
-      this.arrowIcon.classList.remove('right');
+    if (slider) {
+      this.arrowIcon = slider['0'].parentElement.children['1'];
+      this.arrowIcon.style.opacity = '1';
+      if (state) {
+        slider['0'].style.left = this.dEnd + 'px';
+        this.arrowIcon.classList.add('right');
+      } else {
+        slider['0'].style.left = this.dStart + 'px';
+        this.arrowIcon.classList.remove('right');
+      }
     }
   }
 

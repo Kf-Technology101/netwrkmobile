@@ -96,8 +96,8 @@ export class CameraPage {
     }, err => {
       console.log(err);
       this.mainBtn.state =  'normal';
-      this.imgBg = 'url(https://backlab.files.wordpress.com/2015/04/windows_98_logo.png)';
-      this.imgUrl = 'https://backlab.files.wordpress.com/2015/04/windows_98_logo.png';
+      this.imgBg = 'url(http://www.designboom.com/wp-content/uploads/2016/07/patricia-piccinini-graham-transport-accident-commission-designboom-01.jpg)';
+      this.imgUrl = 'http://www.designboom.com/wp-content/uploads/2016/07/patricia-piccinini-graham-transport-accident-commission-designboom-01.jpg';
       // this.goBack();
     });
   }

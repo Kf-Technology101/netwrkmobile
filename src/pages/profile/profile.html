@@ -23,11 +23,11 @@
 <ion-content has-main-btn>
   <ion-row class="facebook" padding>
     <ion-col>
-      <label>{{testSlides.length}} Сommon Connections</label>
+      <label>{{ testSlides.length }} Сommon Connections</label>
       <ion-slides #fbSlider>
         <ion-slide *ngFor="let testSlide of testSlides">
           <div class="avatar">
-            <img src="assets/images/Layer{{testSlide}}.png">
+            <img src="assets/images/Layer{{ testSlide }}.png">
           </div>
           <span>Test</span>
         </ion-slide>

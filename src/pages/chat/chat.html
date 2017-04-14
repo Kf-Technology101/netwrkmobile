@@ -1,4 +1,4 @@
-<ion-header class="incognito-header" isScrolling="false">
+<ion-header class="incognito-header" isScrolling="false" *ngIf="isUndercover">
   <ion-toolbar>
     <div class="drag-container">
       <div class="dragline">
@@ -12,7 +12,26 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content has-main-btn has-main-btn-label>
+<ion-header *ngIf="!isUndercover" class="netwrk-header">
+  <ion-toolbar>
+    <img src="{{ user.imageUrl }}" (tap)="goToProfile()" class="user-icon">
+  </ion-toolbar>
+  <ion-slides #fbSlider slidesPerView="4" class="netwrk-slider">
+    <ion-slide class="netwrk-slide">
+      <button ion-button class="add-to-netwrk">
+        <ion-icon ios="ios-add" md="ios-add"></ion-icon>
+      </button>
+    </ion-slide>
+    <ion-slide *ngFor="let slide of testSlides" class="netwrk-slide">
+      <div class="avatar">
+        <img src="assets/images/Layer{{ slide }}.png">
+      </div>
+      <span class="username">Netwrk user #{{ slide }}</span>
+    </ion-slide>
+  </ion-slides>
+</ion-header>
+
+<ion-content has-main-btn has-main-btn-label [ngClass]="{'netwrk-content': !isUndercover}">
   <div class="chat-container" #chatContainer>
     <p class="message" *ngFor="let i of postMessages">
       <img src="{{ user.imageUrl }}" class="chat-avatar">

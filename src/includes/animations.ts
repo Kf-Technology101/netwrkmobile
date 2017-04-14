@@ -82,7 +82,7 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
 
   state('moved-n-scaled', style({
     transform: 'scale(0.381)',
-    bottom: window.screen.height/2 - 20 + 'px'
+    bottom: document.documentElement.clientHeight/2 - 20 + 'px'
   })),
 
   state('minimisedForCamera', style({
@@ -104,7 +104,7 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
 
 export const toggleGallery: any = trigger('containerState', [
   state('on', style({
-    height: window.screen.height/2
+    height: document.documentElement.clientHeight/2
   })),
   state('off', style({
     height: 0

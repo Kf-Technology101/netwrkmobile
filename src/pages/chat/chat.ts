@@ -157,6 +157,9 @@ export class ChatPage {
     public cameraPrvd: Camera,
     public chat: Chat
   ) {
+
+    this.keyboard.disableScroll(true);
+
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
     this.cameraPreview.startCamera(cameraOptions).then(res => {
       console.log(res);
@@ -252,7 +255,7 @@ export class ChatPage {
 
   setContentPadding(status){
     if (status) {
-      this.contentBlock.style.padding = '0 0 ' + window.screen.height/2 + 'px';
+      this.contentBlock.style.padding = '0 0 ' + document.documentElement.clientHeight/2 + 'px';
     } else {
       this.contentBlock.style.padding = '0 0 180px';
     }

@@ -109,7 +109,6 @@ export function providers() {
     Geolocation,
     CameraPreview,
     SocialSharing,
-
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];

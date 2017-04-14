@@ -17,6 +17,6 @@ export const heroes: Array<any> = [
   {
     name: 'Car Crash Guy',
     description: 'He might look a little different but I assure you that he’s human. Well, sort of. The reason he looks the way he does is because his body has been modified to withstand a car crash.',
-    imageUrl: '/assets/images/persons/carcrashguy.png',
+    imageUrl: 'assets/images/persons/carcrashguy.png',
   },
 ];

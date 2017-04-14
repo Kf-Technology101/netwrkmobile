@@ -7,4 +7,8 @@ export class Chat {
     console.log('Hello Chat Provider');
   }
 
+  public chatState() {
+
+  }
+
 }

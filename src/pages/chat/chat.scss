@@ -44,12 +44,15 @@ page-undercover {
 
   .content {
     background: transparent;
+    &.netwrk-content {
+      .scroll-content {
+        margin-top: 160px!important;
+      }
+    }
   }
 
   .footer {
-    &{
-      background: transparent;
-    }
+    background: transparent;
     .main-action-btn {
       bottom: 68px;
       border: 3px solid #5b87aa;
@@ -484,6 +487,52 @@ page-undercover {
       img {
         width: 100%;
         background: #fff;
+      }
+    }
+  }
+
+
+  .netwrk-header {
+    padding-bottom: 16px;
+    ion-toolbar {
+      background: url('../assets/icon/logo.png') no-repeat center;
+      background-size: auto 26px;
+      .user-icon {
+        display: block;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        margin-left: 16px;
+        float: left;
+      }
+    }
+
+    .netwrk-slider {
+      & {
+        width: 100%;
+      }
+      .netwrk-slide {
+        & {
+          font-size: 12px;
+        }
+        button.add-to-netwrk {
+          display: block;
+          margin: auto;
+          height: 68px;
+          width: 68px;
+          border-radius: 50%;
+          font-size: 30px;
+          background-color: #5b87aa;
+        }
+        .avatar {
+          width: 68px;
+          height: 68px;
+          margin: auto;
+        }
+        span.username {
+          display: block;
+          margin-top: 5px;
+        }
       }
     }
   }

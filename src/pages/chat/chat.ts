@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content } from 'ionic-angular';
+import { NavController, NavParams, Content, Slides } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 
@@ -50,7 +50,7 @@ import {
 
 export class ChatPage {
 
-  public isUndercover: boolean;
+  public isUndercover: boolean = true;
 
   @ViewChild('galleryCont') gCont;
   // @ViewChild('emojiCont') emCont;
@@ -62,6 +62,7 @@ export class ChatPage {
   // @ViewChild('slln') checkIn;
   // @ViewChild('chatContainer') chatCont;
   @ViewChild(Content) content: Content;
+  @ViewChild('fbSlider') userSlider: Slides;
 
   chatOptions: any = {
     state: 'default'
@@ -129,6 +130,8 @@ export class ChatPage {
 
   contentBlock: any = undefined;
 
+  testSlides: string[] = [];
+
   public user: any;
 
   public checkbox: any = {
@@ -186,9 +189,14 @@ export class ChatPage {
 
     this.sendError = 'Error sending message';
 
-    let action = this.navParams.get('action');
-    this.isUndercover = action && action == 'undercover' ? true : false;
+    setTimeout(() => {
+      for (var i = 0; i < 6; i++) {
+        this.testSlides.push(i.toString());
+      }
+    }, 100);
 
+    // let action = this.navParams.get('action');
+    // this.isUndercover = action && action == 'undercover' ? true : false;
   }
 
   // dragContent = true;
@@ -359,9 +367,8 @@ export class ChatPage {
   }
 
   changeCallback(positionLeft?: boolean) {
-    if (positionLeft) {
-
-    }
+    this.isUndercover = !positionLeft;
+    console.log("isUndercover", this.isUndercover);
   }
 
   removeAppendedImage(index) {
@@ -382,7 +389,9 @@ export class ChatPage {
     this.mainBtn.hidden = false;
 
     this.slideAvatar.changeCallback = this.changeCallback.bind(this);
-    this.slideAvatar.sliderInit();
+    if (this.isUndercover) {
+      this.slideAvatar.sliderInit();
+    }
     this.contentBlock = document.getElementsByClassName("scroll-content")['0'];
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);

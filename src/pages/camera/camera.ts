@@ -80,13 +80,14 @@ export class CameraPage {
       console.log(imageData);
       // this.cameraPrvd.takenPictures = data:image/jpeg;base64,' + imageData[0];
       this.mainBtn.state =  'normal';
-      this.imgBg = 'url(data:image/jpeg;base64,' + imageData[0] + ')';
-      this.imgUrl = 'data:image/jpeg;base64,' + imageData[0];
+      // this.imgBg = 'url(data:image/jpeg;base64,' + imageData[0] + ')';
+      // this.imgUrl = 'data:image/jpeg;base64,' + imageData[0];
 
-      this.base64ToGallery.base64ToGallery(this.imgUrl, { prefix: '_img' }).then(
+      this.base64ToGallery.base64ToGallery(imageData[0], { prefix: '_img' }).then(
         res => {
           console.log('Saved image to gallery ', res);
           this.imgUrl = res;
+          this.imgBg = 'url(&{res})';
         },
         err => console.log('Error saving image to gallery ', err)
       );
@@ -95,8 +96,8 @@ export class CameraPage {
     }, err => {
       console.log(err);
       this.mainBtn.state =  'normal';
-      this.imgBg = 'url(https://backlab.files.wordpress.com/2015/04/windows_98_logo.png)';
-      this.imgUrl = 'https://backlab.files.wordpress.com/2015/04/windows_98_logo.png';
+      this.imgBg = 'url(http://www.designboom.com/wp-content/uploads/2016/07/patricia-piccinini-graham-transport-accident-commission-designboom-01.jpg)';
+      this.imgUrl = 'http://www.designboom.com/wp-content/uploads/2016/07/patricia-piccinini-graham-transport-accident-commission-designboom-01.jpg';
       // this.goBack();
     });
   }

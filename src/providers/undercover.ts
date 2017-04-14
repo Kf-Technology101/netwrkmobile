@@ -77,4 +77,10 @@ export class UndercoverProvider {
 
     return seqMap;
   }
+
+  public getCharacterPerson(UndercoverCharacterPage: any, NetworkFindPage: any): any {
+    let person = this.getPerson()
+    let result = person ? NetworkFindPage : UndercoverCharacterPage;
+    return result;
+  }
 }

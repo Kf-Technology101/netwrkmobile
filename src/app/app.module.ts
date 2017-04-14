@@ -1,4 +1,4 @@
-import { NgModule, ErrorHandler, enableProdMode } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 
 // Pages
@@ -41,6 +41,7 @@ import { SlideAvatar } from '../providers/slide-avatar';
 import { Share } from '../providers/share';
 import { Network } from '../providers/network';
 import { Camera } from '../providers/camera';
+import { Chat } from '../providers/chat';
 
 // Native services
 import { Facebook } from 'ionic-native';
@@ -102,6 +103,7 @@ export function providers() {
     Share,
     Network,
     Camera,
+    Chat,
 
     Facebook,
     Geolocation,

@@ -35,7 +35,7 @@ export class SignUpFacebookPage {
         provider_name: 'fb'
       };
 
-      this.userPrvd.update(this.authPrvd.getAuthData().id, data).map(res => res.json()).subscribe(
+      this.authPrvd.connectAccountToFb(data).subscribe(
         res => {
           this.toolsPrvd.showToast('Facebook already connected');
           this.toolsPrvd.pushPage(UndercoverCharacterPage);

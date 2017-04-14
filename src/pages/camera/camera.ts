@@ -80,13 +80,14 @@ export class CameraPage {
       console.log(imageData);
       // this.cameraPrvd.takenPictures = data:image/jpeg;base64,' + imageData[0];
       this.mainBtn.state =  'normal';
-      this.imgBg = 'url(data:image/jpeg;base64,' + imageData[0] + ')';
-      this.imgUrl = 'data:image/jpeg;base64,' + imageData[0];
+      // this.imgBg = 'url(data:image/jpeg;base64,' + imageData[0] + ')';
+      // this.imgUrl = 'data:image/jpeg;base64,' + imageData[0];
 
-      this.base64ToGallery.base64ToGallery(this.imgUrl, { prefix: '_img' }).then(
+      this.base64ToGallery.base64ToGallery(imageData[0], { prefix: 'netwrk_' }).then(
         res => {
           console.log('Saved image to gallery ', res);
           this.imgUrl = res;
+          this.imgBg = `url(${res})`;
         },
         err => console.log('Error saving image to gallery ', err)
       );
@@ -110,7 +111,7 @@ export class CameraPage {
   }
 
   saveImage() {
-    console.log("Saving image:", this.imgUrl);
+    // console.log("Saving image:", this.imgUrl);
     if (this.cameraPrvd.takenPictures.length < 3) {
       this.cameraPrvd.takenPictures.push(this.imgUrl);
       this.goBack();

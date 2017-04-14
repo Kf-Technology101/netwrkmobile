@@ -137,6 +137,13 @@ export class Auth {
     return result;
   }
 
+  public connectAccountToFb(accountInfo: any) {
+    let seq = this.api.patch('registrations/', accountInfo).share();
+    let seqMap = seq.map(res => res.json());
+
+    return seqMap;
+  }
+
   private loginWithFacebook(data: any, resolve, reject) {
     this.social.setSocialAuth(data.authResponse, Social.FACEBOOK);
 

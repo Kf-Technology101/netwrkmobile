@@ -5,7 +5,7 @@ import {
 } from 'ionic-angular';
 
 // Pages
-import { NetworkFindPage } from '../network-find/network-find';
+import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 
 // Providers
 import { Auth } from '../../providers/auth';
@@ -48,7 +48,7 @@ export class SignUpAfterFbPage {
       this.user.update(this.auth.fbResponseData.id, updateObj, 'fb')
         .map(res => res.json()).subscribe(res => {
           this.tools.hideLoader();
-          this.tools.pushPage(NetworkFindPage);
+          this.tools.pushPage(UndercoverCharacterPage);
         }, err => {
           this.tools.hideLoader();
           this.tools.showToast(JSON.stringify(err));

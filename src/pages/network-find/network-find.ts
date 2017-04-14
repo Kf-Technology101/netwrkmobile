@@ -8,6 +8,7 @@ import { NetworkPage } from '../network/network';
 // Providers
 import { Tools } from '../../providers/tools';
 import { Gps } from '../../providers/gps';
+import { Chat } from '../../providers/chat';
 // import { Permission } from '../../providers/permission';
 
 // Interfaces
@@ -26,6 +27,7 @@ export class NetworkFindPage {
     public gps: Gps,
     public tools: Tools,
     private platform: Platform,
+    public chatPrvd: Chat
     // public permission: Permission
   ) {}
 
@@ -39,9 +41,9 @@ export class NetworkFindPage {
 
   ionViewDidLoad() {
     this.hideSearch = false;
-    this.gps.getMyZipCode().then( (res: GeolocationInterface) => {
-      console.log(res);
-      this.gps.getNetwrk(res.zip_code).map(res => res.json()).subscribe(
+    this.gps.getMyZipCode().then( (zipRes: GeolocationInterface) => {
+      console.log(zipRes);
+      this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(
         res => {
           console.log(res);
           let params: any = {
@@ -53,8 +55,13 @@ export class NetworkFindPage {
             params.action = 'create';
             this.tools.pushPage(NetworkNoPage, params);
           } else {
-            params.action = 'join';
-            this.tools.pushPage(NetworkPage, params);
+            if (this.chatPrvd.chatZipCode() == res.network.post_code) {
+              params.action = this.chatPrvd.getState();
+              this.tools.pushPage(NetworkPage, params);
+            } else {
+              params.action = 'join';
+              this.tools.pushPage(NetworkPage, params);
+            }
           }
         }, err => console.log(err)
       );

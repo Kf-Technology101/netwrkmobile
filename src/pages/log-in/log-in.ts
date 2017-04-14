@@ -11,11 +11,14 @@ import { SignUpPage } from '../sign-up/sign-up';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
 // import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 import { NetworkFindPage } from '../network-find/network-find';
+import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
+import { SignUpFacebookPage } from '../sign-up-facebook/sign-up-facebook';
 
 // Providers
 import { Auth } from '../../providers/auth';
 import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
+import { UndercoverProvider } from '../../providers/undercover';
 
 // Interfaces
 import { ResponseAuthData } from '../../interfaces/user';
@@ -36,36 +39,26 @@ import {
 })
 
 export class LogInPage {
-
-  account: { login: string, password: string } = {
+  public account: { login: string, password: string } = {
     login: '',
     password: ''
-    // login: '+380971460376',
-    // password: '11111111',
   };
-
-  contentState: string = 'fadeOut';
-  mainBtn: any = {
-    state: 'normal'
-  };
-
+  public contentState: string = 'fadeOut';
+  public mainBtn: any = { state: 'normal' };
   private textStrings: any = {};
 
   constructor(
     public navCtrl: NavController,
-    public auth: Auth,
+    public authPrvd: Auth,
     public navParams: NavParams,
     public events: Events,
     public contactsPrvd: ContactsProvider,
-    public tools: Tools
+    public tools: Tools,
+    public undercoverPrvd: UndercoverProvider
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
     this.textStrings.require = 'Please fill all fields';
-
-    events.subscribe('backButton:clicked', () => {
-      console.log('backButton');
-    });
   }
 
   doLogin(form: any) {
@@ -76,10 +69,14 @@ export class LogInPage {
     }
 
     this.tools.showLoader();
-    this.auth.login(this.account).map(res => res.json()).subscribe(resp => {
+    this.authPrvd.login(this.account).map(res => res.json()).subscribe(resp => {
       console.log(resp);
       this.tools.hideLoader();
-      this.tools.pushPage(NetworkFindPage);
+      let fbConnected = this.authPrvd.getFbConnected();
+      let page = fbConnected ?
+        this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage) :
+        SignUpFacebookPage;
+      this.tools.pushPage(page);
     }, err => {
       this.tools.showToast(this.textStrings.login);
       this.tools.hideLoader();
@@ -88,13 +85,14 @@ export class LogInPage {
 
   doFbLogin() {
     this.tools.showLoader();
-    this.auth.signUpFacebook().then((data: ResponseAuthData) => {
+    this.authPrvd.signUpFacebook().then((data: ResponseAuthData) => {
       console.log(data);
       this.tools.hideLoader();
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
-          this.tools.pushPage(NetworkFindPage);
+          let page = this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage);
+          this.tools.pushPage(page);
         }
       } else this.tools.pushPage(SignUpAfterFbPage);
     }, err => {

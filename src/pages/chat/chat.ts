@@ -49,6 +49,9 @@ import {
 })
 
 export class ChatPage {
+
+  public isUndercover: boolean;
+
   @ViewChild('galleryCont') gCont;
   // @ViewChild('emojiCont') emCont;
   // @ViewChild('shareCont') shCont;
@@ -182,6 +185,10 @@ export class ChatPage {
     }
 
     this.sendError = 'Error sending message';
+
+    let action = this.navParams.get('action');
+    this.isUndercover = action && action == 'undercover' ? true : 
+
   }
 
   // dragContent = true;
@@ -360,7 +367,7 @@ export class ChatPage {
 
   removeAppendedImage(index) {
     this.cameraPrvd.takenPictures.splice(index, 1);
-    if (!this.cameraPrvd.takenPictures) {
+    if (this.cameraPrvd.takenPictures.length == 0) {
       this.mainBtn.state = 'normal';
       this.appendContainer.state = 'off';
       setTimeout(() => {

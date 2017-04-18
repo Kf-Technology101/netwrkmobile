@@ -75,12 +75,13 @@ page-undercover {
       margin: 13px;
       width: -webkit-calc(100% - 26px);
       width: calc(100% - 26px);
-      border-radius: 12px;
+      border-radius: 22px;
       height: 42px;
 
       .item-inner {
         border-radius: 0;
         border: none;
+        padding-right: 0;
 
         .text-input {
           font-size: 14px;

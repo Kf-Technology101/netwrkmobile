@@ -1,5 +1,5 @@
 import { Component, ViewChild, NgZone } from '@angular/core';
-import { NavController, NavParams, Content } from 'ionic-angular';
+import { NavController, NavParams, Content, Platform } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 
@@ -161,7 +161,8 @@ export class ChatPage {
     public cameraPrvd: Camera,
     public chatPrvd: Chat,
     public networkPrvd: Network,
-    public gpsPrvd: Gps
+    public gpsPrvd: Gps,
+    public plt: Platform
   ) {
 
     this.keyboard.disableScroll(true);
@@ -176,11 +177,12 @@ export class ChatPage {
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       console.log(res);
-      let footerEl = document.getElementsByClassName('chatFooter')['0'];
-      let scrollEl = document.getElementsByClassName('scroll-content')['0'];
-      scrollEl.style.bottom = res.keyboardHeight + 'px';
-      footerEl.style.bottom = res.keyboardHeight + 'px';
-
+      if (this.plt.is('ios')) {
+        let footerEl = document.getElementsByClassName('chatFooter')['0'];
+        let scrollEl = document.getElementsByClassName('scroll-content')['0'];
+        scrollEl.style.bottom = res.keyboardHeight + 'px';
+        footerEl.style.bottom = res.keyboardHeight + 'px';
+      }
       setTimeout(() => {
         this.mainBtn.state = 'minimised';
         if (!this.appendContainer.hidden) {
@@ -193,19 +195,20 @@ export class ChatPage {
 
     this.keyboard.onKeyboardHide().subscribe(res => {
       console.log(res);
-      let footerEl = document.getElementsByClassName('chatFooter')['0'];
-      footerEl.style.bottom = '0';
-      let scrollEl = document.getElementsByClassName('scroll-content')['0'];
-      scrollEl.style.bottom = '0';
-
+      if (this.plt.is('ios')) {
+        let footerEl = document.getElementsByClassName('chatFooter')['0'];
+        let scrollEl = document.getElementsByClassName('scroll-content')['0'];
+        footerEl.style.bottom = '0';
+        scrollEl.style.bottom = '0';
+      }
       // setTimeout(() => {
-      //   if (!this.appendContainer.hidden) {
-      //     this.mainBtn.state = 'above_append';
-      //   }
-      //   if (this.appendContainer.hidden) {
-      //     this.mainBtn.state = 'normal';
-      //   }
-      // }, 50);
+        if (!this.appendContainer.hidden) {
+          this.mainBtn.state = 'above_append';
+        }
+        if (this.appendContainer.hidden) {
+          this.mainBtn.state = 'normal';
+        }
+      // }, chatAnim/2);
 
     }, err => {
       console.log(err);
@@ -345,15 +348,19 @@ export class ChatPage {
   }
 
   postMessage() {
+
+    let currentDate = new Date();
     console.log(this.txtIn);
+
     let message = {
       text: this.txtIn.value,
-      images: []
+      images: [],
+      date: null
     };
     if (this.cameraPrvd.takenPictures) {
       message.images = this.cameraPrvd.takenPictures;
     }
-    if (message.text.trim() != '' || message.images) {
+    if (message.text.trim() != '' || message.images.length > 0) {
       if (this.authPrvd.getAuthData()) {
         let data = {
           text: message.text,
@@ -365,6 +372,7 @@ export class ChatPage {
         this.chatPrvd.sendMessage(data)
           .subscribe(res => {
             console.log(res);
+            console.log('created_at:', res.created_at);
           }, err => {
             console.log(err);
             this.toolsPrvd.showToast(this.sendError);
@@ -372,17 +380,24 @@ export class ChatPage {
       }
 
       setTimeout(() => {
-        if (message.text.trim() != '') {
+        if (message.text.trim() != '' || message.images.length > 0) {
           this.postMessages.push(message);
           this.txtIn.value = '';
         }
       }, 100);
-      this.mainBtn.state = 'minimised';
+      this.mainBtn.state = 'normal';
       this.appendContainer.state = 'off';
       setTimeout(() => {
         this.appendContainer.hidden = true;
       }, chatAnim/2);
 
+      // let date1 = new Date();
+      // let date2 = new Date();
+      // let timeDiff = Math.abs(date2.getTime() - date1.getTime());
+      // let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+      let fullTime = new Date().toTimeString().split(' ')[0];
+      message.date = fullTime.substring(0, fullTime.length - 3);
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.cameraPrvd.takenPictures = [];
     }

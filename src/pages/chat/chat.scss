@@ -51,6 +51,12 @@ page-undercover {
       }
     }
 
+    &.content-ios {
+      .scroll-content {
+        margin-top: 60px!important;
+      }
+    }
+
     .scroll-content {
       margin-top: 44px!important;
     }

@@ -4,6 +4,7 @@ import { NavController, NavParams, Platform } from 'ionic-angular';
 // Page
 import { NetworkNoPage } from '../network-no/network-no';
 import { NetworkPage } from '../network/network';
+import { ChatPage } from '../chat/chat';
 
 // Providers
 import { Tools } from '../../providers/tools';
@@ -46,8 +47,9 @@ export class NetworkFindPage {
       this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(
         res => {
           console.log(res);
+          let post_code: number = res.network.post_code;
           let params: any = {
-            zipCode: res.post_code,
+            zipCode: post_code,
             action: null
           };
 
@@ -55,13 +57,13 @@ export class NetworkFindPage {
             params.action = 'create';
             this.tools.pushPage(NetworkNoPage, params);
           } else {
-            if (this.chatPrvd.chatZipCode() == res.network.post_code) {
-              this.chatPrvd.setZipCode(res.post_code);
+            if (this.chatPrvd.chatZipCode() == post_code) {
+              this.chatPrvd.setZipCode(post_code);
               params.action = this.chatPrvd.getState();
-              this.tools.pushPage(NetworkPage, params);
+              this.tools.pushPage(ChatPage, params);
             } else {
               params.action = 'join';
-              this.chatPrvd.setZipCode(res.post_code);
+              this.chatPrvd.setZipCode(post_code);
               this.tools.pushPage(NetworkPage, params);
             }
           }

@@ -5,8 +5,8 @@ import { LocalStorage } from './local-storage';
 import { Auth } from './auth';
 import { User } from './user';
 import { Tools } from './tools';
-import { Api } from './api';
-import { Gps } from './gps';
+
+
 
 @Injectable()
 export class UndercoverProvider {
@@ -16,9 +16,7 @@ export class UndercoverProvider {
     public localStorage: LocalStorage,
     public auth: Auth,
     public user: User,
-    public tools: Tools,
-    public api: Api,
-    public gps: Gps
+    public tools: Tools
   ) {
     console.log('Hello Undercover Provider');
   }
@@ -61,21 +59,6 @@ export class UndercoverProvider {
         reject(err);
       });
     });
-  }
-
-  public sendMessage(data: any): any {
-    let seq = this.api.post('messages', {
-      image: data.image,
-      text: data.text,
-      user_id: data.user_id,
-      post_code: this.gps.zipCode,
-      lat: this.gps.coords.lat,
-      lng: this.gps.coords.lng,
-      undercover: true,
-    }).share();
-    let seqMap = seq.map(res => res.json());
-
-    return seqMap;
   }
 
   public getCharacterPerson(UndercoverCharacterPage: any, NetworkFindPage: any): any {

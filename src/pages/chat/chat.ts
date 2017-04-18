@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content, Slides } from 'ionic-angular';
+import { NavController, NavParams, Content, Slides, Platform } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 
@@ -129,7 +129,7 @@ export class ChatPage {
 
   caretPos: number = 0;
 
-  postMessages: any = [];
+  public postMessages: any = [];
 
   contentBlock: any = undefined;
 
@@ -160,7 +160,8 @@ export class ChatPage {
     public cameraPrvd: Camera,
     public chatPrvd: Chat,
     public networkPrvd: Network,
-    public gpsPrvd: Gps
+    public gpsPrvd: Gps,
+    public plt: Platform
   ) {
 
     this.keyboard.disableScroll(true);
@@ -175,11 +176,12 @@ export class ChatPage {
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       console.log(res);
-      let footerEl = document.getElementsByClassName('chatFooter')['0'];
-      let scrollEl = document.getElementsByClassName('scroll-content')['0'];
-      scrollEl.style.bottom = res.keyboardHeight + 'px';
-      footerEl.style.bottom = res.keyboardHeight + 'px';
-
+      if (this.plt.is('ios')) {
+        let footerEl = document.getElementsByClassName('chatFooter')['0'];
+        let scrollEl = document.getElementsByClassName('scroll-content')['0'];
+        scrollEl.style.bottom = res.keyboardHeight + 'px';
+        footerEl.style.bottom = res.keyboardHeight + 'px';
+      }
       setTimeout(() => {
         this.mainBtn.state = 'minimised';
         if (!this.appendContainer.hidden) {
@@ -192,11 +194,12 @@ export class ChatPage {
 
     this.keyboard.onKeyboardHide().subscribe(res => {
       console.log(res);
-      let footerEl = document.getElementsByClassName('chatFooter')['0'];
-      let scrollEl = document.getElementsByClassName('scroll-content')['0'];
-      footerEl.style.bottom = '0';
-      scrollEl.style.bottom = '0';
-
+      if (this.plt.is('ios')) {
+        let footerEl = document.getElementsByClassName('chatFooter')['0'];
+        let scrollEl = document.getElementsByClassName('scroll-content')['0'];
+        footerEl.style.bottom = '0';
+        scrollEl.style.bottom = '0';
+      }
       // setTimeout(() => {
         if (!this.appendContainer.hidden) {
           this.mainBtn.state = 'above_append';
@@ -343,6 +346,8 @@ export class ChatPage {
   }
 
   postMessage() {
+
+    let currentDate = new Date();
     console.log(this.txtIn);
 
     let message = {
@@ -358,12 +363,14 @@ export class ChatPage {
         let data = {
           text: message.text,
           user_id: this.authPrvd.getAuthData().id,
-          image: message.images
+          image: message.images,
+          undercover: this.isUndercover
         }
 
-        this.undercoverPrvd.sendMessage(data)
+        this.chatPrvd.sendMessage(data)
           .subscribe(res => {
             console.log(res);
+            console.log('created_at:', res.created_at);
           }, err => {
             console.log(err);
             this.toolsPrvd.showToast(this.sendError);
@@ -380,6 +387,11 @@ export class ChatPage {
       setTimeout(() => {
         this.appendContainer.hidden = true;
       }, chatAnim/2);
+
+      // let date1 = new Date();
+      // let date2 = new Date();
+      // let timeDiff = Math.abs(date2.getTime() - date1.getTime());
+      // let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
       let fullTime = new Date().toTimeString().split(' ')[0];
       message.date = fullTime.substring(0, fullTime.length - 3);
@@ -480,6 +492,12 @@ export class ChatPage {
     }
 
     this.getUsers();
+    // this.postMessages = this.networkPrvd.getMessages();
+    this.networkPrvd.getMessages().subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    })
   }
 
   ionViewWillLeave() {

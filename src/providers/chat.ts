@@ -1,12 +1,16 @@
 import { Injectable } from '@angular/core';
 
 import { LocalStorage } from './local-storage';
+import { Gps } from './gps';
+import { Api } from './api';
 
 @Injectable()
 export class Chat {
 
   constructor(
-    public localStorage: LocalStorage
+    public localStorage: LocalStorage,
+    public api: Api,
+    public gps: Gps
   ) {
     console.log('Hello Chat Provider');
   }
@@ -27,8 +31,25 @@ export class Chat {
 
   public chatZipCode(): number {
     let chatZipCode = this.localStorage.get('chat_zip_code');
+    console.log(chatZipCode);
     let result = chatZipCode ? chatZipCode : 0;
+    console.log(result);
     return result;
+  }
+
+  public sendMessage(data: any): any {
+    let seq = this.api.post('messages', {
+      image: data.image,
+      text: data.text,
+      user_id: data.user_id,
+      post_code: this.gps.zipCode,
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng,
+      undercover: data.undercover,
+    }).share();
+    let seqMap = seq.map(res => res.json());
+
+    return seqMap;
   }
 
 }

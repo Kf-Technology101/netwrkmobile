@@ -52,4 +52,16 @@ export class Chat {
     return seqMap;
   }
 
+  public getMessages(undercover: boolean) {
+    let data = {
+      post_code: this.gps.zipCode,
+      undercover: undercover,
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng,
+    };
+    let seq = this.api.get('messages', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+
 }

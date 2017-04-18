@@ -376,6 +376,7 @@ export class ChatPage {
             this.toolsPrvd.showToast(this.sendError);
           });
       }
+
       setTimeout(() => {
         if (message.text.trim() != '') {
           this.postMessages.push(message);
@@ -493,7 +494,7 @@ export class ChatPage {
 
     this.getUsers();
     // this.postMessages = this.networkPrvd.getMessages();
-    this.networkPrvd.getMessages().subscribe(data => {
+    this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
       console.log(data);
     }, err => {
       console.log(err);

@@ -15,78 +15,71 @@
 
 @implementation Base64ToGallery
 
-    - (void)saveImageDataToLibrary:(CDVInvokedUrlCommand*)command
-    {
-        [self.commandDelegate runInBackground:^{
-            self.callbackId = command.callbackId;
-            self.result = nil;
+- (void)saveImageDataToLibrary:(CDVInvokedUrlCommand*)command
+{
+    [self.commandDelegate runInBackground:^{
+        self.callbackId = command.callbackId;
+        self.result = nil;
 
-            NSString *base64String = [command.arguments objectAtIndex:0];
-            NSString *prefix = [command.arguments objectAtIndex:1];
-            bool cameraRoll = [[command.arguments objectAtIndex:2] boolValue];
-            
-            if (base64String != nil && [base64String length] > 0) {
-            
-                NSData *imageData = [[[NSData alloc] initWithBase64EncodedString:base64String options:0] autorelease];
-                UIImage *image = [[[UIImage alloc] initWithData:imageData] autorelease];
+        NSString *base64String = [command.arguments objectAtIndex:0];
+        NSString *prefix = [command.arguments objectAtIndex:1];
+        bool cameraRoll = [[command.arguments objectAtIndex:2] boolValue];
 
-                // converts the UIImage to NSData
-                NSData *pngImageData = UIImagePNGRepresentation(image);
+        if (base64String != nil && [base64String length] > 0) {
 
-                // image extension
-                NSString *imageExtension = @".png";
+            NSData *imageData = [[[NSData alloc] initWithBase64EncodedString:base64String options:0] autorelease];
+            UIImage *image = [[[UIImage alloc] initWithData:imageData] autorelease];
 
-                // get Timestamp
-                double currentTime = CACurrentMediaTime();
+            // converts the UIImage to NSData
+            NSData *pngImageData = UIImagePNGRepresentation(image);
 
-                // set fileName
-                NSString *timeString = [NSString stringWithFormat:@"%f", currentTime];
-                timeString = [timeString stringByReplacingOccurrencesOfString:@"." withString:@""];
-                NSString *fileName = [prefix stringByAppendingString: timeString];
-                fileName = [fileName stringByAppendingString: imageExtension];
+            // image extension
+            NSString *imageExtension = @".png";
 
-                NSString *libPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
-                NSString *libPathNoSync = [libPath stringByAppendingPathComponent:@"NoCloud"];
-                NSFileManager *fileManager = [NSFileManager defaultManager];//create instance of NSFileManager
-                
-                // Create the directory if necessary.
-                [fileManager createDirectoryAtPath:libPathNoSync withIntermediateDirectories:YES attributes:nil error:nil];
-                
-                NSString *imagePath = [libPathNoSync stringByAppendingPathComponent:fileName];
+            // get Timestamp
+            double currentTime = CACurrentMediaTime();
 
-                // writeToFile
-                bool success = [fileManager createFileAtPath:imagePath contents:pngImageData attributes:nil];
-                
-                if(success){
-                    // write to documents folder was successfull
-                    if(cameraRoll){
-                        // add the image to camera roll
-                        UIImage * savedImage = [UIImage imageWithContentsOfFile:imagePath];
-                        UIImageWriteToSavedPhotosAlbum(savedImage, self, @selector(thisImage:hasBeenSavedInPhotoAlbumWithError:usingContextInfo:), nil);
-                    }
-                    
-                }else{
-                    imagePath = [imagePath stringByAppendingString: @" - error writing image to documents folder"];
-                    CDVPluginResult * pluginResult  = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:imagePath];
-                    [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+            // set fileName
+            NSString *timeString = [NSString stringWithFormat:@"%f", currentTime];
+            timeString = [timeString stringByReplacingOccurrencesOfString:@"." withString:@""];
+            NSString *fileName = [prefix stringByAppendingString: timeString];
+            fileName = [fileName stringByAppendingString: imageExtension];
+
+            NSString *libPath = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)[0];
+            NSString *libPathNoSync = [libPath stringByAppendingPathComponent:@"NoCloud"];
+            NSFileManager *fileManager = [NSFileManager defaultManager];//create instance of NSFileManager
+
+            // Create the directory if necessary.
+            [fileManager createDirectoryAtPath:libPathNoSync withIntermediateDirectories:YES attributes:nil error:nil];
+
+            NSString *imagePath = [libPathNoSync stringByAppendingPathComponent:fileName];
+
+            // writeToFile
+            bool success = [fileManager createFileAtPath:imagePath contents:pngImageData attributes:nil];
+
+            if(success){
+                // write to documents folder was successfull
+                if(cameraRoll){
+                    // add the image to camera roll
+                    UIImage * savedImage = [UIImage imageWithContentsOfFile:imagePath];
+                    UIImageWriteToSavedPhotosAlbum(savedImage, nil, nil, nil);
                 }
 
-            } else {
-                CDVPluginResult * pluginResult  = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no valid base64 image data was passed"];
+                CDVPluginResult * pluginResult  = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: imagePath];
+                [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+
+            }else{
+                imagePath = [imagePath stringByAppendingString: @" - error writing image to documents folder"];
+                CDVPluginResult * pluginResult  = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:imagePath];
                 [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
             }
 
-        }];
-    }
+        } else {
+            CDVPluginResult * pluginResult  = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"no valid base64 image data was passed"];
+            [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
+        }
 
--(void)thisImage:(UIImage *)image hasBeenSavedInPhotoAlbumWithError:(NSError *)error usingContextInfo:(void*)ctxInfo{
-    if (error) {
-        CDVPluginResult * pluginResult  = [CDVPluginResult resultWithStatus:CDVCommandStatus_ERROR messageAsString:@"Error saving Image to Gallery, check Permissions"];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
-    } else {
-        CDVPluginResult * pluginResult  = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsString: @"Image Saved to Gallery"];
-        [self.commandDelegate sendPluginResult:pluginResult callbackId:self.callbackId];
-    }
+    }];
 }
 
 @end

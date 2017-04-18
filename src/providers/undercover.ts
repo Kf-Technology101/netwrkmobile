@@ -35,15 +35,16 @@ export class UndercoverProvider {
   }
 
   public setPerson(person: any): any {
-    console.log(person)
-    let updateObj: any = {
-      role_name: person.name,
-      role_description: person.description,
-      role_image_url: person.imageUrl,
-      active: null,
-    }
-
     return new Promise((resolve, reject) => {
+      console.log(person)
+      let updateObj: any = {
+        role_name: person.name,
+        role_description: person.description,
+        role_image_url: person.imageUrl,
+        active: null,
+      }
+
+      console.log(updateObj);
       this.tools.showLoader();
       this.user.update(
         this.auth.getAuthData().id,

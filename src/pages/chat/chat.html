@@ -6,16 +6,16 @@
           <span class="username">{{ user.name }}</span>
         </span>
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
-        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile()">
+        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile(user.id)">
       </div>
     </div>
   </ion-toolbar>
 
   <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar>
-      <img src="{{ user.imageUrl }}" (tap)="goToProfile()" class="user-icon">
+      <img src="{{ user.imageUrl }}" (tap)="goToProfile(user.id)" class="user-icon">
     </ion-toolbar>
-    <ion-slides *ngIf="showUserSlider" slidesPerView="4" class="netwrk-slider">
+    <ion-slides slidesPerView="4" class="netwrk-slider">
       <ion-slide class="netwrk-slide">
         <button ion-button class="add-to-netwrk">
           <ion-icon ios="ios-add" md="ios-add"></ion-icon>
@@ -35,14 +35,14 @@
 <ion-content has-main-btn has-main-btn-label [ngClass]="{'netwrk-content': !isUndercover}">
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let i of postMessages">
-      <img src="{{ user.imageUrl }}" class="chat-avatar">
+      <img (tap)="goToProfile(user.id)" src="{{ user.imageUrl }}" class="chat-avatar">
       <p class="message-container">
         <span class="username">{{ user.name }}</span>
         <span class="message-date">{{ i.date }}</span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
-      <button class="like-button" [ngClass]="{ 'bottom' : i.images.length }"></button>
-      <img *ngFor="let j of i.images" [src]="j"/>
+      <!-- <button class="like-button" [ngClass]="{ 'bottom' : i.images.length }"></button> -->
+      <!-- <img *ngFor="let j of i.images" [src]="j"/> -->
     </div>
   </div>
 </ion-content>

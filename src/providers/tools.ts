@@ -95,6 +95,14 @@ export class Tools {
     this.changeBodyClass(action);
   }
 
+  public getTime(date?: string): string {
+    let d = date ? new Date(date) : new Date();
+    let hours = d.getHours();
+    let minutes = d.getMinutes();
+    let res = `${hours}:${minutes}`;
+    return res;
+  }
+
   private changeBodyClass(add?: boolean) {
     let body = document.getElementsByTagName('html')[0];
     let className = 'transparent-background';

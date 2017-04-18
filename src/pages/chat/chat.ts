@@ -349,7 +349,7 @@ export class ChatPage {
 
   postMessage() {
 
-    let currentDate = new Date();
+    // let currentDate = new Date();
     console.log(this.txtIn);
 
     let message = {
@@ -386,6 +386,7 @@ export class ChatPage {
           this.mainBtn.state = 'normal';
         }
       }, 100);
+
       this.appendContainer.state = 'off';
       setTimeout(() => {
         this.appendContainer.hidden = true;
@@ -396,8 +397,7 @@ export class ChatPage {
       // let timeDiff = Math.abs(date2.getTime() - date1.getTime());
       // let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
-      let fullTime = new Date().toTimeString().split(' ')[0];
-      message.date = fullTime.substring(0, fullTime.length - 3);
+      message.date = this.toolsPrvd.getTime();
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.cameraPrvd.takenPictures = [];
     }
@@ -409,11 +409,8 @@ export class ChatPage {
     }
   }
 
-  goToProfile(ev) {
-    console.log(">>> [GO] Profile Page");
-    setTimeout(() => {
-      this.toolsPrvd.pushPage(ProfilePage);
-    }, 100);
+  goToProfile(profileId: number) {
+    this.toolsPrvd.pushPage(ProfilePage, { id: profileId });
   }
 
   mainBtnOnTap() {
@@ -455,6 +452,7 @@ export class ChatPage {
     this.networkPrvd.getUsers(this.networkParams).subscribe(res => {
       console.log(res);
       this.chatUsers = res;
+      this.chatPrvd.setStorageUsers(res);
     }, err => {
       console.log(err);
     });
@@ -464,6 +462,16 @@ export class ChatPage {
     setTimeout(() => {
       this.showUserSlider = this.isUndercover;
     }, 1000);
+  }
+
+  private showMessages() {
+    this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
+      console.log(data);
+      this.postMessages = this.chatPrvd.organizeMessages(data);
+      console.log(this.chatPrvd.users);
+    }, err => {
+      console.log(err);
+    })
   }
 
   ionViewDidEnter() {
@@ -477,7 +485,7 @@ export class ChatPage {
       this.slideAvatarPrvd.sliderInit();
       this.showUsers();
     }
-    this.contentBlock = document.getElementsByClassName("scroll-content")['0'];
+    this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
@@ -503,12 +511,8 @@ export class ChatPage {
     }
 
     this.getUsers();
+    this.showMessages();
     // this.postMessages = this.networkPrvd.getMessages();
-    this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
-      console.log(data);
-    }, err => {
-      console.log(err);
-    })
   }
 
   ionViewWillLeave() {

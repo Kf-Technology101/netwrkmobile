@@ -47,7 +47,7 @@ export class NetworkFindPage {
       this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(
         res => {
           console.log(res);
-          let post_code: number = res.network.post_code;
+          let post_code: number = res.network ? res.network.post_code : null;
           let params: any = {
             zipCode: post_code,
             action: null
@@ -58,14 +58,14 @@ export class NetworkFindPage {
             this.tools.pushPage(NetworkNoPage, params);
           } else {
             if (this.chatPrvd.chatZipCode() == post_code) {
-              this.chatPrvd.setZipCode(post_code);
               params.action = this.chatPrvd.getState();
               this.tools.pushPage(ChatPage, params);
             } else {
               params.action = 'join';
-              this.chatPrvd.setZipCode(post_code);
               this.tools.pushPage(NetworkPage, params);
             }
+            this.chatPrvd.setZipCode(post_code);
+            this.chatPrvd.saveNetwork(res.network);
           }
         }, err => console.log(err)
       );

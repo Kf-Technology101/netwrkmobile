@@ -3,14 +3,17 @@ import { Injectable } from '@angular/core';
 import { LocalStorage } from './local-storage';
 import { Gps } from './gps';
 import { Api } from './api';
+import { Tools } from './tools';
 
 @Injectable()
 export class Chat {
+  public users: any = {};
 
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
-    public gps: Gps
+    public gps: Gps,
+    public tools: Tools
   ) {
     console.log('Hello Chat Provider');
   }
@@ -42,7 +45,7 @@ export class Chat {
       image: data.image,
       text: data.text,
       user_id: data.user_id,
-      post_code: this.gps.zipCode,
+      network_id: this.getNetwork() ? this.getNetwork().id : null,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       undercover: data.undercover,
@@ -62,6 +65,31 @@ export class Chat {
     let seq = this.api.get('messages', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
+  }
+
+  public saveNetwork(network: any) {
+    this.localStorage.set('current_network', network);
+  }
+
+  public setStorageUsers(users: Array<any>) {
+    let stUsers: any = {};
+    if (users.length)
+      for (let i = 0; i < users.length; i++)
+        stUsers[users[i].id] = users[i];
+    this.users = stUsers;
+  }
+
+  public organizeMessages(data: any): any {
+    let messages: Array<any> = [];
+    for (let d in data) {
+      data[d].date = this.tools.getTime(data[d].created_at);
+      messages.push(data[d]);
+    }
+    return messages;
+  }
+
+  private getNetwork(): any {
+    return this.localStorage.get('current_network');
   }
 
 }

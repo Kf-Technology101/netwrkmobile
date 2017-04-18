@@ -37,6 +37,7 @@
     <p class="message" *ngFor="let i of postMessages">
       <img src="{{ user.imageUrl }}" class="chat-avatar">
       <span class="username">{{ user.name }}</span>
+      <span class="message-date">{{ i.date }}</span>
       <span class="text">{{ i.text }}</span>
       <img *ngFor="let j of i.images" [src]="j"/>
     </p>

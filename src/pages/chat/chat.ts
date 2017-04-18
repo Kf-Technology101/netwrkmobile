@@ -311,14 +311,16 @@ export class ChatPage {
 
   postMessage() {
     console.log(this.txtIn);
+
     let message = {
       text: this.txtIn.value,
-      images: []
+      images: [],
+      date: null
     };
     if (this.cameraPrvd.takenPictures) {
       message.images = this.cameraPrvd.takenPictures;
     }
-    if (message.text.trim() != '' || message.images) {
+    if (message.text.trim() != '' || message.images.length > 0) {
       if (this.auth.getAuthData()) {
         let data = {
           text: message.text,
@@ -347,6 +349,8 @@ export class ChatPage {
         this.appendContainer.hidden = true;
       }, chatAnim/2);
 
+      let fullTime = new Date().toTimeString().split(' ')[0];
+      message.date = fullTime.substring(0, fullTime.length - 3);
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.cameraPrvd.takenPictures = [];
     }

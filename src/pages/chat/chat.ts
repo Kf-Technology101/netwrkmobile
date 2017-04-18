@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Content, Slides, Platform } from 'ionic-angular';
+import { Component, ViewChild, NgZone } from '@angular/core';
+import { NavController, NavParams, Content, Platform } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 
@@ -65,7 +65,6 @@ export class ChatPage {
   // @ViewChild('slln') checkIn;
   // @ViewChild('chatContainer') chatCont;
   @ViewChild(Content) content: Content;
-  @ViewChild('fbSlider') userSlider: Slides;
 
   chatOptions: any = {
     state: 'default'
@@ -144,11 +143,13 @@ export class ChatPage {
   };
 
   public sendError: string;
+  public showUserSlider: boolean = false;
   private networkParams: any = {};
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    public zone: NgZone,
     private cameraPreview: CameraPreview,
     private keyboard: Keyboard,
     // private imagePicker: ImagePicker,
@@ -234,6 +235,7 @@ export class ChatPage {
     } else {
       this.isUndercover = this.chatPrvd.getState() == 'undercover' ? true : false;
     }
+    this.showUsers();
 
     this.networkParams = { post_code: this.gpsPrvd.zipCode };
   }
@@ -419,9 +421,8 @@ export class ChatPage {
       this.isUndercover = true;
       setTimeout(() => {
         this.slideAvatarPrvd.sliderInit();
+        this.showUsers();
       }, 100);
-    } else {
-
     }
   }
 
@@ -430,10 +431,12 @@ export class ChatPage {
   }
 
   changeCallback(positionLeft?: boolean) {
-    this.isUndercover = !positionLeft;
-    if (positionLeft) {
-      this.chatPrvd.setState('netwrk');
-    }
+    this.zone.run(() => {
+      this.isUndercover = !positionLeft;
+      if (positionLeft) this.chatPrvd.setState('netwrk');
+      this.showUsers();
+    })
+
     console.log("isUndercover", this.isUndercover);
   }
 
@@ -457,6 +460,12 @@ export class ChatPage {
     });
   }
 
+  private showUsers() {
+    setTimeout(() => {
+      this.showUserSlider = this.isUndercover;
+    }, 1000);
+  }
+
   ionViewDidEnter() {
     this.mainInput.state = 'fadeIn';
     this.mainInput.hidden = false;
@@ -466,6 +475,7 @@ export class ChatPage {
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     if (this.isUndercover) {
       this.slideAvatarPrvd.sliderInit();
+      this.showUsers();
     }
     this.contentBlock = document.getElementsByClassName("scroll-content")['0'];
     this.setContentPadding(false);

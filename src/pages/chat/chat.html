@@ -11,11 +11,11 @@
     </div>
   </ion-toolbar>
 
-  <div ion-content *ngIf="!isUndercover" class="netwrk-header">
+  <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar>
       <img src="{{ user.imageUrl }}" (tap)="goToProfile()" class="user-icon">
     </ion-toolbar>
-    <ion-slides #fbSlider slidesPerView="4" class="netwrk-slider">
+    <ion-slides *ngIf="showUserSlider" slidesPerView="4" class="netwrk-slider">
       <ion-slide class="netwrk-slide">
         <button ion-button class="add-to-netwrk">
           <ion-icon ios="ios-add" md="ios-add"></ion-icon>

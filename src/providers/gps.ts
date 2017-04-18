@@ -8,7 +8,10 @@ import { Api } from './api';
 
 @Injectable()
 export class Gps {
-  public coords: any = {
+  public coords: {
+    lat: number,
+    lng: number
+  } = {
     lat: null,
     lng: null
   };

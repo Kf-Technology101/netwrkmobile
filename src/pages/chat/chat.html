@@ -34,13 +34,16 @@
 
 <ion-content has-main-btn has-main-btn-label [ngClass]="{'netwrk-content': !isUndercover}">
   <div class="chat-container" #chatContainer>
-    <p class="message" *ngFor="let i of postMessages">
+    <div class="message" *ngFor="let i of postMessages">
       <img src="{{ user.imageUrl }}" class="chat-avatar">
-      <span class="username">{{ user.name }}</span>
-      <span class="message-date">{{ i.date }}</span>
-      <span class="text">{{ i.text }}</span>
+      <p class="message-container">
+        <span class="username">{{ user.name }}</span>
+        <span class="message-date">{{ i.date }}</span>
+        <span *ngIf="i.text" class="text">{{ i.text }}</span>
+      </p>
+      <button class="like-button" [ngClass]="{ 'bottom' : i.images.length }"></button>
       <img *ngFor="let j of i.images" [src]="j"/>
-    </p>
+    </div>
   </div>
 </ion-content>
 

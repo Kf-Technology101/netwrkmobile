@@ -378,12 +378,12 @@ export class ChatPage {
       }
 
       setTimeout(() => {
-        if (message.text.trim() != '') {
+        if (message.text.trim() != '' || message.images.length > 0) {
           this.postMessages.push(message);
           this.txtIn.value = '';
         }
       }, 100);
-      this.mainBtn.state = 'minimised';
+      this.mainBtn.state = 'normal';
       this.appendContainer.state = 'off';
       setTimeout(() => {
         this.appendContainer.hidden = true;

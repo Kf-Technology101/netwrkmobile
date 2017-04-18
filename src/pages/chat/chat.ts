@@ -129,7 +129,7 @@ export class ChatPage {
 
   caretPos: number = 0;
 
-  postMessages: any = [];
+  public postMessages: any = [];
 
   contentBlock: any = undefined;
 
@@ -356,10 +356,11 @@ export class ChatPage {
         let data = {
           text: message.text,
           user_id: this.authPrvd.getAuthData().id,
-          image: message.images
+          image: message.images,
+          undercover: this.isUndercover
         }
 
-        this.undercoverPrvd.sendMessage(data)
+        this.chatPrvd.sendMessage(data)
           .subscribe(res => {
             console.log(res);
           }, err => {
@@ -476,6 +477,12 @@ export class ChatPage {
     }
 
     this.getUsers();
+    // this.postMessages = this.networkPrvd.getMessages();
+    this.networkPrvd.getMessages().subscribe(data => {
+      console.log(data);
+    }, err => {
+      console.log(err);
+    })
   }
 
   ionViewWillLeave() {

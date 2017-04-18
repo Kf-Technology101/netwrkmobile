@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 // Providers
 import { Api } from './api';
 import { LocalStorage } from './local-storage';
+import { Gps } from './gps';
 
 @Injectable()
 export class Network {
@@ -10,6 +11,7 @@ export class Network {
   constructor(
     public api: Api,
     public localStorage: LocalStorage,
+    public gps: Gps
   ) {
     console.log('Hello Network Provider');
   }
@@ -34,6 +36,13 @@ export class Network {
 
   public getInviteAccess(): boolean {
     return this.localStorage.get('invitation_sent');
+  }
+
+  public getMessages() {
+    let data = { post_code: this.gps.zipCode };
+    let seq = this.api.get('messages', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
   }
 
   public saveInviteAccess(invitationSent: boolean): boolean {

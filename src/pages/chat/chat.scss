@@ -44,10 +44,15 @@ page-undercover {
 
   .content {
     background: transparent;
+
     &.netwrk-content {
       .scroll-content {
         margin-top: 160px!important;
       }
+    }
+
+    .scroll-content {
+      margin-top: 44px!important;
     }
   }
 

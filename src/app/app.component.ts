@@ -5,8 +5,8 @@ import { StatusBar, Splashscreen, Sim } from 'ionic-native';
 // Pages
 import { LogInPage } from '../pages/log-in/log-in';
 import { NetworkFindPage } from '../pages/network-find/network-find';
-import { SignUpFacebookPage } from '../pages/sign-up-facebook/sign-up-facebook';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
+// import { SignUpFacebookPage } from '../pages/sign-up-facebook/sign-up-facebook';
 import { ChatPage } from '../pages/chat/chat';
 // import { HomePage } from '../pages/home/home';
 // import { ProfilePage } from '../pages/profile/profile';
@@ -62,14 +62,18 @@ export class MyApp {
       switch (authType) {
         case 'facebook':
           this.authPrvd.getFbLoginStatus().then(data => {
-            this.rootPage = data.status && data.status == 'connected' ? this.getPerson() : LogInPage;
+            this.rootPage = data.status && data.status == 'connected' ?
+              this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage) :
+              LogInPage;
 
             Splashscreen.hide();
           });
           break;
         case 'email':
           let fbConnected = this.authPrvd.getFbConnected();
-          this.rootPage = fbConnected ? this.getPerson() : SignUpFacebookPage;
+          this.rootPage = fbConnected ?
+            this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage) :
+            LogInPage;
 
           Splashscreen.hide();
           break;
@@ -84,12 +88,6 @@ export class MyApp {
       // this.rootPage = SignUpConfirmPage;
       // this.rootPage = SignUpFacebookPage;
     }
-  }
-
-  private getPerson(): any {
-    let person = this.undercoverPrvd.getPerson();
-    let result = !person ? UndercoverCharacterPage : NetworkFindPage;
-    return result;
   }
 
   // private getChatPage(): any {

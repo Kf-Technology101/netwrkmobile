@@ -43,7 +43,7 @@ export class NetworkContactListPage {
     this.listType = this.navParams.get('type');
     console.log(this.listType);
 
-    // if (!this.platform.is('cordova')) {
+    if (!this.platform.is('cordova')) {
       this.contacts = [];
       for (let i = 0; i < 20; i++) {
         this.contacts.push({
@@ -58,13 +58,13 @@ export class NetworkContactListPage {
           }],
           checked: false
         });
-      // }
+      }
       this.setErrorMessages(this.contacts);
     }
 
     this.contactsPrvd.getContacts(this.listType).then(data => {
       console.log(data);
-      // this.contacts = data;
+      this.contacts = data;
       this.setErrorMessages(this.contacts);
     }, err => {
       console.log(err);

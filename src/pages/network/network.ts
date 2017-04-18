@@ -11,6 +11,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { Network } from '../../providers/network';
 import { Gps } from '../../providers/gps';
+import { Chat } from '../../providers/chat';
 
 @Component({
   selector: 'page-network',
@@ -28,7 +29,8 @@ export class NetworkPage {
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider,
     public gps: Gps,
-    public networkPrvd: Network
+    public networkPrvd: Network,
+    public chatPrvd: Chat
   ) {
     this.action = this.navParams.get('action');
     this.networkParams = { post_code: this.gps.zipCode };
@@ -94,7 +96,14 @@ export class NetworkPage {
 
   private afterJoin() {
     if (this.users.length >= 10) {
-      this.tools.pushPage(ChatPage);
+      let params: any = {
+        action: 'netwrk',
+        zipCode: this.navParams.get('zipCode'),
+      };
+
+      this.chatPrvd.setZipCode(this.gps.zipCode);
+      this.chatPrvd.setState(params.action);
+      this.tools.pushPage(ChatPage, params);
     } else {
       this.tools.showToast(this.textStrings.joined);
     }

@@ -10,6 +10,8 @@ import { UndercoverCharacterPage } from '../undercover-character/undercover-char
 // Providers
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
+import { Chat } from '../../providers/chat';
+import { Gps } from '../../providers/gps';
 
 @Component({
   selector: 'page-network-no',
@@ -20,7 +22,9 @@ export class NetworkNoPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public tools: Tools,
-    public undercoverPrvd: UndercoverProvider
+    public undercoverPrvd: UndercoverProvider,
+    public chatPrvd: Chat,
+    public gps: Gps
   ) {}
 
   doFounder() {
@@ -35,7 +39,14 @@ export class NetworkNoPage {
   goUndercover() {
     if (this.undercoverPrvd.getPerson()) {
       this.undercoverPrvd.setActivePerson(true);
-      this.tools.pushPage(ChatPage);
+      let params: any = {
+        action: 'undercover',
+        zipCode: this.navParams.get('zipCode'),
+      };
+
+      this.chatPrvd.setZipCode(this.gps.zipCode);
+      this.chatPrvd.setState(params.action);
+      this.tools.pushPage(ChatPage, params);
     } else {
       this.tools.pushPage(UndercoverCharacterPage);
     }

@@ -89,11 +89,11 @@ export class Auth {
         } else {
           Facebook.login(['public_profile']).then((data: any) => {
             this.loginWithFacebook(data, resolve, reject);
-          }, (err) => {
+          }, err => {
             reject(err);
           });
         }
-      }, (err) => {
+      }, err => {
         reject(err);
       });
     });
@@ -130,11 +130,21 @@ export class Auth {
 
   public getFbLoginStatus() { return Facebook.getLoginStatus(); }
 
+  public setFbConnected() {
+    this.storage.set('facebook_connected', true);
+  }
+
   public getFbConnected() {
-    let authData = this.getAuthData();
-    let result = authData.provider_name && authData.provider_id
-      ? Facebook.getLoginStatus() : null;
+    let authData = this.storage.get('facebook_connected');;
+    let result = authData ? Facebook.getLoginStatus() : null;
     return result;
+  }
+
+  public connectAccountToFb(accountInfo: any) {
+    let seq = this.api.post('providers', accountInfo).share();
+    let seqMap = seq.map(res => res.json());
+
+    return seqMap;
   }
 
   private loginWithFacebook(data: any, resolve, reject) {

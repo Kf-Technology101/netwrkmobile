@@ -4,7 +4,7 @@ import { NavController, NavParams, Platform } from 'ionic-angular';
 import { Slides } from 'ionic-angular';
 
 // Pages
-import { ChatPage } from '../chat/chat';
+import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
 import { UndercoverProvider } from '../../providers/undercover';
@@ -47,12 +47,12 @@ export class UndercoverCharacterPage {
   choosePerson() {
     if (this.platform.is('cordova')) {
       this.undercoverPrvd.setPerson(this.activePerson).then(() => {
-        this.toolsPrvd.pushPage(ChatPage);
+        this.toolsPrvd.pushPage(NetworkFindPage);
       }, err => {
         this.toolsPrvd.showToast(this.textError);
       });
     } else {
-      this.toolsPrvd.pushPage(ChatPage);
+      this.toolsPrvd.pushPage(NetworkFindPage);
     }
   }
 

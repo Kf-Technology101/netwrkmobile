@@ -97,6 +97,7 @@ export class LogInPage {
         }
       } else this.tools.pushPage(SignUpAfterFbPage);
     }, err => {
+      console.log(err);
       this.tools.hideLoader();
       this.tools.showToast(this.textStrings.fb);
     });

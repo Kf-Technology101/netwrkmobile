@@ -89,11 +89,11 @@ export class Auth {
         } else {
           Facebook.login(['public_profile']).then((data: any) => {
             this.loginWithFacebook(data, resolve, reject);
-          }, (err) => {
+          }, err => {
             reject(err);
           });
         }
-      }, (err) => {
+      }, err => {
         reject(err);
       });
     });

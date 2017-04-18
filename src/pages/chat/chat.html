@@ -21,11 +21,11 @@
           <ion-icon ios="ios-add" md="ios-add"></ion-icon>
         </button>
       </ion-slide>
-      <ion-slide *ngFor="let slide of testSlides" class="netwrk-slide">
+      <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
         <div class="avatar">
-          <img src="assets/images/Layer{{ slide }}.png">
+          <img src="assets/images/incognito.png">
         </div>
-        <span class="username">Netwrk user #{{ slide }}</span>
+        <span class="username">Netwrk user #{{ user.email }}</span>
       </ion-slide>
     </ion-slides>
   </div>

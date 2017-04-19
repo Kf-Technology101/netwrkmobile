@@ -7,15 +7,22 @@ import { Tools } from './tools';
 
 import * as moment from 'moment';
 
+// File transfer
+import { File } from '@ionic-native/file';
+import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/transfer';
+
 @Injectable()
 export class Chat {
   public users: any = {};
+  private message: any = null;
 
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
     public gps: Gps,
-    public tools: Tools
+    public tools: Tools,
+    private file: File,
+    private transfer: Transfer
   ) {
     console.log('Hello Chat Provider');
   }
@@ -43,18 +50,23 @@ export class Chat {
   }
 
   public sendMessage(data: any): any {
-    let seq = this.api.post('messages', {
-      image: data.image,
+    let params = {
       text: data.text,
       user_id: data.user_id,
       network_id: this.getNetwork() ? this.getNetwork().id : null,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       undercover: data.undercover,
-    }).share();
-    let seqMap = seq.map(res => res.json());
+      images: data.images,
+    };
 
-    return seqMap;
+    if (data.images && data.images.length > 0) {
+      this.sendMessageWithImage(params);
+    } else {
+      this.sendMessageWithoutImage(params);
+    }
+
+    return null;
   }
 
   public getMessages(undercover: boolean) {
@@ -93,6 +105,71 @@ export class Chat {
 
   private getNetwork(): any {
     return this.localStorage.get('current_network');
+  }
+
+  private sendMessageWithImage(data: any) {
+    const fileTransfer: TransferObject = this.transfer.create();
+    let url = this.api.url + '/messages';
+    let options: FileUploadOptions = {};
+
+    let uploadImage = (i?: number) => {
+      if (!i) {
+        i = 0;
+        options = {
+          params: data,
+          headers: {
+            Authorization: this.localStorage.get('auth_data').auth_token
+          }
+        }
+      } else {
+        data.id = this.message.id;
+        options = {
+          params: data,
+          headers: {
+            Authorization: this.localStorage.get('auth_data').auth_token
+          },
+          httpMethod: 'PUT'
+        }
+      }
+
+      let splitImageUrl = data.images[0].split('/');
+      let fileName: string = splitImageUrl[splitImageUrl.length - 1];
+      splitImageUrl.splice(-1, 1);
+      let path = splitImageUrl.join('/');
+      console.log(path);
+
+      fileTransfer.upload(data.images[i], url, options).then(res => {
+        console.log('res:', res);
+        if (i == 0) this.message = res;
+        // console.log(i, data.images[i].length)
+        if (i == data.images[i].length - 1) {
+          console.log(this.message);
+        } else {
+          i++;
+          uploadImage(i);
+        }
+      }).catch(err => {
+        console.log('err:', err);
+      });
+    }
+
+    uploadImage();
+
+    fileTransfer.abort();
+  }
+
+  private sendMessageWithoutImage(data: any) {
+    let seq = this.api.post('messages', {
+      text: data.text,
+      user_id: data.user_id,
+      network_id: this.getNetwork() ? this.getNetwork().id : null,
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng,
+      undercover: data.undercover,
+    }).share();
+    let seqMap = seq.map(res => res.json());
+
+    return seqMap;
   }
 
 }

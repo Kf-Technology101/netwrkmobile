@@ -28,13 +28,14 @@ plugins/ios.json
 $RECYCLE.BIN/
 
 # Disable other platforms
-plugins/*/src/blackberry*/
-plugins/*/src/windows*/
-plugins/*/src/ubuntu/
-plugins/*/src/wp/
-plugins/*/src/firefoxos/
-plugins/*/src/osx/
-plugins/*/src/tizen/
+plugins/*/*/blackberry*/
+plugins/*/*/windows*/
+plugins/*/*/ubuntu/
+plugins/*/*/wp*/
+plugins/*/*/firefoxos/
+plugins/*/*/osx/
+plugins/*/*/tizen/
+plugins/*/*/amazon/
 plugins/*/test*/
 plugins/*/doc*/
 

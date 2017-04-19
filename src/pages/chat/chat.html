@@ -41,7 +41,7 @@
         <span class="message-date">{{ i.date }}</span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
-      <button class="like-button" [ngClass]="{ 'bottom' : i.images.length }"></button>
+      <button class="like-button" [ngClass]="{ 'bottom' : i.images && i.images.length }"></button>
       <img *ngFor="let j of i.images" [src]="j"/>
     </div>
   </div>
@@ -49,7 +49,8 @@
 
 <ion-footer class="has-input chatFooter">
 
-  <div item-content class="appended-pictures-container" [hidden]="appendContainer.hidden" [@containerState]="appendContainer.state">
+  <div item-content class="appended-pictures-container"
+    [hidden]="appendContainer.hidden" [@containerState]="appendContainer.state">
     <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures" >
       <img class="img-preview" [src]="i"/>
       <button (tap)="removeAppendedImage(index)">
@@ -58,18 +59,22 @@
     </div>
   </div>
 
-  <div #galleryCont item-content  class="gallery-container" [hidden]="galleryContainer.hidden" [@containerState]="galleryContainer.state">
+  <div #galleryCont item-content  class="gallery-container"
+    [hidden]="galleryContainer.hidden"
+    [@containerState]="galleryContainer.state"></div>
 
+  <div #emojiCont item-content class="gallery-container emoji-container"
+    [hidden]="emojiContainer.hidden" [@containerState]="emojiContainer.state">
+    <span item-content *ngFor="let emoji of emojis" (tap)="insertEmoji(emoji)"
+      class="emoji-item">{{ convertEmoji(emoji) }}</span>
   </div>
 
-  <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="emojiContainer.hidden" [@containerState]="emojiContainer.state">
-    <span item-content *ngFor="let emoji of emojis" (tap)="insertEmoji(emoji)" class="emoji-item"> {{ convertEmoji(emoji) }} </span>
-  </div>
-
-  <div #shareCont item-content class="gallery-container share-container" [hidden]="shareContainer.hidden" [@containerState]="shareContainer.state">
+  <div #shareCont item-content class="gallery-container share-container"
+    [hidden]="shareContainer.hidden" [@containerState]="shareContainer.state">
     <ion-toolbar>
       <div class="slide-container sl-facebook">
-        <div #slfb [ngClass]="{'active': checkbox.facebook}" class="toggle-el" (tap)="toggleShareSlider('facebook')">
+        <div #slfb [ngClass]="{'active': checkbox.facebook}" class="toggle-el"
+          (tap)="toggleShareSlider('facebook')">
           <span class="toggle-state" *ngIf="checkbox.facebook">on</span>
           <span class="toggle-state" *ngIf="!checkbox.facebook">off</span>
           <div [ngClass]="{'right': checkbox.facebook}" class="toggleable">
@@ -80,7 +85,8 @@
       </div>
 
       <div class="slide-container sl-linkedin">
-        <div #slln [ngClass]="{'active': checkbox.linkedin}" class="toggle-el" (tap)="toggleShareSlider('linkedin')">
+        <div #slln [ngClass]="{'active': checkbox.linkedin}" class="toggle-el"
+          (tap)="toggleShareSlider('linkedin')">
           <span class="toggle-state" *ngIf="checkbox.linkedin">on</span>
           <span class="toggle-state" *ngIf="!checkbox.linkedin">off</span>
           <div [ngClass]="{'right': checkbox.linkedin}" class="toggleable">
@@ -91,7 +97,8 @@
       </div>
 
       <div class="slide-container sl-twitter">
-        <div #sltw [ngClass]="{'active': checkbox.twitter}" class="toggle-el" (tap)="toggleShareSlider('twitter')">
+        <div #sltw [ngClass]="{'active': checkbox.twitter}" class="toggle-el"
+          (tap)="toggleShareSlider('twitter')">
           <span class="toggle-state" *ngIf="checkbox.twitter">on</span>
           <span class="toggle-state" *ngIf="!checkbox.twitter">off</span>
           <div [ngClass]="{'right': checkbox.twitter}" class="toggleable">

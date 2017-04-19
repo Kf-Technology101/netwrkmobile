@@ -48,6 +48,8 @@ import { Facebook } from 'ionic-native';
 import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { File } from '@ionic-native/file';
+import { Transfer } from '@ionic-native/transfer';
 
 // enableProdMode();
 
@@ -109,6 +111,8 @@ export function providers() {
     Geolocation,
     CameraPreview,
     SocialSharing,
+    File,
+    Transfer,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];

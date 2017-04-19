@@ -22,10 +22,6 @@ import { ProfilePage } from '../profile/profile';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
-// File transfer
-import { File } from '@ionic-native/file';
-import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/transfer';
-
 // Animations
 import {
   animSpeed,
@@ -51,8 +47,6 @@ import {
   ],
   providers: [
     Keyboard,
-    File,
-    Transfer
     // ImagePicker
   ]
 })
@@ -169,9 +163,7 @@ export class ChatPage {
     public chatPrvd: Chat,
     public networkPrvd: Network,
     public gpsPrvd: Gps,
-    public plt: Platform,
-    private file: File,
-    private transfer: Transfer
+    public plt: Platform
   ) {
 
     this.keyboard.disableScroll(true);
@@ -368,32 +360,24 @@ export class ChatPage {
     }
     if (message.text.trim() != '' || message.images.length > 0) {
       if (this.authPrvd.getAuthData()) {
-        const fileTransfer: TransferObject = this.transfer.create();
-        for (let i = 0; i < message.images.length; i++) {
-          fileTransfer.upload(message.images[i], 'https://drive.google.com/drive/folders/0B51Y71sKXBIcdmF3dW5IcDZlaFE?usp=sharing').then((res) => {
-            console.log('res:', res);
-          }).catch((err) => {
-            console.log('err:', err);
-          });
-        }
         let data = {
           text: message.text,
           user_id: this.authPrvd.getAuthData().id,
-          image: message.images,
+          images: message.images,
           undercover: this.isUndercover
         }
 
         this.chatPrvd.sendMessage(data)
-          .subscribe(res => {
-            console.log(res);
-            console.log('created_at:', res.created_at);
-          }, err => {
-            console.log(err);
-            this.toolsPrvd.showToast(this.sendError);
-          });
+          // .subscribe(res => {
+          //   console.log(res);
+          //   console.log('created_at:', res.created_at);
+          // }, err => {
+          //   console.log(err);
+          //   this.toolsPrvd.showToast(this.sendError);
+          // });
       }
 
-      setTimeout(() => {
+      setTimeout(() => { 
         if (message.text.trim() != '' || message.images.length > 0) {
           this.postMessages.push(message);
           this.txtIn.value = '';
@@ -405,11 +389,6 @@ export class ChatPage {
       setTimeout(() => {
         this.appendContainer.hidden = true;
       }, chatAnim/2);
-
-      // let date1 = new Date();
-      // let date2 = new Date();
-      // let timeDiff = Math.abs(date2.getTime() - date1.getTime());
-      // let diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
 
       message.date = this.toolsPrvd.getTime();
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);

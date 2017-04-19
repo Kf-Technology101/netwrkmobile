@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Http } from '@angular/http';
 import 'rxjs/add/operator/map';
 
+import * as moment from 'moment';
+
 import {
   Events,
   ToastController,
@@ -96,11 +98,11 @@ export class Tools {
   }
 
   public getTime(date?: string): string {
-    let d = date ? new Date(date) : new Date();
-    let hours = d.getHours();
-    let minutes = d.getMinutes();
-    let res = `${hours}:${minutes}`;
-    return res;
+    // let d = date ? new Date(date) : new Date();
+    // let hours = d.getHours();
+    // let minutes = d.getMinutes();
+    // let res = `${hours}:${minutes}`;
+    return moment(date).fromNow();
   }
 
   private changeBodyClass(add?: boolean) {

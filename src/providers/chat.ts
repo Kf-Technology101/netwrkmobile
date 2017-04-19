@@ -5,6 +5,8 @@ import { Gps } from './gps';
 import { Api } from './api';
 import { Tools } from './tools';
 
+import * as moment from 'moment';
+
 @Injectable()
 export class Chat {
   public users: any = {};
@@ -82,7 +84,8 @@ export class Chat {
   public organizeMessages(data: any): any {
     let messages: Array<any> = [];
     for (let d in data) {
-      data[d].date = this.tools.getTime(data[d].created_at);
+      console.log('moment().isValid():', moment(data[d].created_at).isValid());
+      data[d].date = moment(data[d].created_at).fromNow();
       messages.push(data[d]);
     }
     return messages;

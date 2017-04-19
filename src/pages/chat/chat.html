@@ -41,8 +41,8 @@
         <span class="message-date">{{ i.date }}</span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
-      <!-- <button class="like-button" [ngClass]="{ 'bottom' : i.images.length }"></button> -->
-      <!-- <img *ngFor="let j of i.images" [src]="j"/> -->
+      <button class="like-button" [ngClass]="{ 'bottom' : i.images.length }"></button>
+      <img *ngFor="let j of i.images" [src]="j"/>
     </div>
   </div>
 </ion-content>

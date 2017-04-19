@@ -45,7 +45,8 @@ page-undercover {
   .content {
     background: transparent;
 
-    &.netwrk-content {
+    &.netwrk-content.content-ios,
+    &.netwrk-content.content-android {
       .scroll-content {
         margin-top: 160px!important;
       }

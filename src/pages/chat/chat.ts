@@ -288,7 +288,7 @@ export class ChatPage {
     if (status) {
       this.contentBlock.style.padding = '0 0 ' + document.documentElement.clientHeight/2 + 'px';
     } else {
-      this.contentBlock.style.padding = '0 0 180px';
+      this.contentBlock.style.padding = '0 0 200px';
     }
   }
 
@@ -418,6 +418,7 @@ export class ChatPage {
       this.isUndercover = true;
       setTimeout(() => {
         this.slideAvatarPrvd.sliderInit();
+        this.slideAvatarPrvd.setSliderPosition(true);
         this.showUsers();
       }, 100);
     }
@@ -434,7 +435,7 @@ export class ChatPage {
       this.showUsers();
     })
 
-    console.log("isUndercover", this.isUndercover);
+    console.log('isUndercover', this.isUndercover);
   }
 
   removeAppendedImage(index) {

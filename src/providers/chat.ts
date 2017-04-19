@@ -95,10 +95,10 @@ export class Chat {
 
   public organizeMessages(data: any): any {
     let messages: Array<any> = [];
-    for (let d in data) {
-      console.log('moment().isValid():', moment(data[d].created_at).isValid());
-      data[d].date = moment(data[d].created_at).fromNow();
-      messages.push(data[d]);
+    for (let i in data) {
+      console.log('moment().isValid():', moment(data[i].created_at).isValid());
+      data[i].date = moment(data[i].created_at).fromNow();
+      messages.push(data[i]);
     }
     return messages;
   }

@@ -22,6 +22,7 @@ import { ProfilePage } from '../profile/profile';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
+import * as moment from 'moment';
 // Animations
 import {
   animSpeed,
@@ -146,6 +147,67 @@ export class ChatPage {
   public showUserSlider: boolean = false;
   private networkParams: any = {};
 
+  // [Date updater]
+  // Updates dates in messages every {delay} in ms
+  private dateUpdater: any = {
+    timer: undefined,                   // variable for setInterval() storage
+    delay: <number> 1000*44,            // timer delay, default: 44sec
+    enableForceStart: <boolean> false,  // restart current timer by force
+    enableLogMessages: <boolean> false, // toggle console messages (toggles only .log)
+    mC: this.postMessages,              // array of messages
+    logStyle: <any> {                   // custom console color settings
+      background: '#222',
+      color: '#bada55'
+    },
+    // {type}-log {message} to console
+    logMessage: (message: string, type: string) => {
+      switch (type) {
+        case 'error':
+          console.error('dateUpdater: ' + message);
+        break;
+        default:
+          console.log('%c dateUpdater: ' + message,
+          'background: ' + this.dateUpdater.logStyle.background +
+          ';color: ' + this.dateUpdater.logStyle.color);
+        break;
+      }
+    },
+    // Start timer
+    start: () => {
+      if (this.dateUpdater.enableLogMessages) {
+        this.dateUpdater.logMessage('Starting timer...');
+      }
+      if (this.dateUpdater.mC) {
+        if (this.dateUpdater.enableForceStart || !this.dateUpdater.timer) {
+          this.dateUpdater.timer = setInterval(() => {
+            for (let i in this.dateUpdater.mC) {
+              this.dateUpdater.mC[i].dateStr =
+              this.toolsPrvd.getTime(this.dateUpdater.mC[i].created_at);
+            }
+          }, this.dateUpdater.delay);
+        } else {
+          this.dateUpdater.logMessage(
+            'Cant\'t start timer. There are already runing one or try to set enableForceStart: true',
+            'error');
+        }
+      } else {
+        this.dateUpdater.logMessage(
+          'There are no messages to update or timer is already runing',
+          'error');
+      }
+    },
+    // Stop timer
+    stop: () => {
+      if (this.dateUpdater.enableLogMessages) {
+        this.dateUpdater.logMessage('Stoping timer...');
+      }
+      if (this.dateUpdater.timer) {
+        clearInterval(this.dateUpdater.timer);
+      } else {
+        this.dateUpdater.logMessage('There are no timer to stop.', 'error');
+      }
+    }
+  };
 
   constructor(
     public navCtrl: NavController,
@@ -352,11 +414,11 @@ export class ChatPage {
     let message = {
       text: this.txtIn.value,
       images: [],
-      date: null
+      created_at: null,
+      dateStr: ''
     };
     if (this.cameraPrvd.takenPictures) {
       message.images = this.cameraPrvd.takenPictures;
-      console.log("message.images:", message.images);
     }
     if (message.text.trim() != '' || message.images.length > 0) {
       if (this.authPrvd.getAuthData()) {
@@ -377,11 +439,13 @@ export class ChatPage {
           // });
       }
 
-      setTimeout(() => { 
+      setTimeout(() => {
         if (message.text.trim() != '' || message.images.length > 0) {
-          this.postMessages.push(message);
+          message.created_at = moment();
+          message.dateStr = 'a moment ago';
           this.txtIn.value = '';
           this.mainBtn.state = 'normal';
+          this.postMessages.push(message);
         }
       }, 100);
 
@@ -389,11 +453,14 @@ export class ChatPage {
       setTimeout(() => {
         this.appendContainer.hidden = true;
       }, chatAnim/2);
-
-      message.date = this.toolsPrvd.getTime();
+      
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.cameraPrvd.takenPictures = [];
     }
+  }
+
+  calculateInputChar() {
+
   }
 
   getCaretPos(oField) {
@@ -492,6 +559,9 @@ export class ChatPage {
     // if (this.cameraPrvd.takenPictures) {
     //   this.postMessage();
     // }
+    this.dateUpdater.enableForceStart = true;
+    this.dateUpdater.enableLogMessages = true;
+    this.dateUpdater.start();
   }
 
   ionViewDidLoad() {
@@ -506,11 +576,13 @@ export class ChatPage {
 
     this.getUsers();
     this.showMessages();
+
     // this.postMessages = this.networkPrvd.getMessages();
   }
 
   ionViewWillLeave() {
     console.log('[UNDERCOVER.ts] viewWillLeave');
+    this.dateUpdater.stop();
     // this.slideAvatar.stopSliderEvents();
   }
 }

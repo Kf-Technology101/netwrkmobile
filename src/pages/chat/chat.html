@@ -38,7 +38,7 @@
       <img (tap)="goToProfile(user.id)" src="{{ user.imageUrl }}" class="chat-avatar">
       <p class="message-container">
         <span class="username">{{ user.name }}</span>
-        <span class="message-date">{{ i.date }}</span>
+        <span class="message-date">{{ i.dateStr }}</span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
       <button class="like-button" [ngClass]="{ 'bottom' : i.images && i.images.length }"></button>
@@ -172,7 +172,7 @@
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 
-    <ion-input #textInput id="textInput" type="text" placeholder="On this spot..." (tap)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)"></ion-input>
+    <ion-input #textInput id="textInput" type="text" placeholder="On this spot..." (onkeyup)="calculateInputChar()" (tap)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)"></ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
     <button ion-button item-right clear (tap)="postMessage()" class="post-message">

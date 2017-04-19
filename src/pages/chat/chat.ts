@@ -22,6 +22,10 @@ import { ProfilePage } from '../profile/profile';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
+// File transfer
+import { File } from '@ionic-native/file';
+import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/transfer';
+
 // Animations
 import {
   animSpeed,
@@ -47,6 +51,8 @@ import {
   ],
   providers: [
     Keyboard,
+    File,
+    Transfer
     // ImagePicker
   ]
 })
@@ -146,6 +152,7 @@ export class ChatPage {
   public showUserSlider: boolean = false;
   private networkParams: any = {};
 
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -162,7 +169,9 @@ export class ChatPage {
     public chatPrvd: Chat,
     public networkPrvd: Network,
     public gpsPrvd: Gps,
-    public plt: Platform
+    public plt: Platform,
+    private file: File,
+    private transfer: Transfer
   ) {
 
     this.keyboard.disableScroll(true);
@@ -348,10 +357,6 @@ export class ChatPage {
   }
 
   postMessage() {
-
-    // let currentDate = new Date();
-    console.log(this.txtIn);
-
     let message = {
       text: this.txtIn.value,
       images: [],
@@ -359,9 +364,18 @@ export class ChatPage {
     };
     if (this.cameraPrvd.takenPictures) {
       message.images = this.cameraPrvd.takenPictures;
+      console.log("message.images:", message.images);
     }
     if (message.text.trim() != '' || message.images.length > 0) {
       if (this.authPrvd.getAuthData()) {
+        const fileTransfer: TransferObject = this.transfer.create();
+        for (let i = 0; i < message.images.length; i++) {
+          fileTransfer.upload(message.images[i], 'https://drive.google.com/drive/folders/0B51Y71sKXBIcdmF3dW5IcDZlaFE?usp=sharing').then((res) => {
+            console.log('res:', res);
+          }).catch((err) => {
+            console.log('err:', err);
+          });
+        }
         let data = {
           text: message.text,
           user_id: this.authPrvd.getAuthData().id,

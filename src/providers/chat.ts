@@ -117,19 +117,25 @@ export class Chat {
     let url = this.api.url + '/messages';
     let options: FileUploadOptions = {};
 
-    let uploadImage = (i?: number) => {
-      if (!i) {
-        i = 0;
+    let uploadImage = (i: number) => {
+      console.log(i);
+      if (i == 0) {
         options = {
-          params: data,
+          fileKey: 'image',
+          params: {
+            message: data
+          },
           headers: {
             Authorization: this.localStorage.get('auth_data').auth_token
-          }
+          },
+          httpMethod: 'POST'
         }
       } else {
-        data.id = this.message.id;
         options = {
-          params: data,
+          fileKey: 'image',
+          params: {
+            id: this.message.id,
+          },
           headers: {
             Authorization: this.localStorage.get('auth_data').auth_token
           },
@@ -137,11 +143,7 @@ export class Chat {
         }
       }
 
-      let splitImageUrl = data.images[0].split('/');
-      let fileName: string = splitImageUrl[splitImageUrl.length - 1];
-      splitImageUrl.splice(-1, 1);
-      let path = splitImageUrl.join('/');
-      console.log(path);
+      console.log(i, options);
 
       fileTransfer.upload(data.images[i], url, options).then(res => {
         console.log('res:', res);
@@ -149,6 +151,7 @@ export class Chat {
         // console.log(i, data.images[i].length)
         if (i == data.images[i].length - 1) {
           console.log(this.message);
+          fileTransfer.abort();
         } else {
           i++;
           uploadImage(i);
@@ -158,9 +161,9 @@ export class Chat {
       });
     }
 
-    uploadImage();
-
-    fileTransfer.abort();
+    console.log('uploadImage');
+    uploadImage(0);
+    console.log('uploadImage');
   }
 
   private sendMessageWithoutImage(data: any) {

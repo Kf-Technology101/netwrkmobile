@@ -177,12 +177,14 @@ export class ChatPage {
       if (this.dateUpdater.enableLogMessages) {
         this.dateUpdater.logMessage('Starting timer...');
       }
-      if (this.dateUpdater.mC) {
+      if (this.postMessages) {
         if (this.dateUpdater.enableForceStart || !this.dateUpdater.timer) {
           this.dateUpdater.timer = setInterval(() => {
-            for (let i in this.dateUpdater.mC) {
-              this.dateUpdater.mC[i].dateStr =
-              this.toolsPrvd.getTime(this.dateUpdater.mC[i].created_at);
+            this.dateUpdater.logMessage('step');
+            this.dateUpdater.logMessage('')
+            for (let i in this.postMessages) {
+              this.postMessages[i].dateStr =
+              this.toolsPrvd.getTime(this.postMessages[i].created_at);
             }
           }, this.dateUpdater.delay);
         } else {
@@ -453,7 +455,7 @@ export class ChatPage {
       setTimeout(() => {
         this.appendContainer.hidden = true;
       }, chatAnim/2);
-      
+
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.cameraPrvd.takenPictures = [];
     }

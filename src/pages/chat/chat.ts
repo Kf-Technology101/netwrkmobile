@@ -129,6 +129,8 @@ export class ChatPage {
 
   caretPos: number = 0;
 
+  private postBtnChange: boolean = false;
+
   public postMessages: any = [];
 
   contentBlock: any = undefined;
@@ -172,18 +174,23 @@ export class ChatPage {
         break;
       }
     },
+    // Get time from all visible messages
+    getMessagesDate: () => {
+      for (let i in this.postMessages) {
+        this.postMessages[i].dateStr =
+        this.toolsPrvd.getTime(this.postMessages[i].created_at);
+      }
+    },
     // Start timer
     start: () => {
       if (this.dateUpdater.enableLogMessages) {
         this.dateUpdater.logMessage('Starting timer...');
       }
-      if (this.dateUpdater.mC) {
+      if (this.postMessages) {
         if (this.dateUpdater.enableForceStart || !this.dateUpdater.timer) {
+          this.dateUpdater.getMessagesDate();
           this.dateUpdater.timer = setInterval(() => {
-            for (let i in this.dateUpdater.mC) {
-              this.dateUpdater.mC[i].dateStr =
-              this.toolsPrvd.getTime(this.dateUpdater.mC[i].created_at);
-            }
+            this.dateUpdater.getMessagesDate();
           }, this.dateUpdater.delay);
         } else {
           this.dateUpdater.logMessage(
@@ -446,6 +453,7 @@ export class ChatPage {
           this.txtIn.value = '';
           this.mainBtn.state = 'normal';
           this.postMessages.push(message);
+          this.postBtnChange = false;
         }
       }, 100);
 
@@ -453,14 +461,18 @@ export class ChatPage {
       setTimeout(() => {
         this.appendContainer.hidden = true;
       }, chatAnim/2);
-      
+
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
       this.cameraPrvd.takenPictures = [];
     }
   }
 
-  calculateInputChar() {
-
+  calculateInputChar(inputEl) {
+    if (inputEl.value.trim().length > 0) {
+      this.postBtnChange = true;
+    } else {
+      this.postBtnChange = false;
+    }
   }
 
   getCaretPos(oField) {

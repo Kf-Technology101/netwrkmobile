@@ -28,7 +28,7 @@ page-undercover {
       }
 
       .label {
-        background: #fff;
+        background: color($colors, white);
         padding: 5px 35px;
         border-radius: 100px;
 
@@ -71,14 +71,14 @@ page-undercover {
     }
 
     .item {
-      background: #fff;
+      background: color($colors, white);
       padding: 0;
       margin: 13px;
       width: -webkit-calc(100% - 26px);
       width: calc(100% - 26px);
-      border-radius: 22px;
       height: 42px;
-
+      min-height: 42px;
+      border-radius: 21px;
       .item-inner {
         border-radius: 0;
         border: none;
@@ -103,36 +103,31 @@ page-undercover {
   }
 
   #textInpBtns {
-    & {
-      position: absolute;
-      left: 0;
-      width: 100px;
-      z-index: 49;
-      top: 0;
-      bottom: 0;
-      background-color: #fff;
-      height: 44px;
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-
-      display: flex;
-      flex-wrap: nowrap;
-      flex-direction: row;
-      justify-content: space-between;
-    }
+    position: absolute;
+    left: 0;
+    width: 100px;
+    z-index: 49;
+    top: 0;
+    bottom: 0;
+    background-color: color($colors, white);
+    height: 42px;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: space-between;
     button {
-      & {
-        position: relative;
-        opacity: 0;
-        padding: 0;
-        margin: 0;
-        color: #000;
-        width: 47px;
-        height: auto;
-        background: #fff;
-        box-shadow: none;
-      }
+      position: relative;
+      opacity: 0;
+      padding: 0;
+      margin: 0;
+      color: #000;
+      width: 47px;
+      height: auto;
+      background: color($colors, white);
+      box-shadow: none;
       ion-icon {
         line-height: 26px;
       }
@@ -152,10 +147,11 @@ page-undercover {
   }
 
   ion-item.text {
-    & {
-      position: absolute;
-      bottom: 0;
-      transition: none;
+    position: absolute;
+    bottom: 0;
+    transition: none;
+    &.has-post-btn {
+      border-radius: 21px 13px 13px 21px;
     }
     .item-inner {
       padding-right: 0;
@@ -179,9 +175,9 @@ page-undercover {
         position: absolute;
         top: 0;
         bottom: 0;
-        background-color: #fff;
+        background-color: color($colors, white);
         height: 100%;
-        width: 44px;
+        width: 42px;
         margin: 0;
         margin-left: 0;
         border-radius: 50%;
@@ -204,13 +200,28 @@ page-undercover {
         border-radius:0;
         box-shadow: none;
         width: 100%;
+        height: 42px;
+        background: transparent;
+      }
+      input {
+        height: 42px;
+        margin: 0;
+        background: color($colors, white);
       }
     }
     button.post-message{
-      width: 44px;
-      height: 44px;
+      width: 42px;
+      height: 42px;
       margin: 0;
       padding: 0;
+      background: color($colors, white);
+      border-radius: 0;
+      &.post-button {
+        background-color: #5b87aa;
+        color: #fff;
+        font-size: 14px;
+        border-radius: 13px;
+      }
     }
   }
   div.appended-pictures-container{
@@ -220,7 +231,7 @@ page-undercover {
       background: color($colors, white);
       width: 100%;
       bottom: 0;
-      border-bottom: 68px solid #fff;
+      border-bottom: 68px solid color($colors, white);
       padding: 13px;
       padding-top: 20px;
       display: flex;
@@ -253,7 +264,7 @@ page-undercover {
         right: -13px;
         border-radius: 50%;
         background: rgba(0, 0, 0, 0.6);
-        color: #fff;
+        color: color($colors, white);
         font-size: 21px;
       }
     }
@@ -268,7 +279,7 @@ page-undercover {
       padding: 7px;
       padding-top: 0;
       box-sizing: border-box;
-      border-top: 7px solid #fff;
+      border-top: 7px solid color($colors, white);
       padding-bottom: 75px;
     }
 
@@ -333,12 +344,12 @@ page-undercover {
           margin: 0 auto;
           border-radius: 13px;
           height: 26px;
-          background: #fff;
+          background: color($colors, white);
           transition: all 0.3s ease-out;
         }
         &.active{
           .toggle-state{
-            color: #fff;
+            color: color($colors, white);
           }
         }
         .toggle-state {
@@ -356,7 +367,7 @@ page-undercover {
             left: 0px;
             top: 0;
             border-radius: 50%;
-            background: #fff;
+            background: color($colors, white);
             box-shadow: 0px 5px 9px -4px rgba(0, 0, 0, .3);
             transition: all 0.3s ease-out;
           }
@@ -396,7 +407,7 @@ page-undercover {
     .share-content {
       & {
         position: absolute;
-        top: 44px;
+        top: 42px;
         height: 100%;
         padding: 0;
         overflow-y: scroll;
@@ -407,7 +418,7 @@ page-undercover {
           font-size: 12px;
           text-align: left;
           border-radius: 13px;
-          background: #fff;
+          background: color($colors, white);
           padding: 15px 10px 15px 40px;
           position: relative;
           margin: 10px 5px;
@@ -482,7 +493,7 @@ page-undercover {
         }
         .message-container {
           border-radius: 13px;
-          background: #fff;
+          background: color($colors, white);
           margin: 0;
           margin-left: 32px;
           padding: 6px;
@@ -509,7 +520,7 @@ page-undercover {
           position: relative;
           z-index: 1;
           top: -18px;
-          background: #fff;
+          background: color($colors, white);
           width: 100%;
         }
         .like-button {
@@ -539,7 +550,7 @@ page-undercover {
 
   .netwrk-header {
     padding-bottom: 16px;
-    background: #fff;
+    background: color($colors, white);
     ion-toolbar {
       background: url('../assets/icon/logo.png') no-repeat center;
       background-size: auto 26px;

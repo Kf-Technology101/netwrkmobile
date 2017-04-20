@@ -152,7 +152,7 @@
             toggleContainer(shareContainer, 'hide')">
         <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[1]" (tap)="chatPrvd.openGallery(cameraPrvd.takenPictures.length)">
+      <button ion-button [@inputState]="chatBtns.state[1]" (tap)="chatPrvd.openGallery()">
          <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
       </button>
       <button ion-button [@inputState]="chatBtns.state[2]" (tap)="toggleContainer(shareContainer);">

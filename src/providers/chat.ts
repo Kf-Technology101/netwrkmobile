@@ -180,9 +180,9 @@ export class Chat {
     return seqMap;
   }
 
-  public openGallery(appendedImages): void {
+  public openGallery(): void {
     let options = {
-      maximumImagesCount: 3 - appendedImages,
+      maximumImagesCount: <number> (3 - this.cameraPrvd.takenPictures.length),
       width: 500,
       height: 500,
       quality: 75
@@ -193,6 +193,7 @@ export class Chat {
     } else {
       ImagePicker.getPictures(options).then(
         file_uris => {
+          console.log('[imagePicker] file_uris:', file_uris);
           for (let i = 0; i < file_uris.length; i++) {
             this.cameraPrvd.takenPictures.push(file_uris[i]);
             console.log('[imagePicker] file_uris:', file_uris[i]);

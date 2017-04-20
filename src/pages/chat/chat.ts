@@ -3,8 +3,6 @@ import { NavController, NavParams, Content, Platform } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 
-// import { ImagePicker } from '@ionic-native/image-picker';
-
 import { CameraPage } from '../camera/camera';
 
 // Providers
@@ -47,8 +45,7 @@ import {
     toggleFade
   ],
   providers: [
-    Keyboard,
-    // ImagePicker
+    Keyboard
   ]
 })
 
@@ -205,6 +202,7 @@ export class ChatPage {
       }
     }
   };
+  public hostUrl: string;
 
   constructor(
     public navCtrl: NavController,
@@ -212,7 +210,6 @@ export class ChatPage {
     public zone: NgZone,
     private cameraPreview: CameraPreview,
     private keyboard: Keyboard,
-    // private imagePicker: ImagePicker,
     // public share: Share,
     public undercoverPrvd: UndercoverProvider,
     public slideAvatarPrvd: SlideAvatar,
@@ -300,6 +297,7 @@ export class ChatPage {
     this.showUsers();
 
     this.networkParams = { post_code: this.gpsPrvd.zipCode };
+    this.hostUrl = this.chatPrvd.hostUrl;
   }
 
   // dragContent = true;
@@ -479,7 +477,8 @@ export class ChatPage {
     }
   }
 
-  goToProfile(profileId: number) {
+  goToProfile(profileId?: number) {
+    if (!profileId) profileId = this.authPrvd.getAuthData().id;
     this.toolsPrvd.pushPage(ProfilePage, { id: profileId });
   }
 

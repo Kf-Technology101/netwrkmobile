@@ -30,6 +30,7 @@ export class Chat {
   private pickerOptions = {
     maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
   }
+  public hostUrl: string;
 
   constructor(
     public localStorage: LocalStorage,
@@ -41,7 +42,7 @@ export class Chat {
     public cameraPrvd: Camera
   ) {
     console.log('Hello Chat Provider');
-
+    this.hostUrl = this.api.hostUrl;
   }
 
   public setState(state: string) {

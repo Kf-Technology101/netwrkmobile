@@ -48,6 +48,7 @@ export class ProfilePage {
     public userPrvd: User
   ) {
     this.user.id = this.navParams.get('id');
+    console.log(this.user);
 
     setTimeout(()=>{
       for (var i = 0; i < 6; i++) {

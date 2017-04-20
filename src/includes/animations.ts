@@ -99,7 +99,8 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
   transition('* => hidden', animate(chatAnim/3 + 'ms ease-out')),
   transition('* => moved-n-scaled', animate(chatAnim/2 + 'ms ease-in')),
   transition('moved-n-scaled => normal', animate(chatAnim/2 + 'ms ease-in')),
-  transition('* => minimisedForCamera', animate(chatAnim/2 + 'ms ease-in'))
+  transition('* => minimisedForCamera', animate(chatAnim/2 + 'ms ease-in')),
+  transition('* => above_append', animate(chatAnim/2 + 'ms ease-in'))
 ]);
 
 export const toggleGallery: any = trigger('containerState', [

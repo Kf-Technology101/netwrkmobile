@@ -23,6 +23,9 @@ export class Chat {
     state: 'off',
     hidden: true
   }
+  private pickerOptions = {
+    maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
+  }
 
   constructor(
     public localStorage: LocalStorage,
@@ -34,6 +37,7 @@ export class Chat {
     public cameraPrvd: Camera
   ) {
     console.log('Hello Chat Provider');
+
   }
 
   public setState(state: string) {
@@ -184,36 +188,26 @@ export class Chat {
     return seqMap;
   }
 
-  public updateAppendContainer(): boolean {
+  public updateAppendContainer(): void {
     console.log("[chatPrvd] updateAppendContainer()...");
     if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
       this.appendContainer.hidden = false;
       this.appendContainer.state = 'on_append';
-      return true;
-    } else {
-      return false;
     }
   }
 
   public openGallery(): void {
-    console.log('[imagePicker] takenPictures:', this.cameraPrvd.takenPictures);
-    let maxImg = 3 - this.cameraPrvd.takenPictures.length;
-    let options = {
-      maximumImagesCount: maxImg,
-      width: 500,
-      height: 500,
-      quality: 75
-    }
-
-    if (options.maximumImagesCount <= 0) {
-      this.tools.showToast('You can\'t append more pictures');
+    if (this.pickerOptions.maximumImagesCount <= 0) {
+      // this.tools.showToast('You can\'t append more pictures');
     } else {
-      ImagePicker.getPictures(options).then(
+      console.log('[imagePicker] takenPictures:', this.cameraPrvd.takenPictures);
+      console.log('[imagePicker] pickerOptions:', this.pickerOptions);
+      ImagePicker.getPictures(this.pickerOptions).then(
         file_uris => {
           console.log('[imagePicker] file_uris:', file_uris);
+          this.updateAppendContainer();
           for (let i = 0; i < file_uris.length; i++) {
             this.cameraPrvd.takenPictures.push(file_uris[i]);
-            this.updateAppendContainer();
             console.log('[imagePicker] file_uris:', file_uris[i]);
           }
         },

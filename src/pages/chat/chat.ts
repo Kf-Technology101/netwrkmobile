@@ -363,6 +363,8 @@ export class ChatPage {
     if (visibility == 'hide') {
       if (this.chatPrvd.appendContainer.hidden) {
         this.mainBtn.state = 'normal';
+      } else {
+        this.mainBtn.state = 'above_append';
       }
       container.state = 'off';
       this.setContentPadding(false);
@@ -388,7 +390,11 @@ export class ChatPage {
         }
       } else {
         this.setContentPadding(false);
-        this.mainBtn.state = 'normal'
+        if (this.chatPrvd.appendContainer.hidden) {
+          this.mainBtn.state = 'normal';
+        } else {
+          this.mainBtn.state = 'above_append';
+        }
         container.state = 'off';
         setTimeout(() => {
           container.hidden = true;
@@ -561,7 +567,7 @@ export class ChatPage {
 
 
     this.chatPrvd.updateAppendContainer();
-    if (this.chatPrvd.updateAppendContainer()) {
+    if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
       this.mainBtn.state = 'above_append';
     }
     // if (this.cameraPrvd.takenPictures) {

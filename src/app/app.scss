@@ -404,3 +404,7 @@ ion-header.incognito-header {
     transition: .3s;
   }
 }
+
+.ios .ion-page.show-page ~ .nav-decor {
+  background: transparent!important;
+}

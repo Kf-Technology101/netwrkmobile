@@ -50,7 +50,7 @@
 <ion-footer class="has-input chatFooter">
 
   <div item-content class="appended-pictures-container"
-    [hidden]="appendContainer.hidden" [@containerState]="appendContainer.state">
+    [hidden]="chatPrvd.appendContainer.hidden" [@containerState]="chatPrvd.appendContainer.state">
     <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures" >
       <img class="img-preview" [src]="i"/>
       <button (tap)="removeAppendedImage(index)">

@@ -19,6 +19,10 @@ import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/trans
 export class Chat {
   public users: any = {};
   private message: any = null;
+  public appendContainer: any = {
+    state: 'off',
+    hidden: true
+  }
 
   constructor(
     public localStorage: LocalStorage,
@@ -180,9 +184,22 @@ export class Chat {
     return seqMap;
   }
 
+  public updateAppendContainer(): boolean {
+    console.log("[chatPrvd] updateAppendContainer()...");
+    if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
+      this.appendContainer.hidden = false;
+      this.appendContainer.state = 'on_append';
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   public openGallery(): void {
+    console.log('[imagePicker] takenPictures:', this.cameraPrvd.takenPictures);
+    let maxImg = 3 - this.cameraPrvd.takenPictures.length;
     let options = {
-      maximumImagesCount: <number> (3 - this.cameraPrvd.takenPictures.length),
+      maximumImagesCount: maxImg,
       width: 500,
       height: 500,
       quality: 75
@@ -196,6 +213,7 @@ export class Chat {
           console.log('[imagePicker] file_uris:', file_uris);
           for (let i = 0; i < file_uris.length; i++) {
             this.cameraPrvd.takenPictures.push(file_uris[i]);
+            this.updateAppendContainer();
             console.log('[imagePicker] file_uris:', file_uris[i]);
           }
         },

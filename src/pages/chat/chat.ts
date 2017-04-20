@@ -106,11 +106,6 @@ export class ChatPage {
     this.shareContainer
   ];
 
-  appendContainer: any = {
-    state: 'off',
-    hidden: true
-  }
-
   // hidePlaceholder = false;
 
   imgesSrc = [];
@@ -256,7 +251,7 @@ export class ChatPage {
       }
       setTimeout(() => {
         this.mainBtn.state = 'minimised';
-        if (!this.appendContainer.hidden) {
+        if (!this.chatPrvd.appendContainer.hidden) {
           this.mainBtn.state = 'above_append';
         }
       }, chatAnim/2 + 1);
@@ -274,10 +269,10 @@ export class ChatPage {
         scrollEl.style.bottom = '0';
       }
       setTimeout(() => {
-        if (!this.appendContainer.hidden) {
+        if (!this.chatPrvd.appendContainer.hidden) {
           this.mainBtn.state = 'above_append';
         }
-        if (this.appendContainer.hidden) {
+        if (this.chatPrvd.appendContainer.hidden) {
           this.mainBtn.state = 'normal';
         }
       }, chatAnim/2 + 1);
@@ -366,7 +361,7 @@ export class ChatPage {
 
   toggleContainer(container, visibility) {
     if (visibility == 'hide') {
-      if (this.appendContainer.hidden) {
+      if (this.chatPrvd.appendContainer.hidden) {
         this.mainBtn.state = 'normal';
       }
       container.state = 'off';
@@ -438,7 +433,7 @@ export class ChatPage {
           undercover: this.isUndercover
         }
 
-        this.chatPrvd.sendMessage(data)
+        this.chatPrvd.sendMessage(data);
           // .subscribe(res => {
           //   console.log(res);
           //   console.log('created_at:', res.created_at);
@@ -459,9 +454,9 @@ export class ChatPage {
         }
       }, 100);
 
-      this.appendContainer.state = 'off';
+      this.chatPrvd.appendContainer.state = 'off';
       setTimeout(() => {
-        this.appendContainer.hidden = true;
+        this.chatPrvd.appendContainer.hidden = true;
       }, chatAnim/2);
 
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
@@ -516,9 +511,9 @@ export class ChatPage {
     this.cameraPrvd.takenPictures.splice(index, 1);
     if (this.cameraPrvd.takenPictures.length == 0) {
       this.mainBtn.state = 'normal';
-      this.appendContainer.state = 'off';
+      this.chatPrvd.appendContainer.state = 'off';
       setTimeout(() => {
-        this.appendContainer.hidden = true;
+        this.chatPrvd.appendContainer.hidden = true;
       }, chatAnim/2);
     }
   }
@@ -565,9 +560,8 @@ export class ChatPage {
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
 
-    if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
-      this.appendContainer.hidden = false;
-      this.appendContainer.state = 'on_append';
+    this.chatPrvd.updateAppendContainer();
+    if (this.chatPrvd.updateAppendContainer()) {
       this.mainBtn.state = 'above_append';
     }
     // if (this.cameraPrvd.takenPictures) {

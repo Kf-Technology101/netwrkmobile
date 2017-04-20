@@ -27,9 +27,6 @@ export class Chat {
     state: 'normal',
     hidden: false
   }
-  private pickerOptions = {
-    maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
-  }
 
   constructor(
     public localStorage: LocalStorage,
@@ -202,12 +199,15 @@ export class Chat {
   }
 
   public openGallery(): void {
-    if (this.pickerOptions.maximumImagesCount <= 0) {
+    let pickerOptions = {
+      maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
+    }
+    if (pickerOptions.maximumImagesCount <= 0) {
       // this.tools.showToast('You can\'t append more pictures');
     } else {
       console.log('[imagePicker] takenPictures:', this.cameraPrvd.takenPictures);
-      console.log('[imagePicker] pickerOptions:', this.pickerOptions);
-      ImagePicker.getPictures(this.pickerOptions).then(
+      console.log('[imagePicker] pickerOptions:', pickerOptions);
+      ImagePicker.getPictures(pickerOptions).then(
         file_uris => {
           console.log('[imagePicker] file_uris:', file_uris);
           for (let i = 0; i < file_uris.length; i++) {

@@ -51,9 +51,9 @@
 
   <div item-content class="appended-pictures-container"
     [hidden]="chatPrvd.appendContainer.hidden" [@containerState]="chatPrvd.appendContainer.state">
-    <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures" >
+    <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures; let indx = index" >
       <img class="img-preview" [src]="i"/>
-      <button (tap)="removeAppendedImage(index)">
+      <button (tap)="removeAppendedImage(indx)">
         <ion-icon ios="ios-close" md="ios-close"></ion-icon>
       </button>
     </div>

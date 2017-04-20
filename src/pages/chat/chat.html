@@ -141,7 +141,9 @@
   <button isScrolling="false" tapable [hidden]="mainBtn.hidden" [@mainBtnState]="mainBtn.state" color="bk"
   class="main-action-btn big has-footer transparent chatMainBtn" (tap)="mainBtnOnTap()"></button>
 
-  <ion-item class="text" #inputItem [@fadeState]="mainInput.state" [hidden]="mainInput.hidden">
+  <ion-item class="text" #inputItem
+            [@fadeState]="mainInput.state" [hidden]="mainInput.hidden"
+            [ngClass]="{ 'has-post-btn' : postBtnChange }">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">
       <button ion-button [@inputState]="chatBtns.state[0]"
       (tap)="openCamera();
@@ -172,11 +174,16 @@
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 
-    <ion-input #textInput id="textInput" type="text" placeholder="On this spot..." (onkeyup)="calculateInputChar()" (tap)="getCaretPos(textInput)" (keyup)="getCaretPos(textInput)"></ion-input>
+    <ion-input #textInput id="textInput" type="text" placeholder="Share with your area"
+               (tap)="getCaretPos(textInput)"
+               (keyup)="getCaretPos(textInput); calculateInputChar(textInput)">
+    </ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
-    <button ion-button item-right clear (tap)="postMessage()" class="post-message">
-      <ion-icon ios="ios-text-outline" md="ios-text-outline"></ion-icon>
+    <button ion-button item-right clear [ngClass]="{ 'post-button' : postBtnChange }"
+            (tap)="postMessage()" class="post-message">
+      <ion-icon *ngIf="!postBtnChange" ios="ios-text-outline" md="ios-text-outline"></ion-icon>
+      <span *ngIf="postBtnChange">Post</span>
     </button>
   </ion-item>
 </ion-footer>

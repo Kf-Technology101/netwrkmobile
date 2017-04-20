@@ -7,6 +7,10 @@ import { Tools } from './tools';
 
 import * as moment from 'moment';
 
+// Gallery
+import { ImagePicker } from 'ionic-native';
+import { Camera } from '../providers/camera';
+
 // File transfer
 import { File } from '@ionic-native/file';
 import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/transfer';
@@ -22,7 +26,8 @@ export class Chat {
     public gps: Gps,
     public tools: Tools,
     private file: File,
-    private transfer: Transfer
+    private transfer: Transfer,
+    public cameraPrvd: Camera
   ) {
     console.log('Hello Chat Provider');
   }
@@ -170,6 +175,29 @@ export class Chat {
     let seqMap = seq.map(res => res.json());
 
     return seqMap;
+  }
+
+  public openGallery(appendedImages): void {
+    let options = {
+      maximumImagesCount: 3 - appendedImages,
+      width: 500,
+      height: 500,
+      quality: 75
+    }
+
+    if (options.maximumImagesCount <= 0) {
+      this.tools.showToast('You can\'t append more pictures');
+    } else {
+      ImagePicker.getPictures(options).then(
+        file_uris => {
+          for (let i = 0; i < file_uris.length; i++) {
+            this.cameraPrvd.takenPictures.push(file_uris[i]);
+            console.log('[imagePicker] file_uris:', file_uris[i]);
+          }
+        },
+        err => console.log('[imagePicker] err:', err)
+      );
+    }
   }
 
 }

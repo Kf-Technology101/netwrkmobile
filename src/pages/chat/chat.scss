@@ -161,7 +161,7 @@ page-undercover {
       &{
         transition: none;
         pointer-events: none;
-        border-radius: 12px;
+        border-radius: 21px;
         overflow: hidden;
       }
       button{
@@ -210,12 +210,12 @@ page-undercover {
       }
     }
     button.post-message{
-      width: 42px;
+      width: 50px;
       height: 42px;
       margin: 0;
       padding: 0;
       background: color($colors, white);
-      border-radius: 0;
+      border-radius: 21px;
       &.post-button {
         background-color: #5b87aa;
         color: #fff;

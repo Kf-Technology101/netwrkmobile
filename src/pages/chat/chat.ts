@@ -247,6 +247,7 @@ export class ChatPage {
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       console.log(res);
+      this.postBtnChange = true;
       if (this.plt.is('ios')) {
         let footerEl = document.getElementsByClassName('chatFooter')['0'];
         let scrollEl = document.getElementsByClassName('scroll-content')['0'];
@@ -265,6 +266,7 @@ export class ChatPage {
 
     this.keyboard.onKeyboardHide().subscribe(res => {
       console.log(res);
+      this.postBtnChange = false;
       if (this.plt.is('ios')) {
         let footerEl = document.getElementsByClassName('chatFooter')['0'];
         let scrollEl = document.getElementsByClassName('scroll-content')['0'];

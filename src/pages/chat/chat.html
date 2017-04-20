@@ -152,7 +152,7 @@
             toggleContainer(shareContainer, 'hide')">
         <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[1]" (tap)="toggleContainer(galleryContainer);">
+      <button ion-button [@inputState]="chatBtns.state[1]" (tap)="chatPrvd.openGallery(cameraPrvd.takenPictures.length)">
          <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
       </button>
       <button ion-button [@inputState]="chatBtns.state[2]" (tap)="toggleContainer(shareContainer);">
@@ -183,7 +183,8 @@
     <button ion-button item-right clear [ngClass]="{ 'post-button' : postBtnChange }"
             (tap)="postMessage()" class="post-message">
       <ion-icon *ngIf="!postBtnChange" ios="ios-text-outline" md="ios-text-outline"></ion-icon>
-      <span *ngIf="postBtnChange">Post</span>
+      <span *ngIf="postBtnChange && !isUndercover">Post</span>
+      <span *ngIf="postBtnChange && isUndercover">Hang</span>
     </button>
   </ion-item>
 </ion-footer>

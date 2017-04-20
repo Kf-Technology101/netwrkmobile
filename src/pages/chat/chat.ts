@@ -79,11 +79,6 @@ export class ChatPage {
     state: ['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']
   };
 
-  mainBtn: any = {
-    state: 'normal',
-    hidden: false
-  };
-
   galleryContainer: any = {
     state: 'off',
     hidden: true,
@@ -250,9 +245,9 @@ export class ChatPage {
         footerEl.style.bottom = res.keyboardHeight + 'px';
       }
       setTimeout(() => {
-        this.mainBtn.state = 'minimised';
+        this.chatPrvd.mainBtn.state = 'minimised';
         if (!this.chatPrvd.appendContainer.hidden) {
-          this.mainBtn.state = 'above_append';
+          this.chatPrvd.mainBtn.state = 'above_append';
         }
       }, chatAnim/2 + 1);
     }, err => {
@@ -270,10 +265,10 @@ export class ChatPage {
       }
       setTimeout(() => {
         if (!this.chatPrvd.appendContainer.hidden) {
-          this.mainBtn.state = 'above_append';
+          this.chatPrvd.mainBtn.state = 'above_append';
         }
         if (this.chatPrvd.appendContainer.hidden) {
-          this.mainBtn.state = 'normal';
+          this.chatPrvd.mainBtn.state = 'normal';
         }
       }, chatAnim/2 + 1);
 
@@ -321,9 +316,9 @@ export class ChatPage {
     this.mainInput.state = 'fadeOutfast';
     setTimeout(() => {
       this.mainInput.hidden = true;
-      this.mainBtn.state = 'minimisedForCamera';
+      this.chatPrvd.mainBtn.state = 'minimisedForCamera';
       setTimeout(() => {
-        this.mainBtn.hidden = true;
+        this.chatPrvd.mainBtn.hidden = true;
         this.toolsPrvd.pushPage(CameraPage);
       }, chatAnim/2);
     }, animSpeed.fadeIn/2);
@@ -331,7 +326,7 @@ export class ChatPage {
 
   // debug function for scaling main button
   // debugScaleMainBtn() {
-  //   this.mainBtn.state = (this.mainBtn.state == 'minimised') ? 'normal' : 'minimised';
+  //   this.chatPrvd.mainBtn.state = (this.chatPrvd.mainBtn.state == 'minimised') ? 'normal' : 'minimised';
   // }
 
   toggleChatOptions() {
@@ -362,9 +357,9 @@ export class ChatPage {
   toggleContainer(container, visibility) {
     if (visibility == 'hide') {
       if (this.chatPrvd.appendContainer.hidden) {
-        this.mainBtn.state = 'normal';
+        this.chatPrvd.mainBtn.state = 'normal';
       } else {
-        this.mainBtn.state = 'above_append';
+        this.chatPrvd.mainBtn.state = 'above_append';
       }
       container.state = 'off';
       this.setContentPadding(false);
@@ -375,7 +370,7 @@ export class ChatPage {
 
     if (!visibility) {
       if (container.hidden) {
-        this.mainBtn.state = 'moved-n-scaled';
+        this.chatPrvd.mainBtn.state = 'moved-n-scaled';
         container.hidden = false;
         container.state = 'on';
         this.setContentPadding(true);
@@ -391,9 +386,9 @@ export class ChatPage {
       } else {
         this.setContentPadding(false);
         if (this.chatPrvd.appendContainer.hidden) {
-          this.mainBtn.state = 'normal';
+          this.chatPrvd.mainBtn.state = 'normal';
         } else {
-          this.mainBtn.state = 'above_append';
+          this.chatPrvd.mainBtn.state = 'above_append';
         }
         container.state = 'off';
         setTimeout(() => {
@@ -454,7 +449,7 @@ export class ChatPage {
           message.created_at = moment();
           message.dateStr = 'a moment ago';
           this.txtIn.value = '';
-          this.mainBtn.state = 'normal';
+          this.chatPrvd.mainBtn.state = 'normal';
           this.postMessages.push(message);
           this.postBtnChange = false;
         }
@@ -516,7 +511,7 @@ export class ChatPage {
   removeAppendedImage(index) {
     this.cameraPrvd.takenPictures.splice(index, 1);
     if (this.cameraPrvd.takenPictures.length == 0) {
-      this.mainBtn.state = 'normal';
+      this.chatPrvd.mainBtn.state = 'normal';
       this.chatPrvd.appendContainer.state = 'off';
       setTimeout(() => {
         this.chatPrvd.appendContainer.hidden = true;
@@ -553,8 +548,8 @@ export class ChatPage {
   ionViewDidEnter() {
     this.mainInput.state = 'fadeIn';
     this.mainInput.hidden = false;
-    this.mainBtn.state = 'normal';
-    this.mainBtn.hidden = false;
+    this.chatPrvd.mainBtn.state = 'normal';
+    this.chatPrvd.mainBtn.hidden = false;
 
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     if (this.isUndercover) {
@@ -567,9 +562,6 @@ export class ChatPage {
 
 
     this.chatPrvd.updateAppendContainer();
-    if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
-      this.mainBtn.state = 'above_append';
-    }
     // if (this.cameraPrvd.takenPictures) {
     //   this.postMessage();
     // }

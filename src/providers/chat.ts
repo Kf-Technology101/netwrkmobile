@@ -23,6 +23,10 @@ export class Chat {
     state: 'off',
     hidden: true
   }
+  public mainBtn: any = {
+    state: 'normal',
+    hidden: false
+  }
   private pickerOptions = {
     maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
   }
@@ -193,6 +197,7 @@ export class Chat {
     if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
       this.appendContainer.hidden = false;
       this.appendContainer.state = 'on_append';
+      this.mainBtn.state = 'above_append';
     }
   }
 
@@ -205,11 +210,11 @@ export class Chat {
       ImagePicker.getPictures(this.pickerOptions).then(
         file_uris => {
           console.log('[imagePicker] file_uris:', file_uris);
-          this.updateAppendContainer();
           for (let i = 0; i < file_uris.length; i++) {
             this.cameraPrvd.takenPictures.push(file_uris[i]);
             console.log('[imagePicker] file_uris:', file_uris[i]);
           }
+          this.updateAppendContainer();
         },
         err => console.log('[imagePicker] err:', err)
       );

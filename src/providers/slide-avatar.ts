@@ -50,11 +50,11 @@ export class SlideAvatar {
         }
       }
 
-      let person = this.undercoverPrvd.getPerson();
-      this.sliderState = person ? person.active : false;
+      // let person = this.undercoverPrvd.getPerson();
+      // this.sliderState = person ? person.active : false;
 
       this.setSliderDimentions();
-      this.setSliderPosition(this.sliderState);
+      // this.setSliderPosition(this.sliderState);
       this.startSliderEvents();
     }
     else {
@@ -73,9 +73,10 @@ export class SlideAvatar {
     }
   }
 
-  public setSliderPosition(state) {
+  public setSliderPosition(state: boolean) {
     let slider = document.getElementsByClassName('draggable-element active');
     if (slider) {
+      this.sliderState = state;
       this.arrowIcon = slider['0'].parentElement.children['1'];
       this.arrowIcon.style.opacity = '1';
       if (state) {

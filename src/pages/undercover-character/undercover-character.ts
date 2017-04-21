@@ -10,6 +10,7 @@ import { NetworkFindPage } from '../network-find/network-find';
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
+import { User } from '../../providers/user';
 
 import { heroes } from '../../includes/heroes';
 
@@ -24,7 +25,6 @@ export class UndercoverCharacterPage {
     name: '',
     description: '',
     imageUrl: '',
-    active: false
   };
   public sliderLoaded: boolean = false;
   public changeError: string;
@@ -36,7 +36,8 @@ export class UndercoverCharacterPage {
     public navParams: NavParams,
     public undercoverPrvd: UndercoverProvider,
     public toolsPrvd: Tools,
-    public slideAvatarPrvd: SlideAvatar
+    public slideAvatarPrvd: SlideAvatar,
+    public userPrvd: User
   ) {
     this.persons = heroes;
     // this.undercover.setActivePerson(true);
@@ -45,15 +46,11 @@ export class UndercoverCharacterPage {
   }
 
   choosePerson() {
-    if (this.platform.is('cordova')) {
-      this.undercoverPrvd.setPerson(this.activePerson).then(() => {
-        this.toolsPrvd.pushPage(NetworkFindPage);
-      }, err => {
-        this.toolsPrvd.showToast(this.textError);
-      });
-    } else {
+    this.undercoverPrvd.setPerson(this.activePerson).then(data => {
       this.toolsPrvd.pushPage(NetworkFindPage);
-    }
+    }, err => {
+      this.toolsPrvd.showToast(this.textError);
+    });
   }
 
   private changeSlider() {

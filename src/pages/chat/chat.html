@@ -1,4 +1,4 @@
-<ion-header class="incognito-header" isScrolling="false">
+<ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover}">
   <ion-toolbar *ngIf="isUndercover">
     <div class="drag-container">
       <div class="dragline">
@@ -174,7 +174,7 @@
       <ion-icon ios="ios-add" md="ios-add"></ion-icon>
     </button>
 
-    <ion-input #textInput id="textInput" type="text" placeholder="Share with your area"
+    <ion-input #textInput id="textInput" type="text" [placeholder]="placeholderText"
                (tap)="getCaretPos(textInput)"
                (keyup)="getCaretPos(textInput); calculateInputChar(textInput)">
     </ion-input>

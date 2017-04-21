@@ -30,7 +30,12 @@ export class NetworkFindPage {
     private platform: Platform,
     public chatPrvd: Chat
     // public permission: Permission
-  ) {}
+  ) {
+    platform.resume.subscribe(() => {
+      console.log('resume')
+      this.getZipCode();
+    });
+  }
 
   go() {
     if (this.platform.is('cordova')) {
@@ -42,6 +47,10 @@ export class NetworkFindPage {
 
   ionViewDidLoad() {
     this.hideSearch = false;
+    this.getZipCode();
+  }
+
+  private getZipCode() {
     this.gps.getMyZipCode().then( (zipRes: GeolocationInterface) => {
       console.log(zipRes);
       this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(

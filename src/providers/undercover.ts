@@ -11,6 +11,7 @@ import { Tools } from './tools';
 @Injectable()
 export class UndercoverProvider {
   public sliderState: boolean =  false;
+  public isUndercover: boolean;
 
   constructor(
     public localStorage: LocalStorage,
@@ -19,6 +20,11 @@ export class UndercoverProvider {
     public tools: Tools
   ) {
     console.log('Hello Undercover Provider');
+  }
+
+  public setUndercover(status: boolean): boolean {
+    this.isUndercover = status;
+    return this.isUndercover;
   }
 
   public getPerson(): any {
@@ -41,7 +47,6 @@ export class UndercoverProvider {
         role_name: person.name,
         role_description: person.description,
         role_image_url: person.imageUrl,
-        active: null,
       }
 
       console.log(updateObj);
@@ -51,7 +56,6 @@ export class UndercoverProvider {
         { user: updateObj }
       ).map(res => res.json()).subscribe(res => {
         this.tools.hideLoader();
-        person.active = true;
         this.localStorage.set('undercover_person', person);
         resolve(res);
       }, err => {

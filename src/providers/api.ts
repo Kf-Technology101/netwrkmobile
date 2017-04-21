@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class Api {
   private httpProtocol: string = 'http://';
-  public siteDomain: string = '54.200.151.55'; //192.168.1.13:3000 //54.200.151.55
+  public siteDomain: string = '192.168.1.13:3000'; //192.168.1.13:3000 //54.200.151.55
   public hostUrl = this.httpProtocol + this.siteDomain;
   public url: string = this.hostUrl + '/api/v1';
 
@@ -66,6 +66,24 @@ export class Api {
   patch(endpoint: string, body: any, options?: RequestOptions) {
     options = this.createAuthorizationHeader(options);
     return this.http.patch(this.url + '/' + endpoint, body, options);
+  }
+
+  public createFormData(object: Object, form?: FormData, namespace?: string): FormData {
+    const formData = form || new FormData();
+    for (let property in object) {
+      if (!object.hasOwnProperty(property) || !object[property]) {
+        continue;
+      }
+      const formKey = namespace ? `${namespace}[${property}]` : property;
+      if (object[property] instanceof Date) {
+        formData.append(formKey, object[property].toISOString());
+      } else if (typeof object[property] === 'object' && !(object[property] instanceof File)) {
+        this.createFormData(object[property], formData, formKey);
+      } else {
+        formData.append(formKey, object[property]);
+      }
+    }
+    return formData;
   }
 
 }

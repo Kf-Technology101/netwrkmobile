@@ -39,7 +39,7 @@ export class MessageDateTimer {
 
   // Get time from all visible {messages}
   getMessagesDate() {
-    if (this.messages.lenght > 0) {
+    if (this.messages.length > 0) {
       for (let i in this.messages) {
         this.messages[i].dateStr = moment(this.messages[i].created_at).fromNow();
       }

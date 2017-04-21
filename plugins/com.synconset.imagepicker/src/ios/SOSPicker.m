@@ -22,45 +22,28 @@ typedef enum : NSUInteger {
 @interface SOSPicker () <GMImagePickerControllerDelegate>
 @end
 
-@implementation SOSPicker
+@implementation SOSPicker 
 
 @synthesize callbackId;
 
 - (void) hasReadPermission:(CDVInvokedUrlCommand *)command {
-    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:[PHPhotoLibrary authorizationStatus] == PHAuthorizationStatusAuthorized];
+    CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsBool:YES];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void) requestReadPermission:(CDVInvokedUrlCommand *)command {
-    // [PHPhotoLibrary requestAuthorization:]
-    // this method works only when it is a first time, see
-    // https://developer.apple.com/library/ios/documentation/Photos/Reference/PHPhotoLibrary_Class/
-
-    PHAuthorizationStatus status = [PHPhotoLibrary authorizationStatus];
-    if (status == PHAuthorizationStatusAuthorized) {
-        NSLog(@"Access has been granted.");
-    } else if (status == PHAuthorizationStatusDenied) {
-        NSLog(@"Access has been denied. Change your setting > this app > Photo enable");
-    } else if (status == PHAuthorizationStatusNotDetermined) {
-        // Access has not been determined. requestAuthorization: is available
-        [PHPhotoLibrary requestAuthorization:^(PHAuthorizationStatus status) {}];
-    } else if (status == PHAuthorizationStatusRestricted) {
-        NSLog(@"Access has been restricted. Change your setting > Privacy > Photo enable");
-    }
-
     CDVPluginResult* pluginResult = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK];
     [self.commandDelegate sendPluginResult:pluginResult callbackId:command.callbackId];
 }
 
 - (void) getPictures:(CDVInvokedUrlCommand *)command {
-
+    
     NSDictionary *options = [command.arguments objectAtIndex: 0];
-
+  
     self.outputType = [[options objectForKey:@"outputType"] integerValue];
     BOOL allow_video = [[options objectForKey:@"allow_video" ] boolValue ];
     NSString * title = [options objectForKey:@"title"];
     NSString * message = [options objectForKey:@"message"];
-	BOOL disable_popover = [[options objectForKey:@"disable_popover" ] boolValue];
     if (message == (id)[NSNull null]) {
       message = nil;
     }
@@ -69,10 +52,10 @@ typedef enum : NSUInteger {
     self.quality = [[options objectForKey:@"quality"] integerValue];
 
     self.callbackId = command.callbackId;
-    [self launchGMImagePicker:allow_video title:title message:message disable_popover:disable_popover];
+    [self launchGMImagePicker:allow_video title:title message:message];
 }
 
-- (void)launchGMImagePicker:(bool)allow_video title:(NSString *)title message:(NSString *)message disable_popover:(BOOL)disable_popover
+- (void)launchGMImagePicker:(bool)allow_video title:(NSString *)title message:(NSString *)message
 {
     GMImagePickerController *picker = [[GMImagePickerController alloc] init:allow_video];
     picker.delegate = self;
@@ -81,16 +64,13 @@ typedef enum : NSUInteger {
     picker.colsInPortrait = 4;
     picker.colsInLandscape = 6;
     picker.minimumInteritemSpacing = 2.0;
-
-	if(!disable_popover) {
-	    picker.modalPresentationStyle = UIModalPresentationPopover;
-
-	    UIPopoverPresentationController *popPC = picker.popoverPresentationController;
-	    popPC.permittedArrowDirections = UIPopoverArrowDirectionAny;
-	    popPC.sourceView = picker.view;
-	    //popPC.sourceRect = nil;
-	}
-
+    picker.modalPresentationStyle = UIModalPresentationPopover;
+    
+    UIPopoverPresentationController *popPC = picker.popoverPresentationController;
+    popPC.permittedArrowDirections = UIPopoverArrowDirectionAny;
+    popPC.sourceView = picker.view;
+    //popPC.sourceRect = nil;
+    
     [self.viewController showViewController:picker sender:nil];
 }
 
@@ -159,9 +139,9 @@ typedef enum : NSUInteger {
 - (void)assetsPickerController:(GMImagePickerController *)picker didFinishPickingAssets:(NSArray *)fetchArray
 {
     [picker.presentingViewController dismissViewControllerAnimated:YES completion:nil];
-
+    
     NSLog(@"GMImagePicker: User finished picking assets. Number of selected items is: %lu", (unsigned long)fetchArray.count);
-
+    
     NSMutableArray * result_all = [[NSMutableArray alloc] init];
     CGSize targetSize = CGSizeMake(self.width, self.height);
     NSFileManager* fileMgr = [[NSFileManager alloc] init];
@@ -173,11 +153,11 @@ typedef enum : NSUInteger {
     CDVPluginResult* result = nil;
 
     for (GMFetchItem *item in fetchArray) {
-
+        
         if ( !item.image_fullsize ) {
             continue;
         }
-
+      
         do {
             filePath = [NSString stringWithFormat:@"%@/%@%03d.%@", docsPath, CDV_PHOTO_PREFIX, i++, @"jpg"];
         } while ([fileMgr fileExistsAtPath:filePath]);
@@ -187,7 +167,7 @@ typedef enum : NSUInteger {
             // no scaling required
             if (self.outputType == BASE64_STRING){
                 UIImage* image = [UIImage imageNamed:item.image_fullsize];
-                [result_all addObject:[UIImageJPEGRepresentation(image, self.quality/100.0f) base64EncodedStringWithOptions:0]];
+                [result_all addObject:[UIImageJPEGRepresentation(image, self.quality/100.0f) base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength]];
             } else {
                 if (self.quality == 100) {
                     // no scaling, no downsampling, this is the fastest option
@@ -215,21 +195,21 @@ typedef enum : NSUInteger {
                 break;
             } else {
                 if(self.outputType == BASE64_STRING){
-                    [result_all addObject:[data base64EncodedStringWithOptions:0]];
+                    [result_all addObject:[data base64EncodedStringWithOptions:NSDataBase64Encoding64CharacterLineLength]];
                 } else {
                     [result_all addObject:[[NSURL fileURLWithPath:filePath] absoluteString]];
                 }
             }
         }
     }
-
+    
     if (result == nil) {
         result = [CDVPluginResult resultWithStatus:CDVCommandStatus_OK messageAsArray:result_all];
     }
 
     [self.viewController dismissViewControllerAnimated:YES completion:nil];
     [self.commandDelegate sendPluginResult:result callbackId:self.callbackId];
-
+    
 }
 
 //Optional implementation:

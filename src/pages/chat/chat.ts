@@ -488,10 +488,6 @@ export class ChatPage {
     this.toolsPrvd.pushPage(ProfilePage, { id: profileId });
   }
 
-  mainBtnOnTap() {
-    this.goToUndercover();
-  }
-
   goToUndercover() {
     if (!this.isUndercover) {
       this.isUndercover = this.undercoverPrvd.setUndercover(true);

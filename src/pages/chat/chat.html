@@ -59,10 +59,6 @@
     </div>
   </div>
 
-  <div #galleryCont item-content  class="gallery-container"
-    [hidden]="galleryContainer.hidden"
-    [@containerState]="galleryContainer.state"></div>
-
   <div #emojiCont item-content class="gallery-container emoji-container"
     [hidden]="emojiContainer.hidden" [@containerState]="emojiContainer.state">
     <span item-content *ngFor="let emoji of emojis" (tap)="insertEmoji(emoji)"
@@ -139,7 +135,7 @@
   </div>
 
   <button isScrolling="false" tapable [hidden]="chatPrvd.mainBtn.hidden" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
-  class="main-action-btn big has-footer transparent chatMainBtn" (tap)="goToUndercover()"></button>
+  class="main-action-btn big has-footer transparent chatMainBtn" (tap)="mainBtnOnTap()"></button>
 
   <ion-item class="text" #inputItem
             [@fadeState]="mainInput.state" [hidden]="mainInput.hidden"
@@ -147,7 +143,6 @@
     <div item-content id="textInpBtns" [@bgState]="bgState.state">
       <button ion-button [@inputState]="chatBtns.state[0]"
       (tap)="openCamera();
-            toggleContainer(galleryContainer, 'hide');
             toggleContainer(emojiContainer, 'hide');
             toggleContainer(shareContainer, 'hide')">
         <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
@@ -166,7 +161,6 @@
 
     <button ion-button
     (tap)=" toggleChatOptions();
-            toggleContainer(galleryContainer, 'hide');
             toggleContainer(emojiContainer, 'hide');
             toggleContainer(shareContainer, 'hide')"
     [@rotState]="chatOptions.state" ion-button item-left clear

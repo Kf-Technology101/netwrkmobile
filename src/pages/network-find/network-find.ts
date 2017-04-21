@@ -33,7 +33,9 @@ export class NetworkFindPage {
   ) {
     platform.resume.subscribe(() => {
       console.log('resume')
-      this.getZipCode();
+      if (this.platform.is('cordova')) {
+        this.getZipCode();
+      }
     });
   }
 

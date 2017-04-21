@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 
-import { App, AlertController } from 'ionic-angular';
+import { App, AlertController, Platform } from 'ionic-angular';
 import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
 
 import { Api } from './api';
@@ -12,12 +12,9 @@ import { NetworkFindPage } from '../pages/network-find/network-find';
 
 @Injectable()
 export class Gps {
-  public coords: {
-    lat: number,
-    lng: number
-  } = {
-    lat: null,
-    lng: null
+  public coords: any = {
+    lat: <number> null,
+    lng: <number> null
   };
   public zipCode: string = null;
   private watch: any;
@@ -29,9 +26,12 @@ export class Gps {
     private geolocation: Geolocation,
     private api: Api,
     private localStorage: LocalStorage,
+    private platform: Platform,
     private alertCtrl: AlertController
   ) {
-    this.watchPosition();
+    if (this.platform.is('cordova')) {
+      this.watchPosition();
+    }
   }
 
   getNetwrk(zipCode: string): any {

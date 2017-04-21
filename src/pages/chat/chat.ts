@@ -5,7 +5,8 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { CameraPage } from '../camera/camera';
 import { FeedbackModal } from '../feedback/feedback';
-
+import { Toggleable } from '../../includes/toggleable';
+import { DateUpdater } from '../../includes/dateupdater';
 // Providers
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
@@ -56,65 +57,24 @@ export class ChatPage {
   public isUndercover: boolean;
 
   @ViewChild('galleryCont') gCont;
-  // @ViewChild('emojiCont') emCont;
-  // @ViewChild('shareCont') shCont;
   @ViewChild('textInput') txtIn;
-  // @ViewChild('slidingItems') toggler;
-  // @ViewChild('slfb') checkFb;
-  // @ViewChild('sltw') checkTw;
-  // @ViewChild('slln') checkIn;
-  // @ViewChild('chatContainer') chatCont;
   @ViewChild(Content) content: Content;
 
-  chatOptions: any = {
-    state: 'default'
-  };
-
-  bgState: any = {
-    state: 'compressed'
-  };
-
-  chatBtns: any = {
-    state: ['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']
-  };
-
-  galleryContainer: any = {
-    state: 'off',
-    hidden: true,
-    imgHeight: undefined
-  };
-
-  emojiContainer: any = {
-    state: 'off',
-    hidden: true
-  };
-
-  shareContainer: any = {
-    state: 'off',
-    hidden: true
-  };
+  chatOptions = new Toggleable('default');
+  bgState = new Toggleable('compressed');
+  shareContainer = new Toggleable('off', true);
+  emojiContainer = new Toggleable('off', true);
+  mainInput = new Toggleable('fadeIn', false);
+  chatBtns = new Toggleable(['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']);
 
   toggContainers: any = [
-    this.galleryContainer,
     this.emojiContainer,
     this.shareContainer
   ];
 
-  // hidePlaceholder = false;
-
-  imgesSrc = [];
-
   emoticX = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C'];
   emoticY = ['1F60', '1F61', '1F62', '1F63', '1F64'];
-
   emojis = [];
-
-  mainInput: any = {
-    state: 'fadeIn',
-    hidden: false
-  };
-
-  // txtFocus: boolean = false;
 
   caretPos: number = 0;
 
@@ -139,72 +99,8 @@ export class ChatPage {
   private networkParams: any = {};
   private textStrings: any = {};
 
-  // [Date updater]
-  // Updates dates in messages every {delay} in ms
-  private dateUpdater: any = {
-    timer: undefined,                   // variable for setInterval() storage
-    delay: <number> 1000*44,            // timer delay, default: 44sec
-    enableForceStart: <boolean> false,  // restart current timer by force
-    enableLogMessages: <boolean> false, // toggle console messages (toggles only .log)
-    mC: this.postMessages,              // array of messages
-    logStyle: <any> {                   // custom console color settings
-      background: '#222',
-      color: '#bada55'
-    },
-    // {type}-log {message} to console
-    logMessage: (message: string, type: string) => {
-      switch (type) {
-        case 'error':
-          console.error('dateUpdater: ' + message);
-        break;
-        default:
-          console.log('%c dateUpdater: ' + message,
-          'background: ' + this.dateUpdater.logStyle.background +
-          ';color: ' + this.dateUpdater.logStyle.color);
-        break;
-      }
-    },
-    // Get time from all visible messages
-    getMessagesDate: () => {
-      for (let i in this.postMessages) {
-        this.postMessages[i].dateStr =
-        this.toolsPrvd.getTime(this.postMessages[i].created_at);
-      }
-    },
-    // Start timer
-    start: () => {
-      if (this.dateUpdater.enableLogMessages) {
-        this.dateUpdater.logMessage('Starting timer...');
-      }
-      if (this.postMessages) {
-        if (this.dateUpdater.enableForceStart || !this.dateUpdater.timer) {
-          this.dateUpdater.getMessagesDate();
-          this.dateUpdater.timer = setInterval(() => {
-            this.dateUpdater.getMessagesDate();
-          }, this.dateUpdater.delay);
-        } else {
-          this.dateUpdater.logMessage(
-            'Cant\'t start timer. There are already runing one or try to set enableForceStart: true',
-            'error');
-        }
-      } else {
-        this.dateUpdater.logMessage(
-          'There are no messages to update or timer is already runing',
-          'error');
-      }
-    },
-    // Stop timer
-    stop: () => {
-      if (this.dateUpdater.enableLogMessages) {
-        this.dateUpdater.logMessage('Stoping timer...');
-      }
-      if (this.dateUpdater.timer) {
-        clearInterval(this.dateUpdater.timer);
-      } else {
-        this.dateUpdater.logMessage('There are no timer to stop.', 'error');
-      }
-    }
-  };
+  private dateUpdater = new DateUpdater(this.postMessages);
+
   public hostUrl: string;
   public placeholderText: string;
 
@@ -226,7 +122,6 @@ export class ChatPage {
     public plt: Platform,
     public modalCtrl: ModalController
   ) {
-
     this.keyboard.disableScroll(true);
 
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
@@ -313,8 +208,6 @@ export class ChatPage {
     this.placeholderText = this.isUndercover ? 'On your location...' : 'Share with your area';
   }
 
-  // dragContent = true;
-
   generateEmoticons() {
     for (let i = 0; i < this.emoticX.length; i++) {
       for (let j = 0; j < this.emoticY.length; j++) {
@@ -334,11 +227,6 @@ export class ChatPage {
       }, chatAnim/2);
     }, animSpeed.fadeIn/2);
   }
-
-  // debug function for scaling main button
-  // debugScaleMainBtn() {
-  //   this.chatPrvd.mainBtn.setState((this.chatPrvd.mainBtn.setState( 'minimised') ? 'normal' : 'minimised';
-  // }
 
   toggleChatOptions() {
     this.chatOptions.state = (this.chatOptions.state == 'spined') ? 'default' : 'spined';
@@ -605,18 +493,13 @@ export class ChatPage {
     // }
     this.dateUpdater.enableForceStart = true;
     this.dateUpdater.enableLogMessages = true;
+    this.dateUpdater.toolsProvider = this.toolsPrvd;
     this.dateUpdater.start();
   }
 
   ionViewDidLoad() {
     console.log('[UNDERCOVER.ts] viewDidLoad');
     this.generateEmoticons();
-    if (this.imgesSrc.length > 0) {
-      setTimeout(() => {
-        this.galleryContainer.imgHeight = this.gCont.nativeElement.children[0].clientWidth;
-      }, 100);
-    }
-
     this.getUsers();
     this.showMessages();
   }

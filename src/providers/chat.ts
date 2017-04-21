@@ -6,6 +6,8 @@ import { Api } from './api';
 import { Tools } from './tools';
 
 import * as moment from 'moment';
+import { Toggleable } from '../includes/toggleable';
+import { MainButton } from '../includes/mainButton';
 
 // Gallery
 import { ImagePicker } from 'ionic-native';
@@ -19,24 +21,9 @@ import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/trans
 export class Chat {
   public users: any = {};
   private message: any = null;
-  public appendContainer: any = {
-    state: 'off',
-    hidden: true
-  }
-  public mainBtn: any = {
-    state: 'normal',
-    prevState: undefined,
-    hidden: false,
-    setState: (newState: string) => {
-      this.mainBtn.prevState = this.mainBtn.state;
-      this.mainBtn.state = newState;
-    },
-    setPrevState: () => {
-      if (this.mainBtn.prevState) {
-        this.mainBtn.state = this.mainBtn.prevState;
-      }
-    }
-  }
+
+  public appendContainer= new Toggleable('off', true);
+  public mainBtn = new MainButton('normal', false);
 
   private pickerOptions = {
     maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length

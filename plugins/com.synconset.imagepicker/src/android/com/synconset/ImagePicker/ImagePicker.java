@@ -58,7 +58,7 @@ public class ImagePicker extends CordovaPlugin {
                 desiredWidth = params.getInt("width");
             }
             if (params.has("height")) {
-                desiredHeight = params.getInt("height");
+                desiredWidth = params.getInt("height");
             }
             if (params.has("quality")) {
                 quality = params.getInt("quality");

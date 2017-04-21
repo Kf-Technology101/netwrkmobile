@@ -1,9 +1,10 @@
 import { Component, ViewChild, NgZone } from '@angular/core';
-import { NavController, NavParams, Content, Platform } from 'ionic-angular';
+import { NavController, NavParams, Content, Platform, ModalController } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { CameraPage } from '../camera/camera';
+import { FeedbackModal } from '../feedback/feedback';
 
 // Providers
 import { Tools } from '../../providers/tools';
@@ -21,6 +22,7 @@ import { ProfilePage } from '../profile/profile';
 import { Keyboard } from '@ionic-native/keyboard';
 
 import * as moment from 'moment';
+
 // Animations
 import {
   animSpeed,
@@ -221,7 +223,8 @@ export class ChatPage {
     public chatPrvd: Chat,
     public networkPrvd: Network,
     public gpsPrvd: Gps,
-    public plt: Platform
+    public plt: Platform,
+    public modalCtrl: ModalController
   ) {
 
     this.keyboard.disableScroll(true);
@@ -552,6 +555,15 @@ export class ChatPage {
     }, err => {
       console.log(err);
     })
+  }
+
+  sendFeedback() {
+    let feedData = this.postMessages;
+    this.chatPrvd.mainBtn.state = 'minimised';
+    let feedbackModal = this.modalCtrl.create(FeedbackModal, { data: feedData });
+    setTimeout(() => {
+      feedbackModal.present();
+    }, chatAnim/2);
   }
 
   ionViewDidEnter() {

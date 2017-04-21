@@ -41,7 +41,7 @@
         <span class="message-date">{{ i.dateStr }}</span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
-      <button class="like-button" [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"></button>
+      <button class="like-button" (tap)="sendFeedback()" [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"></button>
       <img *ngFor="let j of i.image_urls" src="{{hostUrl}}{{j}}"/>
     </div>
   </div>

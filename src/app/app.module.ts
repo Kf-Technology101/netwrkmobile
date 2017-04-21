@@ -21,6 +21,7 @@ import { NetworkNoPage } from '../pages/network-no/network-no';
 import { NetworkFaqPage } from '../pages/network-faq/network-faq';
 import { NetworkContactListPage } from '../pages/network-contact-list/network-contact-list';
 
+import { FeedbackModal } from '../pages/feedback/feedback';
 import { ChatPage } from '../pages/chat/chat';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 
@@ -72,7 +73,7 @@ let pages = [
   NetworkNoPage,
   NetworkFaqPage,
   NetworkContactListPage,
-
+  FeedbackModal,
   ChatPage,
   UndercoverCharacterPage,
 

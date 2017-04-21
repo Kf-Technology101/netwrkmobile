@@ -1,0 +1,58 @@
+modal-feedback {
+  background: transparent;
+
+  .toolbar {
+    .toolbar-background {
+      background-color: transparent;
+    }
+    .legendary-btn {
+      width: 42px;
+      height: 42px;
+      background: #5b87aa;
+      border-radius: 11px;
+      border: 1px solid #eee;
+    }
+  }
+  ion-content.content {
+    background: rgba(0, 0, 0, .5);
+    ion-list {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(50% - 84px);
+      button {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid #c8c7cc;
+        background: #fff;
+        &.like-btn {
+          height: 100%;
+          background: #5b87aa;
+        }
+        &.secondary {
+          height: 42px;
+        }
+        &:last-child {
+          border: none;
+        }
+        &.share {
+          margin: 0 auto;
+          margin-top: 42px;
+          border-radius: 11px;
+          width: 78px;
+        }
+      }
+    }
+  }
+  .footer {
+    .main-action-btn.small {
+      width: 25px;
+      height: 40px;
+      opacity: 0;
+      border-color: #5b87aa;
+      border-style: solid;
+      bottom: 67px;
+    }
+  }
+}

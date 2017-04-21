@@ -114,56 +114,37 @@ export class Chat {
     };
 
     let i = 0;
-    let api = this.api;
-    let formD = this;
+    let self = this;
     let r = (i) => {
       getFileObject(images[i], function (fileObject) {
         files.push(fileObject);
-           console.log(fileObject);
-           i++;
-           if (i == images.length) {
-             console.log('end', files);
+          console.log(fileObject);
+          i++;
+          if (i == images.length) {
+            console.log('end', files);
+            let xhr: XMLHttpRequest = new XMLHttpRequest();
 
-             let formData: FormData = new FormData(),
-             xhr: XMLHttpRequest = new XMLHttpRequest();
+            let formData: FormData = self.api.createFormData(params);
+            for (let i in files)
+              formData.append('images[]', files[i], files[i].name);
 
-             console.log(files);
+            xhr.onreadystatechange = () => {
+              if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                  console.log(JSON.parse(xhr.response));
+                } else {
+                  console.log(xhr.response);
+                }
+              }
+            };
 
-             // for (let i = 0; i < files.length; i++) {
-               // for (let u in userData) {
-                 // formData.append('user', JSON.stringify(userData));
-               // }
-             // }
+            xhr.open('POST', self.api.url + '/messages', true);
+            xhr.setRequestHeader('Authorization', self.localStorage.get('auth_data').auth_token);
+            xhr.send(formData);
 
-             let fd = formD.createFormData(params);
-            for (let i in files) {
-              fd.append('images[]', files[i], files[i].name);
-            }
-
-            console.log(fd)
-
-
-             xhr.onreadystatechange = () => {
-               if (xhr.readyState === 4) {
-                 if (xhr.status === 200) {
-                   console.log(JSON.parse(xhr.response));
-                 } else {
-                   console.log(xhr.response);
-                 }
-               }
-             };
-
-             xhr.upload.onprogress = (event) => {
-
-             };
-
-             xhr.open('POST', api.url + '/messages', true);
-             xhr.setRequestHeader('Authorization', formD.localStorage.get('auth_data').auth_token);
-             xhr.send(fd);
-
-           } else {
-             r(i);
-           }
+          } else {
+            r(i);
+          }
       });
     }
     r(i);
@@ -175,24 +156,6 @@ export class Chat {
     // }
 
     return null;
-  }
-
-  private createFormData(object: Object, form?: FormData, namespace?: string): FormData {
-    const formData = form || new FormData();
-    for (let property in object) {
-      if (!object.hasOwnProperty(property) || !object[property]) {
-        continue;
-      }
-      const formKey = namespace ? `${namespace}[${property}]` : property;
-      if (object[property] instanceof Date) {
-        formData.append(formKey, object[property].toISOString());
-      } else if (typeof object[property] === 'object' && !(object[property] instanceof File)) {
-        this.createFormData(object[property], formData, formKey);
-      } else {
-        formData.append(formKey, object[property]);
-      }
-    }
-    return formData;
   }
 
   public getMessages(undercover: boolean) {
@@ -229,7 +192,7 @@ export class Chat {
     return messages;
   }
 
-  private getNetwork(): any {
+  public getNetwork(): any {
     return this.localStorage.get('current_network');
   }
 

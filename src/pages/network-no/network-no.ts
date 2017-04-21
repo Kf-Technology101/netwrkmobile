@@ -37,19 +37,14 @@ export class NetworkNoPage {
   }
 
   goUndercover() {
-    if (this.undercoverPrvd.getPerson()) {
-      this.undercoverPrvd.setActivePerson(true);
-      let params: any = {
-        action: 'undercover',
-        zipCode: this.navParams.get('zipCode'),
-      };
+    let params: any = {
+      action: 'undercover',
+      zipCode: this.navParams.get('zipCode'),
+    };
 
-      this.chatPrvd.setZipCode(this.gps.zipCode);
-      this.chatPrvd.setState(params.action);
-      this.tools.pushPage(ChatPage, params);
-    } else {
-      this.tools.pushPage(UndercoverCharacterPage);
-    }
+    this.chatPrvd.setZipCode(this.gps.zipCode);
+    this.chatPrvd.setState(params.action);
+    this.tools.pushPage(ChatPage, params);
   }
 
   goFaq() {

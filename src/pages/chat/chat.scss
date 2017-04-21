@@ -547,48 +547,49 @@ page-undercover {
     }
   }
 
-
-  .netwrk-header {
-    padding-bottom: 16px;
+  .chat-header {
     background: color($colors, white);
-    ion-toolbar {
-      background: url('../assets/icon/logo.png') no-repeat center;
-      background-size: auto 26px;
-      .user-icon {
-        display: block;
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        margin-left: 16px;
-        float: left;
-      }
-    }
-
-    .netwrk-slider {
-      & {
-        width: 100%;
-      }
-      .netwrk-slide {
-        & {
-          font-size: 12px;
-        }
-        button.add-to-netwrk {
+    .netwrk-header {
+      padding-bottom: 16px;
+      ion-toolbar {
+        background: url('../assets/icon/logo.png') no-repeat center;
+        background-size: auto 26px;
+        .user-icon {
           display: block;
-          margin: auto;
-          height: 68px;
-          width: 68px;
+          width: 26px;
+          height: 26px;
           border-radius: 50%;
-          font-size: 30px;
-          background-color: #5b87aa;
+          margin-left: 16px;
+          float: left;
         }
-        .avatar {
-          width: 68px;
-          height: 68px;
-          margin: auto;
+      }
+
+      .netwrk-slider {
+        & {
+          width: 100%;
         }
-        span.username {
-          display: block;
-          margin-top: 5px;
+        .netwrk-slide {
+          & {
+            font-size: 12px;
+          }
+          button.add-to-netwrk {
+            display: block;
+            margin: auto;
+            height: 68px;
+            width: 68px;
+            border-radius: 50%;
+            font-size: 30px;
+            background-color: #5b87aa;
+          }
+          .avatar {
+            width: 68px;
+            height: 68px;
+            margin: auto;
+          }
+          span.username {
+            display: block;
+            margin-top: 5px;
+          }
         }
       }
     }

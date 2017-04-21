@@ -7,25 +7,16 @@ import { Auth } from './auth';
 export class User {
 
   constructor(
-    public api: Api,
-    public auth: Auth
+    private api: Api,
+    private auth: Auth
   ) {}
 
-  public updateAvatar(id, files: File[], userData) {
+  public updateAvatar(id:number, files: File[], userData: any) {
     return new Promise((resolve, reject) => {
-      let formData: FormData = new FormData(),
-      xhr: XMLHttpRequest = new XMLHttpRequest();
+      let xhr: XMLHttpRequest = new XMLHttpRequest();
 
-      console.log(files);
-
-      // for (let i = 0; i < files.length; i++) {
-        // for (let u in userData) {
-          // formData.append('user', JSON.stringify(userData));
-        // }
-      // }
-
-      let fd = this.createFormData(userData);
-      fd.append('user[avatar]', files[0], files[0].name);
+      let formData = this.api.createFormData(userData);
+      formData.append('user[avatar]', files[0], files[0].name);
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
@@ -37,31 +28,9 @@ export class User {
         }
       };
 
-      xhr.upload.onprogress = (event) => {
-
-      };
-
       xhr.open('PUT', this.api.url + '/registrations/' + id, true);
-      xhr.send(fd);
+      xhr.send(formData);
     });
-  }
-
-  private createFormData(object: Object, form?: FormData, namespace?: string): FormData {
-    const formData = form || new FormData();
-    for (let property in object) {
-      if (!object.hasOwnProperty(property) || !object[property]) {
-        continue;
-      }
-      const formKey = namespace ? `${namespace}[${property}]` : property;
-      if (object[property] instanceof Date) {
-        formData.append(formKey, object[property].toISOString());
-      } else if (typeof object[property] === 'object' && !(object[property] instanceof File)) {
-        this.createFormData(object[property], formData, formKey);
-      } else {
-        formData.append(formKey, object[property]);
-      }
-    }
-    return formData;
   }
 
   public update(id: number, accountInfo: any, type?: string) {
@@ -83,5 +52,9 @@ export class User {
     let seq = this.api.get('profiles/' + id).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
+  }
+
+  public getUserId() {
+    return this.auth.getAuthData().id;
   }
 }

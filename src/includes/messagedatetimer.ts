@@ -1,14 +1,15 @@
-export class DateUpdater {
-  timer: any;                       // variable for setInterval() storage
-  delay: number;                    // timer delay, default: 44sec
-  enableForceStart: boolean;        // restart current timer by force
-  enableLogMessages: boolean;       // toggle console messages (toggles only .log)
-  logStyle: any = {                 // custom console color settings
+import * as moment from 'moment';
+
+export class MessageDateTimer {
+  private timer: any;          // variable for setInterval() storage
+  private delay: number;       // timer delay, default: 44sec
+  private messages: any;       // array of messages
+  enableForceStart: boolean;   // restart current timer by force
+  enableLogMessages: boolean;  // toggle console messages (toggles only .log)
+  logStyle: any = {            // custom console color settings
     background: '#222',
     color: '#bada55'
   };
-  messages: any;                    // array of messages
-  toolsProvider: any;
 
   constructor(messages: any) {
     this.messages = messages;
@@ -23,30 +24,36 @@ export class DateUpdater {
   logMessage(message: string, type?: string){
     switch (type) {
       case 'error':
-        console.error('dateUpdater: ' + message);
+        console.error('MessageDateTimer: ' + message);
+      break;
+      case 'warn':
+        console.warn('MessageDateTimer: ' + message);
       break;
       default:
-        console.log('%c dateUpdater: ' + message,
+        console.log('%c MessageDateTimer: ' + message,
         'background: ' + this.logStyle.background +
         ';color: ' + this.logStyle.color);
       break;
     }
   }
 
-  // Get time from all visible messages
+  // Get time from all visible {messages}
   getMessagesDate() {
-    for (let i in this.messages) {
-      this.messages[i].dateStr =
-      this.toolsProvider.getTime(this.messages[i].created_at);
+    if (this.messages.lenght > 0) {
+      for (let i in this.messages) {
+        this.messages[i].dateStr = moment(this.messages[i].created_at).fromNow();
+      }
+    } else {
+      this.logMessage('There are no messages to update', 'warn');
     }
   }
 
-  // Set timer delay in seconds
+  // Set timer {delay} in seconds
   setTimerDelay(delay?: number) {
-    this.delay = delay * 1000;
+    this.delay = delay ? delay * 1000 : 44;
   }
 
-  // Start timer
+  // Start {timer}
   start() {
     if (this.enableLogMessages) {
       this.logMessage('Starting timer...');
@@ -69,7 +76,7 @@ export class DateUpdater {
     }
   }
 
-  // Stop timer
+  // Stop {timer}
   stop() {
     if (this.enableLogMessages) {
       this.logMessage('Stoping timer...');

@@ -6,7 +6,7 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 import { CameraPage } from '../camera/camera';
 import { FeedbackModal } from '../feedback/feedback';
 import { Toggleable } from '../../includes/toggleable';
-import { DateUpdater } from '../../includes/dateupdater';
+import { MessageDateTimer } from '../../includes/messagedatetimer';
 // Providers
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
@@ -99,7 +99,7 @@ export class ChatPage {
   private networkParams: any = {};
   private textStrings: any = {};
 
-  private dateUpdater = new DateUpdater(this.postMessages);
+  private dateUpdater = new MessageDateTimer(this.postMessages);
 
   public hostUrl: string;
   public placeholderText: string;
@@ -493,7 +493,6 @@ export class ChatPage {
     // }
     this.dateUpdater.enableForceStart = true;
     this.dateUpdater.enableLogMessages = true;
-    this.dateUpdater.toolsProvider = this.toolsPrvd;
     this.dateUpdater.start();
   }
 

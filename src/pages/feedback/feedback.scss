@@ -43,9 +43,7 @@ modal-feedback {
           height: 100%;
           background: url(../assets/icon/like.svg) no-repeat center;
           background-color: #5b87aa;
-          background-size: contain;
-          background-origin: content-box;
-          padding: 42px;
+          background-size: 178px;
         }
         &.secondary {
           height: 42px;
@@ -56,8 +54,8 @@ modal-feedback {
         &.share {
           margin: 0 auto;
           margin-top: 42px;
-          border-radius: 11px;
-          width: 78px;
+          border-radius: 22px;
+          width: 110px;
         }
       }
     }

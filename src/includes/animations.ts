@@ -94,7 +94,7 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
     transform: 'scale(0.381)',
     bottom: '178px'
   })),
-  
+
   transition('* => minimised', animate(chatAnim/2 + 'ms ease-in')),
   transition('* => normal', animate(chatAnim/2 + 'ms ease-in')),
   transition('* => hidden', animate(chatAnim/3 + 'ms ease-out')),
@@ -159,4 +159,15 @@ export const cameraUIanimation: any = trigger('cameraUIstate', [
   })),
 
   transition('* => *', animate(animSpeed.fadeIn/2 + 'ms ease-in'))
+]);
+
+export const slideToggle: any = trigger('slideState', [
+  state('slideUp', style({
+    height: 0
+  })),
+  state('slideDown', style({
+    height: 'auto'
+  })),
+
+  transition('* => *', animate(chatAnim/2 + 'ms ease-out'))
 ]);

@@ -306,7 +306,8 @@ export class Chat {
     if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
       this.appendContainer.hidden = false;
       this.appendContainer.state = 'on_append';
-      this.mainBtn.state = 'above_append';
+      if (this.mainBtn.state != "moved-n-scaled")
+        this.mainBtn.state = 'above_append';
     }
   }
 

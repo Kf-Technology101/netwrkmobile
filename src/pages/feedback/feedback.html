@@ -1,0 +1,20 @@
+<ion-toolbar>
+  <ion-buttons end>
+    <button class="legendary-btn"></button>
+  </ion-buttons>
+</ion-toolbar>
+
+<ion-content>
+  <ion-list>
+    <button class="like-btn"></button>
+    <button class="secondary vulgar-btn">Vulgar</button>
+    <button class="secondary block-btn">Block</button>
+    <button class="secondary share">Share</button>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <button isScrolling="false" tapable color="bk"
+          class="main-action-btn small has-footer transparent chatMainBtn"
+          (tap)="closeModal()" [@fadeState]="mainBtn.state"></button>
+</ion-footer>

@@ -1,11 +1,10 @@
 import { Component, ViewChild, NgZone } from '@angular/core';
-import { NavController, NavParams, Content, Platform } from 'ionic-angular';
+import { NavController, NavParams, Content, Platform, ModalController } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 
-// import { ImagePicker } from '@ionic-native/image-picker';
-
 import { CameraPage } from '../camera/camera';
+import { FeedbackModal } from '../feedback/feedback';
 
 // Providers
 import { Tools } from '../../providers/tools';
@@ -23,6 +22,7 @@ import { ProfilePage } from '../profile/profile';
 import { Keyboard } from '@ionic-native/keyboard';
 
 import * as moment from 'moment';
+
 // Animations
 import {
   animSpeed,
@@ -47,8 +47,7 @@ import {
     toggleFade
   ],
   providers: [
-    Keyboard,
-    // ImagePicker
+    Keyboard
   ]
 })
 
@@ -205,6 +204,7 @@ export class ChatPage {
       }
     }
   };
+  public hostUrl: string;
 
   constructor(
     public navCtrl: NavController,
@@ -212,7 +212,6 @@ export class ChatPage {
     public zone: NgZone,
     private cameraPreview: CameraPreview,
     private keyboard: Keyboard,
-    // private imagePicker: ImagePicker,
     // public share: Share,
     public undercoverPrvd: UndercoverProvider,
     public slideAvatarPrvd: SlideAvatar,
@@ -222,7 +221,8 @@ export class ChatPage {
     public chatPrvd: Chat,
     public networkPrvd: Network,
     public gpsPrvd: Gps,
-    public plt: Platform
+    public plt: Platform,
+    public modalCtrl: ModalController
   ) {
 
     this.keyboard.disableScroll(true);
@@ -300,6 +300,7 @@ export class ChatPage {
     this.showUsers();
 
     this.networkParams = { post_code: this.gpsPrvd.zipCode };
+    this.hostUrl = this.chatPrvd.hostUrl;
   }
 
   // dragContent = true;
@@ -479,7 +480,8 @@ export class ChatPage {
     }
   }
 
-  goToProfile(profileId: number) {
+  goToProfile(profileId?: number) {
+    if (!profileId) profileId = this.authPrvd.getAuthData().id;
     this.toolsPrvd.pushPage(ProfilePage, { id: profileId });
   }
 
@@ -509,6 +511,7 @@ export class ChatPage {
   }
 
   removeAppendedImage(ind) {
+    console.log(ind)
     this.cameraPrvd.takenPictures.splice(ind, 1);
     if (this.cameraPrvd.takenPictures.length == 0) {
       this.chatPrvd.mainBtn.state = 'normal';
@@ -543,6 +546,15 @@ export class ChatPage {
     }, err => {
       console.log(err);
     })
+  }
+
+  sendFeedback() {
+    let feedData = this.postMessages;
+    this.chatPrvd.mainBtn.state = 'minimised';
+    let feedbackModal = this.modalCtrl.create(FeedbackModal, { data: feedData });
+    setTimeout(() => {
+      feedbackModal.present();
+    }, chatAnim/2);
   }
 
   ionViewDidEnter() {

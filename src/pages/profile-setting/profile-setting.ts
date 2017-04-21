@@ -9,6 +9,7 @@ import { Auth } from '../../providers/auth';
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
+import { User } from '../../providers/user';
 
 @Component({
   selector: 'page-profile-setting',
@@ -31,7 +32,8 @@ export class ProfileSettingPage {
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider,
     public slideAvatar: SlideAvatar,
-    public auth: Auth
+    public auth: Auth,
+    public userPrvd: User
   ) {
     this.user = this.undercoverPrvd.getPerson();
   }
@@ -55,6 +57,25 @@ export class ProfileSettingPage {
    */
   public filesAdded(event: Event): void {
     let files: FileList = this.nativeInputBtn.nativeElement.files;
+    let userId = this.auth.getAuthData().id;
+    let params = {
+      user: {
+        first_name: 'a',
+        last_name: 'b',
+      }
+    }
+
+    let tempFiles = [];
+
+    for (let i = 0; i < files.length; i++) {
+      tempFiles.push(files.item(i));
+    }
+
+    this.userPrvd.updateAvatar(userId, tempFiles, params).then(
+      res => {
+        console.log(res);
+      }, err => console.error('ERROR', err)
+    );
     console.log("Added files", files);
   }
 

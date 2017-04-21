@@ -305,6 +305,8 @@ export class ChatPage {
 
     this.networkParams = { post_code: this.gpsPrvd.zipCode };
     this.hostUrl = this.chatPrvd.hostUrl;
+
+    this.gpsPrvd.changeZipCallback = this.changeZipCallback.bind(this);
   }
 
   private changePlaceholderText() {
@@ -487,6 +489,10 @@ export class ChatPage {
   }
 
   mainBtnOnTap() {
+    this.goToUndercover();
+  }
+
+  goToUndercover() {
     if (!this.isUndercover) {
       this.isUndercover = this.undercoverPrvd.setUndercover(true);
       this.changePlaceholderText();
@@ -505,14 +511,19 @@ export class ChatPage {
 
   changeCallback(positionLeft?: boolean) {
     this.zone.run(() => {
-      this.isUndercover = this.undercoverPrvd.setUndercover(!positionLeft);
-      this.changePlaceholderText();
-      this.showMessages();
       if (positionLeft && this.chatPrvd.getNetwork()) {
+        this.isUndercover = this.undercoverPrvd.setUndercover(!positionLeft);
         this.chatPrvd.setState('netwrk');
         this.showUsers();
+
+        this.changePlaceholderText();
+        this.showMessages();
       } else if (positionLeft && !this.chatPrvd.getNetwork()) {
         this.toolsPrvd.showToast(this.textStrings.noNetwork);
+      } else {
+        this.isUndercover = this.undercoverPrvd.setUndercover(!positionLeft);
+        this.changePlaceholderText();
+        this.showMessages();
       }
     });
 
@@ -555,6 +566,13 @@ export class ChatPage {
     }, err => {
       console.log(err);
     })
+  }
+
+  private changeZipCallback(params?: any) {
+    if (params) {
+      this.isUndercover = this.undercoverPrvd.setUndercover(params.undercover);
+      if (this.isUndercover) this.goToUndercover();
+    }
   }
 
   sendFeedback() {

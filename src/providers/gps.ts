@@ -20,6 +20,8 @@ export class Gps {
     lng: null
   };
   public zipCode: string = null;
+  private watch: any;
+  public changeZipCallback: (params?: any) => void;
 
   constructor(
     public app: App,
@@ -96,20 +98,24 @@ export class Gps {
 
   private compareZip() {
     let nav = this.app.getActiveNav();
-    if (nav.getActive().name == 'ChatPage') {
-      let currentZip = this.localStorage.get('current_network').post_code;
-      if (parseInt(currentZip) == parseInt(this.zipCode)) {
+    if (nav && nav.getActive() && nav.getActive().name == 'ChatPage') {
+      let network = this.localStorage.get('current_network');
+      let currentZip = network ? network.post_code : 0;
+      if (parseInt(currentZip) != parseInt(this.zipCode)) {
+        this.localStorage.rm('current_network');
         let alert = this.alertCtrl.create({
-          title: 'You left the Netwrk area, please join to other netwrk or go to Undercover',
+          title: 'Warning',
+          message: 'You left the Netwrk area, please join to other netwrk or go to Undercover',
           buttons: [
             {
               text: 'Go Undercover',
               handler: () => {
                 let alertDismiss = alert.dismiss();
                 alertDismiss.then(() => {
-                  console.log('Go Undercover');
-                  // this.tools.pushPage()
-                  // nav.push(page, null, { animate: false })
+                  this.watchPosition();
+                  if (this.changeZipCallback) this.changeZipCallback({
+                    undercover: true
+                  });
                 });
                 return false;
               }
@@ -119,8 +125,8 @@ export class Gps {
               handler: () => {
                 let alertDismiss = alert.dismiss();
                 alertDismiss.then(() => {
-                  console.log('Join');
-                  // this.tools.pushPage()
+                  this.watchPosition();
+                  nav.push(NetworkFindPage, null, { animate: false })
                 });
                 return false;
               }
@@ -129,7 +135,7 @@ export class Gps {
         });
 
         alert.present();
-        // this.tools.pushPage(NetworkFindPage);
+        this.watch.unsubscribe();
       }
     }
   }
@@ -141,7 +147,7 @@ export class Gps {
       maximumAge: 11000,
     }
 
-    this.geolocation.watchPosition(options).subscribe(resp => {
+    this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
       if (resp.coords) {
         let url = 'http://maps.googleapis.com/maps/api/geocode/json';
         let seq = this.getAddressDetail(url, {
@@ -150,7 +156,6 @@ export class Gps {
         }).share();
         this.coords.lat = resp.coords.latitude;
         this.coords.lng = resp.coords.longitude;
-        console.log(this.coords, this.zipCode);
         seq.map(res => res.json()).subscribe(
           res => {
             this.parseGoogleAddress(res.results);

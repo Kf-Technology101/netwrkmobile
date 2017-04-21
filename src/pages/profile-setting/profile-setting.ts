@@ -60,12 +60,18 @@ export class ProfileSettingPage {
     let userId = this.auth.getAuthData().id;
     let params = {
       user: {
-        avatar: files,
         first_name: 'a',
         last_name: 'b',
       }
     }
-    this.userPrvd.update(userId, params).map(res => res.json()).subscribe(
+
+    let tempFiles = [];
+
+    for (let i = 0; i < files.length; i++) {
+      tempFiles.push(files.item(i));
+    }
+
+    this.userPrvd.updateAvatar(userId, tempFiles, params).then(
       res => {
         console.log(res);
       }, err => console.error('ERROR', err)

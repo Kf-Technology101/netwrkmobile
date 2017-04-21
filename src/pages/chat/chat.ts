@@ -507,8 +507,9 @@ export class ChatPage {
     console.log('isUndercover', this.isUndercover);
   }
 
-  removeAppendedImage(index) {
-    this.cameraPrvd.takenPictures.splice(index, 1);
+  removeAppendedImage(ind) {
+    console.log(ind)
+    this.cameraPrvd.takenPictures.splice(ind, 1);
     if (this.cameraPrvd.takenPictures.length == 0) {
       this.chatPrvd.mainBtn.state = 'normal';
       this.chatPrvd.appendContainer.state = 'off';

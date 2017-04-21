@@ -69,22 +69,130 @@ export class Chat {
 
   public sendMessage(data: any): any {
     let params = {
-      text: data.text,
-      user_id: data.user_id,
-      network_id: this.getNetwork() ? this.getNetwork().id : null,
-      lat: this.gps.coords.lat,
-      lng: this.gps.coords.lng,
-      undercover: data.undercover,
-      images: data.images,
+      message: {
+        text: data.text,
+        user_id: data.user_id,
+        network_id: this.getNetwork() ? this.getNetwork().id : null,
+        lat: this.gps.coords.lat,
+        lng: this.gps.coords.lng,
+        undercover: data.undercover,
+        // images: data.images,
+      }
     };
 
-    if (data.images && data.images.length > 0) {
-      this.sendMessageWithImage(params);
-    } else {
-      this.sendMessageWithoutImage(params);
+    let files = [];
+    let images: Array<string> = [];
+    for (let i of data.images) {
+      images.push(i);
     }
 
+    console.log(images);
+
+    var getFileBlob = function (url, cb) {
+      console.log(url, cb);
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", url);
+      xhr.responseType = "blob";
+      xhr.addEventListener('load', function() {
+        cb(xhr.response);
+      });
+      xhr.send();
+    };
+
+    var blobToFile = function (blob, name) {
+      console.log(blob, name);
+      blob.lastModifiedDate = new Date();
+      blob.name = name;
+      return blob;
+    };
+
+    var getFileObject = function(filePathOrUrl, cb) {
+      console.log(filePathOrUrl, cb);
+       getFileBlob(filePathOrUrl, function (blob) {
+          cb(blobToFile(blob, filePathOrUrl.split('/').pop()));
+       });
+    };
+
+    let i = 0;
+    let api = this.api;
+    let formD = this;
+    let r = (i) => {
+      getFileObject(images[i], function (fileObject) {
+        files.push(fileObject);
+           console.log(fileObject);
+           i++;
+           if (i == images.length) {
+             console.log('end', files);
+
+             let formData: FormData = new FormData(),
+             xhr: XMLHttpRequest = new XMLHttpRequest();
+
+             console.log(files);
+
+             // for (let i = 0; i < files.length; i++) {
+               // for (let u in userData) {
+                 // formData.append('user', JSON.stringify(userData));
+               // }
+             // }
+
+             let fd = formD.createFormData(params);
+            for (let i in files) {
+              fd.append('images[]', files[i], files[i].name);
+            }
+
+            console.log(fd)
+
+
+             xhr.onreadystatechange = () => {
+               if (xhr.readyState === 4) {
+                 if (xhr.status === 200) {
+                   console.log(JSON.parse(xhr.response));
+                 } else {
+                   console.log(xhr.response);
+                 }
+               }
+             };
+
+             xhr.upload.onprogress = (event) => {
+
+             };
+
+             xhr.open('POST', api.url + '/messages', true);
+             xhr.setRequestHeader('Authorization', formD.localStorage.get('auth_data').auth_token);
+             xhr.send(fd);
+
+           } else {
+             r(i);
+           }
+      });
+    }
+    r(i);
+
+    // if (data.images && data.images.length > 0) {
+    //   this.sendMessageWithImage(params);
+    // } else {
+    //   this.sendMessageWithoutImage(params);
+    // }
+
     return null;
+  }
+
+  private createFormData(object: Object, form?: FormData, namespace?: string): FormData {
+    const formData = form || new FormData();
+    for (let property in object) {
+      if (!object.hasOwnProperty(property) || !object[property]) {
+        continue;
+      }
+      const formKey = namespace ? `${namespace}[${property}]` : property;
+      if (object[property] instanceof Date) {
+        formData.append(formKey, object[property].toISOString());
+      } else if (typeof object[property] === 'object' && !(object[property] instanceof File)) {
+        this.createFormData(object[property], formData, formKey);
+      } else {
+        formData.append(formKey, object[property]);
+      }
+    }
+    return formData;
   }
 
   public getMessages(undercover: boolean) {
@@ -203,12 +311,15 @@ export class Chat {
   }
 
   public openGallery(): void {
-    if (this.pickerOptions.maximumImagesCount <= 0) {
+    let pickerOptions = {
+      maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
+    }
+    if (pickerOptions.maximumImagesCount <= 0) {
       // this.tools.showToast('You can\'t append more pictures');
     } else {
       console.log('[imagePicker] takenPictures:', this.cameraPrvd.takenPictures);
-      console.log('[imagePicker] pickerOptions:', this.pickerOptions);
-      ImagePicker.getPictures(this.pickerOptions).then(
+      console.log('[imagePicker] pickerOptions:', pickerOptions);
+      ImagePicker.getPictures(pickerOptions).then(
         file_uris => {
           console.log('[imagePicker] file_uris:', file_uris);
           for (let i = 0; i < file_uris.length; i++) {

@@ -245,9 +245,9 @@ export class ChatPage {
         footerEl.style.bottom = res.keyboardHeight + 'px';
       }
       setTimeout(() => {
-        this.chatPrvd.mainBtn.state = 'minimised';
+        this.chatPrvd.mainBtn.setState('minimised');
         if (!this.chatPrvd.appendContainer.hidden) {
-          this.chatPrvd.mainBtn.state = 'above_append';
+          this.chatPrvd.mainBtn.setState('above_append');
         }
       }, chatAnim/2 + 1);
     }, err => {
@@ -265,10 +265,10 @@ export class ChatPage {
       }
       setTimeout(() => {
         if (!this.chatPrvd.appendContainer.hidden) {
-          this.chatPrvd.mainBtn.state = 'above_append';
+          this.chatPrvd.mainBtn.setState('above_append');
         }
         if (this.chatPrvd.appendContainer.hidden) {
-          this.chatPrvd.mainBtn.state = 'normal';
+          this.chatPrvd.mainBtn.setState('normal');
         }
       }, chatAnim/2 + 1);
 
@@ -317,7 +317,7 @@ export class ChatPage {
     this.mainInput.state = 'fadeOutfast';
     setTimeout(() => {
       this.mainInput.hidden = true;
-      this.chatPrvd.mainBtn.state = 'minimisedForCamera';
+      this.chatPrvd.mainBtn.setState('minimisedForCamera');
       setTimeout(() => {
         this.chatPrvd.mainBtn.hidden = true;
         this.toolsPrvd.pushPage(CameraPage);
@@ -327,7 +327,7 @@ export class ChatPage {
 
   // debug function for scaling main button
   // debugScaleMainBtn() {
-  //   this.chatPrvd.mainBtn.state = (this.chatPrvd.mainBtn.state == 'minimised') ? 'normal' : 'minimised';
+  //   this.chatPrvd.mainBtn.setState((this.chatPrvd.mainBtn.setState( 'minimised') ? 'normal' : 'minimised';
   // }
 
   toggleChatOptions() {
@@ -358,9 +358,9 @@ export class ChatPage {
   toggleContainer(container, visibility) {
     if (visibility == 'hide') {
       if (this.chatPrvd.appendContainer.hidden) {
-        this.chatPrvd.mainBtn.state = 'normal';
+        this.chatPrvd.mainBtn.setState('normal');
       } else {
-        this.chatPrvd.mainBtn.state = 'above_append';
+        this.chatPrvd.mainBtn.setState('above_append');
       }
       container.state = 'off';
       this.setContentPadding(false);
@@ -371,7 +371,7 @@ export class ChatPage {
 
     if (!visibility) {
       if (container.hidden) {
-        this.chatPrvd.mainBtn.state = 'moved-n-scaled';
+        this.chatPrvd.mainBtn.setState('moved-n-scaled');
         container.hidden = false;
         container.state = 'on';
         this.setContentPadding(true);
@@ -387,9 +387,9 @@ export class ChatPage {
       } else {
         this.setContentPadding(false);
         if (this.chatPrvd.appendContainer.hidden) {
-          this.chatPrvd.mainBtn.state = 'normal';
+          this.chatPrvd.mainBtn.setState('normal');
         } else {
-          this.chatPrvd.mainBtn.state = 'above_append';
+          this.chatPrvd.mainBtn.setState('above_append');
         }
         container.state = 'off';
         setTimeout(() => {
@@ -450,7 +450,7 @@ export class ChatPage {
           message.created_at = moment();
           message.dateStr = 'a moment ago';
           this.txtIn.value = '';
-          this.chatPrvd.mainBtn.state = 'normal';
+          this.chatPrvd.mainBtn.setState('normal');
           this.postMessages.push(message);
           this.postBtnChange = false;
         }
@@ -514,7 +514,7 @@ export class ChatPage {
     console.log(ind)
     this.cameraPrvd.takenPictures.splice(ind, 1);
     if (this.cameraPrvd.takenPictures.length == 0) {
-      this.chatPrvd.mainBtn.state = 'normal';
+      this.chatPrvd.mainBtn.setState('normal');
       this.chatPrvd.appendContainer.state = 'off';
       setTimeout(() => {
         this.chatPrvd.appendContainer.hidden = true;
@@ -549,8 +549,11 @@ export class ChatPage {
   }
 
   sendFeedback() {
-    let feedData = this.postMessages;
-    this.chatPrvd.mainBtn.state = 'minimised';
+    let feedData = {
+      totalLegendary: 3,
+      totalLikes: 45
+    };
+    this.chatPrvd.mainBtn.setState('minimised');
     let feedbackModal = this.modalCtrl.create(FeedbackModal, { data: feedData });
     setTimeout(() => {
       feedbackModal.present();
@@ -560,7 +563,7 @@ export class ChatPage {
   ionViewDidEnter() {
     this.mainInput.state = 'fadeIn';
     this.mainInput.hidden = false;
-    this.chatPrvd.mainBtn.state = 'normal';
+    this.chatPrvd.mainBtn.setState('normal');
     this.chatPrvd.mainBtn.hidden = false;
 
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);

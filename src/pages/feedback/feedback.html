@@ -1,12 +1,16 @@
 <ion-toolbar>
   <ion-buttons end>
-    <button class="legendary-btn"></button>
+    <button class="legendary-btn">
+      <ion-badge>{{ postInf.totalLegendary }}</ion-badge>
+    </button>
   </ion-buttons>
 </ion-toolbar>
 
 <ion-content>
   <ion-list>
-    <button class="like-btn"></button>
+    <button class="like-btn">
+      <ion-badge>{{ postInf.totalLikes }}</ion-badge>
+    </button>
     <button class="secondary vulgar-btn">Vulgar</button>
     <button class="secondary block-btn">Block</button>
     <button class="secondary share">Share</button>

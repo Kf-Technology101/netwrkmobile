@@ -25,8 +25,19 @@ export class Chat {
   }
   public mainBtn: any = {
     state: 'normal',
-    hidden: false
+    prevState: undefined,
+    hidden: false,
+    setState: (newState: string) => {
+      this.mainBtn.prevState = this.mainBtn.state;
+      this.mainBtn.state = newState;
+    },
+    setPrevState: () => {
+      if (this.mainBtn.prevState) {
+        this.mainBtn.state = this.mainBtn.prevState;
+      }
+    }
   }
+
   private pickerOptions = {
     maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
   }
@@ -318,14 +329,12 @@ export class Chat {
     if (pickerOptions.maximumImagesCount <= 0) {
       // this.tools.showToast('You can\'t append more pictures');
     } else {
-      console.log('[imagePicker] takenPictures:', this.cameraPrvd.takenPictures);
-      console.log('[imagePicker] pickerOptions:', pickerOptions);
       ImagePicker.getPictures(pickerOptions).then(
         file_uris => {
-          console.log('[imagePicker] file_uris:', file_uris);
+          // console.log('[imagePicker] file_uris:', file_uris);
           for (let i = 0; i < file_uris.length; i++) {
             this.cameraPrvd.takenPictures.push(file_uris[i]);
-            console.log('[imagePicker] file_uris:', file_uris[i]);
+            // console.log('[imagePicker] file_uris:', file_uris[i]);
           }
           this.updateAppendContainer();
         },

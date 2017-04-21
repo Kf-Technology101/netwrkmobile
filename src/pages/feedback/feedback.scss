@@ -1,7 +1,15 @@
 modal-feedback {
   background: transparent;
 
+  .badge {
+    position: absolute;
+    right: 13px;
+    bottom: 13px;
+    padding: 3px 6px;
+  }
+
   .toolbar {
+    padding: 13px;
     .toolbar-background {
       background-color: transparent;
     }
@@ -11,10 +19,15 @@ modal-feedback {
       background: #5b87aa;
       border-radius: 11px;
       border: 1px solid #eee;
+      & .badge {
+        bottom: -4px;
+        left: -7px;
+        right: auto;
+      }
     }
   }
   ion-content.content {
-    background: rgba(0, 0, 0, .5);
+    background: rgba(0, 0, 0, .7);
     ion-list {
       position: absolute;
       top: 0;
@@ -28,7 +41,11 @@ modal-feedback {
         background: #fff;
         &.like-btn {
           height: 100%;
-          background: #5b87aa;
+          background: url(../assets/icon/like.svg) no-repeat center;
+          background-color: #5b87aa;
+          background-size: contain;
+          background-origin: content-box;
+          padding: 42px;
         }
         &.secondary {
           height: 42px;

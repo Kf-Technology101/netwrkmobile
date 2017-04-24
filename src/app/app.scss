@@ -408,3 +408,80 @@ ion-header.incognito-header {
 .ios .ion-page.show-page ~ .nav-decor {
   background: transparent!important;
 }
+
+modal-feedback,
+modal-feedbackshare {
+  background: transparent;
+
+  .badge {
+    position: absolute;
+    right: 13px;
+    bottom: 13px;
+    padding: 3px 6px;
+  }
+
+  .toolbar {
+    padding: 13px;
+    &.translucent {
+      .toolbar-background {
+        background-color: transparent;
+      }
+    }
+    .legendary-btn {
+      width: 42px;
+      height: 42px;
+      background: #5b87aa;
+      border-radius: 11px;
+      border: 1px solid #eee;
+      & .badge {
+        bottom: -4px;
+        left: -7px;
+        right: auto;
+      }
+    }
+  }
+  ion-content.content.translucent {
+    background: rgba(0, 0, 0, .7);
+    ion-list {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: calc(50% - 84px);
+      button {
+        display: block;
+        width: 100%;
+        border-bottom: 1px solid #c8c7cc;
+        background: #fff;
+        &.like-btn {
+          height: 100%;
+          background: url(../assets/icon/like.svg) no-repeat center;
+          background-color: #5b87aa;
+          background-size: 178px;
+        }
+        &.secondary {
+          height: 42px;
+        }
+        &:last-child {
+          border: none;
+        }
+        &.share {
+          margin: 0 auto;
+          margin-top: 42px;
+          border-radius: 22px;
+          width: 110px;
+        }
+      }
+    }
+  }
+  .footer {
+    .main-action-btn.small {
+      width: 25px;
+      height: 40px;
+      opacity: 0;
+      border-color: #5b87aa;
+      border-style: solid;
+      bottom: 67px;
+    }
+  }
+}

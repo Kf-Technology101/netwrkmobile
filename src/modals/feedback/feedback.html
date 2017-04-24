@@ -1,4 +1,4 @@
-<ion-toolbar>
+<ion-toolbar class="translucent">
   <ion-buttons end>
     <button class="legendary-btn">
       <ion-badge>{{ postInf.totalLegendary }}</ion-badge>
@@ -6,14 +6,14 @@
   </ion-buttons>
 </ion-toolbar>
 
-<ion-content>
+<ion-content class="translucent">
   <ion-list>
     <button class="like-btn">
       <ion-badge>{{ postInf.totalLikes }}</ion-badge>
     </button>
     <button class="secondary vulgar-btn">Vulgar</button>
     <button class="secondary block-btn">Block</button>
-    <button class="secondary share">Share</button>
+    <button class="secondary share" (tap)="goShare()">Share</button>
   </ion-list>
 </ion-content>
 

@@ -4,7 +4,7 @@ import { NavController, NavParams, Content, Platform, ModalController } from 'io
 import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { CameraPage } from '../camera/camera';
-import { FeedbackModal } from '../feedback/feedback';
+import { FeedbackModal } from '../../modals/feedback/feedback';
 import { Toggleable } from '../../includes/toggleable';
 import { MessageDateTimer } from '../../includes/messagedatetimer';
 // Providers
@@ -78,8 +78,6 @@ export class ChatPage {
 
   caretPos: number = 0;
 
-  private postBtnChange: boolean = false;
-
   public postMessages: any = [];
 
   contentBlock: any = undefined;
@@ -99,7 +97,7 @@ export class ChatPage {
   private networkParams: any = {};
   private textStrings: any = {};
 
-  private dateUpdater = new MessageDateTimer(this.postMessages);
+  private messageDateTimer = new MessageDateTimer(this.postMessages);
 
   public hostUrl: string;
   public placeholderText: string;
@@ -134,7 +132,7 @@ export class ChatPage {
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       console.log(res);
-      this.postBtnChange = true;
+      this.chatPrvd.postBtn.setState(true);
       if (this.plt.is('ios')) {
         let footerEl = document.getElementsByClassName('chatFooter')['0'];
         let scrollEl = document.getElementsByClassName('scroll-content')['0'];
@@ -153,7 +151,7 @@ export class ChatPage {
 
     this.keyboard.onKeyboardHide().subscribe(res => {
       console.log(res);
-      this.postBtnChange = false;
+      this.chatPrvd.postBtn.setState(false);
       if (this.plt.is('ios')) {
         let footerEl = document.getElementsByClassName('chatFooter')['0'];
         let scrollEl = document.getElementsByClassName('scroll-content')['0'];
@@ -180,7 +178,7 @@ export class ChatPage {
     }
 
     this.textStrings.sendError = 'Error sending message';
-    this.textStrings.noNetwork = 'The netwrk not found';
+    this.textStrings.noNetwork = 'netwrk not found';
 
     // setTimeout(() => {
     //   for (var i = 0; i < 6; i++) {
@@ -217,28 +215,32 @@ export class ChatPage {
   }
 
   openCamera() {
-    this.mainInput.state = 'fadeOutfast';
+    this.mainInput.setState('fadeOutfast');
     setTimeout(() => {
-      this.mainInput.hidden = true;
+      this.mainInput.hide();
       this.chatPrvd.mainBtn.setState('minimisedForCamera');
       setTimeout(() => {
-        this.chatPrvd.mainBtn.hidden = true;
+        this.chatPrvd.mainBtn.hide();
         this.toolsPrvd.pushPage(CameraPage);
       }, chatAnim/2);
     }, animSpeed.fadeIn/2);
   }
 
   toggleChatOptions() {
-    this.chatOptions.state = (this.chatOptions.state == 'spined') ? 'default' : 'spined';
-    this.bgState.state = (this.bgState.state == 'stretched') ? 'compressed' : 'stretched';
+    this.chatOptions.setState((this.chatOptions.getState() == 'spined') ? 'default' : 'spined');
+    this.bgState.setState((this.bgState.getState() == 'stretched') ? 'compressed' : 'stretched');
 
-    if (this.bgState.state == 'stretched') {
+    if (this.bgState.getState() == 'stretched') {
+      this.chatPrvd.postBtn.setState(false);
       for (let i = 0; i < this.chatBtns.state.length; i++) {
         setTimeout(() => {
           this.chatBtns.state[i] = 'btnShown';
         }, chatAnim/3 + (i*50));
       }
     } else {
+      if (this.cameraPrvd.takenPictures.length > 0) {
+        this.chatPrvd.postBtn.setState(true);
+      }
       for (let i = 0; i < this.chatBtns.state.length; i++) {
         this.chatBtns.state[i] = 'btnHidden';
       }
@@ -258,25 +260,25 @@ export class ChatPage {
       } else {
         this.chatPrvd.mainBtn.setState('above_append');
       }
-      container.state = 'off';
+      container.setState('off');
       this.setContentPadding(false);
       setTimeout(() => {
-        container.hidden = true;
+        container.hide();
       }, chatAnim/2);
     }
 
     if (!visibility) {
       if (container.hidden) {
         this.chatPrvd.mainBtn.setState('moved-n-scaled');
-        container.hidden = false;
-        container.state = 'on';
+        container.show();
+        container.setState('on');
         this.setContentPadding(true);
         for (let i = 0; i < this.toggContainers.length; i++) {
           if (!this.toggContainers[i].hidden &&
             container != this.toggContainers[i]){
-              this.toggContainers[i].state = 'off';
+              this.toggContainers[i].setState('off');
             setTimeout(() => {
-              this.toggContainers[i].hidden = true;
+              this.toggContainers[i].hide();
             }, chatAnim/2);
           }
         }
@@ -287,9 +289,9 @@ export class ChatPage {
         } else {
           this.chatPrvd.mainBtn.setState('above_append');
         }
-        container.state = 'off';
+        container.setState('off');
         setTimeout(() => {
-          container.hidden = true;
+          container.hide();
         }, chatAnim/2);
       }
     }
@@ -347,14 +349,14 @@ export class ChatPage {
           message.dateStr = 'a moment ago';
           this.txtIn.value = '';
           this.chatPrvd.mainBtn.setState('normal');
+          this.chatPrvd.postBtn.setState(false);
           this.postMessages.push(message);
-          this.postBtnChange = false;
         }
       }, 100);
 
-      this.chatPrvd.appendContainer.state = 'off';
+      this.chatPrvd.appendContainer.setState('off');
       setTimeout(() => {
-        this.chatPrvd.appendContainer.hidden = true;
+        this.chatPrvd.appendContainer.hide();
       }, chatAnim/2);
 
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
@@ -363,7 +365,7 @@ export class ChatPage {
   }
 
   calculateInputChar(inputEl) {
-    this.postBtnChange = inputEl.value.trim().length > 0 ? true : false;
+    this.chatPrvd.postBtn.setState(inputEl.value.trim().length > 0 ? true : false);
   }
 
   getCaretPos(oField) {
@@ -419,9 +421,11 @@ export class ChatPage {
     this.cameraPrvd.takenPictures.splice(ind, 1);
     if (this.cameraPrvd.takenPictures.length == 0) {
       this.chatPrvd.mainBtn.setState('normal');
-      this.chatPrvd.appendContainer.state = 'off';
+      this.chatPrvd.appendContainer.setState('off');
+      if (this.txtIn.value.trim().length == 0)
+      this.chatPrvd.postBtn.setState(false);
       setTimeout(() => {
-        this.chatPrvd.appendContainer.hidden = true;
+        this.chatPrvd.appendContainer.hide();
       }, chatAnim/2);
     }
   }
@@ -471,17 +475,22 @@ export class ChatPage {
     }, chatAnim/2);
   }
 
+  clearMessages() {
+    this.postMessages = [];
+  }
+
   ionViewDidEnter() {
-    this.mainInput.state = 'fadeIn';
-    this.mainInput.hidden = false;
+    this.mainInput.setState('fadeIn');
+    this.mainInput.show();
     this.chatPrvd.mainBtn.setState('normal');
-    this.chatPrvd.mainBtn.hidden = false;
+    this.chatPrvd.mainBtn.show();
 
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     if (this.isUndercover) {
       this.slideAvatarPrvd.sliderInit();
       this.showUsers();
     }
+
     this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
@@ -491,9 +500,10 @@ export class ChatPage {
     // if (this.cameraPrvd.takenPictures) {
     //   this.postMessage();
     // }
-    this.dateUpdater.enableForceStart = true;
-    this.dateUpdater.enableLogMessages = true;
-    this.dateUpdater.start();
+
+    this.messageDateTimer.enableForceStart = true;
+    this.messageDateTimer.enableLogMessages = true;
+    this.messageDateTimer.start();
   }
 
   ionViewDidLoad() {
@@ -505,6 +515,6 @@ export class ChatPage {
 
   ionViewWillLeave() {
     console.log('[UNDERCOVER.ts] viewWillLeave');
-    this.dateUpdater.stop();
+    this.messageDateTimer.stop();
   }
 }

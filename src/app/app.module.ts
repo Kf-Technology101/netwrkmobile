@@ -20,12 +20,14 @@ import { NetworkFindPage } from '../pages/network-find/network-find';
 import { NetworkNoPage } from '../pages/network-no/network-no';
 import { NetworkFaqPage } from '../pages/network-faq/network-faq';
 import { NetworkContactListPage } from '../pages/network-contact-list/network-contact-list';
-
-import { FeedbackModal } from '../pages/feedback/feedback';
 import { ChatPage } from '../pages/chat/chat';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 
 import { CameraPage } from '../pages/camera/camera';
+
+// Modals
+import { FeedbackShareModal } from '../modals/feedbackshare/feedbackshare';
+import { FeedbackModal } from '../modals/feedback/feedback';
 
 // Services
 import { Api } from '../providers/api';
@@ -73,6 +75,7 @@ let pages = [
   NetworkNoPage,
   NetworkFaqPage,
   NetworkContactListPage,
+  FeedbackShareModal,
   FeedbackModal,
   ChatPage,
   UndercoverCharacterPage,

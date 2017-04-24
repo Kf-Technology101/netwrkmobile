@@ -11,6 +11,13 @@
     </div>
   </ion-toolbar>
 
+  <button *ngIf="isUndercover && postMessages.length === 0" class="side refresh-btn">
+    <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
+  </button>
+  <button ion-button *ngIf="isUndercover && postMessages.length > 0" class="side clear-btn" (tap)="clearMessages()">
+    Clear
+  </button>
+
   <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar>
       <img src="{{ user.imageUrl }}" (tap)="goToProfile()" class="user-icon">
@@ -41,7 +48,8 @@
         <span class="message-date">{{ i.dateStr }}</span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
-      <button class="like-button" (tap)="sendFeedback()" [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"></button>
+      <button class="like-button" (tap)="sendFeedback()"
+              [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"></button>
       <img *ngFor="let j of i.image_urls" src="{{hostUrl}}{{j}}"/>
     </div>
   </div>
@@ -139,7 +147,7 @@
 
   <ion-item class="text" #inputItem
             [@fadeState]="mainInput.state" [hidden]="mainInput.hidden"
-            [ngClass]="{ 'has-post-btn' : postBtnChange }">
+            [ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state }">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">
       <button ion-button [@inputState]="chatBtns.state[0]"
       (tap)="openCamera();
@@ -174,11 +182,11 @@
     </ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
-    <button ion-button item-right clear [ngClass]="{ 'post-button' : postBtnChange }"
+    <button ion-button item-right clear [ngClass]="{ 'post-button' : chatPrvd.postBtn.state }"
             (tap)="postMessage()" class="post-message">
-      <ion-icon *ngIf="!postBtnChange" ios="ios-text-outline" md="ios-text-outline"></ion-icon>
-      <span *ngIf="postBtnChange && !isUndercover">Post</span>
-      <span *ngIf="postBtnChange && isUndercover">Hang</span>
+      <img *ngIf="!chatPrvd.postBtn.state" src="../assets/icon/netwrk-chat.svg">
+      <span *ngIf="chatPrvd.postBtn.state && !isUndercover && bgState.state != 'stretched'">Post</span>
+      <span *ngIf="chatPrvd.postBtn.state && isUndercover && bgState.state != 'stretched'">Hang</span>
     </button>
   </ion-item>
 </ion-footer>

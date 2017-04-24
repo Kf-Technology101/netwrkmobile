@@ -23,7 +23,8 @@ export class Chat {
   private message: any = null;
 
   public appendContainer= new Toggleable('off', true);
-  public mainBtn = new MainButton('normal', false);
+  public mainBtn = new Toggleable('normal', false);
+  public postBtn = new Toggleable(false);
 
   private pickerOptions = {
     maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
@@ -265,10 +266,10 @@ export class Chat {
   public updateAppendContainer(): void {
     console.log("[chatPrvd] updateAppendContainer()...");
     if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
-      this.appendContainer.hidden = false;
-      this.appendContainer.state = 'on_append';
+      this.appendContainer.show();
+      this.appendContainer.setState('on_append');
       if (this.mainBtn.state != "moved-n-scaled")
-        this.mainBtn.state = 'above_append';
+        this.mainBtn.setState('above_append');
     }
   }
 

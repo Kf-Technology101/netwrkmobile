@@ -373,6 +373,12 @@ export class ChatPage {
           this.txtIn.value = '';
           this.chatPrvd.mainBtn.setState('normal');
           this.chatPrvd.postBtn.setState(false);
+          if (this.postTimer.isVisible()) {
+            setTimeout(() => {
+              this.postTimer.hide();
+            }, chatAnim/2);
+            this.postTimer.setState('slideUp');
+          }
           this.postMessages.push(message);
         }
       }, 100);
@@ -438,14 +444,23 @@ export class ChatPage {
     }
   }
 
-  initPostTimer() {
-    this.postTimer.show();
-    this.postTimer.setState('slideDown');
+  togglePostTimer() {
+    if (this.postTimer.isVisible()) {
+      setTimeout(() => {
+        this.postTimer.hide();
+      }, chatAnim/2);
+      this.postTimer.setState('slideUp');
+    } else {
+      this.postTimer.show();
+      this.postTimer.setState('slideDown');
+    }
   }
 
   setPostTimer() {
-    this.postTimer.hide();
     this.postTimer.setState('slideUp');
+    setTimeout(() => {
+      this.postTimer.hide();
+    }, chatAnim/2);
   }
 
   private getUsers() {

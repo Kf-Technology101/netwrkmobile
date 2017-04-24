@@ -21,13 +21,14 @@
   <button *ngIf="isUndercover && postMessages.length === 0" class="side refresh-btn">
     <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
   </button>
-  <button ion-button *ngIf="isUndercover && postMessages.length > 0" class="side clear-btn" (tap)="clearMessages()">
+  <button ion-button *ngIf="isUndercover && postMessages.length > 0"
+    class="side clear-btn" (tap)="clearMessages()">
     Clear
   </button>
 
   <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar>
-      <img [src]="user.avatar ? user.avatar : 'assets/images/incognito.png'"
+      <img [src]="user.avatar ? user.avatar : toolsPrvd.defaultAvatar"
         (tap)="goToProfile()" class="user-icon">
     </ion-toolbar>
     <ion-slides slidesPerView="4" class="netwrk-slider">
@@ -38,7 +39,7 @@
       </ion-slide>
       <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
         <div class="avatar" (tap)="goToProfile(user.id)">
-          <img src="assets/images/incognito.png">
+          <img [src]="toolsPrvd.defaultAvatar">
         </div>
         <span *ngIf="user.first_name || user.last_name" class="username">
           {{ user.first_name }} {{ user.last_name }}
@@ -55,7 +56,9 @@
 <ion-content has-main-btn has-main-btn-label [ngClass]="{'netwrk-content': !isUndercover}">
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let i of postMessages">
-      <img (tap)="goToProfile(i.user_id)" src="{{ user.imageUrl }}" class="chat-avatar">
+      <img (tap)="goToProfile(i.user_id)"
+        [src]="i.public ? chatUsers[i.user_id].avatar : chatUsers[i.user_id].role_image_url"
+        class="chat-avatar">
       <p class="message-container">
         <span class="username">{{ user.name }}</span>
         <span class="message-date">{{ i.dateStr }}</span>
@@ -197,7 +200,7 @@
 
     <button ion-button item-right clear [ngClass]="{ 'post-button' : chatPrvd.postBtn.state }"
             (tap)="postMessage()" class="post-message">
-      <img *ngIf="!chatPrvd.postBtn.state" src="../assets/icon/netwrk-chat.svg">
+      <img *ngIf="!chatPrvd.postBtn.state" src="assets/icon/netwrk-chat.svg">
       <span *ngIf="chatPrvd.postBtn.state && !isUndercover && bgState.state != 'stretched'">Post</span>
       <span *ngIf="chatPrvd.postBtn.state && isUndercover && bgState.state != 'stretched'">Hang</span>
     </button>

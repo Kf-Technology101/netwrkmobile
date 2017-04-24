@@ -149,26 +149,26 @@ export class Gps {
       // maximumAge: 11000,
     }
 
-    this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
-      console.log(resp)
-      if (resp.coords) {
-        let url = 'https://maps.googleapis.com/maps/api/geocode/json';
-        let seq = this.getAddressDetail(url, {
-          latlng: resp.coords.latitude + ',' + resp.coords.longitude,
-          sensor: true,
-          key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
-        }).share();
-        this.coords.lat = resp.coords.latitude;
-        this.coords.lng = resp.coords.longitude;
-        seq.map(res => res.json()).subscribe(
-          res => {
-            this.parseGoogleAddress(res.results);
-            this.compareZip();
-          },
-          err => console.log(err)
-        );
-      }
-    });
+    // this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
+    //   console.log(resp)
+    //   if (resp.coords) {
+    //     let url = 'https://maps.googleapis.com/maps/api/geocode/json';
+    //     let seq = this.getAddressDetail(url, {
+    //       latlng: resp.coords.latitude + ',' + resp.coords.longitude,
+    //       sensor: true,
+    //       key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
+    //     }).share();
+    //     this.coords.lat = resp.coords.latitude;
+    //     this.coords.lng = resp.coords.longitude;
+    //     seq.map(res => res.json()).subscribe(
+    //       res => {
+    //         this.parseGoogleAddress(res.results);
+    //         this.compareZip();
+    //       },
+    //       err => console.log(err)
+    //     );
+    //   }
+    // });
   }
 
 }

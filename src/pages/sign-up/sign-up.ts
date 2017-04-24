@@ -102,7 +102,6 @@ export class SignUpPage {
           Validators.required,
           Validators.minLength(5),
           Validators.maxLength(50),
-          // Validators.pattern(/^[a-z0-9!#$%&'*+\/=?^_`{|}~.-]+@[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)*$/i) Email
         ])
       ],
 		  'password': [
@@ -127,50 +126,62 @@ export class SignUpPage {
     let valid = this.formValidate(form);
     if (!valid) return;
 
-    if (this.activeStateId == 0) {
-      let valid = this.validateLogin(form.controls.login.value);
-      if (!valid) return;
-    }
+    let signUpProcess = () => {
+      if (this.activeStateId == 1) this.openDatePicker();
 
-    if (this.activeStateId == 1) this.openDatePicker();
+      this.activeStateId++;
 
-    this.activeStateId++;
+      this.updateActiveStates();
 
-    this.updateActiveStates();
+      this.account = {
+        login: form.controls.login.value,
+        password: form.controls.password.value,
+        date_of_birthday: form.controls.date_of_birthday.value,
+        type: ''
+      }
 
-    this.account = {
-      login: form.controls.login.value,
-      password: form.controls.password.value,
-      date_of_birthday: form.controls.date_of_birthday.value,
-      type: ''
-    }
+      if (this.activeStateId == 3) {
+        this.tools.showLoader();
+        this.auth.saveRegisterData(this.account);
+        this.auth.verification(this.account)
+          .map(res => res.json())
+          .subscribe(res => {
+            console.log(res);
+            this.tools.hideLoader();
 
-    if (this.activeStateId == 3) {
-      this.tools.showLoader();
-      this.auth.saveRegisterData(this.account);
-      this.auth.verification(this.account)
-        .map(res => res.json())
-        .subscribe(res => {
-          console.log(res);
+            if (res.login_type == 'error') {
+              this.activeStateId = 0;
+              this.updateActiveStates();
+            } else {
+              this.account.type = res.login_type;
+              this.tools.pushPage(SignUpConfirmPage);
+            }
+
+            this.tools.showToast(res.login_message);
+        }, err => {
           this.tools.hideLoader();
-
-          if (res.login_type == 'error') {
-            this.activeStateId = 0;
-            this.updateActiveStates();
+          if (this.platform.is('cordova')) {
+            this.tools.showToast(this.textStrings.login);
           } else {
-            this.account.type = res.login_type;
             this.tools.pushPage(SignUpConfirmPage);
           }
+        });
+      }
+    }
 
-          this.tools.showToast(res.login_message);
-      }, err => {
-        this.tools.hideLoader();
-        if (this.platform.is('cordova')) {
-          this.tools.showToast(this.textStrings.login);
-        } else {
-          this.tools.pushPage(SignUpConfirmPage);
-        }
-      });
+    if (this.activeStateId == 0) {
+      let valid = this.validateLogin(form.controls.login.value);
+      if (!valid.status) return;
+      let data = {
+        login: form.controls.login.value,
+        type: valid.type
+      }
+      this.auth.checkLogin(data).subscribe(res => {
+        console.log(res);
+        signUpProcess();
+      }, err => console.log(err));
+    } else {
+      signUpProcess();
     }
   }
 
@@ -254,17 +265,23 @@ export class SignUpPage {
     }, 1500);
   }
 
-  private validateLogin(value: string): boolean {
+  private validateLogin(value: string): any {
     let valid = null;
+    let type = null;
     if (value.indexOf('@') !== -1) {
       valid = this.tools.validateEmail(value);
+      type = 'email';
       if (!valid) this.tools.showToast(this.textStrings.email);
     } else {
       valid = this.tools.validatePhone(value);
+      type = 'phone';
       if (!valid) this.tools.showToast(this.textStrings.phone);
     }
-
-    return valid;
+    let result = {
+      status: valid,
+      type: type
+    }
+    return result;
   }
 
   ionViewDidLoad() {

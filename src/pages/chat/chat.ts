@@ -196,8 +196,8 @@ export class ChatPage {
       updated_at: "2017-04-22T14:59:29.921Z",
     }
 
-    if (!this.user.avatar) this.user.avatar = 'assets/images/incognito.png';
-    if (!this.user.role_image_url) this.user.role_image_url = 'assets/images/incognito.png';
+    if (!this.user.avatar) this.user.avatar = this.toolsPrvd.defaultAvatar;
+    if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
     this.textStrings.sendError = 'Error sending message';
     this.textStrings.noNetwork = 'Netwrk not found';
 
@@ -330,13 +330,21 @@ export class ChatPage {
   }
 
   postMessage() {
+    let publicUser: boolean;
+    if (!this.isUndercover) {
+      publicUser = true;
+    } else {
+      publicUser = this.undercoverPrvd.profileType === 'public' ? true : false;
+    };
     let message = {
       text: this.txtIn.value,
       images: [],
       created_at: null,
       dateStr: '',
-      image_urls: []
+      image_urls: [],
+      public: publicUser
     };
+
     if (this.cameraPrvd.takenPictures) {
       message.images = this.cameraPrvd.takenPictures;
     }
@@ -347,7 +355,7 @@ export class ChatPage {
           user_id: this.authPrvd.getAuthData().id,
           images: message.images,
           undercover: this.isUndercover,
-          public: this.undercoverPrvd.profileType === 'public' ? true : false,
+          public: message.public,
         }
 
         console.log(data);
@@ -399,6 +407,11 @@ export class ChatPage {
   }
 
   goUndercover() {
+    if (this.isUndercover && !this.chatPrvd.getNetwork()) {
+      this.toolsPrvd.showToast(this.textStrings.noNetwork);
+      return;
+    }
+
     this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
     this.changePlaceholderText();
     this.showMessages();
@@ -437,10 +450,20 @@ export class ChatPage {
   }
 
   private getUsers() {
-    this.networkPrvd.getUsers(this.networkParams).subscribe(res => {
-      console.log(res);
-      this.chatUsers = res;
-      this.chatPrvd.setStorageUsers(res);
+    this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
+      console.log(users);
+      if (users) {
+        let usersTmp = [];
+        for (let u in users) {
+          if (!users[u].avatar) users[u].avatar = this.toolsPrvd.defaultAvatar;
+          if (!users[u].role_image_url) users[u].role_image_url = this.toolsPrvd.defaultAvatar;
+        }
+        this.chatPrvd.setStorageUsers(usersTmp);
+        this.chatUsers = usersTmp;
+        usersTmp = null;
+      } else {
+        this.chatUsers.push(this.user);
+      }
     }, err => {
       console.log(err);
     });

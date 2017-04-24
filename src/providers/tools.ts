@@ -15,6 +15,7 @@ import { Auth } from './auth';
 
 @Injectable()
 export class Tools {
+  public defaultAvatar: string = 'assets/images/incognito.png';
   private toast: any;
   private loader: any;
 
@@ -106,7 +107,7 @@ export class Tools {
   }
 
   private changeBodyClass(add?: boolean) {
-    let body = document.getElementsByTagName('html')[0];
+    let body = document.getElementsByTagName('ion-app')[0];
     let className = 'transparent-background';
     add ? body.classList.add(className) : body.classList.remove(className);
   }

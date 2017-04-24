@@ -26,6 +26,14 @@ export class Auth {
     console.log('Hello Auth Provider');
   }
 
+  public checkLogin(params: any) {
+
+    let seq = this.api.get('registrations/check_login', params).share();
+    let seqMap = seq.map(res => res.json());
+
+    return seqMap;
+  }
+
   public verification(accountInfo: any) {
     let data = {
       country_code: this.storage.get('country_code'),

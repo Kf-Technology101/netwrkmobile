@@ -109,6 +109,10 @@ ion-app .ion-page .content {
   }
 }
 
+.button {
+  text-transform: none;
+}
+
 .footer-md::before {
   background: none;
 }
@@ -372,17 +376,18 @@ ion-header.incognito-header {
         line-height: 15px;
       }
     }
-    ion-icon{
+    .icon{
       position: absolute;
       font-size: 17px;
       transform: rotate(0deg);
       margin: 0 5px;
       color: #b7b7b7;
-      left: 20px;
+      left: 15px;
       width: 21px;
     }
-    ion-icon.right{
-      right: 20px;
+    .icon.right{
+      right: 15px;
+      top: -2px;
       left: auto;
       transform: rotate(180deg);
     }

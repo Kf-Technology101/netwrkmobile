@@ -69,8 +69,12 @@ export class UndercoverProvider {
   }
 
   public getCharacterPerson(UndercoverCharacterPage: any, NetworkFindPage: any): any {
-    let person = this.getPerson()
-    let result = person ? NetworkFindPage : UndercoverCharacterPage;
-    return result;
+    let authData = this.auth.getAuthData();
+    console.log(authData.role_name, authData.role_description, authData.role_image_url)
+    if (authData && authData.role_name && authData.role_description && authData.role_image_url) {
+      return NetworkFindPage;
+    } else {
+      return UndercoverCharacterPage;
+    }
   }
 }

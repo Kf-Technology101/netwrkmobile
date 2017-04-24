@@ -80,9 +80,64 @@ export class Chat {
       }
     };
 
+    if (data.images && data.images.length > 0) {
+      this.sendMessageWithImage(params, data.images);
+    } else {
+      this.sendMessageWithoutImage(params);
+    }
+
+    return null;
+  }
+
+  public getMessages(undercover: boolean) {
+    let data = {
+      post_code: this.gps.zipCode,
+      undercover: undercover,
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng,
+    };
+    let seq = this.api.get('messages', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+
+  public saveNetwork(network: any) {
+    this.localStorage.set('current_network', network);
+  }
+
+  public setStorageUsers(users: Array<any>) {
+    let stUsers: any = {};
+    if (users.length)
+      for (let i = 0; i < users.length; i++)
+        stUsers[users[i].id] = users[i];
+    this.users = stUsers;
+  }
+
+  public organizeMessages(data: any): any {
+    let messages: Array<any> = [];
+    for (let i in data) {
+      for (let u in data[i].image_urls) {
+        data[i].image_urls[u] += this.api.hostUrl;
+      }
+      data[i].date = moment(data[i].created_at).fromNow();
+      console.log(data);
+      messages.push(data[i]);
+    }
+    return messages;
+  }
+
+  public getNetwork(): any {
+    return this.localStorage.get('current_network');
+  }
+
+  public removeNetwork() {
+    this.localStorage.rm('current_network');
+  }
+
+  private sendMessageWithImage(params: any, dataImages: any) {
     let files = [];
     let images: Array<string> = [];
-    for (let i of data.images) {
+    for (let i of dataImages) {
       images.push(i);
     }
 
@@ -148,113 +203,57 @@ export class Chat {
       });
     }
     r(i);
-
-    // if (data.images && data.images.length > 0) {
-    //   this.sendMessageWithImage(params);
-    // } else {
-    //   this.sendMessageWithoutImage(params);
+    // const fileTransfer: TransferObject = this.transfer.create();
+    // let url = this.api.url + '/messages';
+    // let options: FileUploadOptions = {};
+    //
+    // let uploadImage = (i: number) => {
+    //   console.log(i);
+    //   if (i == 0) {
+    //     options = {
+    //       fileKey: 'image',
+    //       params: {
+    //         message: data
+    //       },
+    //       headers: {
+    //         Authorization: this.localStorage.get('auth_data').auth_token
+    //       },
+    //       httpMethod: 'POST'
+    //     }
+    //   } else {
+    //     options = {
+    //       fileKey: 'image',
+    //       params: {
+    //         id: this.message.id,
+    //       },
+    //       headers: {
+    //         Authorization: this.localStorage.get('auth_data').auth_token
+    //       },
+    //       httpMethod: 'PUT'
+    //     }
+    //   }
+    //
+    //   console.log(i, options);
+    //
+    //   fileTransfer.upload(data.images[i], url, options).then(res => {
+    //     console.log('res:', res);
+    //     if (i == 0) this.message = res;
+    //     // console.log(i, data.images[i].length)
+    //     if (i == data.images[i].length - 1) {
+    //       console.log(this.message);
+    //       fileTransfer.abort();
+    //     } else {
+    //       i++;
+    //       uploadImage(i);
+    //     }
+    //   }).catch(err => {
+    //     console.log('err:', err);
+    //   });
     // }
-
-    return null;
-  }
-
-  public getMessages(undercover: boolean) {
-    let data = {
-      post_code: this.gps.zipCode,
-      undercover: undercover,
-      lat: this.gps.coords.lat,
-      lng: this.gps.coords.lng,
-    };
-    let seq = this.api.get('messages', data).share();
-    let seqMap = seq.map(res => res.json());
-    return seqMap;
-  }
-
-  public saveNetwork(network: any) {
-    this.localStorage.set('current_network', network);
-  }
-
-  public setStorageUsers(users: Array<any>) {
-    let stUsers: any = {};
-    if (users.length)
-      for (let i = 0; i < users.length; i++)
-        stUsers[users[i].id] = users[i];
-    this.users = stUsers;
-  }
-
-  public organizeMessages(data: any): any {
-    let messages: Array<any> = [];
-    for (let i in data) {
-      for (let u in data[i].image_urls) {
-        data[i].image_urls[u] += this.api.hostUrl;
-      }
-      data[i].date = moment(data[i].created_at).fromNow();
-      console.log(data);
-      messages.push(data[i]);
-    }
-    return messages;
-  }
-
-  public getNetwork(): any {
-    return this.localStorage.get('current_network');
-  }
-
-  public removeNetwork() {
-    this.localStorage.rm('current_network');
-  }
-
-  private sendMessageWithImage(data: any) {
-    const fileTransfer: TransferObject = this.transfer.create();
-    let url = this.api.url + '/messages';
-    let options: FileUploadOptions = {};
-
-    let uploadImage = (i: number) => {
-      console.log(i);
-      if (i == 0) {
-        options = {
-          fileKey: 'image',
-          params: {
-            message: data
-          },
-          headers: {
-            Authorization: this.localStorage.get('auth_data').auth_token
-          },
-          httpMethod: 'POST'
-        }
-      } else {
-        options = {
-          fileKey: 'image',
-          params: {
-            id: this.message.id,
-          },
-          headers: {
-            Authorization: this.localStorage.get('auth_data').auth_token
-          },
-          httpMethod: 'PUT'
-        }
-      }
-
-      console.log(i, options);
-
-      fileTransfer.upload(data.images[i], url, options).then(res => {
-        console.log('res:', res);
-        if (i == 0) this.message = res;
-        // console.log(i, data.images[i].length)
-        if (i == data.images[i].length - 1) {
-          console.log(this.message);
-          fileTransfer.abort();
-        } else {
-          i++;
-          uploadImage(i);
-        }
-      }).catch(err => {
-        console.log('err:', err);
-      });
-    }
-
-    console.log('uploadImage');
-    uploadImage(0);
-    console.log('uploadImage');
+    //
+    // console.log('uploadImage');
+    // uploadImage(0);
+    // console.log('uploadImage');
   }
 
   private sendMessageWithoutImage(data: any) {

@@ -49,10 +49,11 @@ export class Gps {
     return new Promise((resolve, reject) => {
       this.geolocation.getCurrentPosition().then(resp => {
         if (resp.coords) {
-          let url = 'http://maps.googleapis.com/maps/api/geocode/json';
+          let url = 'https://maps.googleapis.com/maps/api/geocode/json';
           let seq = this.getAddressDetail(url, {
             latlng: resp.coords.latitude + ',' + resp.coords.longitude,
             sensor: true,
+            key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
           }).share();
           this.coords.lat = resp.coords.latitude;
           this.coords.lng = resp.coords.longitude;
@@ -98,7 +99,8 @@ export class Gps {
 
   private compareZip() {
     let nav = this.app.getActiveNav();
-    if (nav && nav.getActive() && nav.getActive().name == 'ChatPage') {
+    let activeNav = nav.getActive();
+    if (nav && activeNav && activeNav.name == 'ChatPage' && !activeNav.instance.isUndercover) {
       let network = this.localStorage.get('current_network');
       let currentZip = network ? network.post_code : 0;
       if (parseInt(currentZip) != parseInt(this.zipCode)) {
@@ -142,17 +144,19 @@ export class Gps {
 
   private watchPosition() {
     let options: GeolocationOptions = {
-      timeout: 10000,
-      enableHighAccuracy: true,
-      maximumAge: 11000,
+      timeout: 60000,
+      // enableHighAccuracy: true,
+      // maximumAge: 11000,
     }
 
     this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
+      console.log(resp)
       if (resp.coords) {
-        let url = 'http://maps.googleapis.com/maps/api/geocode/json';
+        let url = 'https://maps.googleapis.com/maps/api/geocode/json';
         let seq = this.getAddressDetail(url, {
           latlng: resp.coords.latitude + ',' + resp.coords.longitude,
           sensor: true,
+          key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
         }).share();
         this.coords.lat = resp.coords.latitude;
         this.coords.lng = resp.coords.longitude;

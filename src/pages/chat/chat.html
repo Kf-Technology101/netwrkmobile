@@ -3,17 +3,25 @@
     <div class="drag-container">
       <div class="dragline">
         <span class="info">
-          <span class="username">{{ user.name }}</span>
+          <span *ngIf="undercoverPrvd.profileType == 'profile'" class="username">
+            {{ user.first_name }} {{ user.last_name }}
+          </span>
+          <span *ngIf="undercoverPrvd.profileType == 'undercover'" class="username">
+            {{ user.role_name }}
+          </span>
         </span>
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
-        <img class="draggable-element" src="{{ user.imageUrl }}" (tap)="goToProfile()">
+        <img class="draggable-element"
+          [src]="undercoverPrvd.profileType == 'undercover' ? user.role_image_url : user.avatar"
+          (tap)="goToProfile()">
       </div>
     </div>
   </ion-toolbar>
 
   <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar>
-      <img src="{{ user.imageUrl }}" (tap)="goToProfile()" class="user-icon">
+      <img [src]="user.avatar ? user.avatar : 'assets/images/incognito.png'"
+        (tap)="goToProfile()" class="user-icon">
     </ion-toolbar>
     <ion-slides slidesPerView="4" class="netwrk-slider">
       <ion-slide class="netwrk-slide">
@@ -25,7 +33,12 @@
         <div class="avatar" (tap)="goToProfile(user.id)">
           <img src="assets/images/incognito.png">
         </div>
-        <span class="username">{{ user.email }}</span>
+        <span *ngIf="user.first_name || user.last_name" class="username">
+          {{ user.first_name }} {{ user.last_name }}
+        </span>
+        <span *ngIf="!user.first_name && !user.last_name" class="username">
+          {{ user.email }}
+        </span>
       </ion-slide>
     </ion-slides>
   </div>
@@ -42,7 +55,7 @@
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
       <button class="like-button" (tap)="sendFeedback()" [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"></button>
-      <img *ngFor="let j of i.image_urls" src="{{hostUrl}}{{j}}"/>
+      <img *ngFor="let j of i.image_urls" src="{{j}}"/>
     </div>
   </div>
 </ion-content>
@@ -135,7 +148,7 @@
   </div>
 
   <button isScrolling="false" tapable [hidden]="chatPrvd.mainBtn.hidden" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
-  class="main-action-btn big has-footer transparent chatMainBtn" (tap)="goToUndercover()"></button>
+  class="main-action-btn big has-footer transparent chatMainBtn" (tap)="goUndercover()"></button>
 
   <ion-item class="text" #inputItem
             [@fadeState]="mainInput.state" [hidden]="mainInput.hidden"
@@ -176,7 +189,8 @@
 
     <button ion-button item-right clear [ngClass]="{ 'post-button' : postBtnChange }"
             (tap)="postMessage()" class="post-message">
-      <ion-icon *ngIf="!postBtnChange" ios="ios-text-outline" md="ios-text-outline"></ion-icon>
+      <ion-icon *ngIf="!postBtnChange && !isUndercover" class="glowing-icon"></ion-icon>
+      <ion-icon *ngIf="!postBtnChange && isUndercover" ios="ios-text-outline" md="ios-text-outline"></ion-icon>
       <span *ngIf="postBtnChange && !isUndercover">Post</span>
       <span *ngIf="postBtnChange && isUndercover">Hang</span>
     </button>

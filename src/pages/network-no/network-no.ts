@@ -25,7 +25,9 @@ export class NetworkNoPage {
     public undercoverPrvd: UndercoverProvider,
     public chatPrvd: Chat,
     public gps: Gps
-  ) {}
+  ) {
+    this.chatPrvd.removeNetwork();
+  }
 
   doFounder() {
     let params: any = {

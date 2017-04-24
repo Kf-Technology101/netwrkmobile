@@ -321,6 +321,20 @@ ion-header.incognito-header {
     z-index: 11;
     position: fixed;
   }
+  .post-timer {
+    overflow: hidden;
+    z-index: 51;
+    position: absolute;
+    width: 100%;
+    button {
+      display: block;
+      background-color: color($colors, white);
+      width: 100%;
+      color: color($colors, bk);
+      font-size: 18px;
+      padding: 5px;
+    }
+  }
   span.top-profile {
     padding: 0;
 

@@ -554,6 +554,11 @@ page-undercover {
     &.header-ios {
       button.side {
         top: 16px;
+        right: 13px;
+        &.left {
+          left: 13px;
+          right: auto;
+        }
       }
     }
     button.side {
@@ -562,8 +567,7 @@ page-undercover {
       bottom: 0;
       margin: auto;
       z-index: 50;
-      &.refresh-btn {
-        right: 13px;
+      &.top-icon {
         height: 26px;
         width: 26px;
         border-radius: 50%;
@@ -571,8 +575,12 @@ page-undercover {
         background-color: transparent;
         & ion-icon {
           font-size: 32px;
+          color: color($colors, white);
+        }
+      }
+      &.refresh-btn {
+        & ion-icon {
           margin-top: -3px;
-          color: rgba(255, 255, 255, .8);
         }
       }
       &.clear-btn {
@@ -584,6 +592,7 @@ page-undercover {
         border-radius: 13px;
         background: color($colors, bk-red);
       }
+
     }
   }
   .chat-header {

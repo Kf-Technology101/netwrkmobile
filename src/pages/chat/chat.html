@@ -1,4 +1,11 @@
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover}">
+  <div [@slideState]="postTimer.state" class="post-timer">
+    <button (click)="setPostTimer(0)">None</button>
+    <button (click)="setPostTimer(10)">10 hours</button>
+    <button (click)="setPostTimer(24)">1 day</button>
+    <button (click)="setPostTimer(168)">1 week</button>
+    <button (click)="setPostTimer(5376)">1 month</button>
+  </div>
   <ion-toolbar *ngIf="isUndercover">
     <div class="drag-container">
       <div class="dragline">
@@ -18,12 +25,24 @@
     </div>
   </ion-toolbar>
 
-  <button *ngIf="isUndercover && postMessages.length === 0" class="side refresh-btn">
+  <button *ngIf="isUndercover && postMessages.length === 0 && !chatPrvd.postBtn.state"
+          class="side refresh-btn top-icon">
     <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
   </button>
-  <button ion-button *ngIf="isUndercover && postMessages.length > 0" class="side clear-btn" (tap)="clearMessages()">
+  <button ion-button *ngIf="isUndercover && postMessages.length > 0 && !chatPrvd.postBtn.state"
+          class="side clear-btn" (tap)="clearMessages()">
     Clear
   </button>
+
+  <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
+          class="side lock-btn top-icon" (click)="initPostLock()">
+    <ion-icon ios="ios-lock" md="md-lock"></ion-icon>
+  </button>
+  <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
+          class="side left timer-btn top-icon" (click)="initPostTimer()">
+    <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
+  </button>
+
 
   <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar>

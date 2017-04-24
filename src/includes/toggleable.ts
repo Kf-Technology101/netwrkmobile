@@ -22,6 +22,10 @@ export class Toggleable {
     return this.state;
   }
 
+  isVisible() {
+    return !this.hidden;
+  }
+
   setPrevState() {
     if (this.prevState) {
       this.state = this.prevState;

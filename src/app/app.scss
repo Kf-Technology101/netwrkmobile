@@ -325,6 +325,22 @@ ion-header.incognito-header {
     z-index: 11;
     position: fixed;
   }
+  .post-timer {
+    overflow: hidden;
+    z-index: 51;
+    position: absolute;
+    width: 100%;
+    min-height: 0;
+    padding: 0;
+    button {
+      display: block;
+      background-color: color($colors, white);
+      width: 100%;
+      color: color($colors, bk);
+      font-size: 18px;
+      padding: 5px;
+    }
+  }
   span.top-profile {
     padding: 0;
 
@@ -438,15 +454,77 @@ modal-feedbackshare {
       background: #5b87aa;
       border-radius: 11px;
       border: 1px solid #eee;
-      & .badge {
+      .badge {
         bottom: -4px;
         left: -7px;
         right: auto;
       }
     }
   }
-  ion-content.content.translucent {
-    background: rgba(0, 0, 0, .7);
+
+  ion-content.content.share-content {
+    display: flex;
+    align-content: center;
+    .row[center] {
+      height: 100%;
+    }
+    .inner-container {
+      position: absolute;
+      max-width: 400px;
+      width: 100%;
+      padding: 13px;
+      color: color($colors, bk);
+    }
+    .head {
+      font-size: 16px;
+      color: color($colors, bk);
+      text-align: center;
+    }
+    .grid {
+      position: relative;
+      .col {
+        padding: 7px 0;
+      }
+      .share-btn {
+        border-radius: 13px;
+        height: 26px;
+        width: 68px;
+        float: right;
+        background: color($colors, bk);
+        color: color($colors, white);
+      }
+      .icon {
+        font-size: 26px;
+        float: left;
+        position: absolute;
+        left: 0;
+      }
+      .social-name {
+        display: block;
+        height: 100%;
+        float: left;
+        line-height: 26px;
+        margin-left: 44px;
+      }
+      .separator-word {
+        display: block;
+        text-align: center;
+        margin: 26px auto;
+        font-size: 16px;
+        color: color($colors, bk-stone);
+      }
+      .send-sms-btn {
+        font-size: 16px;
+        background: transparent;
+        margin: auto;
+        color: color($colors, bk);
+      }
+    }
+  }
+  ion-content.content {
+    &.translucent {
+      background: rgba(0, 0, 0, .7);
+    }
     ion-list {
       position: absolute;
       top: 0;
@@ -489,4 +567,11 @@ modal-feedbackshare {
       bottom: 67px;
     }
   }
+}
+
+.icon[ios="logo-facebook"] {
+  color: #195e99;
+}
+.icon[ios="logo-twitter"] {
+  color: #0093ee;
 }

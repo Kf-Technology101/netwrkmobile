@@ -35,7 +35,8 @@ import {
   toggleChatOptionsBg,
   scaleMainBtn,
   toggleGallery,
-  toggleFade
+  toggleFade,
+  slideToggle
 } from '../../includes/animations';
 
 @Component({
@@ -47,7 +48,8 @@ import {
     toggleChatOptionsBg,
     scaleMainBtn,
     toggleGallery,
-    toggleFade
+    toggleFade,
+    slideToggle
   ],
   providers: [
     Keyboard
@@ -67,6 +69,7 @@ export class ChatPage {
   shareContainer = new Toggleable('off', true);
   emojiContainer = new Toggleable('off', true);
   mainInput = new Toggleable('fadeIn', false);
+  postTimer = new Toggleable('slideUp', true);
   chatBtns = new Toggleable(['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']);
 
   toggContainers: any = [
@@ -378,6 +381,12 @@ export class ChatPage {
           this.txtIn.value = '';
           this.chatPrvd.mainBtn.setState('normal');
           this.chatPrvd.postBtn.setState(false);
+          if (this.postTimer.isVisible()) {
+            setTimeout(() => {
+              this.postTimer.hide();
+            }, chatAnim/2);
+            this.postTimer.setState('slideUp');
+          }
           this.postMessages.push(message);
         }
       }, 100);
@@ -436,7 +445,6 @@ export class ChatPage {
   }
 
   removeAppendedImage(ind) {
-    console.log(ind)
     this.cameraPrvd.takenPictures.splice(ind, 1);
     if (this.cameraPrvd.takenPictures.length == 0) {
       this.chatPrvd.mainBtn.setState('normal');
@@ -447,6 +455,25 @@ export class ChatPage {
         this.chatPrvd.appendContainer.hide();
       }, chatAnim/2);
     }
+  }
+
+  togglePostTimer() {
+    if (this.postTimer.isVisible()) {
+      setTimeout(() => {
+        this.postTimer.hide();
+      }, chatAnim/2);
+      this.postTimer.setState('slideUp');
+    } else {
+      this.postTimer.show();
+      this.postTimer.setState('slideDown');
+    }
+  }
+
+  setPostTimer() {
+    this.postTimer.setState('slideUp');
+    setTimeout(() => {
+      this.postTimer.hide();
+    }, chatAnim/2);
   }
 
   private getUsers() {
@@ -525,7 +552,6 @@ export class ChatPage {
     this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
-
 
     this.chatPrvd.updateAppendContainer();
     // if (this.cameraPrvd.takenPictures) {

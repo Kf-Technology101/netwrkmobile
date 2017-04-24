@@ -4,9 +4,11 @@ import { NavController, NavParams, Content, Platform, ModalController } from 'io
 import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { CameraPage } from '../camera/camera';
+import { NetworkFindPage } from '../network-find/network-find';
 import { FeedbackModal } from '../../modals/feedback/feedback';
 import { Toggleable } from '../../includes/toggleable';
 import { MessageDateTimer } from '../../includes/messagedatetimer';
+
 // Providers
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
@@ -171,25 +173,38 @@ export class ChatPage {
       console.log(err);
     });
 
-    this.user = this.undercoverPrvd.getPerson();
+    this.user = this.authPrvd.getAuthData();
     if (!this.user) this.user = {
-      name: '',
-      imageUrl: '',
+      avatar_content_type: null,
+      avatar_file_name: null,
+      avatar_file_size: null,
+      avatar_updated_at: null,
+      avatar: null,
+      created_at: "2017-04-22T14:59:29.921Z",
+      date_of_birthday: "2004-01-01",
+      email: "olbachinskiy2@gmail.com",
+      first_name: 'Oleksandr',
+      id: 55,
+      invitation_sent: false,
+      last_name: 'Bachynskyi',
+      phone: "1492873128682",
+      provider_id: null,
+      provider_name: null,
+      role_description: null,
+      role_image_url: null,
+      role_name: null,
+      updated_at: "2017-04-22T14:59:29.921Z",
     }
 
+    if (!this.user.avatar) this.user.avatar = 'assets/images/incognito.png';
+    if (!this.user.role_image_url) this.user.role_image_url = 'assets/images/incognito.png';
     this.textStrings.sendError = 'Error sending message';
-    this.textStrings.noNetwork = 'netwrk not found';
-
-    // setTimeout(() => {
-    //   for (var i = 0; i < 6; i++) {
-    //     this.chatUsers.push(i.toString());
-    //   }
-    // }, 100);
+    this.textStrings.noNetwork = 'Netwrk not found';
 
     let action = this.navParams.get('action');
     if (action) {
       this.chatPrvd.setState(action);
-      this.isUndercover = this.undercoverPrvd.setUndercover(action && action == 'undercover');
+      this.isUndercover = this.undercoverPrvd.setUndercover(action == 'undercover');
     } else {
       this.isUndercover = this.undercoverPrvd.setUndercover(this.chatPrvd.getState() == 'undercover');
     }
@@ -319,7 +334,8 @@ export class ChatPage {
       text: this.txtIn.value,
       images: [],
       created_at: null,
-      dateStr: ''
+      dateStr: '',
+      image_urls: []
     };
     if (this.cameraPrvd.takenPictures) {
       message.images = this.cameraPrvd.takenPictures;
@@ -330,8 +346,11 @@ export class ChatPage {
           text: message.text,
           user_id: this.authPrvd.getAuthData().id,
           images: message.images,
-          undercover: this.isUndercover
+          undercover: this.isUndercover,
+          public: this.undercoverPrvd.profileType === 'public' ? true : false,
         }
+
+        console.log(data);
 
         this.chatPrvd.sendMessage(data);
           // .subscribe(res => {
@@ -347,6 +366,7 @@ export class ChatPage {
         if (message.text.trim() != '' || message.images.length > 0) {
           message.created_at = moment();
           message.dateStr = 'a moment ago';
+          message.image_urls = message.images;
           this.txtIn.value = '';
           this.chatPrvd.mainBtn.setState('normal');
           this.chatPrvd.postBtn.setState(false);
@@ -378,17 +398,18 @@ export class ChatPage {
     this.toolsPrvd.pushPage(ProfilePage, { id: profileId });
   }
 
-  goToUndercover() {
-    if (!this.isUndercover) {
-      this.isUndercover = this.undercoverPrvd.setUndercover(true);
-      this.changePlaceholderText();
-      this.showMessages();
-      setTimeout(() => {
+  goUndercover() {
+    this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
+    this.changePlaceholderText();
+    this.showMessages();
+    setTimeout(() => {
+      if (this.isUndercover) {
         this.slideAvatarPrvd.sliderInit();
-        this.slideAvatarPrvd.setSliderPosition(true);
-        this.showUsers();
-      }, 100);
-    }
+        this.slideAvatarPrvd.setSliderPosition(this.isUndercover);
+      }
+      this.showUsers();
+      this.content.resize();
+    }, 100);
   }
 
   toggleShareSlider(mess){
@@ -397,23 +418,8 @@ export class ChatPage {
 
   changeCallback(positionLeft?: boolean) {
     this.zone.run(() => {
-      if (positionLeft && this.chatPrvd.getNetwork()) {
-        this.isUndercover = this.undercoverPrvd.setUndercover(!positionLeft);
-        this.chatPrvd.setState('netwrk');
-        this.showUsers();
-
-        this.changePlaceholderText();
-        this.showMessages();
-      } else if (positionLeft && !this.chatPrvd.getNetwork()) {
-        this.toolsPrvd.showToast(this.textStrings.noNetwork);
-      } else {
-        this.isUndercover = this.undercoverPrvd.setUndercover(!positionLeft);
-        this.changePlaceholderText();
-        this.showMessages();
-      }
+      this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
     });
-
-    console.log('isUndercover', this.isUndercover);
   }
 
   removeAppendedImage(ind) {
@@ -459,7 +465,7 @@ export class ChatPage {
   private changeZipCallback(params?: any) {
     if (params) {
       this.isUndercover = this.undercoverPrvd.setUndercover(params.undercover);
-      if (this.isUndercover) this.goToUndercover();
+      if (this.isUndercover) this.goUndercover();
     }
   }
 
@@ -488,7 +494,9 @@ export class ChatPage {
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     if (this.isUndercover) {
       this.slideAvatarPrvd.sliderInit();
+      this.slideAvatarPrvd.setSliderPosition(true);
       this.showUsers();
+      this.content.resize();
     }
 
     this.contentBlock = document.getElementsByClassName('scroll-content')['0'];

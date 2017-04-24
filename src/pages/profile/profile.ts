@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import { NavController, NavParams, Slides, ItemSliding } from 'ionic-angular';
+import { Component, ViewChild, NgZone } from '@angular/core';
+import { NavController, NavParams, Slides } from 'ionic-angular';
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
@@ -10,6 +10,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { User } from '../../providers/user';
+import { Auth } from '../../providers/auth';
 
 @Component({
   selector: 'page-profile',
@@ -18,6 +19,8 @@ import { User } from '../../providers/user';
 export class ProfilePage {
   greeting: string;
   testSlides: string[] = [];
+  public ownProfile: boolean;
+  public isUndercover: boolean;
   @ViewChild('fbSlider') fbSlider: Slides;
   @ViewChild('incognitoSlider') incoSlider;
 
@@ -44,8 +47,10 @@ export class ProfilePage {
     public social: Social,
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider,
-    public slideAvatar: SlideAvatar,
-    public userPrvd: User
+    public slideAvatarPrvd: SlideAvatar,
+    public userPrvd: User,
+    public authPrvd: Auth,
+    public zone: NgZone,
   ) {
     this.user.id = this.navParams.get('id');
     console.log(this.user);
@@ -57,24 +62,7 @@ export class ProfilePage {
     },100);
 
     // this.user = this.undercoverPrvd.getPerson();
-  }
-
-  ondrag(event, item) {
-    setTimeout(() => {
-      let percent = item.getSlidingPercent();
-      if (percent >= 0) {
-        console.log('incognito [OFF]');
-      } else {
-        console.log('incognito [ON]');
-      }
-      if (Math.abs(percent) > 1) {
-        console.log('overscroll');
-      }
-    }, 1);
-  }
-
-  share(slidingItem: ItemSliding) {
-    slidingItem.close();
+    this.isUndercover = this.undercoverPrvd.isUndercover;
   }
 
   ngAfterViewInit() {
@@ -122,18 +110,61 @@ export class ProfilePage {
 
   goBack() { this.tools.popPage(); }
 
-  ionViewDidEnter() {
-    console.log("[PROFILE.ts] viewDidEnter");
-    this.slideAvatar.sliderInit();
-  }
-
-  ionViewDidLoad() {
+  private loadPublicProfile() {
     this.userPrvd.getUserData(this.user.id).subscribe(
       res => {
         console.log(res);
+        this.showUserData(res);
       },
       err => console.error('ERROR', err)
     );
+  }
+
+  private loadOwnProfile() {
+    this.showUserData(this.authPrvd.getAuthData());
+  }
+
+  private loadProfile() {
+    console.log(this.user.id, this.authPrvd.getAuthData().id)
+    if (this.user.id == this.authPrvd.getAuthData().id) {
+      this.loadOwnProfile();
+    } else {
+      this.loadPublicProfile();
+    }
+  }
+
+  private showUserData(res: any) {
+    console.log(res);
+    if (res.first_name || res.last_name) {
+      this.user.name = `${res.first_name} ${res.last_name}`;
+    } else if (res.role_name) {
+      this.user.name = res.role_name;
+    } else {
+      this.user.name = 'No name';
+    }
+
+    this.user.imageUrl = res.avatar ?
+      res.avatar : this.user.imageUrl = 'assets/images/incognito.png';
+  }
+
+  changeCallback(positionLeft?: boolean) {
+    this.zone.run(() => {
+      this.isUndercover = this.undercoverPrvd.setUndercover(!positionLeft);
+    });
+
+    console.log('isUndercover', this.isUndercover);
+  }
+
+  ionViewDidEnter() {
+    console.log("[PROFILE.ts] viewDidEnter");
+    this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+    let position = this.undercoverPrvd.isUndercover;
+    this.slideAvatarPrvd.sliderInit();
+    this.slideAvatarPrvd.setSliderPosition(position);
+  }
+
+  ionViewDidLoad() {
+    this.loadProfile();
     console.log("[PROFILE.ts] viewDidLoad");
     // this.slideAvatar.startSliderEvents();
   }

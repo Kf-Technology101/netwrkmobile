@@ -75,6 +75,7 @@ export class Chat {
         lat: this.gps.coords.lat,
         lng: this.gps.coords.lng,
         undercover: data.undercover,
+        profile_type: data.profile_type
         // images: data.images,
       }
     };
@@ -184,8 +185,11 @@ export class Chat {
   public organizeMessages(data: any): any {
     let messages: Array<any> = [];
     for (let i in data) {
-      console.log('moment().isValid():', moment(data[i].created_at).isValid());
+      for (let u in data[i].image_urls) {
+        data[i].image_urls[u] += this.api.hostUrl;
+      }
       data[i].date = moment(data[i].created_at).fromNow();
+      console.log(data);
       messages.push(data[i]);
     }
     return messages;
@@ -193,6 +197,10 @@ export class Chat {
 
   public getNetwork(): any {
     return this.localStorage.get('current_network');
+  }
+
+  public removeNetwork() {
+    this.localStorage.rm('current_network');
   }
 
   private sendMessageWithImage(data: any) {

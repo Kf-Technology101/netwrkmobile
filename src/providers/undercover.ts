@@ -12,6 +12,7 @@ import { Tools } from './tools';
 export class UndercoverProvider {
   public sliderState: boolean =  false;
   public isUndercover: boolean;
+  public profileType: string = 'undercover';
 
   constructor(
     public localStorage: LocalStorage,
@@ -25,6 +26,7 @@ export class UndercoverProvider {
   public setUndercover(status: boolean): boolean {
     this.isUndercover = status;
     return this.isUndercover;
+    // return false;
   }
 
   public getPerson(): any {

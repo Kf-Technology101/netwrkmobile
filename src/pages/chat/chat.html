@@ -91,7 +91,9 @@
 
 </ion-header>
 
-<ion-content has-main-btn has-main-btn-label [ngClass]="{'netwrk-content': !isUndercover}">
+<ion-content has-main-btn has-main-btn-label
+  [ngClass]="{'netwrk-content': !isUndercover}"
+  [ngStyle]="{'padding-bottom': contentPadding}">
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let i of postMessages">
       <img *ngIf="chatPrvd.users[i.user_id]" (tap)="goToProfile(i.user_id)"

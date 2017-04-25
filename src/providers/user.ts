@@ -21,7 +21,9 @@ export class User {
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
-            resolve(JSON.parse(xhr.response));
+            let res = JSON.parse(xhr.response);
+            this.auth.saveAuthData(res, 'email');
+            resolve(res);
           } else {
             reject(xhr.response);
           }

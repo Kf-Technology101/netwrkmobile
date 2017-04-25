@@ -116,7 +116,8 @@ export class ChatPage {
     id: null,
     password: null,
     hint: null,
-  }
+  };
+  private contentPadding: string;
 
   constructor(
     public navCtrl: NavController,
@@ -277,52 +278,63 @@ export class ChatPage {
     }
   }
 
-  setContentPadding(status){
-    status
-      ? this.contentBlock.style.padding = '0 0 ' + document.documentElement.clientHeight/2 + 'px'
-      : this.contentBlock.style.padding = '0 0 200px';
+  setContentPadding(status) {
+    console.log(document.documentElement.clientHeight + '');
+    this.contentPadding = status
+      ? document.documentElement.clientHeight / 2 + 76 + 'px'
+      : '200px';
+    this.scrollToBottom();
   }
 
   toggleContainer(container, visibility) {
     if (visibility == 'hide') {
+      this.setContentPadding(false);
+
       if (this.chatPrvd.appendContainer.hidden) {
         this.chatPrvd.mainBtn.setState('normal');
       } else {
         this.chatPrvd.mainBtn.setState('above_append');
       }
+
       container.setState('off');
       this.setContentPadding(false);
       setTimeout(() => {
         container.hide();
-      }, chatAnim/2);
+      }, chatAnim / 2);
     }
 
     if (!visibility) {
       if (container.hidden) {
+        console.log('setContentPadding', true);
         this.chatPrvd.mainBtn.setState('moved-n-scaled');
+
         container.show();
         container.setState('on');
         this.setContentPadding(true);
+
         for (let i = 0; i < this.toggContainers.length; i++) {
           if (!this.toggContainers[i].hidden &&
-            container != this.toggContainers[i]){
+            container != this.toggContainers[i]) {
               this.toggContainers[i].setState('off');
             setTimeout(() => {
               this.toggContainers[i].hide();
-            }, chatAnim/2);
+            }, chatAnim / 2);
           }
         }
       } else {
+        console.log('setContentPadding', false);
         this.setContentPadding(false);
+
         if (this.chatPrvd.appendContainer.hidden) {
           this.chatPrvd.mainBtn.setState('normal');
         } else {
           this.chatPrvd.mainBtn.setState('above_append');
         }
+
         container.setState('off');
         setTimeout(() => {
           container.hide();
-        }, chatAnim/2);
+        }, chatAnim / 2);
       }
     }
   }
@@ -379,16 +391,9 @@ export class ChatPage {
     message.temporaryFor = 0;
 
     if (message.text.trim() != '' || message.images.length > 0) {
-      if (authData) {
-        console.log(messageParams);
-        this.chatPrvd.sendMessage(messageParams).then(res => {
-          console.log(res);
-        }).catch(err => {
-          console.log(err);
-        });
-      }
+      console.log(messageParams);
 
-      setTimeout(() => {
+      let pushMessage = (data: any) => {
         if (message.text.trim() != '' || message.images.length > 0) {
           message.created_at = moment();
           message.dateStr = 'a moment ago';
@@ -414,16 +419,28 @@ export class ChatPage {
 
           this.postMessages.push(message);
         }
-      }, 100);
+      }
+
+      this.chatPrvd.sendMessage(messageParams).then(res => {
+        console.log(res);
+        pushMessage(res);
+      }).catch(err => {
+        console.log(err);
+        pushMessage(err);
+      });
 
       this.chatPrvd.appendContainer.setState('off');
       setTimeout(() => {
         this.chatPrvd.appendContainer.hide();
       }, chatAnim/2);
 
-      this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
+      this.scrollToBottom();
       this.cameraPrvd.takenPictures = [];
     }
+  }
+
+  private scrollToBottom() {
+    this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
   }
 
   calculateInputChar(inputEl) {
@@ -520,6 +537,11 @@ export class ChatPage {
       console.log(users);
       if (users) {
         this.chatPrvd.setStorageUsers(users);
+        for (let i in users) {
+          users[i].avatar_url = !users[i].avatar_url
+            ? this.toolsPrvd.defaultAvatar
+            : this.hostUrl + users[i].avatar_url;
+        }
         this.chatUsers = users;
         this.showMessages();
       } else {
@@ -541,12 +563,7 @@ export class ChatPage {
   private showMessages() {
     this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
       console.log(data);
-      // if () {
-      //
-      // }
       this.postMessages = this.chatPrvd.organizeMessages(data);
-      console.log(this.chatPrvd.users);
-      console.log(this.chatUsers);
     }, err => {
       console.log(err);
     })

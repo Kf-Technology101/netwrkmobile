@@ -85,13 +85,16 @@ export class Chat {
           console.log(res);
           resolve(res);
         }).catch(err => {
+          console.log(err);
           reject(err);
         });
       } else {
+        console.log('params', params);
         this.sendMessageWithoutImage(params).subscribe(res => {
           console.log(res);
           resolve(res);
         }, err => {
+          console.log(err);
           reject(err);
         });
       }
@@ -236,15 +239,9 @@ export class Chat {
   }
 
   private sendMessageWithoutImage(data: any) {
-    let seq = this.api.post('messages', {
-      text: data.text,
-      user_id: data.user_id,
-      network_id: this.getNetwork() ? this.getNetwork().id : null,
-      lat: this.gps.coords.lat,
-      lng: this.gps.coords.lng,
-      undercover: data.undercover,
-      images: [],
-    }).share();
+    data.message.images = [];
+    console.log('data', data);
+    let seq = this.api.post('messages', data).share();
     let seqMap = seq.map(res => res.json());
 
     return seqMap;
@@ -267,17 +264,13 @@ export class Chat {
     if (pickerOptions.maximumImagesCount <= 0) {
       // this.tools.showToast('You can\'t append more pictures');
     } else {
-      ImagePicker.getPictures(pickerOptions).then(
-        file_uris => {
-          // console.log('[imagePicker] file_uris:', file_uris);
-          for (let i = 0; i < file_uris.length; i++) {
-            this.cameraPrvd.takenPictures.push(file_uris[i]);
-            // console.log('[imagePicker] file_uris:', file_uris[i]);
-          }
-          this.updateAppendContainer();
-        },
-        err => console.log('[imagePicker] err:', err)
-      );
+      ImagePicker.getPictures(pickerOptions).then(file_uris => {
+        for (let fileUrl of file_uris) {
+          if (fileUrl.indexOf('file:///') !== -1)
+            this.cameraPrvd.takenPictures.push(fileUrl);
+        }
+        this.updateAppendContainer();
+      }, err => console.log('[imagePicker] err:', err));
     }
   }
 

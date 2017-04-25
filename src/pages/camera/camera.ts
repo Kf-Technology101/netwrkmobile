@@ -81,14 +81,13 @@ export class CameraPage {
       console.log(imageData);
       // this.cameraPrvd.takenPictures = data:image/jpeg;base64,' + imageData[0];
       this.mainBtn.state =  'normal';
-      // this.imgBg = 'url(data:image/jpeg;base64,' + imageData[0] + ')';
+      this.imgBg = `url(data:image/jpeg;base64,${imageData[0]})`;
       // this.imgUrl = 'data:image/jpeg;base64,' + imageData[0];
 
       this.base64ToGallery.base64ToGallery(imageData[0], { prefix: 'netwrk_' }).then(
         res => {
           console.log('Saved image to gallery ', res);
           this.imgUrl = res;
-          this.imgBg = `url(${res})`;
         },
         err => console.log('Error saving image to gallery ', err)
       );

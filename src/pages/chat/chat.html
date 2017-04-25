@@ -12,8 +12,8 @@
         </span>
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
         <img class="draggable-element"
-          [src]="undercoverPrvd.profileType == 'undercover' ? user.role_image_url : user.avatar"
-          (click)="goToProfile()">
+          [src]="undercoverPrvd.profileType == 'undercover' ? user.role_image_url : user.avatar_url"
+          (tap)="goToProfile()">
       </div>
     </div>
 
@@ -50,7 +50,7 @@
 
   <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar>
-      <img [src]="user.avatar ? user.avatar : toolsPrvd.defaultAvatar"
+      <img [src]="user.avatar_url ? user.avatar_url : toolsPrvd.defaultAvatar"
         (click)="goToProfile()" class="user-icon">
     </ion-toolbar>
     <ion-slides slidesPerView="4" class="netwrk-slider">
@@ -59,7 +59,7 @@
           <ion-icon ios="ios-add" md="ios-add"></ion-icon>
         </button>
       </ion-slide>
-      <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
+      <ion-slide *ngFor="let user of chatFrontUsers" class="netwrk-slide">
         <div class="avatar" (click)="goToProfile(user.id)">
           <img [src]="toolsPrvd.defaultAvatar">
         </div>
@@ -79,11 +79,15 @@
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let i of postMessages">
       <img (click)="goToProfile(i.user_id)"
-        [src]="i.public ? chatUsers[i.user_id].avatar : chatUsers[i.user_id].role_image_url"
+        [src]="i.public ? chatUsers[i.user_id].avatar_url : chatUsers[i.user_id].role_image_url"
         class="chat-avatar">
       <p class="message-container">
         <span class="username">{{ user.name }}</span>
         <span class="message-date">{{ i.dateStr }}</span>
+        <span *ngIf="i.isTemporary" class="visible-for">
+          <ion-icon ios="ios-time-outline" md="ios-time-outline"></ion-icon>
+          {{ i.temporaryFor }}
+        </span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
       <button class="like-button" (click)="sendFeedback()"
@@ -222,9 +226,11 @@
 
     <button ion-button item-right clear [ngClass]="{ 'post-button' : chatPrvd.postBtn.state }"
             (click)="postMessage()" class="post-message">
-      <img *ngIf="!chatPrvd.postBtn.state" src="assets/icon/netwrk-chat.svg">
+      <img *ngIf="!chatPrvd.postBtn.state && !isUndercover" src="assets/icon/netwrk-chat.svg">
       <span *ngIf="chatPrvd.postBtn.state && !isUndercover && bgState.state != 'stretched'">Post</span>
       <span *ngIf="chatPrvd.postBtn.state && isUndercover && bgState.state != 'stretched'">Hang</span>
+      <ion-icon *ngIf="!chatPrvd.postBtn.state && isUndercover"
+      ios="ios-text-outline" md="ios-text-outline"></ion-icon>
     </button>
   </ion-item>
 </ion-footer>

@@ -108,8 +108,13 @@ export class Chat {
   public setStorageUsers(users: Array<any>) {
     let stUsers: any = {};
     if (users.length)
-      for (let i = 0; i < users.length; i++)
+      for (let i in users) {
+        users[i].avatar_url = !users[i].avatar_url
+          ? this.tools.defaultAvatar
+          : this.hostUrl + users[i].avatar_url;
+        if (!users[i].role_image_url) users[i].role_image_url = this.tools.defaultAvatar;
         stUsers[users[i].id] = users[i];
+      }
     this.users = stUsers;
   }
 
@@ -117,7 +122,7 @@ export class Chat {
     let messages: Array<any> = [];
     for (let i in data) {
       for (let u in data[i].image_urls) {
-        data[i].image_urls[u] += this.api.hostUrl;
+        data[i].image_urls[u] = this.api.hostUrl + data[i].image_urls[u];
       }
       data[i].date = moment(data[i].created_at).fromNow();
       console.log(data);

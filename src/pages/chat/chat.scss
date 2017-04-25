@@ -513,6 +513,14 @@ page-undercover {
             font-size: 12px;
             color: #7a7a7a;
           }
+          .visible-for {
+            color: color($colors, bk-red);
+            float: right;
+            .icon {
+              color: #000;
+              font-weight: 600;
+            }
+          }
           .text {
             display: block;
             font-size: 12px;

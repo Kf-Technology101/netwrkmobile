@@ -87,7 +87,8 @@ export class ChatPage {
 
   contentBlock: any = undefined;
 
-  public chatUsers: string[] = [];
+  public chatUsers: any = {};
+  public chatFrontUsers: Array<any> = [];
 
   public user: any;
 
@@ -108,7 +109,7 @@ export class ChatPage {
   public placeholderText: string;
 
   private debug: any = {
-    postHangTime: ''
+    postHangTime: 0
   };
 
   constructor(
@@ -186,7 +187,7 @@ export class ChatPage {
       avatar_file_name: null,
       avatar_file_size: null,
       avatar_updated_at: null,
-      avatar: null,
+      avatar_url: null,
       created_at: "2017-04-22T14:59:29.921Z",
       date_of_birthday: "2004-01-01",
       email: "olbachinskiy2@gmail.com",
@@ -203,7 +204,7 @@ export class ChatPage {
       updated_at: "2017-04-22T14:59:29.921Z",
     }
 
-    if (!this.user.avatar) this.user.avatar = this.toolsPrvd.defaultAvatar;
+    if (!this.user.avatar_url) this.user.avatar_url = this.toolsPrvd.defaultAvatar;
     if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
     this.textStrings.sendError = 'Error sending message';
     this.textStrings.noNetwork = 'Netwrk not found';
@@ -349,12 +350,17 @@ export class ChatPage {
       created_at: null,
       dateStr: '',
       image_urls: [],
-      public: publicUser
+      public: publicUser,
+      avatar_url: this.user.avatar_url,
+      role_image_url: this.user.role_image_url,
+      isTemporary: false,
+      temporaryFor: 0
     };
 
     if (this.cameraPrvd.takenPictures) {
       message.images = this.cameraPrvd.takenPictures;
     }
+
     if (message.text.trim() != '' || message.images.length > 0) {
       if (this.authPrvd.getAuthData()) {
         let data = {
@@ -363,6 +369,8 @@ export class ChatPage {
           images: message.images,
           undercover: this.isUndercover,
           public: message.public,
+          avatar_url: this.user.avatar_url,
+          role_image_url: this.user.role_image_url,
         }
 
         console.log(data);
@@ -390,6 +398,11 @@ export class ChatPage {
               this.postTimer.hide();
             }, chatAnim/2);
             this.postTimer.setState('slideUp');
+          }
+          if (this.debug.postHangTime != 0) {
+            message.isTemporary = true;
+            message.temporaryFor = this.debug.postHangTime;
+            this.debug.postHangTime = 0;
           }
           this.postMessages.push(message);
         }
@@ -489,17 +502,15 @@ export class ChatPage {
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
       if (users) {
-        let usersTmp = [];
-        for (let u in users) {
-          if (!users[u].avatar) users[u].avatar = this.toolsPrvd.defaultAvatar;
-          if (!users[u].role_image_url) users[u].role_image_url = this.toolsPrvd.defaultAvatar;
-        }
-        this.chatPrvd.setStorageUsers(usersTmp);
-        this.chatUsers = usersTmp;
-        usersTmp = null;
+        this.chatFrontUsers = users;
+        this.chatPrvd.setStorageUsers(users);
+        this.chatUsers = this.chatPrvd.users;
+        this.showMessages();
       } else {
-        this.chatUsers.push(this.user);
+        this.chatUsers[this.user.id] = this.user;
       }
+
+      console.log(this.chatUsers);
     }, err => {
       console.log(err);
     });
@@ -514,8 +525,12 @@ export class ChatPage {
   private showMessages() {
     this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
       console.log(data);
+      // if () {
+      //
+      // }
       this.postMessages = this.chatPrvd.organizeMessages(data);
       console.log(this.chatPrvd.users);
+      console.log(this.chatUsers);
     }, err => {
       console.log(err);
     })
@@ -576,7 +591,6 @@ export class ChatPage {
     console.log('[UNDERCOVER.ts] viewDidLoad');
     this.generateEmoticons();
     this.getUsers();
-    this.showMessages();
   }
 
   ionViewWillLeave() {

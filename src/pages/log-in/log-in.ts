@@ -84,10 +84,10 @@ export class LogInPage {
   }
 
   doFbLogin() {
-    this.tools.showLoader();
+    // this.tools.showLoader();
     this.authPrvd.signUpFacebook().then((data: ResponseAuthData) => {
       console.log(data);
-      this.tools.hideLoader();
+      // this.tools.hideLoader();
       if (data.date_of_birthday) {
         let date = new Date(data.date_of_birthday);
         if (typeof date == 'object') {
@@ -98,7 +98,7 @@ export class LogInPage {
       } else this.tools.pushPage(SignUpAfterFbPage);
     }, err => {
       console.log(err);
-      this.tools.hideLoader();
+      // this.tools.hideLoader();
       this.tools.showToast(this.textStrings.fb);
     });
   }

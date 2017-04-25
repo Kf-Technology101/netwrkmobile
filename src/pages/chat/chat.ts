@@ -107,6 +107,10 @@ export class ChatPage {
   public hostUrl: string;
   public placeholderText: string;
 
+  private debug: any = {
+    postHangTime: 0
+  };
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -353,10 +357,12 @@ export class ChatPage {
       images: images,
       undercover: this.isUndercover,
       public: publicUser,
-    }
+    };
 
     message = messageParams;
     message.image_urls = images;
+    message.isTemporary = false;
+    message.temporaryFor = 0;
 
     if (message.text.trim() != '' || message.images.length > 0) {
       if (authData) {
@@ -381,6 +387,13 @@ export class ChatPage {
           }
 
           console.log(message);
+
+          if (this.debug.postHangTime != 0) {
+            message.isTemporary = true;
+            message.temporaryFor = this.debug.postHangTime;
+            this.debug.postHangTime = 0;
+          }
+
           this.postMessages.push(message);
         }
       }, 100);
@@ -463,7 +476,12 @@ export class ChatPage {
     }
   }
 
-  setPostTimer() {
+  setPostTimer(total:number, time?:string) {
+    if (time) {
+      this.debug.postHangTime = total + time;
+    } else {
+      this.debug.postHangTime = total;
+    }
     this.postTimer.setState('slideUp');
     setTimeout(() => {
       this.postTimer.hide();

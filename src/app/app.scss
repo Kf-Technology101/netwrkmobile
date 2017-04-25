@@ -357,7 +357,8 @@ ion-header.incognito-header {
 
 .drag-container{
   &{
-    width: 200px;
+    // width: 200px;
+    width: 160px;
     height: auto;
     position: relative;
     margin: 0 auto;
@@ -465,7 +466,7 @@ modal-feedbackshare {
   ion-content.content.share-content {
     display: flex;
     align-content: center;
-    .row[center] {
+    .row[align-items-center] {
       height: 100%;
     }
     .inner-container {

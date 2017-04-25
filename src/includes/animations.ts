@@ -42,7 +42,7 @@ export const toggleInputsFade:any = trigger('inputState', [
 export const rotateChatPlus: any = trigger('rotState', [
   state('spined', style({
     transform: 'rotate(405deg)',
-    right: 0
+    right: '0px'
   })),
   state('default', style({
     transform: 'rotate(0deg)'
@@ -106,10 +106,10 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
 
 export const toggleGallery: any = trigger('containerState', [
   state('on', style({
-    height: document.documentElement.clientHeight/2
+    height: document.documentElement.clientHeight/2 + 'px'
   })),
   state('off', style({
-    height: 0
+    height: '0px'
   })),
 
   state('on_append', style({
@@ -163,7 +163,7 @@ export const cameraUIanimation: any = trigger('cameraUIstate', [
 
 export const slideToggle: any = trigger('slideState', [
   state('slideUp', style({
-    height: 0
+    height: '0px'
   })),
   state('slideDown', style({
     height: 'auto'

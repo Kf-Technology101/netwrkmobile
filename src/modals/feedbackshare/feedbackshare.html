@@ -1,5 +1,5 @@
 <ion-content class="share-content">
-  <ion-row center>
+  <ion-row align-items-center>
     <ion-col class="inner-container">
       <p class="head">Share with your friends!</p>
       <ion-grid>
@@ -31,7 +31,7 @@
 </ion-content>
 
 <ion-footer>
-  <button isScrolling="false" tapable color="bk"
+  <button ion-button isScrolling="false" tapable color="bk"
           class="main-action-btn small has-footer transparent chatMainBtn"
           (tap)="closeModal()" [@fadeState]="mainBtn.state"></button>
 </ion-footer>

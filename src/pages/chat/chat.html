@@ -31,7 +31,8 @@
       <ion-icon ios="ios-lock" md="md-lock"></ion-icon>
     </button>
     <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
-            class="side left timer-btn top-icon" (click)="togglePostTimer()">
+            class="side left timer-btn top-icon" (click)="togglePostTimer()"
+            [ngClass]="{'active' : debug.postHangTime != 0}">
       <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
     </button>
     <ion-badge *ngIf="debug.postHangTime != 0 && chatPrvd.postBtn.state && isUndercover">

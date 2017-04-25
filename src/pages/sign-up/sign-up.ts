@@ -94,6 +94,7 @@ export class SignUpPage {
     this.textStrings.require = 'Please fill all fields';
     this.textStrings.email = 'Email is not valid';
     this.textStrings.phone = 'Phone is not valid';
+    this.textStrings.alreadyRegistered = 'You have already registered, please login with your login';
 
     this.signUpForm = formBuilder.group({
 		  'login' : [
@@ -179,7 +180,11 @@ export class SignUpPage {
       this.auth.checkLogin(data).subscribe(res => {
         console.log(res);
         signUpProcess();
-      }, err => console.log(err));
+      }, err => {
+        if (err.status && err.status == 422) {
+          this.tools.showToast(this.textStrings.alreadyRegistered);
+        }
+      });
     } else {
       signUpProcess();
     }

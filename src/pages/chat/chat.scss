@@ -564,6 +564,7 @@ page-chat {
     &.header {
       button.side {
         right: 13px;
+        box-shadow: none;
         &.left {
           left: 13px;
           right: auto;

@@ -328,6 +328,9 @@ ion-header.incognito-header {
       margin: 13px auto;
       .item-input {
         padding-left: 0;
+        input {
+          margin-left: 15px;
+        }
       }
       .item-input.no-mrgn {
         .item-inner {
@@ -340,6 +343,7 @@ ion-header.incognito-header {
         font-size: 18px;
         height: auto;
         margin: 26px auto;
+        box-shadow: none;
       }
       button.back {
         width: 25px;

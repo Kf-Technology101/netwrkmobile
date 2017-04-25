@@ -1,12 +1,12 @@
 <ion-content has-main-btn no-bounce>
-  <ion-row bottom [hidden]="hideSearch">
+  <ion-row align-items-start [hidden]="hideSearch">
     <ion-col text-center>
       <span ion-text color="bk">
         A netwrk hasn't been created yet
       </span>
     </ion-col>
   </ion-row>
-  <ion-row center [hidden]="hideSearch">
+  <ion-row align-items-center [hidden]="hideSearch">
     <ion-col text-center>
       <button class="be-founder" ion-button clear (click)="doFounder()" color="bk">
         Be a founder
@@ -14,7 +14,7 @@
       </button>
     </ion-col>
   </ion-row>
-  <ion-row top [hidden]="hideSearch">
+  <ion-row align-items-end [hidden]="hideSearch">
     <ion-col text-center>
       <span ion-text color="bk">Or</span>
     </ion-col>

@@ -87,8 +87,7 @@ export class ChatPage {
 
   contentBlock: any = undefined;
 
-  public chatUsers: any = {};
-  public chatFrontUsers: Array<any> = [];
+  public chatUsers: any = [];
 
   public user: any;
 
@@ -339,71 +338,62 @@ export class ChatPage {
 
   postMessage() {
     let publicUser: boolean;
+    let images = [];
+    let messageParams: any;
+    let message: any;
+    let authData = this.authPrvd.getAuthData();
+
     if (!this.isUndercover) {
       publicUser = true;
     } else {
       publicUser = this.undercoverPrvd.profileType === 'public' ? true : false;
-    };
-    let message = {
-      text: this.txtIn.value,
-      images: [],
-      created_at: null,
-      dateStr: '',
-      image_urls: [],
-      public: publicUser,
-      avatar_url: this.user.avatar_url,
-      role_image_url: this.user.role_image_url,
-      isTemporary: false,
-      temporaryFor: 0
-    };
-
-    if (this.cameraPrvd.takenPictures) {
-      message.images = this.cameraPrvd.takenPictures;
     }
 
+    if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
+
+    messageParams = {
+      text: this.txtIn.value,
+      user_id: authData ? authData.id : 0,
+      images: images,
+      undercover: this.isUndercover,
+      public: publicUser,
+    };
+
+    message = messageParams;
+    message.image_urls = images;
+    message.isTemporary = false;
+    message.temporaryFor = 0;
+
     if (message.text.trim() != '' || message.images.length > 0) {
-      if (this.authPrvd.getAuthData()) {
-        let data = {
-          text: message.text,
-          user_id: this.authPrvd.getAuthData().id,
-          images: message.images,
-          undercover: this.isUndercover,
-          public: message.public,
-          avatar_url: this.user.avatar_url,
-          role_image_url: this.user.role_image_url,
-        }
-
-        console.log(data);
-
-        this.chatPrvd.sendMessage(data);
-          // .subscribe(res => {
-          //   console.log(res);
-          //   console.log('created_at:', res.created_at);
-          // }, err => {
-          //   console.log(err);
-          //   this.toolsPrvd.showToast(this.textStrings.sendError);
-          // });
+      if (authData) {
+        console.log(messageParams);
+        this.chatPrvd.sendMessage(messageParams);
       }
 
       setTimeout(() => {
         if (message.text.trim() != '' || message.images.length > 0) {
           message.created_at = moment();
           message.dateStr = 'a moment ago';
-          message.image_urls = message.images;
+
           this.txtIn.value = '';
           this.chatPrvd.mainBtn.setState('normal');
           this.chatPrvd.postBtn.setState(false);
+
           if (this.postTimer.isVisible()) {
             setTimeout(() => {
               this.postTimer.hide();
             }, chatAnim/2);
             this.postTimer.setState('slideUp');
           }
+
+          console.log(message);
+
           if (this.debug.postHangTime != 0) {
             message.isTemporary = true;
             message.temporaryFor = this.debug.postHangTime;
             this.debug.postHangTime = 0;
           }
+
           this.postMessages.push(message);
         }
       }, 100);
@@ -502,12 +492,11 @@ export class ChatPage {
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
       if (users) {
-        this.chatFrontUsers = users;
         this.chatPrvd.setStorageUsers(users);
-        this.chatUsers = this.chatPrvd.users;
+        this.chatUsers = users;
         this.showMessages();
       } else {
-        this.chatUsers[this.user.id] = this.user;
+        this.chatUsers.push(this.user);
       }
 
       console.log(this.chatUsers);

@@ -60,8 +60,8 @@
           <ion-icon ios="ios-add" md="ios-add"></ion-icon>
         </button>
       </ion-slide>
-      <ion-slide *ngFor="let user of chatFrontUsers" class="netwrk-slide">
-        <div class="avatar" (click)="goToProfile(user.id)">
+      <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
+        <div class="avatar" (tap)="goToProfile(user.id)">
           <img [src]="toolsPrvd.defaultAvatar">
         </div>
         <span *ngIf="user.first_name || user.last_name" class="username">
@@ -79,8 +79,11 @@
 <ion-content has-main-btn has-main-btn-label [ngClass]="{'netwrk-content': !isUndercover}">
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let i of postMessages">
-      <img (click)="goToProfile(i.user_id)"
-        [src]="i.public ? chatUsers[i.user_id].avatar_url : chatUsers[i.user_id].role_image_url"
+      <img *ngIf="chatPrvd.users[i.user_id]" (tap)="goToProfile(i.user_id)"
+        [src]="i.public ? chatPrvd.users[i.user_id].avatar_url : chatPrvd.users[i.user_id].role_image_url"
+        class="chat-avatar">
+      <img *ngIf="!chatPrvd.users[i.user_id]" (tap)="goToProfile(i.user_id)"
+        [src]="toolsPrvd.defaultAvatar"
         class="chat-avatar">
       <p class="message-container">
         <span class="username">{{ user.name }}</span>

@@ -70,6 +70,7 @@ export class ChatPage {
   emojiContainer = new Toggleable('off', true);
   mainInput = new Toggleable('fadeIn', false);
   postTimer = new Toggleable('slideUp', true);
+  postLock = new Toggleable('slideUp', true);
   chatBtns = new Toggleable(['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']);
 
   toggContainers: any = [
@@ -464,15 +465,24 @@ export class ChatPage {
     }
   }
 
-  togglePostTimer() {
-    if (this.postTimer.isVisible()) {
+  toggleTopSlider(container) {
+    let cont;
+    switch (container) {
+      case 'timer':
+        cont = this.postTimer;
+      break;
+      case 'lock':
+        cont = this.postLock;
+      break;
+    }
+    if (cont.isVisible()) {
       setTimeout(() => {
-        this.postTimer.hide();
+        cont.hide();
       }, chatAnim/2);
-      this.postTimer.setState('slideUp');
+      cont.setState('slideUp');
     } else {
-      this.postTimer.show();
-      this.postTimer.setState('slideDown');
+      cont.show();
+      cont.setState('slideDown');
     }
   }
 

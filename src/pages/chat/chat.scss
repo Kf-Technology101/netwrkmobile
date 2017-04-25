@@ -517,7 +517,7 @@ page-undercover {
             color: color($colors, bk-red);
             float: right;
             .icon {
-              color: #000;
+              color: color($colors, bk-stone);
               font-weight: 600;
             }
           }

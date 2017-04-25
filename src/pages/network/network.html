@@ -4,11 +4,11 @@
       <img class="sun-icon" src="assets/images/sun_icon.png">
       <ion-card>
         <ion-card-content>
-          <span color="bk" *ngIf="action == 'join'">
+          <span ion-text color="bk" *ngIf="action == 'join'">
             <p>Please tap the button to connect to this netwrk.</p>
             <p></p>
           </span>
-          <span color="bk" *ngIf="action == 'create'">
+          <span ion-text color="bk" *ngIf="action == 'create'">
             <p>To become a founder, at least 20 people must be invited from your contact list or by email, and at least 10 need to join.</p>
             <p>10 people are needed to found a netwrk. Click the email button to contact your email list, or send a text message to your phone book.</p>
           </span>
@@ -19,18 +19,18 @@
   <ion-row class="action-buttons">
     <ion-col text-left>
       <button ion-button clear (tap)="sendEmails()">
-        <span color="bk">Send emails</span>
+        <span ion-text color="bk">Send emails</span>
       </button>
     </ion-col>
     <ion-col text-right>
       <button ion-button clear (tap)="sendSMS()">
-        <span color="bk">Send texts</span>
+        <span ion-text color="bk">Send texts</span>
       </button>
     </ion-col>
   </ion-row>
   <ion-row class="count-people" *ngIf="users.length > 0 && users.length <= 10">
     <ion-col text-center>
-      <span color="bk">{{ users.length }}/10</span>
+      <span ion-text color="bk">{{ users.length }}/10</span>
     </ion-col>
   </ion-row>
   <ion-row>
@@ -40,8 +40,8 @@
           <ion-avatar item-left>
             <img src="assets/images/incognito.png">
           </ion-avatar>
-          <h2 color="bk" *ngIf="p.first_name || p.last_name">{{ p.first_name }} {{ p.last_name }}</h2>
-          <h2 color="bk" *ngIf="!p.first_name && !p.last_name">{{ p.email }}</h2>
+          <h2 ion-text color="bk" *ngIf="p.first_name || p.last_name">{{ p.first_name }} {{ p.last_name }}</h2>
+          <h2 ion-text color="bk" *ngIf="!p.first_name && !p.last_name">{{ p.email }}</h2>
         </ion-item>
       </ion-list>
     </ion-col>
@@ -52,11 +52,11 @@
   <button ion-button color="bk"
     class="main-action-btn medium has-label"
     (tap)="doAction()" outline></button>
-  <span class="main-action-text" color="bk">
+  <span class="main-action-text" ion-text color="bk">
     Tap to continue
   </span>
 
   <button ion-button class="footer-back-button" (tap)="goBack()" clear hidden>
-    <span color="bk">Back</span>
+    <span color="bk" ion-text>Back</span>
   </button>
 </ion-footer>

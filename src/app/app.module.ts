@@ -1,5 +1,13 @@
 import { NgModule, ErrorHandler } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
+import { HttpModule } from '@angular/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+
+import { SplashScreen } from "@ionic-native/splash-screen";
+import { StatusBar } from "@ionic-native/status-bar";
+import { Sim } from '@ionic-native/sim';
 
 // Pages
 import { MyApp } from './app.component';
@@ -117,6 +125,10 @@ export function providers() {
     SocialSharing,
     File,
     Transfer,
+
+    SplashScreen,
+    StatusBar,
+    Sim,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];
@@ -125,6 +137,9 @@ export function providers() {
 @NgModule({
   declarations: declarations(),
   imports: [
+    BrowserModule,
+    HttpModule,
+    BrowserAnimationsModule,
     IonicModule.forRoot(MyApp)
   ],
   bootstrap: [IonicApp],

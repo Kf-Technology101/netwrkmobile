@@ -42,7 +42,7 @@
         <ion-list>
 
           <ion-item class="custom-center-block" text-center text-wrap>
-            <span color="bk">
+            <span ion-text color="bk">
               You will be asked when you login or sign up for your location, it's needed to access your local netwrk.
             </span>
           </ion-item>
@@ -57,5 +57,5 @@
 <ion-footer>
     <button isScrolling="false" [@mainBtnState] = "mainBtn.state" ion-button
       color="bk" class="main-action-btn medium has-label" (click)="goToSignUp()" outline></button>
-  <span class="main-action-text" color="bk">New? Tap to get started</span>
+  <span class="main-action-text" ion-text color="bk">New? Tap to get started</span>
 </ion-footer>

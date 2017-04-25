@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Platform, Events, App } from 'ionic-angular';
-import { StatusBar, Splashscreen, Sim } from 'ionic-native';
+import { Sim } from '@ionic-native/sim';
+import { StatusBar } from '@ionic-native/status-bar';
+import { SplashScreen } from '@ionic-native/splash-screen';
 
 // Pages
 import { LogInPage } from '../pages/log-in/log-in';
@@ -29,13 +31,16 @@ export class MyApp {
   rootPage;
 
   constructor(
-    platform: Platform,
+    public platform: Platform,
     public app: App,
     public events: Events,
-    public authPrvd: Auth,
-    public localStoragePrvd: LocalStorage,
-    public toolsPrvd: Tools,
-    public undercoverPrvd: UndercoverProvider
+    private authPrvd: Auth,
+    private localStoragePrvd: LocalStorage,
+    private toolsPrvd: Tools,
+    private undercoverPrvd: UndercoverProvider,
+    public statusBar: StatusBar,
+    public splashScreen: SplashScreen,
+    private sim: Sim
   ) {
     platform.registerBackButtonAction(() => {
       this.toolsPrvd.doBackButton();
@@ -46,7 +51,7 @@ export class MyApp {
       this.getLogin();
       this.getSimInfo();
 
-      StatusBar.styleDefault();
+      this.statusBar.styleDefault();
     });
 
     this.app.viewDidEnter.subscribe((view) => {
@@ -66,7 +71,7 @@ export class MyApp {
               this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage) :
               LogInPage;
 
-            Splashscreen.hide();
+            this.splashScreen.hide();
           });
           break;
         case 'email':
@@ -75,7 +80,7 @@ export class MyApp {
             this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage) :
             LogInPage;
 
-          Splashscreen.hide();
+          this.splashScreen.hide();
           break;
       }
     } else {
@@ -97,7 +102,7 @@ export class MyApp {
   // }
 
   private getSimInfo() {
-    Sim.getSimInfo().then(
+    this.sim.getSimInfo().then(
       (info) => {
         console.log('Sim info: ', info);
         this.localStoragePrvd.set('country_code', info.countryCode);

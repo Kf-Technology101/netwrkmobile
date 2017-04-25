@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 @Injectable()
 export class Api {
   private httpProtocol: string = 'http://';
-  public siteDomain: string = '192.168.1.13:3000'; //192.168.1.13:3000 //54.200.151.55
+  public siteDomain: string = '192.168.1.13:3000'; //192.168.1.13:3000 //34.208.20.67
   public hostUrl = this.httpProtocol + this.siteDomain;
   public url: string = this.hostUrl + '/api/v1';
 

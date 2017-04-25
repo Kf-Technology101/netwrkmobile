@@ -3,7 +3,7 @@
     <div class="drag-container">
       <div class="dragline">
         <span class="info">
-          <span class="username" color="bk">Choose a character</span>
+          <span class="username" ion-text color="bk">Choose a character</span>
         </span>
         <ion-icon></ion-icon>
         <img class="draggable-element" src="assets/images/incognito.png">
@@ -18,20 +18,20 @@
 <ion-content isScrolling="false" no-bounce has-main-btn>
   <ion-row center>
     <ion-col text-center>
-      <h1 color="bk">We agree, some things shouldn't have your name on it.</h1>
+      <h1 ion-text color="bk">We agree, some things shouldn't have your name on it.</h1>
       <ion-slides slidesPerView="3"
         initialSlide="1"
         spaceBetween="10">
         <ion-slide></ion-slide>
         <ion-slide [ngClass]="{'transition': sliderLoaded}" *ngFor="let p of persons">
-          <h4 class="title" color="bk">{{ p.name }}</h4>
+          <h4 class="title" ion-text color="bk">{{ p.name }}</h4>
           <div class="avatar">
             <img class="sun-icon" src="{{ p.imageUrl }}">
           </div>
         </ion-slide>
         <ion-slide></ion-slide>
       </ion-slides>
-      <span class="custom-center-block person-description" color="bk">
+      <span class="custom-center-block person-description" ion-text color="bk">
         {{ activePerson.description }}
       </span>
     </ion-col>

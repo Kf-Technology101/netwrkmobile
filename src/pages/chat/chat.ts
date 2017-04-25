@@ -167,7 +167,10 @@ export class ChatPage {
 
     this.keyboard.onKeyboardHide().subscribe(res => {
       console.log(res);
-      this.chatPrvd.postBtn.setState(false);
+      if (this.txtIn.value.trim() == '' &&
+          this.chatPrvd.appendContainer.getState() != 'on_append') {
+        this.chatPrvd.postBtn.setState(false);
+      }
       if (this.plt.is('ios')) {
         let footerEl = document.getElementsByClassName('chatFooter')['0'];
         let scrollEl = document.getElementsByClassName('scroll-content')['0'];
@@ -283,7 +286,7 @@ export class ChatPage {
       : this.contentBlock.style.padding = '0 0 200px';
   }
 
-  toggleContainer(container, visibility) {
+  toggleContainer(container, visibility?:string) {
     if (visibility == 'hide') {
       if (this.chatPrvd.appendContainer.hidden) {
         this.chatPrvd.mainBtn.setState('normal');

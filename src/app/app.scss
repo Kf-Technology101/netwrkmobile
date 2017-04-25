@@ -288,19 +288,15 @@ ion-app .ion-page .content {
   }
 }
 
+ion-app#bk-app,
 .transparent-background {
-  ion-app,
-  .ion-page,
-  .content {
-    background: transparent;
-    // background: #ccc;
-  }
+  background: transparent;
 }
 
-.transparent-background{
-  &, body, ion-app, ion-content, ion-page, .nav-decor {
-    background-color: transparent !important;
-  }
+
+.ion-page,
+.content {
+  background: #fff;
 }
 
 form,

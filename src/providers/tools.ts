@@ -88,28 +88,8 @@ export class Tools {
     return `${year}-${month}-${day}`;
   }
 
-  public subscribeViewDidEnter(view: any) {
-    let transparentPages: Array<string> = [
-      'ChatPage',
-      'CameraPage',
-    ];
-    let name: string = view.instance.constructor.name;
-    let action: boolean = transparentPages.indexOf(name) !== -1;
-    this.changeBodyClass(action);
-  }
-
   public getTime(date?: string): string {
-    // let d = date ? new Date(date) : new Date();
-    // let hours = d.getHours();
-    // let minutes = d.getMinutes();
-    // let res = `${hours}:${minutes}`;
     return moment(date).fromNow();
-  }
-
-  private changeBodyClass(add?: boolean) {
-    let body = document.getElementsByTagName('ion-app')[0];
-    let className = 'transparent-background';
-    add ? body.classList.add(className) : body.classList.remove(className);
   }
 
 }

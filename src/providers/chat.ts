@@ -89,6 +89,17 @@ export class Chat {
     return null;
   }
 
+  public lockMessage(id: number, hint: string, password: string) {
+    let seq = this.api.post('messages/lock', {
+      id: id,
+      hint: hint,
+      password: password,
+    }).share();
+    let seqMap = seq.map(res => res.json());
+
+    return seqMap;
+  }
+
   public getMessages(undercover: boolean) {
     let data = {
       post_code: this.gps.zipCode,

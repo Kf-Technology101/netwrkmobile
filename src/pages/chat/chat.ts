@@ -1,4 +1,4 @@
-import { Component, ViewChild, NgZone } from '@angular/core';
+import { Component, ViewChild, NgZone, HostBinding } from '@angular/core';
 import { NavController, NavParams, Content, Platform, ModalController } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
@@ -40,7 +40,7 @@ import {
 } from '../../includes/animations';
 
 @Component({
-  selector: 'page-undercover',
+  selector: 'page-chat',
   templateUrl: 'chat.html',
   animations: [
     toggleInputsFade,
@@ -57,6 +57,7 @@ import {
 })
 
 export class ChatPage {
+  @HostBinding('class') colorClass = 'transparent-background';
 
   public isUndercover: boolean;
 
@@ -368,6 +369,11 @@ export class ChatPage {
       if (authData) {
         console.log(messageParams);
         this.chatPrvd.sendMessage(messageParams);
+        // this.chatPrvd.lockMessage().subscribe(res => {
+        //   console.log(res);
+        // }, err => {
+        //   console.log(err);
+        // });
       }
 
       setTimeout(() => {

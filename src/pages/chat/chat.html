@@ -50,10 +50,12 @@
   </ion-toolbar>
 
   <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state" class="post-lock">
-    <form (onSubmit)="sendLockInfo()">
-      <ion-input type="password" placeholder="Password" name="password"></ion-input>
-      <ion-input type="text" placeholder="Hint" name="hint"></ion-input>
-      <button ion-button type="submit"></button>
+    <form (submit)="sendLockInfo(lockForm)" #lockForm="ngForm">
+      <ion-input type="password" placeholder="Password" name="password"
+        [(ngModel)]="postLockData.password" required></ion-input>
+      <ion-input type="text" placeholder="Hint" name="hint"
+        [(ngModel)]="postLockData.hint" required></ion-input>
+      <button ion-button></button>
     </form>
   </ion-toolbar>
 

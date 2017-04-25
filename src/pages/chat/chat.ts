@@ -112,6 +112,11 @@ export class ChatPage {
   private debug: any = {
     postHangTime: 0
   };
+  private postLockData: any = {
+    id: null,
+    password: null,
+    hint: null,
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -209,6 +214,7 @@ export class ChatPage {
     if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
     this.textStrings.sendError = 'Error sending message';
     this.textStrings.noNetwork = 'Netwrk not found';
+    this.textStrings.require = 'Please fill all fields';
 
     let action = this.navParams.get('action');
     if (action) {
@@ -338,6 +344,12 @@ export class ChatPage {
     return String.fromCodePoint(unicode);
   }
 
+  sendLockInfo (form: any) {
+    if (form.invalid) {
+      this.toolsPrvd.showToast(this.textStrings.require);
+    }
+  }
+
   postMessage() {
     let publicUser: boolean;
     let images = [];
@@ -369,12 +381,11 @@ export class ChatPage {
     if (message.text.trim() != '' || message.images.length > 0) {
       if (authData) {
         console.log(messageParams);
-        this.chatPrvd.sendMessage(messageParams);
-        // this.chatPrvd.lockMessage().subscribe(res => {
-        //   console.log(res);
-        // }, err => {
-        //   console.log(err);
-        // });
+        this.chatPrvd.sendMessage(messageParams).then(res => {
+          console.log(res);
+        }).catch(err => {
+          console.log(err);
+        });
       }
 
       setTimeout(() => {

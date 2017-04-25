@@ -67,26 +67,36 @@ export class Chat {
   }
 
   public sendMessage(data: any): any {
-    let params = {
-      message: {
-        text: data.text,
-        user_id: data.user_id,
-        network_id: this.getNetwork() ? this.getNetwork().id : null,
-        lat: this.gps.coords.lat,
-        lng: this.gps.coords.lng,
-        undercover: data.undercover,
-        profile_type: data.profile_type
-        // images: data.images,
+    return new Promise((resolve, reject) => {
+      let params = {
+        message: {
+          text: data.text,
+          user_id: data.user_id,
+          network_id: this.getNetwork() ? this.getNetwork().id : null,
+          lat: this.gps.coords.lat,
+          lng: this.gps.coords.lng,
+          undercover: data.undercover,
+          profile_type: data.profile_type
+        }
+      };
+
+      if (data.images && data.images.length > 0) {
+        this.sendMessageWithImage(params, data.images).then(res => {
+          console.log(res);
+          resolve(res);
+        }).catch(err => {
+          reject(err);
+        });
+      } else {
+        this.sendMessageWithoutImage(params).subscribe(res => {
+          console.log(res);
+          resolve(res);
+        }, err => {
+          reject(err);
+        });
       }
-    };
 
-    if (data.images && data.images.length > 0) {
-      this.sendMessageWithImage(params, data.images);
-    } else {
-      this.sendMessageWithoutImage(params);
-    }
-
-    return null;
+    })
   }
 
   public lockMessage(id: number, hint: string, password: string) {
@@ -150,126 +160,79 @@ export class Chat {
     this.localStorage.rm('current_network');
   }
 
-  private sendMessageWithImage(params: any, dataImages: any) {
-    let files = [];
-    let images: Array<string> = [];
-    for (let i of dataImages) {
-      images.push(i);
-    }
+  private sendMessageWithImage(params: any, dataImages: any): any {
+    return new Promise((resolve, reject) => {
+      let files = [];
+      let images: Array<string> = [];
+      for (let i of dataImages) {
+        images.push(i);
+      }
 
-    console.log(images);
+      console.log(images);
 
-    var getFileBlob = function (url, cb) {
-      console.log(url, cb);
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", url);
-      xhr.responseType = "blob";
-      xhr.addEventListener('load', function() {
-        cb(xhr.response);
-      });
-      xhr.send();
-    };
+      var getFileBlob = function (url, cb) {
+        console.log(url, cb);
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url);
+        xhr.responseType = "blob";
+        xhr.addEventListener('load', function() {
+          cb(xhr.response);
+        });
+        xhr.send();
+      };
 
-    var blobToFile = function (blob, name) {
-      console.log(blob, name);
-      blob.lastModifiedDate = new Date();
-      blob.name = name;
-      return blob;
-    };
+      var blobToFile = function (blob, name) {
+        console.log(blob, name);
+        blob.lastModifiedDate = new Date();
+        blob.name = name;
+        return blob;
+      };
 
-    var getFileObject = function(filePathOrUrl, cb) {
-      console.log(filePathOrUrl, cb);
-       getFileBlob(filePathOrUrl, function (blob) {
-          cb(blobToFile(blob, filePathOrUrl.split('/').pop()));
-       });
-    };
+      var getFileObject = function(filePathOrUrl, cb) {
+        console.log(filePathOrUrl, cb);
+         getFileBlob(filePathOrUrl, function (blob) {
+            cb(blobToFile(blob, filePathOrUrl.split('/').pop()));
+         });
+      };
 
-    let i = 0;
-    let self = this;
-    let r = (i) => {
-      getFileObject(images[i], function (fileObject) {
-        files.push(fileObject);
-          console.log(fileObject);
-          i++;
-          if (i == images.length) {
-            console.log('end', files);
-            let xhr: XMLHttpRequest = new XMLHttpRequest();
+      let i = 0;
+      let self = this;
+      let r = (i) => {
+        getFileObject(images[i], function (fileObject) {
+          files.push(fileObject);
+            console.log(fileObject);
+            i++;
+            if (i == images.length) {
+              console.log('end', files);
+              let xhr: XMLHttpRequest = new XMLHttpRequest();
 
-            let formData: FormData = self.api.createFormData(params);
-            for (let i in files)
-              formData.append('images[]', files[i], files[i].name);
+              let formData: FormData = self.api.createFormData(params);
+              for (let i in files)
+                formData.append('images[]', files[i], files[i].name);
 
-            xhr.onreadystatechange = () => {
-              if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                  console.log(JSON.parse(xhr.response));
-                } else {
-                  console.log(xhr.response);
+              xhr.onreadystatechange = () => {
+                if (xhr.readyState === 4) {
+                  if (xhr.status === 200) {
+                    console.log(JSON.parse(xhr.response));
+                    resolve(JSON.parse(xhr.response));
+                  } else {
+                    console.log(xhr.response);
+                    reject(xhr.response);
+                  }
                 }
-              }
-            };
+              };
 
-            xhr.open('POST', self.api.url + '/messages', true);
-            xhr.setRequestHeader('Authorization', self.localStorage.get('auth_data').auth_token);
-            xhr.send(formData);
+              xhr.open('POST', self.api.url + '/messages', true);
+              xhr.setRequestHeader('Authorization', self.localStorage.get('auth_data').auth_token);
+              xhr.send(formData);
 
-          } else {
-            r(i);
-          }
-      });
-    }
-    r(i);
-    // const fileTransfer: TransferObject = this.transfer.create();
-    // let url = this.api.url + '/messages';
-    // let options: FileUploadOptions = {};
-    //
-    // let uploadImage = (i: number) => {
-    //   console.log(i);
-    //   if (i == 0) {
-    //     options = {
-    //       fileKey: 'image',
-    //       params: {
-    //         message: data
-    //       },
-    //       headers: {
-    //         Authorization: this.localStorage.get('auth_data').auth_token
-    //       },
-    //       httpMethod: 'POST'
-    //     }
-    //   } else {
-    //     options = {
-    //       fileKey: 'image',
-    //       params: {
-    //         id: this.message.id,
-    //       },
-    //       headers: {
-    //         Authorization: this.localStorage.get('auth_data').auth_token
-    //       },
-    //       httpMethod: 'PUT'
-    //     }
-    //   }
-    //
-    //   console.log(i, options);
-    //
-    //   fileTransfer.upload(data.images[i], url, options).then(res => {
-    //     console.log('res:', res);
-    //     if (i == 0) this.message = res;
-    //     // console.log(i, data.images[i].length)
-    //     if (i == data.images[i].length - 1) {
-    //       console.log(this.message);
-    //       fileTransfer.abort();
-    //     } else {
-    //       i++;
-    //       uploadImage(i);
-    //     }
-    //   }).catch(err => {
-    //     console.log('err:', err);
-    //   });
-    // }
-    //
-    // console.log('uploadImage');
-    // uploadImage(0);
-    // console.log('uploadImage');
+            } else {
+              r(i);
+            }
+        });
+      }
+      r(i);
+    })
   }
 
   private sendMessageWithoutImage(data: any) {
@@ -280,6 +243,7 @@ export class Chat {
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       undercover: data.undercover,
+      images: [],
     }).share();
     let seqMap = seq.map(res => res.json());
 

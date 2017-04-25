@@ -518,7 +518,7 @@ page-chat {
             color: color($colors, bk-red);
             float: right;
             .icon {
-              color: #000;
+              color: color($colors, bk-stone);
               font-weight: 600;
             }
           }
@@ -572,8 +572,8 @@ page-chat {
     .badge {
       position: absolute;
       left: 25px;
-      z-index: 50;
       top: 25px;
+      z-index: 50;
       padding: 2px 4px;
       pointer-events: none;
     }
@@ -602,6 +602,11 @@ page-chat {
         height: 26px;
         border-radius: 13px;
         background: color($colors, bk-red);
+      }
+      &.active {
+        .icon {
+          color: color($colors, bk);
+        }
       }
     }
   }

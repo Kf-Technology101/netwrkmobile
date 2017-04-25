@@ -27,11 +27,12 @@
     </button>
 
     <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
-            class="side lock-btn top-icon" (click)="initPostLock()">
+            class="side lock-btn top-icon" (click)="toggleTopSlider('lock')">
       <ion-icon ios="ios-lock" md="md-lock"></ion-icon>
     </button>
     <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
-            class="side left timer-btn top-icon" (click)="togglePostTimer()">
+            class="side left timer-btn top-icon" (click)="toggleTopSlider('timer')"
+            [ngClass]="{'active' : debug.postHangTime != 0}">
       <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
     </button>
     <ion-badge *ngIf="debug.postHangTime != 0 && chatPrvd.postBtn.state && isUndercover">
@@ -46,6 +47,14 @@
     <button (click)="setPostTimer(1, 'd')">1 day</button>
     <button (click)="setPostTimer(1, 'w')">1 week</button>
     <button (click)="setPostTimer(1, 'm')">1 month</button>
+  </ion-toolbar>
+
+  <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state" class="post-lock">
+    <form (onSubmit)="sendLockInfo()">
+      <ion-input type="password" placeholder="Password" name="password"></ion-input>
+      <ion-input type="text" placeholder="Hint" name="hint"></ion-input>
+      <button ion-button type="submit"></button>
+    </form>
   </ion-toolbar>
 
   <div *ngIf="!isUndercover" class="netwrk-header">

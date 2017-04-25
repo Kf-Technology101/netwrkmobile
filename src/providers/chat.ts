@@ -236,15 +236,7 @@ export class Chat {
   }
 
   private sendMessageWithoutImage(data: any) {
-    let seq = this.api.post('messages', {
-      text: data.message.text,
-      user_id: data.message.user_id,
-      network_id: this.getNetwork() ? this.getNetwork().id : null,
-      lat: this.gps.coords.lat,
-      lng: this.gps.coords.lng,
-      undercover: data.message.undercover,
-      images: [],
-    }).share();
+    let seq = this.api.post('messages', data.message).share();
     let seqMap = seq.map(res => res.json());
 
     return seqMap;

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostBinding } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { CameraPreview } from '@ionic-native/camera-preview';
 
@@ -36,6 +36,7 @@ import {
 })
 
 export class CameraPage {
+  @HostBinding('class') colorClass = 'transparent-background';
 
   cameraUI: any = {
     tooltip: 'tooltipFadeOut',

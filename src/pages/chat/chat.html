@@ -50,12 +50,14 @@
   </ion-toolbar>
 
   <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state" class="post-lock">
-    <form (onSubmit)="lockMessage()">
+    <form (submit)="sendLockInfo(lockForm)" #lockForm="ngForm">
       <ion-item>
-        <ion-input type="password" placeholder="Password" name="password"></ion-input>
+        <ion-input type="password" placeholder="Password" name="password"
+          [(ngModel)]="postLockData.password" required></ion-input>
       </ion-item>
       <ion-item class="no-mrgn">
-        <ion-input type="text" placeholder="Hint" name="hint"></ion-input>
+        <ion-input type="text" placeholder="Hint" name="hint"
+          [(ngModel)]="postLockData.hint" required></ion-input>
       </ion-item>
       <button ion-button type="submit" class="submit">Lock it</button>
       <button color="bk" class="back" (click)="toggleTopSlider('lock')"></button>

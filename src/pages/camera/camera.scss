@@ -1,4 +1,8 @@
 page-camera {
+  .content {
+    background: transparent;
+  }
+
   &.ion-page ion-content.content {
     background: -webkit-linear-gradient(top, transparent 75%, rgba(0, 0, 0, 0.5) 100%);
   }

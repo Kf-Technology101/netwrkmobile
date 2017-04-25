@@ -1,4 +1,4 @@
-import { Component, ViewChild, NgZone } from '@angular/core';
+import { Component, ViewChild, NgZone, HostBinding } from '@angular/core';
 import { NavController, NavParams, Content, Platform, ModalController } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
@@ -40,7 +40,7 @@ import {
 } from '../../includes/animations';
 
 @Component({
-  selector: 'page-undercover',
+  selector: 'page-chat',
   templateUrl: 'chat.html',
   animations: [
     toggleInputsFade,
@@ -57,6 +57,7 @@ import {
 })
 
 export class ChatPage {
+  @HostBinding('class') colorClass = 'transparent-background';
 
   public isUndercover: boolean;
 
@@ -111,6 +112,11 @@ export class ChatPage {
   private debug: any = {
     postHangTime: 0
   };
+  private postLockData: any = {
+    id: null,
+    password: null,
+    hint: null,
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -208,6 +214,7 @@ export class ChatPage {
     if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
     this.textStrings.sendError = 'Error sending message';
     this.textStrings.noNetwork = 'Netwrk not found';
+    this.textStrings.require = 'Please fill all fields';
 
     let action = this.navParams.get('action');
     if (action) {
@@ -337,6 +344,12 @@ export class ChatPage {
     return String.fromCodePoint(unicode);
   }
 
+  sendLockInfo (form: any) {
+    if (form.invalid) {
+      this.toolsPrvd.showToast(this.textStrings.require);
+    }
+  }
+
   postMessage() {
     let publicUser: boolean;
     let images = [];
@@ -368,7 +381,11 @@ export class ChatPage {
     if (message.text.trim() != '' || message.images.length > 0) {
       if (authData) {
         console.log(messageParams);
-        this.chatPrvd.sendMessage(messageParams);
+        this.chatPrvd.sendMessage(messageParams).then(res => {
+          console.log(res);
+        }).catch(err => {
+          console.log(err);
+        });
       }
 
       setTimeout(() => {

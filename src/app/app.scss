@@ -321,6 +321,39 @@ ion-header.incognito-header {
     z-index: 11;
     position: fixed;
   }
+  .post-lock {
+    background: #fff;
+    padding: 0;
+    form {
+      margin: 13px auto;
+      .item-input {
+        padding-left: 0;
+      }
+      .item-input.no-mrgn {
+        .item-inner {
+          margin-bottom: 0;
+        }
+      }
+      button.submit {
+        background: transparent;
+        color: color($colors, bk);
+        font-size: 18px;
+        height: auto;
+        margin: 26px auto;
+      }
+      button.back {
+        width: 25px;
+        height: 40px;
+        border-color: #5b87aa;
+        border-style: solid;
+        border-width: 3px;
+        border-radius: 7px;
+        background: transparent;
+        display: block;
+        margin: auto;
+      }
+    }
+  }
   .post-timer {
     overflow: hidden;
     z-index: 51;

@@ -74,6 +74,7 @@ export class SlideAvatar {
   }
 
   public setSliderPosition(state: boolean) {
+    this.setSliderDimentions();
     let slider = document.getElementsByClassName('draggable-element active');
     if (slider) {
       this.sliderState = state;

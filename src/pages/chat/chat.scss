@@ -553,13 +553,20 @@ page-undercover {
   ion-header {
     &.header-ios {
       button.side {
-        top: 16px;
         right: 13px;
         &.left {
           left: 13px;
           right: auto;
         }
       }
+    }
+    .badge {
+      position: absolute;
+      left: 25px;
+      z-index: 50;
+      top: 25px;
+      padding: 2px 4px;
+      pointer-events: none;
     }
     button.side {
       position: absolute;
@@ -578,11 +585,6 @@ page-undercover {
           color: color($colors, white);
         }
       }
-      &.refresh-btn {
-        & ion-icon {
-          margin-top: -3px;
-        }
-      }
       &.clear-btn {
         right: 5px;
         padding: 0 15px;
@@ -592,7 +594,6 @@ page-undercover {
         border-radius: 13px;
         background: color($colors, bk-red);
       }
-
     }
   }
   .chat-header {

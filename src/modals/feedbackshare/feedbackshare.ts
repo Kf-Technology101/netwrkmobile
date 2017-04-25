@@ -26,7 +26,6 @@ export class FeedbackShareModal {
   }
 
   closeModal() {
-    // this.chatPrvd.mainBtn.setPrevState();
     this.viewCtrl.dismiss();
   }
 

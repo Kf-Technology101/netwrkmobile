@@ -107,6 +107,10 @@ export class ChatPage {
   public hostUrl: string;
   public placeholderText: string;
 
+  private debug: any = {
+    postHangTime: ''
+  };
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -469,7 +473,12 @@ export class ChatPage {
     }
   }
 
-  setPostTimer() {
+  setPostTimer(total:number, time?:string) {
+    if (time) {
+      this.debug.postHangTime = total + time;
+    } else {
+      this.debug.postHangTime = total;
+    }
     this.postTimer.setState('slideUp');
     setTimeout(() => {
       this.postTimer.hide();

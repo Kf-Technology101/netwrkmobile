@@ -13,42 +13,45 @@
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
         <img class="draggable-element"
           [src]="undercoverPrvd.profileType == 'undercover' ? user.role_image_url : user.avatar"
-          (tap)="goToProfile()">
+          (click)="goToProfile()">
       </div>
     </div>
+
+    <button ion-button *ngIf="isUndercover && postMessages.length === 0 && !chatPrvd.postBtn.state"
+            class="side refresh-btn top-icon">
+      <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
+    </button>
+    <button ion-button *ngIf="isUndercover && postMessages.length > 0 && !chatPrvd.postBtn.state"
+            class="side clear-btn" (click)="clearMessages()">
+      Clear
+    </button>
+
+    <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
+            class="side lock-btn top-icon" (click)="initPostLock()">
+      <ion-icon ios="ios-lock" md="md-lock"></ion-icon>
+    </button>
+    <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
+            class="side left timer-btn top-icon" (click)="togglePostTimer()">
+      <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
+    </button>
+    <ion-badge *ngIf="debug.postHangTime != 0 && chatPrvd.postBtn.state && isUndercover">
+      {{ debug.postHangTime }}
+    </ion-badge>
+
   </ion-toolbar>
 
   <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state" class="post-timer">
-    <button (click)="togglePostTimer()">None</button>
-    <button (click)="setPostTimer(10)">10 hours</button>
-    <button (click)="setPostTimer(24)">1 day</button>
-    <button (click)="setPostTimer(168)">1 week</button>
-    <button (click)="setPostTimer(5376)">1 month</button>
+    <button (click)="setPostTimer(0)">None</button>
+    <button (click)="setPostTimer(10, 'h')">10 hours</button>
+    <button (click)="setPostTimer(1, 'd')">1 day</button>
+    <button (click)="setPostTimer(1, 'w')">1 week</button>
+    <button (click)="setPostTimer(1, 'm')">1 month</button>
   </ion-toolbar>
-
-  <button *ngIf="isUndercover && postMessages.length === 0 && !chatPrvd.postBtn.state"
-          class="side refresh-btn top-icon">
-    <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
-  </button>
-  <button ion-button *ngIf="isUndercover && postMessages.length > 0 && !chatPrvd.postBtn.state"
-          class="side clear-btn" (tap)="clearMessages()">
-    Clear
-  </button>
-
-  <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
-          class="side lock-btn top-icon" (click)="initPostLock()">
-    <ion-icon ios="ios-lock" md="md-lock"></ion-icon>
-  </button>
-  <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
-          class="side left timer-btn top-icon" (click)="togglePostTimer()">
-    <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
-  </button>
-
 
   <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar>
       <img [src]="user.avatar ? user.avatar : toolsPrvd.defaultAvatar"
-        (tap)="goToProfile()" class="user-icon">
+        (click)="goToProfile()" class="user-icon">
     </ion-toolbar>
     <ion-slides slidesPerView="4" class="netwrk-slider">
       <ion-slide class="netwrk-slide">
@@ -57,7 +60,7 @@
         </button>
       </ion-slide>
       <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
-        <div class="avatar" (tap)="goToProfile(user.id)">
+        <div class="avatar" (click)="goToProfile(user.id)">
           <img [src]="toolsPrvd.defaultAvatar">
         </div>
         <span *ngIf="user.first_name || user.last_name" class="username">
@@ -75,7 +78,7 @@
 <ion-content has-main-btn has-main-btn-label [ngClass]="{'netwrk-content': !isUndercover}">
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let i of postMessages">
-      <img (tap)="goToProfile(i.user_id)"
+      <img (click)="goToProfile(i.user_id)"
         [src]="i.public ? chatUsers[i.user_id].avatar : chatUsers[i.user_id].role_image_url"
         class="chat-avatar">
       <p class="message-container">
@@ -83,7 +86,7 @@
         <span class="message-date">{{ i.dateStr }}</span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
-      <button class="like-button" (tap)="sendFeedback()"
+      <button class="like-button" (click)="sendFeedback()"
         [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"></button>
       <img *ngFor="let j of i.image_urls" src="{{j}}"/>
     </div>
@@ -96,7 +99,7 @@
     [hidden]="chatPrvd.appendContainer.hidden" [@containerState]="chatPrvd.appendContainer.state">
     <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures; let indx = index" >
       <img class="img-preview" [src]="i"/>
-      <button (tap)="removeAppendedImage(indx)">
+      <button (click)="removeAppendedImage(indx)">
         <ion-icon ios="ios-close" md="ios-close"></ion-icon>
       </button>
     </div>
@@ -104,7 +107,7 @@
 
   <div #emojiCont item-content class="gallery-container emoji-container"
     [hidden]="emojiContainer.hidden" [@containerState]="emojiContainer.state">
-    <span item-content *ngFor="let emoji of emojis" (tap)="insertEmoji(emoji)"
+    <span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)"
       class="emoji-item">{{ convertEmoji(emoji) }}</span>
   </div>
 
@@ -113,7 +116,7 @@
     <ion-toolbar>
       <div class="slide-container sl-facebook">
         <div #slfb [ngClass]="{'active': checkbox.facebook}" class="toggle-el"
-          (tap)="toggleShareSlider('facebook')">
+          (click)="toggleShareSlider('facebook')">
           <span class="toggle-state" *ngIf="checkbox.facebook">on</span>
           <span class="toggle-state" *ngIf="!checkbox.facebook">off</span>
           <div [ngClass]="{'right': checkbox.facebook}" class="toggleable">
@@ -125,7 +128,7 @@
 
       <div class="slide-container sl-linkedin">
         <div #slln [ngClass]="{'active': checkbox.linkedin}" class="toggle-el"
-          (tap)="toggleShareSlider('linkedin')">
+          (click)="toggleShareSlider('linkedin')">
           <span class="toggle-state" *ngIf="checkbox.linkedin">on</span>
           <span class="toggle-state" *ngIf="!checkbox.linkedin">off</span>
           <div [ngClass]="{'right': checkbox.linkedin}" class="toggleable">
@@ -137,7 +140,7 @@
 
       <div class="slide-container sl-twitter">
         <div #sltw [ngClass]="{'active': checkbox.twitter}" class="toggle-el"
-          (tap)="toggleShareSlider('twitter')">
+          (click)="toggleShareSlider('twitter')">
           <span class="toggle-state" *ngIf="checkbox.twitter">on</span>
           <span class="toggle-state" *ngIf="!checkbox.twitter">off</span>
           <div [ngClass]="{'right': checkbox.twitter}" class="toggleable">
@@ -178,32 +181,32 @@
   </div>
 
   <button isScrolling="false" tapable [hidden]="chatPrvd.mainBtn.hidden" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
-  class="main-action-btn big has-footer transparent chatMainBtn" (tap)="goUndercover()"></button>
+  class="main-action-btn big has-footer transparent chatMainBtn" (click)="goUndercover()"></button>
 
   <ion-item class="text" #inputItem
             [@fadeState]="mainInput.state" [hidden]="mainInput.hidden"
             [ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state }">
     <div item-content id="textInpBtns" [@bgState]="bgState.state">
       <button ion-button [@inputState]="chatBtns.state[0]"
-      (tap)="openCamera();
+      (click)="openCamera();
             toggleContainer(emojiContainer, 'hide');
             toggleContainer(shareContainer, 'hide')">
         <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[1]" (tap)="chatPrvd.openGallery()">
+      <button ion-button [@inputState]="chatBtns.state[1]" (click)="chatPrvd.openGallery()">
          <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[2]" (tap)="toggleContainer(shareContainer);">
+      <button ion-button [@inputState]="chatBtns.state[2]" (click)="toggleContainer(shareContainer);">
         <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
       </button>
-      <button ion-button [@inputState]="chatBtns.state[3]" (tap)="toggleContainer(emojiContainer);">
+      <button ion-button [@inputState]="chatBtns.state[3]" (click)="toggleContainer(emojiContainer);">
         <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
       </button>
       <button ion-button [@inputState]="chatBtns.state[4]"></button>
     </div>
 
     <button ion-button
-            (tap)=" toggleChatOptions();
+            (click)=" toggleChatOptions();
                     toggleContainer(emojiContainer, 'hide');
                     toggleContainer(shareContainer, 'hide')"
             [@rotState]="chatOptions.state" ion-button item-left clear
@@ -212,13 +215,13 @@
     </button>
 
     <ion-input #textInput id="textInput" type="text" [placeholder]="placeholderText"
-               (tap)="getCaretPos(textInput)"
+               (click)="getCaretPos(textInput)"
                (keyup)="getCaretPos(textInput); calculateInputChar(textInput)">
     </ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
     <button ion-button item-right clear [ngClass]="{ 'post-button' : chatPrvd.postBtn.state }"
-            (tap)="postMessage()" class="post-message">
+            (click)="postMessage()" class="post-message">
       <img *ngIf="!chatPrvd.postBtn.state" src="assets/icon/netwrk-chat.svg">
       <span *ngIf="chatPrvd.postBtn.state && !isUndercover && bgState.state != 'stretched'">Post</span>
       <span *ngIf="chatPrvd.postBtn.state && isUndercover && bgState.state != 'stretched'">Hang</span>

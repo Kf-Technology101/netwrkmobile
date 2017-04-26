@@ -114,11 +114,11 @@
         </span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
-      <button class="post-button" (click)="sendFeedback()"
+      <button class="feedback-button" (click)="sendFeedback(i)"
         [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"
         *ngIf="!i.locked">
       </button>
-      <button class="post-button lock" (click)="unlockPost()"
+      <button class="feedback-button lock" (click)="unlockPost()"
         [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"
         *ngIf="i.locked">
         <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>

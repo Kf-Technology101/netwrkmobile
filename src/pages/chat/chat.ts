@@ -674,6 +674,8 @@ export class ChatPage {
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
     this.chatPrvd.updateAppendContainer();
+
+    this.messageDateTimer.start(this.postMessages);
     // if (this.cameraPrvd.takenPictures) {
     //   this.postMessage();
     // }

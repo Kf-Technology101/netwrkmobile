@@ -1,0 +1,12 @@
+<ion-content>
+  <ion-item class="users-list" *ngFor="let user of users">
+    <img src="">
+    <span class="username">{{ user.name }}</span>
+  </ion-item>
+</ion-content>
+
+<ion-footer>
+  <button ion-button isScrolling="false" tapable color="bk"
+          class="main-action-btn small has-footer transparent chatMainBtn"
+          (tap)="closeModal()" [@fadeState]="mainBtn.state"></button>
+</ion-footer>

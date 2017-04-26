@@ -138,14 +138,14 @@ export const toggleFade: any = trigger('fadeState', [
 
 export const cameraUIanimation: any = trigger('cameraUIstate', [
   state('photoButtonFadeIn', style({
+    transform: 'scale(1)',
     opacity: '1',
-    bottom: '68px',
-    transform: 'scaleX(1)'
+    bottom: '68px'
   })),
   state('photoButtonFadeOut', style({
     opacity: '0',
     bottom: '158px',
-    transform: 'scaleX(0.9)'
+    transform: 'scale(.9)'
   })),
 
   state('tooltipFadeOut', style({
@@ -157,7 +157,7 @@ export const cameraUIanimation: any = trigger('cameraUIstate', [
     transform: 'scaleX(1)'
   })),
 
-  transition('* => *', animate(animSpeed.fadeIn/2 + 'ms ease-in'))
+  transition('* => *', animate(animSpeed.fadeIn/2 + 'ms ease-out'))
 ]);
 
 export const slideToggle: any = trigger('slideState', [

@@ -5,6 +5,7 @@ import { Chat } from '../../providers/chat';
 import { toggleFade } from '../../includes/animations';
 
 import { FeedbackShareModal } from '../feedbackshare/feedbackshare';
+import { LegendaryListModal } from '../legendarylist/legendarylist';
 
 @Component({
   selector: 'modal-feedback',
@@ -44,6 +45,11 @@ export class FeedbackModal {
   goShare() {
     let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal);
     feedbackShareModal.present();
+  }
+
+  goLegendary() {
+    let legendaryModal = this.modalCtrl.create(LegendaryListModal);
+    legendaryModal.present();
   }
 
   ionViewDidEnter() {

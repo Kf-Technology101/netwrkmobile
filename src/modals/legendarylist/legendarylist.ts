@@ -1,18 +1,30 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController } from 'ionic-angular';
-
+import { toggleFade } from '../../includes/animations';
 import { Chat } from '../../providers/chat';
 
 @Component({
-  selector: 'modal-feedbackshare',
-  templateUrl: 'feedbackshare.html',
+  selector: 'modal-legendarylist',
+  templateUrl: 'legendarylist.html',
+  animations: [
+    toggleFade
+  ]
 })
-export class FeedbackShareModal {
+export class LegendaryListModal {
 
   private mainBtn: any = {
     state: 'fadeOut',
     hidden: false
   }
+
+  private users:any = [
+    {
+      name: 'Vasya Pupkin'
+    },
+    {
+      name: 'Elon Musk'
+    }
+  ]
 
   constructor(
     private params: NavParams,

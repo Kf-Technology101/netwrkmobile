@@ -34,6 +34,7 @@ import { UndercoverCharacterPage } from '../pages/undercover-character/undercove
 import { CameraPage } from '../pages/camera/camera';
 
 // Modals
+import { LegendaryListModal } from '../modals/legendarylist/legendarylist';
 import { FeedbackShareModal } from '../modals/feedbackshare/feedbackshare';
 import { FeedbackModal } from '../modals/feedback/feedback';
 
@@ -83,6 +84,7 @@ let pages = [
   NetworkNoPage,
   NetworkFaqPage,
   NetworkContactListPage,
+  LegendaryListModal,
   FeedbackShareModal,
   FeedbackModal,
   ChatPage,

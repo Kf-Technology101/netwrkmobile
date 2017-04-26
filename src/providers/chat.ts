@@ -126,14 +126,7 @@ export class Chat {
 
   public setStorageUsers(users: Array<any>) {
     let stUsers: any = {};
-    if (users.length)
-      for (let i in users) {
-        users[i].avatar_url = !users[i].avatar_url
-          ? this.tools.defaultAvatar
-          : this.hostUrl + users[i].avatar_url;
-        if (!users[i].role_image_url) users[i].role_image_url = this.tools.defaultAvatar;
-        stUsers[users[i].id] = users[i];
-      }
+    if (users.length) for (let i in users) stUsers[users[i].id] = users[i];
     this.users = stUsers;
   }
 

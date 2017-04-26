@@ -20,7 +20,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content has-main-btn [ngClass]="{'undercover': isUndercover}">
+<ion-content has-main-btn [ngClass]="{'undercover': undercoverPrvd.profileType == 'undercover'}">
   <ion-row class="facebook" padding>
     <ion-col>
       <label>{{ testSlides.length }} Сommon Connections</label>

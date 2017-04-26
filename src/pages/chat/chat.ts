@@ -406,6 +406,7 @@ export class ChatPage {
         if (message.text.trim() != '' || message.images.length > 0) {
           message.created_at = moment();
           message.dateStr = 'a moment ago';
+          message.locked = data.locked;
 
           this.txtIn.value = '';
           this.chatPrvd.mainBtn.setState('normal');
@@ -433,18 +434,28 @@ export class ChatPage {
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
         console.log(res);
-        pushMessage(res);
-        let lockObj:any = {
-          id: res.id,
-          hint: this.postLockData.hint,
-          password: this.postLockData.password
+
+        if (this.postLockData.hint && this.postLockData.password) {
+          let lockObj:any = {
+            id: res.id,
+            hint: this.postLockData.hint,
+            password: this.postLockData.password
+          }
+
+          this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
+            console.log('[lock] res:', lockRes);
+            pushMessage(lockRes);
+            this.postLockData = {
+              id: null,
+              hint: null,
+              password: null
+            }
+          }, lockErr => {
+            console.log('[lock] err:', lockErr);
+          });
+        } else {
+          pushMessage(res);
         }
-        this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
-          console.log('[lock] res:', lockRes);
-          message.isLocked = true;
-        }, lockErr => {
-          console.log('[lock] err:', lockErr);
-        });
       }).catch(err => {
         console.log(err);
         pushMessage(err);
@@ -572,12 +583,14 @@ export class ChatPage {
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
       if (users) {
-        this.chatPrvd.setStorageUsers(users);
         for (let i in users) {
           users[i].avatar_url = !users[i].avatar_url
             ? this.toolsPrvd.defaultAvatar
             : this.hostUrl + users[i].avatar_url;
+          if (!users[i].role_image_url)
+            users[i].role_image_url = this.toolsPrvd.defaultAvatar;
         }
+        this.chatPrvd.setStorageUsers(users);
         this.chatUsers = users;
         this.showMessages();
       } else {
@@ -601,6 +614,7 @@ export class ChatPage {
       console.log(data);
       this.postMessages = this.chatPrvd.organizeMessages(data);
       this.messageDateTimer.start(this.postMessages);
+      this.scrollToBottom();
     }, err => {
       console.log(err);
     })

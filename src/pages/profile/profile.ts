@@ -149,7 +149,7 @@ export class ProfilePage {
 
   changeCallback(positionLeft?: boolean) {
     this.zone.run(() => {
-      this.isUndercover = this.undercoverPrvd.setUndercover(!positionLeft);
+      this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
     });
 
     console.log('isUndercover', this.isUndercover);

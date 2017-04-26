@@ -41,6 +41,12 @@ page-chat {
         }
       }
     }
+
+    .swiper-slide {
+      img {
+        border-radius: 50%;
+      }
+    }
   }
 
   .content {
@@ -204,6 +210,7 @@ page-chat {
         height: 42px;
         background: transparent;
       }
+
       input {
         height: 42px;
         margin: 0;
@@ -335,7 +342,6 @@ page-chat {
         height: 26px;
         position: relative;
         float: left;
-        ;
       }
       input[type="checkbox"]{
         width: 0;
@@ -663,6 +669,52 @@ page-chat {
         }
       }
     }
+  }
+
+  // flip animation
+  .flip-container {
+    -webkit-perspective: 1000;
+    perspective: 1000;
+
+    &.hover {
+      #textInput {
+        input::-webkit-input-placeholder {
+          color: color($colors, bk);
+        }
+      }
+
+      #plus-btn {
+        .icon {
+          color: color($colors, bk);
+        }
+      }
+    }
+  }
+  .flip-container .back,
+  .flip-container .front {
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transition: 0.6s;
+    transition: 0.6s;
+    -webkit-transform: rotateX(0deg);
+    transform: rotateX(0deg);
+    position: absolute;
+  }
+  .flip-container .back {
+    -webkit-transform: rotateX(-360deg);
+    transform: rotateX(-360deg);
+  }
+  .flip-container .front {
+    -webkit-transform: rotateX(0deg);
+    z-index: 2;
+  }
+  .flip-container.hover .back {
+    -webkit-transform: rotateX(0deg);
+    transform: rotateX(0deg);
+  }
+  .flip-container.hover .front {
+    -webkit-transform: rotateX(360deg);
+    transform: rotateX(360deg);
   }
 
 }

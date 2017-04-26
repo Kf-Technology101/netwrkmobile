@@ -201,20 +201,20 @@ export class ChatPage {
       avatar_file_size: null,
       avatar_updated_at: null,
       avatar_url: null,
-      created_at: "2017-04-22T14:59:29.921Z",
-      date_of_birthday: "2004-01-01",
-      email: "olbachinskiy2@gmail.com",
+      created_at: '2017-04-22T14:59:29.921Z',
+      date_of_birthday: '2004-01-01',
+      email: 'olbachinskiy2@gmail.com',
       first_name: 'Oleksandr',
       id: 55,
       invitation_sent: false,
       last_name: 'Bachynskyi',
-      phone: "1492873128682",
+      phone: '1492873128682',
       provider_id: null,
       provider_name: null,
       role_description: null,
       role_image_url: null,
       role_name: null,
-      updated_at: "2017-04-22T14:59:29.921Z",
+      updated_at: '2017-04-22T14:59:29.921Z',
     }
 
     if (!this.user.avatar_url) this.user.avatar_url = this.toolsPrvd.defaultAvatar;
@@ -365,6 +365,9 @@ export class ChatPage {
   sendLockInfo (form: any) {
     if (form.invalid) {
       this.toolsPrvd.showToast(this.textStrings.require);
+    } else {
+      this.hideTopSlider('lock');
+      this.postMessage();
     }
   }
 
@@ -425,7 +428,7 @@ export class ChatPage {
 
           this.postMessages.push(message);
           this.messageDateTimer.start(this.postMessages);
-
+        }
       }
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
@@ -438,6 +441,7 @@ export class ChatPage {
         }
         this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
           console.log('[lock] res:', lockRes);
+          message.isLocked = true;
         }, lockErr => {
           console.log('[lock] err:', lockErr);
         });
@@ -518,7 +522,7 @@ export class ChatPage {
     }
   }
 
-  toggleTopSlider(container) {
+  getTopSlider(container) {
     let cont;
     switch (container) {
       case 'timer':
@@ -528,6 +532,22 @@ export class ChatPage {
         cont = this.postLock;
       break;
     }
+    return cont;
+  }
+
+  hideTopSlider(container) {
+    let cont = this.getTopSlider(container);
+    if (cont.isVisible()) {
+      cont.setState('slideUp');
+      setTimeout(() => {
+        cont.hide();
+      }, chatAnim/2);
+      cont.setState('slideUp');
+    }
+  }
+
+  toggleTopSlider(container) {
+    let cont = this.getTopSlider(container);
     if (cont.isVisible()) {
       setTimeout(() => {
         cont.hide();
@@ -545,10 +565,7 @@ export class ChatPage {
     } else {
       this.debug.postHangTime = total;
     }
-    this.postTimer.setState('slideUp');
-    setTimeout(() => {
-      this.postTimer.hide();
-    }, chatAnim/2);
+    this.hideTopSlider('timer');
   }
 
   private getUsers() {

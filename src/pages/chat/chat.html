@@ -28,7 +28,7 @@
 
     <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
             class="side lock-btn top-icon" (click)="toggleTopSlider('lock')">
-      <ion-icon ios="ios-lock" md="md-lock"></ion-icon>
+      <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
     </button>
     <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
             class="side left timer-btn top-icon" (click)="toggleTopSlider('timer')"
@@ -55,11 +55,12 @@
         <ion-input type="password" placeholder="Password" name="password"
           [(ngModel)]="postLockData.password" required></ion-input>
       </ion-item>
-      <ion-item class="no-mrgn">
+      <ion-item>
         <ion-input type="text" placeholder="Hint" name="hint"
           [(ngModel)]="postLockData.hint" required></ion-input>
       </ion-item>
-      <button ion-button type="submit" class="submit">Lock it</button>
+      <button ion-button type="submit" class="submit"
+              *ngIf="postLockData.password && postLockData.hint">Lock it</button>
       <button color="bk" class="back" (click)="toggleTopSlider('lock')"></button>
     </form>
   </ion-toolbar>
@@ -111,8 +112,15 @@
         </span>
         <span *ngIf="i.text" class="text">{{ i.text }}</span>
       </p>
-      <button class="like-button" (click)="sendFeedback()"
-        [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"></button>
+      <button class="post-button" (click)="sendFeedback()"
+        [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"
+        *ngIf="!i.locked">
+      </button>
+      <button class="post-button lock" (click)="unlockPost()"
+        [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"
+        *ngIf="i.locked">
+        <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
+      </button>
       <img *ngFor="let j of i.image_urls" src="{{j}}"/>
     </div>
   </div>

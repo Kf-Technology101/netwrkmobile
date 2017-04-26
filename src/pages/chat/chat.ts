@@ -106,7 +106,7 @@ export class ChatPage {
   private networkParams: any = {};
   private textStrings: any = {};
 
-  private messageDateTimer = new MessageDateTimer(this.postMessages);
+  private messageDateTimer = new MessageDateTimer();
 
   public hostUrl: string;
   public placeholderText: string;
@@ -474,7 +474,7 @@ export class ChatPage {
     this.showMessages();
     setTimeout(() => {
       if (this.isUndercover) {
-        this.flipInput();
+        // this.flipInput();
         this.slideAvatarPrvd.sliderInit();
         this.slideAvatarPrvd.setSliderPosition(this.isUndercover);
       }
@@ -628,7 +628,7 @@ export class ChatPage {
 
     this.messageDateTimer.enableForceStart = true;
     this.messageDateTimer.enableLogMessages = true;
-    this.messageDateTimer.start();
+    this.messageDateTimer.start(this.postMessages);
   }
 
   ionViewDidLoad() {

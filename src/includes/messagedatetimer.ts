@@ -54,7 +54,8 @@ export class MessageDateTimer {
   }
 
   // Start {timer}
-  start() {
+  start(postMessages) {
+    this.messages = postMessages;
     if (this.enableLogMessages) {
       this.logMessage('Starting timer...');
     }

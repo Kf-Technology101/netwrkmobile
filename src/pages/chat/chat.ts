@@ -403,33 +403,32 @@ export class ChatPage {
       console.log(messageParams);
 
       let pushMessage = (data: any) => {
-        if (message.text.trim() != '' || message.images.length > 0) {
-          message.created_at = moment();
-          message.dateStr = 'a moment ago';
-          message.locked = data.locked;
+        message.created_at = moment();
+        message.dateStr = 'a moment ago';
+        message.locked = data.locked;
+        message.id = data.id;
 
-          this.txtIn.value = '';
-          this.chatPrvd.mainBtn.setState('normal');
-          this.chatPrvd.postBtn.setState(false);
+        this.txtIn.value = '';
+        this.chatPrvd.mainBtn.setState('normal');
+        this.chatPrvd.postBtn.setState(false);
 
-          if (this.postTimer.isVisible()) {
-            setTimeout(() => {
-              this.postTimer.hide();
-            }, chatAnim/2);
-            this.postTimer.setState('slideUp');
-          }
-
-          console.log(message);
-
-          if (this.debug.postHangTime != 0) {
-            message.isTemporary = true;
-            message.temporaryFor = this.debug.postHangTime;
-            this.debug.postHangTime = 0;
-          }
-
-          this.postMessages.push(message);
-          this.messageDateTimer.start(this.postMessages);
+        if (this.postTimer.isVisible()) {
+          setTimeout(() => {
+            this.postTimer.hide();
+          }, chatAnim/2);
+          this.postTimer.setState('slideUp');
         }
+
+        console.log(message);
+
+        if (this.debug.postHangTime != 0) {
+          message.isTemporary = true;
+          message.temporaryFor = this.debug.postHangTime;
+          this.debug.postHangTime = 0;
+        }
+
+        this.postMessages.push(message);
+        this.messageDateTimer.start(this.postMessages);
       }
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
@@ -627,13 +626,14 @@ export class ChatPage {
     }
   }
 
-  sendFeedback() {
-    let feedData = {
-      totalLegendary: 3,
-      totalLikes: 45
+  sendFeedback(messageData: any) {
+    let feedbackData = {
+      message_id: messageData.id,
+      user: this.user
     };
+    console.log("feedback data:", feedbackData);
     this.chatPrvd.mainBtn.setState('minimised');
-    let feedbackModal = this.modalCtrl.create(FeedbackModal, { data: feedData });
+    let feedbackModal = this.modalCtrl.create(FeedbackModal, { data: feedbackData });
     setTimeout(() => {
       feedbackModal.present();
     }, chatAnim/2);

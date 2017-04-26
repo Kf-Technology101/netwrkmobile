@@ -124,7 +124,7 @@ export class CameraPage {
     this.imgBg = undefined;
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
     this.cameraUI.button = 'photoButtonFadeIn';
     setTimeout(() => {
       this.cameraUI.tooltip = 'tooltipFadeIn';

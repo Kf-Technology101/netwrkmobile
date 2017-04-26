@@ -83,7 +83,7 @@ export class MessageDateTimer {
     if (this.timer) {
       clearInterval(this.timer);
     } else {
-      this.logMessage('There are no timer to stop.', 'error');
+      this.logMessage('There are no timer to stop.', 'warn');
     }
   }
 }

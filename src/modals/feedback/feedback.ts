@@ -26,6 +26,8 @@ export class FeedbackModal {
     totalLikes: 0
   }
 
+  private feedData:any;
+
   constructor(
     private params: NavParams,
     private viewCtrl: ViewController,
@@ -33,8 +35,10 @@ export class FeedbackModal {
     public modalCtrl: ModalController
   ) {
     let data = params.get('data');
-    this.postInf.totalLikes = data.totalLikes;
-    this.postInf.totalLegendary = data.totalLegendary;
+    this.feedData = {
+      user_id: data.message_id,
+      message_id: data.user.id
+    }
   }
 
   closeModal() {
@@ -53,6 +57,11 @@ export class FeedbackModal {
   }
 
   ionViewDidEnter() {
+    this.chatPrvd.sendFeedbackData(this.feedData).subscribe(res => {
+      console.log('[likes] res:', res);
+    }, err => {
+      console.log('[likes] err:', err);
+    });
     this.mainBtn.state = 'fadeInfast';
   }
 

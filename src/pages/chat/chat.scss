@@ -52,6 +52,10 @@ page-chat {
   .content {
     background: transparent;
 
+    &.netwrk-content {
+      background: color($colors, white);
+    }
+
     &.netwrk-content.content-ios,
     &.netwrk-content.content-md {
       .scroll-content {
@@ -627,10 +631,12 @@ page-chat {
   .chat-header {
     background: color($colors, white);
     .netwrk-header {
-      padding-bottom: 16px;
-      ion-toolbar {
+      // padding-bottom: 16px;
+      .area-head {
         background: url('../assets/icon/logo.png') no-repeat center;
         background-size: auto 26px;
+        border-bottom: 1px solid color($colors, bk);
+
         .user-icon {
           display: block;
           width: 26px;
@@ -676,7 +682,7 @@ page-chat {
     -webkit-perspective: 1000;
     perspective: 1000;
 
-    &.hover {
+    &:not(.hover) {
       #textInput {
         input::-webkit-input-placeholder {
           color: color($colors, bk);
@@ -687,6 +693,10 @@ page-chat {
         .icon {
           color: color($colors, bk);
         }
+      }
+
+      .front {
+        border: 1px solid color($colors, bk);
       }
     }
   }
@@ -707,6 +717,7 @@ page-chat {
   .flip-container .front {
     -webkit-transform: rotateX(0deg);
     z-index: 2;
+    box-sizing: border-box;
   }
   .flip-container.hover .back {
     -webkit-transform: rotateX(0deg);

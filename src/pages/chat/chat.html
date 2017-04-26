@@ -66,28 +66,30 @@
   </ion-toolbar>
 
   <div *ngIf="!isUndercover" class="netwrk-header">
-    <ion-toolbar>
+    <ion-toolbar class="area-head">
       <img [src]="user.avatar_url ? user.avatar_url : toolsPrvd.defaultAvatar"
         (click)="goToProfile()" class="user-icon">
     </ion-toolbar>
-    <ion-slides slidesPerView="4" class="netwrk-slider">
-      <ion-slide class="netwrk-slide">
-        <div class="avatar add-to-netwrk">
-          <img src="assets/images/netwrk_plus.svg">
-        </div>
-      </ion-slide>
-      <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
-        <div class="avatar" (click)="goToProfile(user.id)">
-          <img [src]="chatPrvd.users[user.id].avatar_url">
-        </div>
-        <span *ngIf="user.first_name || user.last_name" class="username">
-          {{ user.first_name }} {{ user.last_name }}
-        </span>
-        <span *ngIf="!user.first_name && !user.last_name" class="username">
-          {{ user.email }}
-        </span>
-      </ion-slide>
-    </ion-slides>
+    <ion-toolbar>
+      <ion-slides slidesPerView="4" class="netwrk-slider">
+        <ion-slide class="netwrk-slide">
+          <div class="avatar add-to-netwrk">
+            <img src="assets/images/netwrk_plus.svg">
+          </div>
+        </ion-slide>
+        <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
+          <div class="avatar" (click)="goToProfile(user.id)">
+            <img [src]="chatPrvd.users[user.id].avatar_url">
+          </div>
+          <span *ngIf="user.first_name || user.last_name" class="username">
+            {{ user.first_name }} {{ user.last_name }}
+          </span>
+          <span *ngIf="!user.first_name && !user.last_name" class="username">
+            {{ user.email }}
+          </span>
+        </ion-slide>
+      </ion-slides>
+    </ion-toolbar>
   </div>
 
 </ion-header>

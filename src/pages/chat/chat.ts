@@ -209,7 +209,11 @@ export class ChatPage {
       updated_at: '2017-04-22T14:59:29.921Z',
     }
 
-    if (!this.user.avatar_url) this.user.avatar_url = this.toolsPrvd.defaultAvatar;
+    if (!this.user.avatar_url) {
+      this.user.avatar_url = this.toolsPrvd.defaultAvatar;
+    } else {
+      this.user.avatar_url = this.chatPrvd.hostUrl + this.user.avatar_url;
+    }
     if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
     this.textStrings.sendError = 'Error sending message';
     this.textStrings.noNetwork = 'Netwrk not found';
@@ -432,7 +436,7 @@ export class ChatPage {
             this.debug.postHangTime = 0;
           }
 
-          this.postMessages.push(message);
+          this.postMessages.push(data);
           this.messageDateTimer.start(this.postMessages);
         }
       }
@@ -463,7 +467,7 @@ export class ChatPage {
         }
       }).catch(err => {
         console.log(err);
-        pushMessage(err);
+        // pushMessage(err);
       });
 
       this.chatPrvd.appendContainer.setState('off');
@@ -507,10 +511,13 @@ export class ChatPage {
     setTimeout(() => {
       if (this.isUndercover) {
         // this.flipInput();
+        this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
         this.slideAvatarPrvd.sliderInit();
+        let position = this.undercoverPrvd.profileType ? 'public' : 'undercover'
         this.slideAvatarPrvd.setSliderPosition(this.isUndercover);
       } else {
+        this.chatPrvd.setState('area');
         this.cameraPreview.hide();
       }
       this.showUsers();

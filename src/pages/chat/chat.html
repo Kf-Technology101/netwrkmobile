@@ -72,7 +72,7 @@
     </ion-toolbar>
     <ion-toolbar>
       <ion-slides slidesPerView="4" class="netwrk-slider">
-        <ion-slide class="netwrk-slide">
+        <ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide" (click)="joinToNetwork()">
           <div class="avatar add-to-netwrk">
             <img src="assets/images/netwrk_plus.svg">
           </div>
@@ -118,7 +118,7 @@
         [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"
         *ngIf="!i.locked">
       </button>
-      <button class="feedback-button lock" (click)="unlockPost()"
+      <button class="feedback-button lock"
         [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"
         *ngIf="i.locked">
         <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>

@@ -228,9 +228,9 @@ export class ChatPage {
     }
 
     if (this.isUndercover) {
-      this.flipHover = false;
-    } else {
       this.flipHover = true;
+    } else {
+      this.flipHover = false;
     }
 
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
@@ -599,6 +599,14 @@ export class ChatPage {
     this.hideTopSlider('timer');
   }
 
+  joinToNetwork() {
+    this.networkPrvd.join(this.networkParams).subscribe(res => {
+      console.log(res);
+    }, err => {
+      console.log(err);
+    });
+  }
+
   private getUsers() {
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
@@ -617,7 +625,7 @@ export class ChatPage {
         this.chatUsers.push(this.user);
       }
 
-      console.log(this.chatUsers);
+      console.log(this.chatUsers, this.user, this.chatUsers[this.user.is]);
     }, err => {
       console.log(err);
     });

@@ -11,9 +11,7 @@ export class MessageDateTimer {
     color: '#bada55'
   };
 
-  constructor(messages: any) {
-    this.messages = messages;
-
+  constructor() {
     // defaults
     this.enableLogMessages = false;
     this.enableLogMessages = false;

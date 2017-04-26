@@ -161,7 +161,8 @@ export class ChatPage {
         if (!this.chatPrvd.appendContainer.hidden) {
           this.chatPrvd.mainBtn.setState('above_append');
         }
-      }, chatAnim/2 + 1);
+        this.scrollToBottom();
+      }, chatAnim / 2 + 1);
     }, err => {
       console.log(err);
     });

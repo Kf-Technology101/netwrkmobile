@@ -102,14 +102,9 @@ export class Chat {
     })
   }
 
-  public lockMessage(id: number, hint: string, password: string) {
-    let seq = this.api.post('messages/lock', {
-      id: id,
-      hint: hint,
-      password: password,
-    }).share();
+  public lockMessage(lock) {
+    let seq = this.api.post('messages/lock', lock).share();
     let seqMap = seq.map(res => res.json());
-
     return seqMap;
   }
 

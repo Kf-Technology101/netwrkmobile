@@ -425,12 +425,22 @@ export class ChatPage {
 
           this.postMessages.push(message);
           this.messageDateTimer.start(this.postMessages);
-        }
+
       }
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
         console.log(res);
         pushMessage(res);
+        let lockObj:any = {
+          id: res.id,
+          hint: this.postLockData.hint,
+          password: this.postLockData.password
+        }
+        this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
+          console.log('[lock] res:', lockRes);
+        }, lockErr => {
+          console.log('[lock] err:', lockErr);
+        });
       }).catch(err => {
         console.log(err);
         pushMessage(err);

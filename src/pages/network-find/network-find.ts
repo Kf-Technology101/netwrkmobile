@@ -68,8 +68,10 @@ export class NetworkFindPage {
             params.action = 'create';
             this.tools.pushPage(NetworkNoPage, params);
           } else {
+            console.log(this.chatPrvd.chatZipCode(), post_code)
             if (this.chatPrvd.chatZipCode() == post_code) {
               params.action = this.chatPrvd.getState();
+              console.log('action');
               this.tools.pushPage(ChatPage, params);
             } else {
               params.action = 'join';

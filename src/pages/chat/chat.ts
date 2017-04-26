@@ -425,7 +425,7 @@ export class ChatPage {
 
           this.postMessages.push(message);
           this.messageDateTimer.start(this.postMessages);
-
+        }
       }
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
@@ -555,12 +555,14 @@ export class ChatPage {
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
       if (users) {
-        this.chatPrvd.setStorageUsers(users);
         for (let i in users) {
           users[i].avatar_url = !users[i].avatar_url
             ? this.toolsPrvd.defaultAvatar
             : this.hostUrl + users[i].avatar_url;
+          if (!users[i].role_image_url)
+            users[i].role_image_url = this.toolsPrvd.defaultAvatar;
         }
+        this.chatPrvd.setStorageUsers(users);
         this.chatUsers = users;
         this.showMessages();
       } else {
@@ -584,6 +586,7 @@ export class ChatPage {
       console.log(data);
       this.postMessages = this.chatPrvd.organizeMessages(data);
       this.messageDateTimer.start(this.postMessages);
+      this.scrollToBottom();
     }, err => {
       console.log(err);
     })

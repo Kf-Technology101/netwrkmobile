@@ -13,7 +13,7 @@
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
         <img class="draggable-element"
           [src]="undercoverPrvd.profileType == 'undercover' ? user.role_image_url : user.avatar_url"
-          (tap)="goToProfile()">
+          (click)="goToProfile()">
       </div>
     </div>
 
@@ -71,13 +71,13 @@
     </ion-toolbar>
     <ion-slides slidesPerView="4" class="netwrk-slider">
       <ion-slide class="netwrk-slide">
-        <button ion-button class="add-to-netwrk">
-          <ion-icon ios="ios-add" md="ios-add"></ion-icon>
-        </button>
+        <div class="add-to-netwrk">
+          <img src="assets/images/netwrk_plus.svg">
+        </div>
       </ion-slide>
       <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
-        <div class="avatar" (tap)="goToProfile(user.id)">
-          <img [src]="toolsPrvd.defaultAvatar">
+        <div class="avatar" (click)="goToProfile(user.id)">
+          <img [src]="chatPrvd.users[user.id].avatar_url">
         </div>
         <span *ngIf="user.first_name || user.last_name" class="username">
           {{ user.first_name }} {{ user.last_name }}
@@ -96,10 +96,10 @@
   [ngStyle]="{'padding-bottom': contentPadding}">
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let i of postMessages">
-      <img *ngIf="chatPrvd.users[i.user_id]" (tap)="goToProfile(i.user_id)"
+      <img *ngIf="chatPrvd.users[i.user_id]" (click)="goToProfile(i.user_id)"
         [src]="i.public ? chatPrvd.users[i.user_id].avatar_url : chatPrvd.users[i.user_id].role_image_url"
         class="chat-avatar">
-      <img *ngIf="!chatPrvd.users[i.user_id]" (tap)="goToProfile(i.user_id)"
+      <img *ngIf="!chatPrvd.users[i.user_id]" (click)="goToProfile(i.user_id)"
         [src]="toolsPrvd.defaultAvatar"
         class="chat-avatar">
       <p class="message-container">
@@ -232,11 +232,11 @@
       </div>
 
       <button ion-button
-              (click)=" toggleChatOptions();
-                      toggleContainer(emojiContainer, 'hide');
-                      toggleContainer(shareContainer, 'hide')"
-              [@rotState]="chatOptions.state" ion-button item-left clear
-              id="plus-btn">
+        (click)=" toggleChatOptions();
+          toggleContainer(emojiContainer, 'hide');
+          toggleContainer(shareContainer, 'hide')"
+        [@rotState]="chatOptions.state" ion-button item-left clear
+        id="plus-btn">
         <ion-icon ios="ios-add" md="ios-add"></ion-icon>
       </button>
 

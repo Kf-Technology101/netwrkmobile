@@ -670,7 +670,12 @@ export class ChatPage {
     };
     console.log("feedback data:", feedbackData);
     this.chatPrvd.mainBtn.setState('minimised');
-    let feedbackModal = this.modalCtrl.create(FeedbackModal, { data: feedbackData });
+    let feedbackModal = this.modalCtrl.create(FeedbackModal,
+      {
+        data: feedbackData,
+        totalLikes: messageData.likes_count
+      }
+    );
     setTimeout(() => {
       feedbackModal.present();
     }, chatAnim/2);

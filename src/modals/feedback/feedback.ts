@@ -58,12 +58,17 @@ export class FeedbackModal {
     legendaryModal.present();
   }
 
-  ionViewDidEnter() {
+  likePost() {
     this.chatPrvd.sendFeedbackData(this.feedData).subscribe(res => {
       console.log('[likes] res:', res);
+      this.postInf.totalLikes = res.likes_count;
     }, err => {
       console.log('[likes] err:', err);
     });
+  }
+
+  ionViewDidEnter() {
+    this.postInf.totalLikes = this.params.get('totalLikes');
     this.mainBtn.state = 'fadeInfast';
   }
 

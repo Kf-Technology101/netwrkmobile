@@ -66,6 +66,12 @@ export class Chat {
     return result;
   }
 
+  public sendFeedbackData(data: any) {
+    let feed = this.api.post('/user_likes', data).share();
+    let feedMap = feed.map(res => res.json());
+    return feedMap;
+  }
+
   public sendMessage(data: any): any {
     return new Promise((resolve, reject) => {
       let params = {

@@ -424,6 +424,7 @@ export class ChatPage {
           }
 
           this.postMessages.push(message);
+          this.messageDateTimer.start(this.postMessages);
         }
       }
 
@@ -572,6 +573,7 @@ export class ChatPage {
     this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
       console.log(data);
       this.postMessages = this.chatPrvd.organizeMessages(data);
+      this.messageDateTimer.start(this.postMessages);
     }, err => {
       console.log(err);
     })
@@ -626,14 +628,11 @@ export class ChatPage {
     // if (this.cameraPrvd.takenPictures) {
     //   this.postMessage();
     // }
-
-    this.messageDateTimer.enableForceStart = true;
-    this.messageDateTimer.enableLogMessages = true;
-    this.messageDateTimer.start(this.postMessages);
   }
 
   ionViewDidLoad() {
     console.log('[UNDERCOVER.ts] viewDidLoad');
+    this.messageDateTimer.enableLogMessages = true;
     this.generateEmoticons();
     this.getUsers();
   }

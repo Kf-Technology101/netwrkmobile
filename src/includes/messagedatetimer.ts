@@ -14,7 +14,7 @@ export class MessageDateTimer {
   constructor() {
     // defaults
     this.enableLogMessages = false;
-    this.enableLogMessages = false;
+    this.enableForceStart = true;
     this.setTimerDelay(44);
   }
 

@@ -600,14 +600,19 @@ export class ChatPage {
   }
 
   joinToNetwork() {
+    this.toolsPrvd.showLoader();
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       console.log(res);
+      this.getUsers();
+      this.toolsPrvd.hideLoader();
     }, err => {
       console.log(err);
+      this.toolsPrvd.hideLoader();
     });
   }
 
   private getUsers() {
+    this.toolsPrvd.showLoader();
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
       if (users) {
@@ -625,9 +630,12 @@ export class ChatPage {
         this.chatUsers.push(this.user);
       }
 
+      this.toolsPrvd.hideLoader();
+
       console.log(this.chatUsers, this.user, this.chatUsers[this.user.is]);
     }, err => {
       console.log(err);
+      this.toolsPrvd.hideLoader();
     });
   }
 

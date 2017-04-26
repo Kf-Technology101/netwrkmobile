@@ -542,7 +542,7 @@ page-chat {
           background: color($colors, white);
           width: 100%;
         }
-        .like-button {
+        .post-button {
           width: 42px;
           height: 42px;
           border-radius: 13px;
@@ -559,6 +559,13 @@ page-chat {
           &.bottom {
             top: auto;
             bottom: 25px;
+          }
+          &.lock {
+            background: color($colors, bk-active-blue);
+            .icon {
+              font-size: 30px;
+              color: #fff;
+            }
           }
         }
       }

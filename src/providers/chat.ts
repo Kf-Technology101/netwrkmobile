@@ -50,7 +50,7 @@ export class Chat {
 
   public getState(): string {
     let state = this.localStorage.get('chat_state');
-    let result = state ? state : 'undercover';
+    let result = state ? state : 'area';
     return result;
   }
 

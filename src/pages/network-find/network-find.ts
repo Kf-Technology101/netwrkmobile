@@ -71,7 +71,7 @@ export class NetworkFindPage {
             console.log(this.chatPrvd.chatZipCode(), post_code)
             if (this.chatPrvd.chatZipCode() == post_code) {
               params.action = this.chatPrvd.getState();
-              console.log('action');
+              console.log(params.action);
               this.tools.pushPage(ChatPage, params);
             } else {
               params.action = 'join';

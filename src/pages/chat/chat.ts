@@ -141,14 +141,6 @@ export class ChatPage {
   ) {
     this.keyboard.disableScroll(true);
 
-    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
-    this.cameraPreview.startCamera(cameraOptions).then(res => {
-      console.log(res);
-      this.cameraPreview.show();
-    }, err => {
-      console.log(err);
-    });
-
     this.keyboard.onKeyboardShow().subscribe(res => {
       console.log(res);
       this.chatPrvd.postBtn.setState(true);
@@ -230,6 +222,19 @@ export class ChatPage {
     } else {
       this.isUndercover = this.undercoverPrvd.setUndercover(this.chatPrvd.getState() == 'undercover');
     }
+
+    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
+    this.cameraPreview.startCamera(cameraOptions).then(res => {
+      console.log(res);
+      if (this.isUndercover) {
+        this.cameraPreview.show();
+      } else {
+        this.cameraPreview.hide();
+      }
+    }, err => {
+      console.log(err);
+    });
+
     this.changePlaceholderText();
     this.showUsers();
 
@@ -502,8 +507,11 @@ export class ChatPage {
     setTimeout(() => {
       if (this.isUndercover) {
         // this.flipInput();
+        this.cameraPreview.show();
         this.slideAvatarPrvd.sliderInit();
         this.slideAvatarPrvd.setSliderPosition(this.isUndercover);
+      } else {
+        this.cameraPreview.hide();
       }
       this.showUsers();
       this.content.resize();

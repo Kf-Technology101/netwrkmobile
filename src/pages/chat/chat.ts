@@ -406,6 +406,7 @@ export class ChatPage {
         if (message.text.trim() != '' || message.images.length > 0) {
           message.created_at = moment();
           message.dateStr = 'a moment ago';
+          message.locked = data.locked;
 
           this.txtIn.value = '';
           this.chatPrvd.mainBtn.setState('normal');
@@ -433,18 +434,28 @@ export class ChatPage {
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
         console.log(res);
-        pushMessage(res);
-        let lockObj:any = {
-          id: res.id,
-          hint: this.postLockData.hint,
-          password: this.postLockData.password
+
+        if (this.postLockData.hint && this.postLockData.password) {
+          let lockObj:any = {
+            id: res.id,
+            hint: this.postLockData.hint,
+            password: this.postLockData.password
+          }
+
+          this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
+            console.log('[lock] res:', lockRes);
+            pushMessage(lockRes);
+            this.postLockData = {
+              id: null,
+              hint: null,
+              password: null
+            }
+          }, lockErr => {
+            console.log('[lock] err:', lockErr);
+          });
+        } else {
+          pushMessage(res);
         }
-        this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
-          console.log('[lock] res:', lockRes);
-          message.isLocked = true;
-        }, lockErr => {
-          console.log('[lock] err:', lockErr);
-        });
       }).catch(err => {
         console.log(err);
         pushMessage(err);

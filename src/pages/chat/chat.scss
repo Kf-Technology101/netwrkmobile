@@ -676,15 +676,17 @@ page-chat {
     -webkit-perspective: 1000;
     perspective: 1000;
 
-    #textInput {
-      input::-webkit-input-placeholder {
-        color: color($colors, bk);
+    &.hover {
+      #textInput {
+        input::-webkit-input-placeholder {
+          color: color($colors, bk);
+        }
       }
-    }
 
-    #plus-btn {
-      icon {
-        color: color($colors, bk);
+      #plus-btn {
+        .icon {
+          color: color($colors, bk);
+        }
       }
     }
   }

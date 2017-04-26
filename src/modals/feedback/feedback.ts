@@ -36,8 +36,10 @@ export class FeedbackModal {
   ) {
     let data = params.get('data');
     this.feedData = {
-      message_id: data.message_id,
-      user_id: data.user.id
+      user_like: {
+        user_id: data.user.id,
+        message_id: data.message_id
+      }
     }
   }
 

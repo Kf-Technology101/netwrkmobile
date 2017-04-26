@@ -74,7 +74,7 @@ export class ChatPage {
   postLock = new Toggleable('slideUp', true);
   chatBtns = new Toggleable(['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']);
 
-  flipHover: boolean = false;
+  flipHover: boolean;
 
   toggContainers: any = [
     this.emojiContainer,
@@ -209,7 +209,11 @@ export class ChatPage {
       updated_at: '2017-04-22T14:59:29.921Z',
     }
 
-    if (!this.user.avatar_url) this.user.avatar_url = this.toolsPrvd.defaultAvatar;
+    if (!this.user.avatar_url) {
+      this.user.avatar_url = this.toolsPrvd.defaultAvatar;
+    } else {
+      this.user.avatar_url = this.chatPrvd.hostUrl + this.user.avatar_url;
+    }
     if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
     this.textStrings.sendError = 'Error sending message';
     this.textStrings.noNetwork = 'Netwrk not found';
@@ -221,6 +225,12 @@ export class ChatPage {
       this.isUndercover = this.undercoverPrvd.setUndercover(action == 'undercover');
     } else {
       this.isUndercover = this.undercoverPrvd.setUndercover(this.chatPrvd.getState() == 'undercover');
+    }
+
+    if (this.isUndercover) {
+      this.flipHover = true;
+    } else {
+      this.flipHover = false;
     }
 
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
@@ -462,7 +472,7 @@ export class ChatPage {
         }
       }).catch(err => {
         console.log(err);
-        pushMessage(err);
+        // pushMessage(err);
       });
 
       this.chatPrvd.appendContainer.setState('off');
@@ -506,10 +516,13 @@ export class ChatPage {
     setTimeout(() => {
       if (this.isUndercover) {
         // this.flipInput();
+        this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
         this.slideAvatarPrvd.sliderInit();
+        let position = this.undercoverPrvd.profileType ? 'public' : 'undercover'
         this.slideAvatarPrvd.setSliderPosition(this.isUndercover);
       } else {
+        this.chatPrvd.setState('area');
         this.cameraPreview.hide();
       }
       this.showUsers();
@@ -586,6 +599,14 @@ export class ChatPage {
     this.hideTopSlider('timer');
   }
 
+  joinToNetwork() {
+    this.networkPrvd.join(this.networkParams).subscribe(res => {
+      console.log(res);
+    }, err => {
+      console.log(err);
+    });
+  }
+
   private getUsers() {
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
@@ -604,7 +625,7 @@ export class ChatPage {
         this.chatUsers.push(this.user);
       }
 
-      console.log(this.chatUsers);
+      console.log(this.chatUsers, this.user, this.chatUsers[this.user.is]);
     }, err => {
       console.log(err);
     });

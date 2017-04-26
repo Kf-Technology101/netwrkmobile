@@ -74,6 +74,8 @@ export class ChatPage {
   postLock = new Toggleable('slideUp', true);
   chatBtns = new Toggleable(['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']);
 
+  flipHover: boolean = false;
+
   toggContainers: any = [
     this.emojiContainer,
     this.shareContainer
@@ -467,10 +469,12 @@ export class ChatPage {
     }
 
     this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
+    this.flipInput();
     this.changePlaceholderText();
     this.showMessages();
     setTimeout(() => {
       if (this.isUndercover) {
+        this.flipInput();
         this.slideAvatarPrvd.sliderInit();
         this.slideAvatarPrvd.setSliderPosition(this.isUndercover);
       }
@@ -593,6 +597,10 @@ export class ChatPage {
 
   clearMessages() {
     this.postMessages = [];
+  }
+
+  flipInput() {
+    this.flipHover = !this.flipHover;
   }
 
   ionViewDidEnter() {

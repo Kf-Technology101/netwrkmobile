@@ -15,7 +15,7 @@ import { ChatPage } from '../pages/chat/chat';
 // import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
 // import { NetworkPage } from '../pages/network/network';
-// import { CameraPage } from '../pages/camera/camera';
+import { CameraPage } from '../pages/camera/camera';
 // import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
 
 // Providers

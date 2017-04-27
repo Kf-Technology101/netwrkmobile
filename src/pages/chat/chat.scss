@@ -644,14 +644,15 @@ page-chat {
             width: 26px;
             height: 26px;
             border-radius: 50%;
-            margin-left: 16px;
 
             &.user-icon {
               float: left;
+              margin-left: 16px;
             }
 
             &.legendary-icon {
               float: right;
+              margin-right: 16px;
             }
           }
         }

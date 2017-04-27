@@ -4,13 +4,13 @@ import { toggleFade } from '../../includes/animations';
 import { Chat } from '../../providers/chat';
 
 @Component({
-  selector: 'modal-legendarylist',
-  templateUrl: 'legendarylist.html',
+  selector: 'modal-sharelist',
+  templateUrl: 'sharelist.html',
   animations: [
     toggleFade
   ]
 })
-export class LegendaryListModal {
+export class ShareListModal {
 
   private mainBtn: any = {
     state: 'fadeOut',

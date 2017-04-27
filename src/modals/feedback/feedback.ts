@@ -19,12 +19,17 @@ export class FeedbackModal {
   private mainBtn: any = {
     state: 'fadeOut',
     hidden: false
-  }
+  };
 
   private postInf: any = {
     totalLegendary: 0,
     totalLikes: 0
-  }
+  };
+
+  private postStatus: any = {
+    isLiked: false,
+    isLegendary: false
+  };
 
   private feedData:any;
 
@@ -53,12 +58,12 @@ export class FeedbackModal {
     feedbackShareModal.present();
   }
 
-  goLegendary() {
-    let legendaryModal = this.modalCtrl.create(LegendaryListModal);
-    legendaryModal.present();
+  makeLegendary() {
+    // let legendaryModal = this.modalCtrl.create(LegendaryListModal);
+    // legendaryModal.present();
   }
 
-  likePost() {
+  makeLiked() {
     this.chatPrvd.sendFeedbackData(this.feedData).subscribe(res => {
       console.log('[likes] res:', res);
       this.postInf.totalLikes = res.likes_count;
@@ -69,6 +74,9 @@ export class FeedbackModal {
 
   ionViewDidEnter() {
     this.postInf.totalLikes = this.params.get('totalLikes');
+    if (!this.postInf.totalLikes) {
+      this.postInf.totalLikes = 0;
+    }
     this.mainBtn.state = 'fadeInfast';
   }
 

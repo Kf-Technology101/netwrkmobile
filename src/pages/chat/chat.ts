@@ -668,7 +668,8 @@ export class ChatPage {
       message_id: messageData.id,
       user: this.user
     };
-    console.log("feedback data:", feedbackData);
+    console.log('message data:', messageData);
+    console.log('feedback data:', feedbackData);
     this.chatPrvd.mainBtn.setState('minimised');
     let feedbackModal = this.modalCtrl.create(FeedbackModal,
       {

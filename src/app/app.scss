@@ -470,7 +470,7 @@ ion-header.incognito-header {
 
 modal-feedback,
 modal-feedbackshare,
-modal-legendarylist {
+modal-sharelist {
   background: transparent;
   .users-list {
     &.item-block .item-inner {
@@ -510,9 +510,15 @@ modal-legendarylist {
     .legendary-btn {
       width: 42px;
       height: 42px;
-      background: #5b87aa;
       border-radius: 11px;
       border: 1px solid #eee;
+      background: url('../assets/icon/legendary_dis.png') no-repeat center;
+      background-color: color($colors, bk);
+      &.active {
+        background: url('../assets/icon/legendary_act.png') no-repeat center;
+        background-color: color($colors, white);
+        background-size: 35px;
+      }
       .badge {
         bottom: -4px;
         left: -7px;
@@ -597,9 +603,26 @@ modal-legendarylist {
         background: #fff;
         &.like-btn {
           height: 100%;
-          background: url(../assets/icon/like.svg) no-repeat center;
-          background-color: #5b87aa;
-          background-size: 178px;
+          background-color: color($colors, bk);
+          position: relative;
+          &.liked {
+            background-color: color($colors, white);
+            .like-bg {
+              background: color($colors, bk);
+            }
+          }
+          .like-bg {
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            width: 178px;
+            height: 178px;
+            margin: auto;
+            -webkit-mask: url(../assets/icon/like.svg) no-repeat 50% 50%;
+            background: #fff;
+          }
         }
         &.secondary {
           height: 42px;

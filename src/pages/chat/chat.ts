@@ -300,7 +300,7 @@ export class ChatPage {
   }
 
   setContentPadding(status) {
-    console.log(document.documentElement.clientHeight + '');
+    // console.log(document.documentElement.clientHeight + '');
     this.contentPadding = status
       ? document.documentElement.clientHeight / 2 + 76 + 'px'
       : '200px';
@@ -309,7 +309,7 @@ export class ChatPage {
 
   toggleContainer(container, visibility?:string) {
     if (visibility == 'hide') {
-      this.setContentPadding(false);
+      // this.setContentPadding(false);
 
       if (this.chatPrvd.appendContainer.hidden) {
         this.chatPrvd.mainBtn.setState('normal');
@@ -326,7 +326,7 @@ export class ChatPage {
 
     if (!visibility) {
       if (container.hidden) {
-        console.log('setContentPadding', true);
+        // console.log('setContentPadding', true);
         this.chatPrvd.mainBtn.setState('moved-n-scaled');
 
         container.show();
@@ -343,7 +343,7 @@ export class ChatPage {
           }
         }
       } else {
-        console.log('setContentPadding', false);
+        // console.log('setContentPadding', false);
         this.setContentPadding(false);
 
         if (this.chatPrvd.appendContainer.hidden) {
@@ -472,7 +472,7 @@ export class ChatPage {
         }
       }).catch(err => {
         console.log(err);
-        // pushMessage(err);
+        pushMessage(err);
       });
 
       this.chatPrvd.appendContainer.setState('off');
@@ -600,14 +600,19 @@ export class ChatPage {
   }
 
   joinToNetwork() {
+    this.toolsPrvd.showLoader();
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       console.log(res);
+      this.getUsers();
+      this.toolsPrvd.hideLoader();
     }, err => {
       console.log(err);
+      this.toolsPrvd.hideLoader();
     });
   }
 
   private getUsers() {
+    this.toolsPrvd.showLoader();
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
       if (users) {
@@ -625,9 +630,12 @@ export class ChatPage {
         this.chatUsers.push(this.user);
       }
 
+      this.toolsPrvd.hideLoader();
+
       console.log(this.chatUsers, this.user, this.chatUsers[this.user.is]);
     }, err => {
       console.log(err);
+      this.toolsPrvd.hideLoader();
     });
   }
 
@@ -660,7 +668,8 @@ export class ChatPage {
       message_id: messageData.id,
       user: this.user
     };
-    console.log("feedback data:", feedbackData);
+    console.log('message data:', messageData);
+    console.log('feedback data:', feedbackData);
     this.chatPrvd.mainBtn.setState('minimised');
     let feedbackModal = this.modalCtrl.create(FeedbackModal,
       {

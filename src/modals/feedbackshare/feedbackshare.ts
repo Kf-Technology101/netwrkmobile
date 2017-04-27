@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { NavParams, ViewController } from 'ionic-angular';
+import { NavParams, ViewController, ModalController } from 'ionic-angular';
 
 import { Chat } from '../../providers/chat';
 import { toggleFade } from '../../includes/animations';
+import { ShareListModal } from '../sharelist/sharelist';
 
 @Component({
   selector: 'modal-feedbackshare',
@@ -21,8 +22,14 @@ export class FeedbackShareModal {
   constructor(
     private params: NavParams,
     private viewCtrl: ViewController,
+    private modalCtrl: ModalController,
     public chatPrvd: Chat
   ) {
+  }
+
+  chooseToShare() {
+    let sharelistModal = this.modalCtrl.create(ShareListModal);
+    sharelistModal.present();
   }
 
   closeModal() {

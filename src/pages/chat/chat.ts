@@ -300,7 +300,7 @@ export class ChatPage {
   }
 
   setContentPadding(status) {
-    console.log(document.documentElement.clientHeight + '');
+    // console.log(document.documentElement.clientHeight + '');
     this.contentPadding = status
       ? document.documentElement.clientHeight / 2 + 76 + 'px'
       : '200px';
@@ -309,7 +309,7 @@ export class ChatPage {
 
   toggleContainer(container, visibility?:string) {
     if (visibility == 'hide') {
-      this.setContentPadding(false);
+      // this.setContentPadding(false);
 
       if (this.chatPrvd.appendContainer.hidden) {
         this.chatPrvd.mainBtn.setState('normal');
@@ -326,7 +326,7 @@ export class ChatPage {
 
     if (!visibility) {
       if (container.hidden) {
-        console.log('setContentPadding', true);
+        // console.log('setContentPadding', true);
         this.chatPrvd.mainBtn.setState('moved-n-scaled');
 
         container.show();
@@ -343,7 +343,7 @@ export class ChatPage {
           }
         }
       } else {
-        console.log('setContentPadding', false);
+        // console.log('setContentPadding', false);
         this.setContentPadding(false);
 
         if (this.chatPrvd.appendContainer.hidden) {
@@ -472,7 +472,7 @@ export class ChatPage {
         }
       }).catch(err => {
         console.log(err);
-        // pushMessage(err);
+        pushMessage(err);
       });
 
       this.chatPrvd.appendContainer.setState('off');

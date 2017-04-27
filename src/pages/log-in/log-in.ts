@@ -84,21 +84,19 @@ export class LogInPage {
   }
 
   doFbLogin() {
-    // this.tools.showLoader();
     this.authPrvd.signUpFacebook().then((data: ResponseAuthData) => {
       console.log(data);
-      // this.tools.hideLoader();
-      if (data.date_of_birthday) {
-        let date = new Date(data.date_of_birthday);
-        if (typeof date == 'object') {
-          this.authPrvd.setFbConnected();
-          let page = this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage);
-          this.tools.pushPage(page);
-        }
-      } else this.tools.pushPage(SignUpAfterFbPage);
+      
+      // if (data.date_of_birthday) {
+      //   let date = new Date(data.date_of_birthday);
+      //   if (typeof date == 'object') {
+      //     this.authPrvd.setFbConnected();
+      //     let page = this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage);
+      //     this.tools.pushPage(page);
+      //   }
+      // } else this.tools.pushPage(SignUpAfterFbPage);
     }, err => {
       console.log(err);
-      // this.tools.hideLoader();
       this.tools.showToast(this.textStrings.fb);
     });
   }

@@ -95,7 +95,7 @@ export class Auth {
         if (data.status && data.status == 'connected') {
           this.loginWithFacebook(data, resolve, reject);
         } else {
-          Facebook.login(['public_profile']).then((data: any) => {
+          Facebook.login(['public_profile', 'user_friends', 'email']).then((data: any) => {
             this.loginWithFacebook(data, resolve, reject);
           }, err => {
             reject(err);
@@ -157,6 +157,17 @@ export class Auth {
 
   private loginWithFacebook(data: any, resolve, reject) {
     this.social.setSocialAuth(data.authResponse, Social.FACEBOOK);
+
+    Facebook.api('/me', ['public_profile', 'user_friends', 'email']).then(me => {
+      console.log('facebook', me);
+      Facebook.api('/' + me.id, ['public_profile', 'user_friends', 'email']).then(res => {
+        console.log('facebook', res);
+      }).catch(err => {
+        console.log('facebook', err);
+      })
+    }).catch(err => {
+      console.log('facebook', err);
+    })
 
     let time = new Date().getTime();
     let authData = {

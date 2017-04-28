@@ -9,13 +9,13 @@ import { LogInPage } from '../pages/log-in/log-in';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 // import { SignUpFacebookPage } from '../pages/sign-up-facebook/sign-up-facebook';
-import { ChatPage } from '../pages/chat/chat';
+// import { ChatPage } from '../pages/chat/chat';
 // import { HomePage } from '../pages/home/home';
 // import { ProfilePage } from '../pages/profile/profile';
 // import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
 // import { NetworkPage } from '../pages/network/network';
-import { CameraPage } from '../pages/camera/camera';
+// import { CameraPage } from '../pages/camera/camera';
 // import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
 
 // Providers
@@ -85,7 +85,7 @@ export class MyApp {
       // this.rootPage = ProfilePage;
       // this.rootPage = ChatPage;
       // this.rootPage = CameraPage;
-      // this.rootPage = UndercoverCharacterPage; 
+      // this.rootPage = UndercoverCharacterPage;
       // this.rootPage = SignUpConfirmPage;
       // this.rootPage = SignUpFacebookPage;
     }

@@ -42,6 +42,7 @@ export class NetworkFindPage {
   go() {
     if (this.platform.is('cordova')) {
       this.tools.showToast('Please wait...', null, 'bottom');
+      this.getZipCode();
     } else {
       this.tools.pushPage(NetworkNoPage);
     }
@@ -49,14 +50,16 @@ export class NetworkFindPage {
 
   ionViewDidLoad() {
     this.hideSearch = false;
+    alert('ionViewDidLoad');
     this.getZipCode();
   }
 
   private getZipCode() {
     this.gps.getMyZipCode().then( (zipRes: GeolocationInterface) => {
-      console.log(zipRes);
+      alert(JSON.stringify(zipRes));
       this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(
         res => {
+          alert(JSON.stringify(res));
           console.log(res);
           let post_code: number = res.network ? res.network.post_code : null;
           let params: any = {
@@ -80,9 +83,13 @@ export class NetworkFindPage {
             this.chatPrvd.setZipCode(post_code);
             this.chatPrvd.saveNetwork(res.network);
           }
-        }, err => console.log(err)
+        }, err => {
+          alert(JSON.stringify(err));
+          console.log(err)
+        }
       );
     }, err => {
+      alert(JSON.stringify(err));
       console.log(err);
       if (err.code && err.code == 1) {
         this.tools.showToast(err.message, null, 'bottom');

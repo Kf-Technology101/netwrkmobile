@@ -37,13 +37,17 @@ export class SignUpFacebookPage {
         }
       };
 
-      this.authPrvd.connectAccountToFb(data).subscribe(
-        res => {
-          this.authPrvd.setFbConnected();
+      this.authPrvd.connectAccountToFb(data, res).then(res => {
+        this.userPrvd.update(data.result.id, data.update)
+        .map(res => res.json()).subscribe(res => {
+          console.log(res);
           this.toolsPrvd.showToast('Facebook already connected');
           this.toolsPrvd.pushPage(UndercoverCharacterPage);
-        }, err => console.error('ERROR', err)
-      );
+        }, err => {
+          console.log(err);
+          this.toolsPrvd.showToast(JSON.stringify(err));
+        });
+      }).catch(err => console.error('ERROR', err));
     });
   }
 

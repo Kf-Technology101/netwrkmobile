@@ -4,7 +4,7 @@ import { NavController, NavParams, Content, Platform, ModalController } from 'io
 import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { CameraPage } from '../camera/camera';
-import { NetworkFindPage } from '../network-find/network-find';
+// import { NetworkFindPage } from '../network-find/network-find';
 import { FeedbackModal } from '../../modals/feedback/feedback';
 import { Toggleable } from '../../includes/toggleable';
 import { MessageDateTimer } from '../../includes/messagedatetimer';
@@ -519,8 +519,8 @@ export class ChatPage {
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
         this.slideAvatarPrvd.sliderInit();
-        let position = this.undercoverPrvd.profileType ? 'public' : 'undercover'
-        this.slideAvatarPrvd.setSliderPosition(this.isUndercover);
+        let position = this.undercoverPrvd.profileType ? false : true
+        this.slideAvatarPrvd.setSliderPosition(position);
       } else {
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();

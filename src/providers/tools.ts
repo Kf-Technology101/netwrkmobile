@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import 'rxjs/add/operator/map';
 
 import * as moment from 'moment';
 
@@ -20,7 +18,6 @@ export class Tools {
   private loader: any;
 
   constructor(
-    public http: Http,
     public events: Events,
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,

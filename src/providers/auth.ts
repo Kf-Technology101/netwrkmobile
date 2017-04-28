@@ -9,19 +9,25 @@ import { LocalStorage } from './local-storage';
 import { Network } from './network';
 import { Social } from './social';
 
-import { Facebook } from 'ionic-native';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 
 @Injectable()
 export class Auth {
   public confirmCode: any;
   public registerData: any;
   public fbResponseData: any;
+  private fbPermissions: Array<string> = [
+    'public_profile',
+    'user_friends',
+    'email'
+  ];
 
   constructor(
     public api: Api,
     public storage: LocalStorage,
     public network: Network,
     public social: Social,
+    private facebook: Facebook
   ) {
     console.log('Hello Auth Provider');
   }
@@ -90,12 +96,12 @@ export class Auth {
   public signUpFacebook(): Promise<any> {
 
     return new Promise((resolve, reject) => {
-      Facebook.getLoginStatus().then((data: any) => {
+      this.facebook.getLoginStatus().then((data: FacebookLoginResponse) => {
 
         if (data.status && data.status == 'connected') {
           this.loginWithFacebook(data, resolve, reject);
         } else {
-          Facebook.login(['public_profile', 'user_friends', 'email']).then((data: any) => {
+          this.facebook.login(this.fbPermissions).then((data: FacebookLoginResponse) => {
             this.loginWithFacebook(data, resolve, reject);
           }, err => {
             reject(err);
@@ -136,7 +142,7 @@ export class Auth {
     this.network.saveInviteAccess(authData.invitation_sent);
   }
 
-  public getFbLoginStatus() { return Facebook.getLoginStatus(); }
+  public getFbLoginStatus() { return this.facebook.getLoginStatus(); }
 
   public setFbConnected() {
     this.storage.set('facebook_connected', true);
@@ -144,7 +150,7 @@ export class Auth {
 
   public getFbConnected() {
     let authData = this.storage.get('facebook_connected');;
-    let result = authData ? Facebook.getLoginStatus() : null;
+    let result = authData ? this.facebook.getLoginStatus() : null;
     return result;
   }
 
@@ -155,16 +161,20 @@ export class Auth {
     return seqMap;
   }
 
-  private loginWithFacebook(data: any, resolve, reject) {
+  private loginWithFacebook(data: FacebookLoginResponse, resolve, reject) {
     this.social.setSocialAuth(data.authResponse, Social.FACEBOOK);
 
-    Facebook.api('/me', ['public_profile', 'user_friends', 'email']).then(me => {
+    let fields: Array<string> = [
+      'birthday',
+      'email',
+      'first_name',
+      'last_name'
+    ];
+    this.facebook.api(
+      '/me?fields=' + fields.join(','),
+      this.fbPermissions
+    ).then(me => {
       console.log('facebook', me);
-      Facebook.api('/' + me.id, ['public_profile', 'user_friends', 'email']).then(res => {
-        console.log('facebook', res);
-      }).catch(err => {
-        console.log('facebook', err);
-      })
     }).catch(err => {
       console.log('facebook', err);
     })

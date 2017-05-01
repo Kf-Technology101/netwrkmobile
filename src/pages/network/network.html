@@ -38,7 +38,7 @@
       <ion-list>
         <ion-item (click)="goToProfile(p)" *ngFor="let p of users">
           <ion-avatar item-left>
-            <img src="assets/images/incognito.png">
+            <img [src]="p.avatar_url">
           </ion-avatar>
           <h2 ion-text color="bk" *ngIf="p.first_name || p.last_name">{{ p.first_name }} {{ p.last_name }}</h2>
           <h2 ion-text color="bk" *ngIf="!p.first_name && !p.last_name">{{ p.email }}</h2>

@@ -12,6 +12,8 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 import { User } from '../../providers/user';
 import { Auth } from '../../providers/auth';
 
+import { AlertController } from 'ionic-angular';
+
 @Component({
   selector: 'page-profile',
   templateUrl: 'profile.html'
@@ -33,6 +35,7 @@ export class ProfilePage {
   };
 
   public user: any = {};
+  private fbFriends: any = [];
 
   constructor(
     public navCtrl: NavController,
@@ -44,16 +47,10 @@ export class ProfilePage {
     public userPrvd: User,
     public authPrvd: Auth,
     public zone: NgZone,
+    public alertCtrl: AlertController
   ) {
     this.user.id = this.navParams.get('id');
     console.log(this.user);
-
-    setTimeout(()=>{
-      for (var i = 0; i < 6; i++) {
-        this.testSlides.push(i.toString());
-      }
-    },100);
-
     // this.isUndercover = this.undercoverPrvd.isUndercover;
   }
 
@@ -65,17 +62,42 @@ export class ProfilePage {
 
     console.log(this.connect.facebook);
 
-    if (this.fbSlider) {
-      this.fbSlider.pager = true;
-      this.fbSlider.slidesPerView = 5;
-    }
+    this.social.getFriendList().then(res => {
+      console.log(res);
+      this.fbFriends = res.data;
+      console.log(this.fbFriends);
+      if (this.fbSlider) {
+        this.fbSlider.pager = true;
+        this.fbSlider.slidesPerView = 5;
+      }
+    }).catch(err => console.log(err));
   }
 
   connectToFacebook() {
-    this.social.connectToFacebook().then(res => {
-      this.connect.facebook = this.social.getFacebookData();
-      this.tools.showToast('Facebook already connected');
+    // this.social.connectToFacebook().then(res => {
+    //   this.connect.facebook = this.social.getFacebookData();
+    //   this.tools.showToast('Facebook already connected');
+    // });
+    // this.social.getFbPermission();
+    let confirm = this.alertCtrl.create({
+      title: 'Facebook authentication',
+      message: 'You need to sign into Facebook to use this feature. Sign in now?',
+      buttons: [
+        {
+          text: 'Cancel',
+          handler: () => {
+            console.log('Disagree clicked');
+          }
+        },
+        {
+          text: 'OK',
+          handler: () => {
+            console.log('Agree clicked');
+          }
+        }
+      ]
     });
+    confirm.present();
   }
 
   connectToInstagram() {
@@ -123,8 +145,10 @@ export class ProfilePage {
   private loadProfile() {
     console.log(this.user.id, this.authPrvd.getAuthData().id)
     if (this.user.id == this.authPrvd.getAuthData().id) {
+      this.ownProfile = true;
       this.loadOwnProfile();
     } else {
+      this.ownProfile = false;
       this.loadPublicProfile();
     }
   }
@@ -152,12 +176,12 @@ export class ProfilePage {
 
   ionViewDidEnter() {
     console.log('[PROFILE.ts] viewDidEnter');
-    // if (this.isUndercover) {
+    if (this.ownProfile) {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       let position = this.undercoverPrvd.profileType ? false : true
       this.slideAvatarPrvd.sliderInit();
       this.slideAvatarPrvd.setSliderPosition(position);
-    // }
+    }
   }
 
   ionViewDidLoad() {

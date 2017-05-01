@@ -137,6 +137,7 @@ export class Chat {
   public setStorageUsers(users: Array<any>) {
     let stUsers: any = {};
     if (users.length) for (let i in users) stUsers[users[i].id] = users[i];
+    this.localStorage.set('chat_count_users', stUsers.length);
     this.users = stUsers;
   }
 
@@ -159,6 +160,10 @@ export class Chat {
 
   public removeNetwork() {
     this.localStorage.rm('current_network');
+  }
+
+  public getCountUser(): number {
+    return this.localStorage.get('chat_count_users');
   }
 
   private sendMessageWithImage(params: any, dataImages: any): any {

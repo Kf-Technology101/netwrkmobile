@@ -72,7 +72,9 @@ export class NetworkFindPage {
             this.tools.pushPage(NetworkNoPage, params);
           } else {
             console.log(this.chatPrvd.chatZipCode(), post_code)
-            if (this.chatPrvd.chatZipCode() == post_code) {
+            if (this.chatPrvd.chatZipCode() == post_code &&
+              this.chatPrvd.getCountUser() && this.chatPrvd.getCountUser() > 10
+            ) {
               params.action = this.chatPrvd.getState();
               console.log(params.action);
               this.tools.pushPage(ChatPage, params);

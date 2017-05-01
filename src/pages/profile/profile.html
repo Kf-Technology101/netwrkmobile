@@ -1,7 +1,7 @@
-<ion-header *ngIf="isUndercover">
+<ion-header>
   <ion-toolbar>
 
-    <div class="drag-container">
+    <div class="drag-container" *ngIf="ownProfile">
       <div class="dragline">
         <span class="info">
           <span *ngIf="undercoverPrvd.profileType == 'undercover'" class="username">
@@ -28,22 +28,15 @@
 </ion-header>
 
 <ion-content has-main-btn [ngClass]="{'undercover': isUndercover}">
-  <ion-row *ngIf="!isUndercover" class="public-avatar" padding>
+  <ion-row *ngIf="connect.facebook && fbFriends.length > 0" class="facebook" padding>
     <ion-col>
-      <div class="avatar">
-        <img [src]="this.user.avatar_url">
-      </div>
-    </ion-col>
-  </ion-row>
-  <ion-row *ngIf="connect.facebook" class="facebook" padding>
-    <ion-col>
-      <label>{{ testSlides.length }} Сommon Connections</label>
+      <label>{{ fbFriends.length }} Сommon Connections</label>
       <ion-slides #fbSlider>
-        <ion-slide *ngFor="let testSlide of testSlides">
+        <ion-slide *ngFor="let friend of fbFriends">
           <div class="avatar">
-            <img src="assets/images/Layer{{ testSlide }}.png">
+            <img [src]="friend.picture.data.url">
           </div>
-          <span>Test</span>
+          <span>{{ friend.name }}</span>
         </ion-slide>
       </ion-slides>
     </ion-col>
@@ -51,7 +44,7 @@
   <ion-row class="connect" padding>
     <ion-col>
       <ion-row>
-        <ion-col class="fb" *ngIf="!connect.facebook">
+        <ion-col class="fb">
           <button type="button" (click)="connectToFacebook()">
             <ion-icon name="logo-facebook"></ion-icon>
             Facebook

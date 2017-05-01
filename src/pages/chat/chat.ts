@@ -685,6 +685,12 @@ export class ChatPage {
       }
     );
     setTimeout(() => {
+      feedbackModal.onDidDismiss(data => {
+        if (data) {
+          console.log('[likeClose] data:', data);
+          console.log('[likeClose] messageId:', messageId);
+        }
+      });
       feedbackModal.present();
     }, chatAnim/2);
   }

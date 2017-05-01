@@ -9,21 +9,29 @@ import { LocalStorage } from './local-storage';
 import { Network } from './network';
 import { Social } from './social';
 
-import { Facebook } from 'ionic-native';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
+
+import * as moment from 'moment';
 
 @Injectable()
 export class Auth {
   public confirmCode: any;
   public registerData: any;
-  public fbResponseData: any;
+  private fbPermissions: Array<string> = [
+    'public_profile',
+    'user_friends',
+    'email'
+  ];
+  public hostUrl: string;
 
   constructor(
     public api: Api,
     public storage: LocalStorage,
     public network: Network,
     public social: Social,
+    private facebook: Facebook
   ) {
-    console.log('Hello Auth Provider');
+    this.hostUrl = this.api.hostUrl;
   }
 
   public checkLogin(params: any) {
@@ -90,12 +98,12 @@ export class Auth {
   public signUpFacebook(): Promise<any> {
 
     return new Promise((resolve, reject) => {
-      Facebook.getLoginStatus().then((data: any) => {
+      this.facebook.getLoginStatus().then((data: FacebookLoginResponse) => {
 
         if (data.status && data.status == 'connected') {
           this.loginWithFacebook(data, resolve, reject);
         } else {
-          Facebook.login(['public_profile']).then((data: any) => {
+          this.facebook.login(this.fbPermissions).then((data: FacebookLoginResponse) => {
             this.loginWithFacebook(data, resolve, reject);
           }, err => {
             reject(err);
@@ -136,7 +144,7 @@ export class Auth {
     this.network.saveInviteAccess(authData.invitation_sent);
   }
 
-  public getFbLoginStatus() { return Facebook.getLoginStatus(); }
+  public getFbLoginStatus() { return this.facebook.getLoginStatus(); }
 
   public setFbConnected() {
     this.storage.set('facebook_connected', true);
@@ -144,41 +152,87 @@ export class Auth {
 
   public getFbConnected() {
     let authData = this.storage.get('facebook_connected');;
-    let result = authData ? Facebook.getLoginStatus() : null;
+    let result = authData ? this.facebook.getLoginStatus() : null;
     return result;
   }
 
-  public connectAccountToFb(accountInfo: any) {
-    let seq = this.api.post('providers', accountInfo).share();
-    let seqMap = seq.map(res => res.json());
-
-    return seqMap;
+  public connectAccountToFb(accountInfo: any, fbData: FacebookLoginResponse) {
+    return new Promise((resolve, reject) => {
+      let seq = this.api.post('providers', accountInfo).share();
+      let seqMap = seq.map(res => res.json()).subscribe(res => {
+        this.loginWithFacebook(fbData, resolve, reject, false);
+      }, err => reject(err));
+    });
   }
 
-  private loginWithFacebook(data: any, resolve, reject) {
+  private loginWithFacebook(data: FacebookLoginResponse, resolve, reject, oAuth: boolean = true) {
     this.social.setSocialAuth(data.authResponse, Social.FACEBOOK);
 
-    let time = new Date().getTime();
-    let authData = {
-      user: {
-        provider_name: 'fb',
-        provider_id: data.authResponse.userID,
-        phone: time,
-        email: time + '@mail.com',
-        token: data.authResponse.accessToken,
+    let fields: Array<string> = [
+      'birthday',
+      'email',
+      'first_name',
+      'last_name'
+    ];
+    this.facebook.api(
+      '/me?fields=' + fields.join(','),
+      this.fbPermissions
+    ).then(res => {
+      console.log('facebook', res);
+      let birthday = res.birthday ? new Date(res.birthday).toISOString() : null;
+      let updateObj = {
+        user: {
+          date_of_birthday: birthday ? this.formateDate(birthday) : null,
+          first_name: res.first_name || null,
+          last_name: res.last_name || null
+        }
       }
-    }
 
-    let seq = this.api.post('sessions/oauth_login', authData).share();
-    seq.map(res => res.json()).subscribe(
-      res => {
-        if (res.date_of_birthday) {
-          let date = new Date(res.date_of_birthday);
-          if (typeof date == 'object') this.saveAuthData(res, 'facebook');
-        } else this.fbResponseData = res;
-        resolve(res);
-      }, err => reject(err)
-    );
+      let time = new Date().getTime();
+      let authData = {
+        user: {
+          provider_name: 'fb',
+          provider_id: data.authResponse.userID,
+          phone: time,
+          email: res.email || time + '@mail.com',
+          token: data.authResponse.accessToken,
+          image_url: null
+        }
+      }
+
+      this.facebook.api(
+        'me/picture?width=320&height=320&redirect=false',
+        this.fbPermissions
+      ).then(pic => {
+        console.log(pic);
+        // authData.user.image_url = pic ? pic.data.url : null;
+
+        let resolveObj = {
+          update: updateObj,
+          auth: authData,
+          result: this.getAuthData()
+        }
+
+        if (oAuth) {
+          let seq = this.api.post('sessions/oauth_login', authData).share();
+          seq.map(res => res.json()).subscribe(
+            res => {
+              resolveObj.result = res;
+              this.saveAuthData(res, 'facebook');
+              resolve(resolveObj);
+            }, err => reject(err)
+          );
+        } else {
+          this.setFbConnected();
+          resolve(resolveObj);
+        }
+
+      }).catch(err => reject(err))
+    }).catch(err => reject(err))
+  }
+
+  private formateDate(date?: string) {
+    return moment(date).format('YYYY-MM-DD');
   }
 
 }

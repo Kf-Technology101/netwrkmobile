@@ -40,11 +40,8 @@ export class User {
     seq.map(res => res.json()).subscribe(
       res => {
         console.log(res);
-        this.auth.saveAuthData(res, 'email');
-        if (type === 'fb') {
-          this.auth.fbResponseData = null;
-          this.auth.saveAuthData(res, 'facebook');
-        }
+        let authType = type ? type : 'email';
+        this.auth.saveAuthData(res, authType);
       }, err => console.error('ERROR', err)
     );
 

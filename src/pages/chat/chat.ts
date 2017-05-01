@@ -4,7 +4,7 @@ import { NavController, NavParams, Content, Platform, ModalController } from 'io
 import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { CameraPage } from '../camera/camera';
-import { NetworkFindPage } from '../network-find/network-find';
+// import { NetworkFindPage } from '../network-find/network-find';
 import { FeedbackModal } from '../../modals/feedback/feedback';
 import { Toggleable } from '../../includes/toggleable';
 import { MessageDateTimer } from '../../includes/messagedatetimer';
@@ -519,8 +519,8 @@ export class ChatPage {
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
         this.slideAvatarPrvd.sliderInit();
-        let position = this.undercoverPrvd.profileType ? 'public' : 'undercover'
-        this.slideAvatarPrvd.setSliderPosition(this.isUndercover);
+        let position = this.undercoverPrvd.profileType ? false : true
+        this.slideAvatarPrvd.setSliderPosition(position);
       } else {
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
@@ -600,14 +600,19 @@ export class ChatPage {
   }
 
   joinToNetwork() {
+    this.toolsPrvd.showLoader();
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       console.log(res);
+      this.getUsers();
+      this.toolsPrvd.hideLoader();
     }, err => {
       console.log(err);
+      this.toolsPrvd.hideLoader();
     });
   }
 
   private getUsers() {
+    this.toolsPrvd.showLoader();
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
       if (users) {
@@ -625,9 +630,12 @@ export class ChatPage {
         this.chatUsers.push(this.user);
       }
 
+      this.toolsPrvd.hideLoader();
+
       console.log(this.chatUsers, this.user, this.chatUsers[this.user.is]);
     }, err => {
       console.log(err);
+      this.toolsPrvd.hideLoader();
     });
   }
 
@@ -660,7 +668,8 @@ export class ChatPage {
       message_id: messageData.id,
       user: this.user
     };
-    console.log("feedback data:", feedbackData);
+    console.log('message data:', messageData);
+    console.log('feedback data:', feedbackData);
     this.chatPrvd.mainBtn.setState('minimised');
     let feedbackModal = this.modalCtrl.create(FeedbackModal,
       {

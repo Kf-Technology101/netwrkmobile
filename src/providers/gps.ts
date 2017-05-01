@@ -46,8 +46,12 @@ export class Gps {
   }
 
   getMyZipCode() {
+    alert('getMyZipCode');
     return new Promise((resolve, reject) => {
+      alert('Promise');
+      alert('geolocation' + JSON.stringify(this.geolocation));
       this.geolocation.getCurrentPosition().then(resp => {
+        alert(JSON.stringify(resp));
         if (resp.coords) {
           let url = 'https://maps.googleapis.com/maps/api/geocode/json';
           let seq = this.getAddressDetail(url, {
@@ -59,13 +63,18 @@ export class Gps {
           this.coords.lng = resp.coords.longitude;
           seq.map(res => res.json()).subscribe(
             res => {
+              alert(JSON.stringify(res));
               let zipCode: string = this.parseGoogleAddress(res.results);
               resolve({ zip_code: zipCode });
             },
-            err => reject(err)
+            err => {
+              alert(JSON.stringify(err));
+              reject(err)
+            }
           );
         }
       }).catch(error => {
+        alert(JSON.stringify(error));
         reject(error);
       });
     });

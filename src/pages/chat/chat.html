@@ -68,7 +68,9 @@
   <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar class="area-head">
       <img [src]="user.avatar_url ? user.avatar_url : toolsPrvd.defaultAvatar"
-        (click)="goToProfile()" class="user-icon">
+        (click)="goToProfile()" class="ic user-icon">
+
+      <img class="ic legendary-icon" src="assets/images/sun_icon.png">
     </ion-toolbar>
     <ion-toolbar>
       <ion-slides slidesPerView="4" class="netwrk-slider">

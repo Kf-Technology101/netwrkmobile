@@ -56,12 +56,12 @@ import { Camera } from '../providers/camera';
 import { Chat } from '../providers/chat';
 
 // Native services
-import { Facebook } from 'ionic-native';
 import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { File } from '@ionic-native/file';
 import { Transfer } from '@ionic-native/transfer';
+import { Facebook } from '@ionic-native/facebook';
 
 // enableProdMode();
 

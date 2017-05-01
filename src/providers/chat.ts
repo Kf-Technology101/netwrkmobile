@@ -15,7 +15,10 @@ import { Camera } from '../providers/camera';
 
 // File transfer
 import { File } from '@ionic-native/file';
-import { Transfer, FileUploadOptions, TransferObject } from '@ionic-native/transfer';
+import {
+  Transfer,
+  FileUploadOptions,
+  TransferObject } from '@ionic-native/transfer';
 
 @Injectable()
 export class Chat {
@@ -220,7 +223,8 @@ export class Chat {
               };
 
               xhr.open('POST', self.api.url + '/messages', true);
-              xhr.setRequestHeader('Authorization', self.localStorage.get('auth_data').auth_token);
+              xhr.setRequestHeader(
+                'Authorization', self.localStorage.get('auth_data').auth_token);
               xhr.send(formData);
 
             } else {
@@ -243,7 +247,8 @@ export class Chat {
 
   public updateAppendContainer(): void {
     console.log("[chatPrvd] updateAppendContainer()...");
-    if (this.cameraPrvd.takenPictures && this.cameraPrvd.takenPictures.length > 0) {
+    let pictures = this.cameraPrvd.takenPictures;
+    if (pictures && pictures.length > 0) {
       this.appendContainer.show();
       this.appendContainer.setState('on_append');
       if (this.mainBtn.state != "moved-n-scaled")

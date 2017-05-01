@@ -7,9 +7,7 @@ import {
 
 // Pages
 import { SignUpPage } from '../sign-up/sign-up';
-// import { HomePage } from '../home/home';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
-// import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 import { NetworkFindPage } from '../network-find/network-find';
 import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 import { SignUpFacebookPage } from '../sign-up-facebook/sign-up-facebook';
@@ -19,6 +17,7 @@ import { Auth } from '../../providers/auth';
 import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
+import { User } from '../../providers/user';
 
 // Interfaces
 import { ResponseAuthData } from '../../interfaces/user';
@@ -54,7 +53,8 @@ export class LogInPage {
     public events: Events,
     public contactsPrvd: ContactsProvider,
     public tools: Tools,
-    public undercoverPrvd: UndercoverProvider
+    public undercoverPrvd: UndercoverProvider,
+    public user: User
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
@@ -74,7 +74,8 @@ export class LogInPage {
       this.tools.hideLoader();
       let fbConnected = this.authPrvd.getFbConnected();
       let page = fbConnected ?
-        this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage) :
+        this.undercoverPrvd.getCharacterPerson(
+          UndercoverCharacterPage, NetworkFindPage) :
         SignUpFacebookPage;
       this.tools.pushPage(page);
     }, err => {
@@ -84,21 +85,27 @@ export class LogInPage {
   }
 
   doFbLogin() {
-    // this.tools.showLoader();
-    this.authPrvd.signUpFacebook().then((data: ResponseAuthData) => {
+    this.authPrvd.signUpFacebook().then((data: any) => {
       console.log(data);
-      // this.tools.hideLoader();
-      if (data.date_of_birthday) {
-        let date = new Date(data.date_of_birthday);
-        if (typeof date == 'object') {
-          this.authPrvd.setFbConnected();
-          let page = this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage);
-          this.tools.pushPage(page);
-        }
-      } else this.tools.pushPage(SignUpAfterFbPage);
+      this.tools.showLoader();
+      this.user.update(data.result.id, data.update, 'facebook')
+      .map(res => res.json()).subscribe(res => {
+        console.log(res);
+        if (res.date_of_birthday) {
+          let date = new Date(res.date_of_birthday);
+          if (typeof date == 'object') {
+            this.authPrvd.setFbConnected();
+            let page = this.undercoverPrvd.getCharacterPerson(
+              UndercoverCharacterPage, NetworkFindPage);
+            this.tools.pushPage(page);
+          }
+        } else this.tools.pushPage(SignUpAfterFbPage);
+      }, err => {
+        console.log(err);
+        this.tools.showToast(JSON.stringify(err));
+      });
     }, err => {
       console.log(err);
-      // this.tools.hideLoader();
       this.tools.showToast(this.textStrings.fb);
     });
   }

@@ -17,12 +17,13 @@ import { Auth } from '../../providers/auth';
   templateUrl: 'profile.html'
 })
 export class ProfilePage {
+  @ViewChild('fbSlider') fbSlider: Slides;
+  @ViewChild('incognitoSlider') incoSlider;
+
   greeting: string;
   testSlides: string[] = [];
   public ownProfile: boolean;
   public isUndercover: boolean;
-  @ViewChild('fbSlider') fbSlider: Slides;
-  @ViewChild('incognitoSlider') incoSlider;
 
   connect: any = {
     facebook: false,
@@ -31,15 +32,7 @@ export class ProfilePage {
     snapchat: false
   };
 
-  public user: {
-    id: number,
-    name: string,
-    imageUrl: string,
-  } = {
-    id: null,
-    name: null,
-    imageUrl: null,
-  };
+  public user: any = {};
 
   constructor(
     public navCtrl: NavController,
@@ -61,7 +54,6 @@ export class ProfilePage {
       }
     },100);
 
-    // this.user = this.undercoverPrvd.getPerson();
     this.isUndercover = this.undercoverPrvd.isUndercover;
   }
 
@@ -71,8 +63,12 @@ export class ProfilePage {
     this.connect.twitter = this.social.getTwitterData();
     this.connect.snapchat = false;
 
-    this.fbSlider.pager = true;
-    this.fbSlider.slidesPerView = 5;
+    console.log(this.connect.facebook);
+
+    if (this.fbSlider) {
+      this.fbSlider.pager = true;
+      this.fbSlider.slidesPerView = 5;
+    }
   }
 
   connectToFacebook() {
@@ -135,6 +131,7 @@ export class ProfilePage {
 
   private showUserData(res: any) {
     console.log(res);
+    this.user = res;
     if (res.first_name || res.last_name) {
       this.user.name = `${res.first_name} ${res.last_name}`;
     } else if (res.role_name) {
@@ -142,9 +139,7 @@ export class ProfilePage {
     } else {
       this.user.name = 'No name';
     }
-
-    this.user.imageUrl = res.avatar ?
-      res.avatar : this.user.imageUrl = 'assets/images/incognito.png';
+    this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
   }
 
   changeCallback(positionLeft?: boolean) {
@@ -156,21 +151,22 @@ export class ProfilePage {
   }
 
   ionViewDidEnter() {
-    console.log("[PROFILE.ts] viewDidEnter");
-    this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    let position = this.undercoverPrvd.isUndercover;
-    this.slideAvatarPrvd.sliderInit();
-    this.slideAvatarPrvd.setSliderPosition(position);
+    console.log('[PROFILE.ts] viewDidEnter');
+    if (this.isUndercover) {
+      this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+      let position = this.undercoverPrvd.profileType ? false : true
+      this.slideAvatarPrvd.sliderInit();
+      this.slideAvatarPrvd.setSliderPosition(position);
+    }
   }
 
   ionViewDidLoad() {
     this.loadProfile();
-    console.log("[PROFILE.ts] viewDidLoad");
-    // this.slideAvatar.startSliderEvents();
+    console.log('[PROFILE.ts] viewDidLoad');
   }
 
   ionViewWillLeave() {
-    console.log("[PROFILE.ts] viewWillLeave");
+    console.log('[PROFILE.ts] viewWillLeave');
   }
 
 }

@@ -639,13 +639,21 @@ page-chat {
           background: url('../assets/icon/logo.png') no-repeat center;
           background-size: auto 26px;
 
-          .user-icon {
+          .ic {
             display: block;
             width: 26px;
             height: 26px;
             border-radius: 50%;
-            margin-left: 16px;
-            float: left;
+
+            &.user-icon {
+              float: left;
+              margin-left: 16px;
+            }
+
+            &.legendary-icon {
+              float: right;
+              margin-right: 16px;
+            }
           }
         }
       }

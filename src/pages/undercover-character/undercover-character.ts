@@ -10,7 +10,7 @@ import { NetworkFindPage } from '../network-find/network-find';
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
-import { User } from '../../providers/user';
+import { Auth } from '../../providers/auth';
 
 import { heroes } from '../../includes/heroes';
 
@@ -29,6 +29,7 @@ export class UndercoverCharacterPage {
   public sliderLoaded: boolean = false;
   public changeError: string;
   public textError: string;
+  private user: any = {};
 
   constructor(
     public platform: Platform,
@@ -37,12 +38,19 @@ export class UndercoverCharacterPage {
     public undercoverPrvd: UndercoverProvider,
     public toolsPrvd: Tools,
     public slideAvatarPrvd: SlideAvatar,
-    public userPrvd: User
+    public authPrvd: Auth
   ) {
     this.persons = heroes;
     // this.undercover.setActivePerson(true);
-    this.changeError = 'You can\'t leave Undercover mode right now';
+    this.changeError = 'You can\'t leave this page right now';
     this.textError = 'Something went wrong, please try again later';
+
+    this.user = this.authPrvd.getAuthData();
+    if (!this.user.avatar_url) {
+      this.user.avatar_url = this.toolsPrvd.defaultAvatar;
+    } else {
+      this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
+    }
   }
 
   choosePerson() {

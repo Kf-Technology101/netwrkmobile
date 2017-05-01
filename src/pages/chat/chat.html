@@ -114,7 +114,8 @@
           <ion-icon ios="ios-time-outline" md="ios-time-outline"></ion-icon>
           {{ i.temporaryFor }}
         </span>
-        <span *ngIf="i.text" class="text">{{ i.text }}</span>
+        <span *ngIf="i.text" class="text"
+              [ngClass]="{ 'emoji' : i.isEmoji }">{{ i.text }}</span>
       </p>
       <button class="feedback-button" (click)="sendFeedback(i)"
         [ngClass]="{ 'bottom' : i.image_urls && i.image_urls.length }"

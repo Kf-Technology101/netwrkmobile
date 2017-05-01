@@ -290,7 +290,8 @@ export class ChatPage {
         }, chatAnim/3 + (i*50));
       }
     } else {
-      if (this.cameraPrvd.takenPictures.length > 0) {
+      if (this.txtIn.value.trim() != '' ||
+          this.cameraPrvd.takenPictures.length > 0) {
         this.chatPrvd.postBtn.setState(true);
       }
       for (let i = 0; i < this.chatBtns.state.length; i++) {
@@ -361,9 +362,10 @@ export class ChatPage {
   }
 
   insertEmoji(emoji) {
-    console.log(this.txtIn);
+    // console.log(this.txtIn);
     // this.txtIn.nativeElement.focus();
-    // let emojiDecoded = String.fromCodePoint(emoji);
+    let emojiDecoded = String.fromCodePoint(emoji);
+    this.postMessage(emojiDecoded);
     // let inputVal = this.txtIn.nativeElement.value;
     // inputVal = inputVal.split('');
     // this.getCaretPos(this.txtIn.nativeElement);
@@ -386,7 +388,7 @@ export class ChatPage {
     }
   }
 
-  postMessage() {
+  postMessage(emoji?:string) {
     let publicUser: boolean;
     let images = [];
     let messageParams: any;
@@ -402,15 +404,15 @@ export class ChatPage {
     if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
 
     messageParams = {
-      text: this.txtIn.value,
+      text: emoji ?  emoji : this.txtIn.value,
       user_id: authData ? authData.id : 0,
-      images: images,
+      images: emoji ? [] : images,
       undercover: this.isUndercover,
       public: publicUser,
     };
 
     message = messageParams;
-    message.image_urls = images;
+    message.image_urls = emoji ? [] : images;
     message.isTemporary = false;
     message.temporaryFor = 0;
 
@@ -422,26 +424,28 @@ export class ChatPage {
         message.dateStr = 'a moment ago';
         message.locked = data.locked;
         message.id = data.id;
+        if (!emoji) {
+          this.txtIn.value = '';
+          this.chatPrvd.mainBtn.setState('normal');
+          this.chatPrvd.postBtn.setState(false);
 
-        this.txtIn.value = '';
-        this.chatPrvd.mainBtn.setState('normal');
-        this.chatPrvd.postBtn.setState(false);
+          if (this.postTimer.isVisible()) {
+            setTimeout(() => {
+              this.postTimer.hide();
+            }, chatAnim/2);
+            this.postTimer.setState('slideUp');
+          }
 
-        if (this.postTimer.isVisible()) {
-          setTimeout(() => {
-            this.postTimer.hide();
-          }, chatAnim/2);
-          this.postTimer.setState('slideUp');
+          console.log(message);
+
+          if (this.debug.postHangTime != 0) {
+            message.isTemporary = true;
+            message.temporaryFor = this.debug.postHangTime;
+            this.debug.postHangTime = 0;
+          }
+        } else {
+          message.isEmoji = true;
         }
-
-        console.log(message);
-
-        if (this.debug.postHangTime != 0) {
-          message.isTemporary = true;
-          message.temporaryFor = this.debug.postHangTime;
-          this.debug.postHangTime = 0;
-        }
-
         this.postMessages.push(message);
         this.messageDateTimer.start(this.postMessages);
       }

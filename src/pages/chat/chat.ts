@@ -478,14 +478,14 @@ export class ChatPage {
         console.log(err);
         pushMessage(err);
       });
-
-      this.chatPrvd.appendContainer.setState('off');
-      setTimeout(() => {
-        this.chatPrvd.appendContainer.hide();
-      }, chatAnim/2);
-
+      if (!emoji) {
+        this.chatPrvd.appendContainer.setState('off');
+        setTimeout(() => {
+          this.chatPrvd.appendContainer.hide();
+        }, chatAnim/2);
+        this.cameraPrvd.takenPictures = [];
+      }
       this.scrollToBottom();
-      this.cameraPrvd.takenPictures = [];
     }
   }
 
@@ -685,6 +685,12 @@ export class ChatPage {
       }
     );
     setTimeout(() => {
+      feedbackModal.onDidDismiss(data => {
+        if (data) {
+          console.log('[likeClose] data:', data);
+          console.log('[likeClose] messageId:', messageId);
+        }
+      });
       feedbackModal.present();
     }, chatAnim/2);
   }

@@ -31,6 +31,8 @@ export class FeedbackModal {
     isLegendary: false
   };
 
+  private endResult:any;
+
   private feedData:any;
 
   constructor(
@@ -51,7 +53,7 @@ export class FeedbackModal {
 
   closeModal() {
     this.chatPrvd.mainBtn.setPrevState();
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss(this.endResult);
   }
 
   goShare() {
@@ -69,6 +71,7 @@ export class FeedbackModal {
       console.log('[likes] res:', res);
       this.postInf.totalLikes = res.likes_count;
       this.postStatus.isLiked = !this.postStatus.isLiked;
+      this.endResult = res;
     }, err => {
       console.log('[likes] err:', err);
     });

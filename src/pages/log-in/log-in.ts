@@ -91,6 +91,7 @@ export class LogInPage {
       this.user.update(data.result.id, data.update, 'facebook')
       .map(res => res.json()).subscribe(res => {
         console.log(res);
+        this.tools.hideLoader();
         if (res.date_of_birthday) {
           let date = new Date(res.date_of_birthday);
           if (typeof date == 'object') {
@@ -102,6 +103,7 @@ export class LogInPage {
         } else this.tools.pushPage(SignUpAfterFbPage);
       }, err => {
         console.log(err);
+        this.tools.hideLoader();
         this.tools.showToast(JSON.stringify(err));
       });
     }, err => {

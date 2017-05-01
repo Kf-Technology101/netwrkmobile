@@ -205,7 +205,7 @@ export class Auth {
         this.fbPermissions
       ).then(pic => {
         console.log(pic);
-        // authData.user.image_url = pic ? pic.data.url : null;
+        authData.user.image_url = pic ? pic.data.url : null;
 
         let resolveObj = {
           update: updateObj,

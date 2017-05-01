@@ -668,8 +668,9 @@ export class ChatPage {
     }
   }
 
-  sendFeedback(messageData: any) {
+  sendFeedback(messageData: any, messageId: number) {
     let feedbackData = {
+      message_index: messageId,
       message_id: messageData.id,
       user: this.user
     };
@@ -679,7 +680,8 @@ export class ChatPage {
     let feedbackModal = this.modalCtrl.create(FeedbackModal,
       {
         data: feedbackData,
-        totalLikes: messageData.likes_count
+        totalLikes: messageData.likes_count,
+        likedByUser: messageData.like_by_user
       }
     );
     setTimeout(() => {

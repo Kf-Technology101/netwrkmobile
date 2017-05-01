@@ -9,7 +9,7 @@
 
 <ion-content class="translucent">
   <ion-list>
-    <button class="like-btn" (click)="makeLiked()"
+    <button class="like-btn" (click)="toggleLikes()"
             [ngClass]="{ 'liked': postStatus.isLiked }">
       <div class="like-bg"></div>
       <ion-badge>{{ postInf.totalLikes }}</ion-badge>

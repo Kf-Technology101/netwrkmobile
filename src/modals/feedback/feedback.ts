@@ -43,7 +43,8 @@ export class FeedbackModal {
     this.feedData = {
       user_like: {
         user_id: data.user.id,
-        message_id: data.message_id
+        message_id: data.message_id,
+        message_index: data.message_index
       }
     }
   }
@@ -63,10 +64,11 @@ export class FeedbackModal {
     // legendaryModal.present();
   }
 
-  makeLiked() {
+  toggleLikes() {
     this.chatPrvd.sendFeedbackData(this.feedData).subscribe(res => {
       console.log('[likes] res:', res);
       this.postInf.totalLikes = res.likes_count;
+      this.postStatus.isLiked = !this.postStatus.isLiked;
     }, err => {
       console.log('[likes] err:', err);
     });
@@ -74,6 +76,7 @@ export class FeedbackModal {
 
   ionViewDidEnter() {
     this.postInf.totalLikes = this.params.get('totalLikes');
+    this.postStatus.isLiked = this.params.get('likedByUser');
     if (!this.postInf.totalLikes) {
       this.postInf.totalLikes = 0;
     }

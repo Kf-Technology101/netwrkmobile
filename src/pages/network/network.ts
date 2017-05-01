@@ -41,7 +41,7 @@ export class NetworkPage {
   }
 
   public goToProfile(data: any) {
-    this.tools.pushPage(ProfilePage, { id: data.id });
+    this.tools.pushPage(ProfilePage, { id: data.id, public: true });
   }
 
   public sendEmails() {

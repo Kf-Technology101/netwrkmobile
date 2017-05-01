@@ -48,18 +48,18 @@ export class NetworkFindPage {
     }
   }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
     this.hideSearch = false;
-    alert('ionViewDidLoad');
+    // alert('ionViewDidLoad');
     this.getZipCode();
   }
 
   private getZipCode() {
     this.gps.getMyZipCode().then( (zipRes: GeolocationInterface) => {
-      alert(JSON.stringify(zipRes));
+      // alert(JSON.stringify(zipRes));
       this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(
         res => {
-          alert(JSON.stringify(res));
+          // alert(JSON.stringify(res));
           console.log(res);
           let post_code: number = res.network ? res.network.post_code : null;
           let params: any = {
@@ -84,12 +84,12 @@ export class NetworkFindPage {
             this.chatPrvd.saveNetwork(res.network);
           }
         }, err => {
-          alert(JSON.stringify(err));
+          // alert(JSON.stringify(err));
           console.log(err)
         }
       );
     }, err => {
-      alert(JSON.stringify(err));
+      // alert(JSON.stringify(err));
       console.log(err);
       if (err.code && err.code == 1) {
         this.tools.showToast(err.message, null, 'bottom');

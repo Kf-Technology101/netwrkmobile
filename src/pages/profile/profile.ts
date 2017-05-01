@@ -23,7 +23,7 @@ export class ProfilePage {
   greeting: string;
   testSlides: string[] = [];
   public ownProfile: boolean;
-  public isUndercover: boolean;
+  public publicType: boolean;
 
   connect: any = {
     facebook: false,
@@ -54,7 +54,7 @@ export class ProfilePage {
       }
     },100);
 
-    this.isUndercover = this.undercoverPrvd.isUndercover;
+    // this.isUndercover = this.undercoverPrvd.isUndercover;
   }
 
   ngAfterViewInit() {
@@ -147,17 +147,17 @@ export class ProfilePage {
       this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
     });
 
-    console.log('isUndercover', this.isUndercover);
+    // console.log('isUndercover', this.isUndercover);
   }
 
   ionViewDidEnter() {
     console.log('[PROFILE.ts] viewDidEnter');
-    if (this.isUndercover) {
+    // if (this.isUndercover) {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       let position = this.undercoverPrvd.profileType ? false : true
       this.slideAvatarPrvd.sliderInit();
       this.slideAvatarPrvd.setSliderPosition(position);
-    }
+    // }
   }
 
   ionViewDidLoad() {

@@ -46,12 +46,46 @@ export class Gps {
   }
 
   getMyZipCode() {
-    alert('getMyZipCode');
+    // alert('getMyZipCode');
     return new Promise((resolve, reject) => {
-      alert('Promise');
-      alert('geolocation' + JSON.stringify(this.geolocation));
+
+      // let options: GeolocationOptions = {
+      //   timeout: 60000,
+      //   // enableHighAccuracy: true,
+      //   // maximumAge: 11000,
+      // }
+      //
+      // this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
+      //   console.log(resp)
+      //   if (resp.coords) {
+      //     let url = 'https://maps.googleapis.com/maps/api/geocode/json';
+      //     let seq = this.getAddressDetail(url, {
+      //       latlng: resp.coords.latitude + ',' + resp.coords.longitude,
+      //       sensor: true,
+      //       key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
+      //     }).share();
+      //     this.coords.lat = resp.coords.latitude;
+      //     this.coords.lng = resp.coords.longitude;
+      //     seq.map(res => res.json()).subscribe(
+      //       res => {
+      //         this.parseGoogleAddress(res.results);
+      //         this.compareZip();
+      //       },
+      //       err => console.log(err)
+      //     );
+      //   }
+      // }, err => {
+      //   console.log(err);
+      // });
+
+      // alert('Promise');
+      // alert('geolocation' + JSON.stringify(this.geolocation));
+      console.log(JSON.stringify(this.geolocation.watchPosition()))
+      console.log(JSON.stringify(this.geolocation), this.geolocation, JSON.stringify(this.geolocation.getCurrentPosition()));
+      // setTimeout(function)
       this.geolocation.getCurrentPosition().then(resp => {
-        alert(JSON.stringify(resp));
+        console.log(resp)
+        // alert(JSON.stringify(resp));
         if (resp.coords) {
           let url = 'https://maps.googleapis.com/maps/api/geocode/json';
           let seq = this.getAddressDetail(url, {
@@ -63,18 +97,18 @@ export class Gps {
           this.coords.lng = resp.coords.longitude;
           seq.map(res => res.json()).subscribe(
             res => {
-              alert(JSON.stringify(res));
+              // alert(JSON.stringify(res));
               let zipCode: string = this.parseGoogleAddress(res.results);
               resolve({ zip_code: zipCode });
             },
             err => {
-              alert(JSON.stringify(err));
+              // alert(JSON.stringify(err));
               reject(err)
             }
           );
         }
       }).catch(error => {
-        alert(JSON.stringify(error));
+        console.log(error);
         reject(error);
       });
     });

@@ -500,7 +500,8 @@ export class ChatPage {
 
   goToProfile(profileId?: number) {
     if (!profileId) profileId = this.authPrvd.getAuthData().id;
-    this.toolsPrvd.pushPage(ProfilePage, { id: profileId });
+    let params = { id: profileId, public: !this.isUndercover };
+    this.toolsPrvd.pushPage(ProfilePage, params);
   }
 
   goUndercover() {

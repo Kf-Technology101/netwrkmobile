@@ -478,14 +478,14 @@ export class ChatPage {
         console.log(err);
         pushMessage(err);
       });
-
-      this.chatPrvd.appendContainer.setState('off');
-      setTimeout(() => {
-        this.chatPrvd.appendContainer.hide();
-      }, chatAnim/2);
-
+      if (!emoji) {
+        this.chatPrvd.appendContainer.setState('off');
+        setTimeout(() => {
+          this.chatPrvd.appendContainer.hide();
+        }, chatAnim/2);
+        this.cameraPrvd.takenPictures = [];
+      }
       this.scrollToBottom();
-      this.cameraPrvd.takenPictures = [];
     }
   }
 

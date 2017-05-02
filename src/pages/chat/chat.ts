@@ -689,6 +689,14 @@ export class ChatPage {
         if (data) {
           console.log('[likeClose] data:', data);
           console.log('[likeClose] messageId:', messageId);
+          for (let m of this.postMessages) {
+            if (data == m) {
+              m = data;
+              break;
+            }
+          }
+        } else {
+          console.warn('[likeClose] Error');
         }
       });
       feedbackModal.present();

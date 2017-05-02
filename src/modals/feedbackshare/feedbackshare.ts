@@ -21,9 +21,9 @@ export class FeedbackShareModal {
   }
 
   private share: any = {
-    message: null,
+    message: <string> '',
     image: null,
-    url: null
+    url: <string> ''
   }
 
   constructor(
@@ -32,15 +32,12 @@ export class FeedbackShareModal {
     private modalCtrl: ModalController,
     public chatPrvd: Chat,
     private socialShare: SocialSharing
-  ) {}
+  ) {
+  }
 
   shareViaFacebook() {
-    this.socialShare.shareViaFacebookWithPasteMessageHint(
-      this.share.message,
-      this.share.image,
-      this.share.url,
-      this.share.message
-    ).then((succ) => {
+    console.log('share message:', this.share.message);
+    this.socialShare.shareViaFacebook(this.share.message).then((succ) => {
       console.log('[Facebook share] Success:', succ);
     }).catch(err => {
       console.log('[Facebook share] Error:', err);

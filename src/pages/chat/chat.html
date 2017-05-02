@@ -108,7 +108,7 @@
         [src]="toolsPrvd.defaultAvatar"
         class="chat-avatar">
       <p class="message-container">
-        <span class="username">
+        <span class="username" *ngIf="chatPrvd.users[message.user_id]">
           <ng-container *ngIf="message.public">
             {{ chatPrvd.users[message.user_id].first_name }}
             {{ chatPrvd.users[message.user_id].last_name }}

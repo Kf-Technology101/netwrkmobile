@@ -139,7 +139,7 @@ export class Chat {
         data[i].image_urls[u] = this.api.hostUrl + data[i].image_urls[u];
       }
       data[i].date = moment(data[i].created_at).fromNow();
-      console.log(data);
+      // console.log(data);
       messages.push(data[i]);
     }
     return messages;

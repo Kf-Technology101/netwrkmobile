@@ -26,15 +26,15 @@ export class SlideAvatar {
     public undercoverPrvd: UndercoverProvider
   ) {
     this.app.viewDidLoad.subscribe((view) => {
-      console.log("<SLIDER.ts> viewDidLoad");
+      // console.log("<SLIDER.ts> viewDidLoad");
     });
 
     this.app.viewDidEnter.subscribe((view) => {
-      console.log('<SLIDER.ts> viewDidEnter', view);
+      // console.log('<SLIDER.ts> viewDidEnter', view);
     });
 
     this.app.viewWillLeave.subscribe((view) => {
-      console.log("<SLIDER.ts> viewWillLeave");
+      // console.log("<SLIDER.ts> viewWillLeave");
       this.stopSliderEvents();
     });
   }
@@ -80,11 +80,11 @@ export class SlideAvatar {
       if (state) {
         slider['0'].style.left = this.dEnd + 'px';
         this.arrowIcon.classList.add('right');
-        console.log('right');
+        // console.log('right');
       } else {
         slider['0'].style.left = this.dStart + 'px';
         this.arrowIcon.classList.remove('right');
-        console.log('left');
+        // console.log('left');
       }
     }
   }

@@ -117,6 +117,7 @@ export class NetworkPage {
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       console.log(res);
       let user = this.authPrvd.getAuthData();
+      user.avatar_url = this.chatPrvd.hostUrl + user.avatar_url;
       this.users.push(user);
       this.joined = true;
       this.afterJoin();

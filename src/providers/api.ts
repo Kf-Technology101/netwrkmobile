@@ -45,7 +45,12 @@ export class Api {
 
     options = this.createAuthorizationHeader(options);
 
-    return this.http.get(this.url + '/' + endpoint, options);
+    let res = this.http.get(this.url + '/' + endpoint, options);
+    res.share().map(data => data.json()).subscribe(data => {}, err => {
+      console.log(err);
+    });
+
+    return res;
   }
 
   post(endpoint: string, body: any, options?: RequestOptions) {

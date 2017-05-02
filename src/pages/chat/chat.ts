@@ -81,6 +81,8 @@ export class ChatPage {
     this.shareContainer
   ];
 
+  private messagesInterval:any;
+
   emoticX = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C'];
   emoticY = ['1F60', '1F61', '1F62', '1F63', '1F64'];
   emojis = [];
@@ -518,7 +520,7 @@ export class ChatPage {
     this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
     this.flipInput();
     this.changePlaceholderText();
-    this.showMessages();
+    this.startMessageUpdateTimer();
     setTimeout(() => {
       if (this.isUndercover) {
         // this.flipInput();
@@ -631,7 +633,7 @@ export class ChatPage {
         }
         this.chatPrvd.setStorageUsers(users);
         this.chatUsers = users;
-        this.showMessages();
+        this.startMessageUpdateTimer();
       } else {
         this.chatUsers.push(this.user);
       }
@@ -651,19 +653,27 @@ export class ChatPage {
     }, 1000);
   }
 
+
+  private startMessageUpdateTimer() {
+    if (!this.messagesInterval) {
+      this.showMessages();
+      this.messagesInterval = setInterval(() => {
+        this.showMessages();
+      }, 10000);
+    }
+  }
+
   private showMessages() {
-    let messagesInterval = setInterval(() => {
-      this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
-        // console.log(data);
-        if (this.postMessages.length != data.length) {
-          this.postMessages = this.chatPrvd.organizeMessages(data);
-          this.messageDateTimer.start(this.postMessages);
-          this.scrollToBottom();
-        }
-      }, err => {
-        console.log(err);
-      });
-    }, 10000);
+    this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
+      // console.log(data);
+      if (this.postMessages.length != data.length) {
+        this.postMessages = this.chatPrvd.organizeMessages(data);
+        this.messageDateTimer.start(this.postMessages);
+        this.scrollToBottom();
+      }
+    }, err => {
+      console.log(err);
+    });
   }
 
   private changeZipCallback(params?: any) {
@@ -692,9 +702,7 @@ export class ChatPage {
     );
     feedbackModal.onDidDismiss(data => {
       if (data) {
-        // console.log('[likeClose] data:', data);
         this.postMessages[messageId] = data;
-        // console.log('[postMessages] data:', this.postMessages[messageId]);
       } else {
         console.warn('[likeClose] Error, no data returned');
       }
@@ -748,5 +756,6 @@ export class ChatPage {
   ionViewWillLeave() {
     console.log('[UNDERCOVER.ts] viewWillLeave');
     this.messageDateTimer.stop();
+    clearInterval(this.messagesInterval);
   }
 }

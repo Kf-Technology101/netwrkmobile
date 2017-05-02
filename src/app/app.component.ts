@@ -91,12 +91,6 @@ export class MyApp {
     }
   }
 
-  // private getChatPage(): any {
-  //   let person = this.undercoverPrvd.getPerson();
-  //   let result = !person ? UndercoverCharacterPage : NetworkFindPage;
-  //   return result;
-  // }
-
   private getSimInfo() {
     this.sim.getSimInfo().then(
       (info) => {

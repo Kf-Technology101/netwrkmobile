@@ -3,7 +3,7 @@
     <div class="drag-container">
       <div class="dragline">
         <span class="info">
-          <span *ngIf="undercoverPrvd.profileType == 'profile'" class="username">
+          <span *ngIf="undercoverPrvd.profileType == 'public'" class="username">
             {{ user.first_name }} {{ user.last_name }}
           </span>
           <span *ngIf="undercoverPrvd.profileType == 'undercover'" class="username">
@@ -108,7 +108,15 @@
         [src]="toolsPrvd.defaultAvatar"
         class="chat-avatar">
       <p class="message-container">
-        <span class="username">{{ user.name }}</span>
+        <span class="username">
+          <ng-container *ngIf="message.public">
+            {{ chatPrvd.users[message.user_id].first_name }}
+            {{ chatPrvd.users[message.user_id].last_name }}
+          </ng-container>
+          <ng-container *ngIf="!message.public">
+            {{ chatPrvd.users[message.user_id].role_name }}
+          </ng-container>
+        </span>
         <span class="message-date">{{ message.dateStr }}</span>
         <span *ngIf="message.isTemporary" class="visible-for">
           <ion-icon ios="ios-time-outline" md="ios-time-outline"></ion-icon>

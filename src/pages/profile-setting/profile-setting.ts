@@ -7,7 +7,6 @@ import { LogInPage } from '../log-in/log-in';
 // Providers
 import { Auth } from '../../providers/auth';
 import { Tools } from '../../providers/tools';
-import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { User } from '../../providers/user';
 
@@ -30,12 +29,11 @@ export class ProfileSettingPage {
     public navParams: NavParams,
     private renderer: Renderer,
     public tools: Tools,
-    public undercoverPrvd: UndercoverProvider,
     public slideAvatar: SlideAvatar,
     public auth: Auth,
     public userPrvd: User
   ) {
-    this.user = this.undercoverPrvd.getPerson();
+    this.user = this.auth.getAuthData();
   }
 
   /**
@@ -71,8 +69,7 @@ export class ProfileSettingPage {
       tempFiles.push(files.item(i));
     }
 
-    this.userPrvd.updateAvatar(userId, tempFiles, params).then(
-      res => {
+    this.userPrvd.updateAvatar(userId, tempFiles, params).then(res => {
         console.log(res);
       }, err => console.error('ERROR', err)
     );
@@ -87,6 +84,13 @@ export class ProfileSettingPage {
 
   ionViewWillLeave() {
     // this.slideAvatar.stopSliderEvents();
+  }
+
+  ionViewDidEnter() {
+    // this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+    // let position = this.undercoverPrvd.profileType == 'undercover' ? true : false
+    // this.slideAvatarPrvd.sliderInit();
+    // this.slideAvatarPrvd.setSliderPosition(position);
   }
 
   logOut() {

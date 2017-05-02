@@ -684,21 +684,20 @@ export class ChatPage {
         likedByUser: messageData.like_by_user
       }
     );
-    setTimeout(() => {
-      feedbackModal.onDidDismiss(data => {
-        if (data) {
-          console.log('[likeClose] data:', data);
-          console.log('[likeClose] messageId:', messageId);
-          for (let m in this.postMessages) {
-            if (data == this.postMessages[m]) {
-              this.postMessages[m] = data;
-              break;
-            }
+    feedbackModal.onDidDismiss(data => {
+      if (data) {
+        console.log('[likeClose] data:', data);
+        for (let m in this.postMessages) {
+          if (data == this.postMessages[m]) {
+            this.postMessages[m] = data;
+            break;
           }
-        } else {
-          console.warn('[likeClose] Error, no data returned');
         }
-      });
+      } else {
+        console.warn('[likeClose] Error, no data returned');
+      }
+    });
+    setTimeout(() => {
       feedbackModal.present();
     }, chatAnim/2);
   }

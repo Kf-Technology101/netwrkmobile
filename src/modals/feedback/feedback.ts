@@ -71,6 +71,7 @@ export class FeedbackModal {
       console.log('[likes] res:', res);
       this.postInf.totalLikes = res.likes_count;
       this.postStatus.isLiked = !this.postStatus.isLiked;
+      res.like_by_user = this.postStatus.isLiked;
       this.endResult = res;
     }, err => {
       console.log('[likes] err:', err);

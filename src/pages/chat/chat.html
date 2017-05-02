@@ -17,10 +17,10 @@
       </div>
     </div>
 
-    <button ion-button *ngIf="isUndercover && postMessages.length === 0 && !chatPrvd.postBtn.state"
+    <!-- <button ion-button *ngIf="isUndercover && postMessages.length === 0 && !chatPrvd.postBtn.state"
             class="side refresh-btn top-icon">
       <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
-    </button>
+    </button> -->
     <button ion-button *ngIf="isUndercover && postMessages.length > 0 && !chatPrvd.postBtn.state"
             class="side clear-btn" (click)="clearMessages()">
       Clear

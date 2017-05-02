@@ -26,7 +26,7 @@ export class NetworkPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public tools: Tools,
+    public toolsPrvd: Tools,
     public undercoverPrvd: UndercoverProvider,
     public gps: Gps,
     public networkPrvd: Network,
@@ -41,15 +41,15 @@ export class NetworkPage {
   }
 
   public goToProfile(data: any) {
-    this.tools.pushPage(ProfilePage, { id: data.id, public: true });
+    this.toolsPrvd.pushPage(ProfilePage, { id: data.id, public: true });
   }
 
   public sendEmails() {
-    this.tools.pushPage(NetworkContactListPage, { type: 'emails' });
+    this.toolsPrvd.pushPage(NetworkContactListPage, { type: 'emails' });
   }
 
   public sendSMS() {
-    this.tools.pushPage(NetworkContactListPage, { type: 'phones' });
+    this.toolsPrvd.pushPage(NetworkContactListPage, { type: 'phones' });
   }
 
   public doAction() {
@@ -60,7 +60,7 @@ export class NetworkPage {
       case 'join':
         this.doJoin();
       break;
-      default: this.tools.showToast(this.textStrings.actionError);
+      default: this.toolsPrvd.showToast(this.textStrings.actionError);
     }
   }
 
@@ -68,25 +68,38 @@ export class NetworkPage {
     let access = this.networkPrvd.getInviteAccess();
     console.log(access);
     if (!access) {
-      this.tools.showToast(this.textStrings.inviteError);
+      this.toolsPrvd.showToast(this.textStrings.inviteError);
       return false;
     }
 
     this.networkPrvd.create(this.networkParams).subscribe(res => {
       console.log(res);
-      this.users = res.users;
-      this.tools.showToast(this.textStrings.created);
+      this.users = this.formateAvatarUrl(res.users);
+      this.toolsPrvd.showToast(this.textStrings.created);
     }, err => {
       console.log(err);
-      this.tools.showToast(this.textStrings.created);
+      this.toolsPrvd.showToast(this.textStrings.created);
     });
+  }
+
+  private formateAvatarUrl(users: any) {
+    for (let u in users) {
+      if (!users[u].avatar_url) {
+        users[u].avatar_url = this.toolsPrvd.defaultAvatar;
+        console.log('!users[u].avatar_url', users[u].avatar_url)
+      } else {
+        users[u].avatar_url = this.chatPrvd.hostUrl + users[u].avatar_url;
+        console.log('users[u].avatar_url', users[u].avatar_url)
+      }
+    }
+    return users;
   }
 
   private doJoin() {
 
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       console.log(res);
-      this.users = res.users;
+      this.users = this.formateAvatarUrl(res.users);
       this.afterJoin();
     }, err => {
       console.log(err);
@@ -103,9 +116,9 @@ export class NetworkPage {
 
       this.chatPrvd.setZipCode(this.gps.zipCode);
       this.chatPrvd.setState(params.action);
-      this.tools.pushPage(ChatPage, params);
+      this.toolsPrvd.pushPage(ChatPage, params);
     } else {
-      this.tools.showToast(this.textStrings.joined);
+      this.toolsPrvd.showToast(this.textStrings.joined);
     }
   }
 
@@ -113,13 +126,13 @@ export class NetworkPage {
     if (this.action == 'create') return;
     this.networkPrvd.getUsers(this.networkParams).subscribe(res => {
       console.log(res);
-      this.users = res;
+      this.users = this.formateAvatarUrl(res);;
     }, err => {
       console.log(err);
     });
   }
 
-  goBack() { this.tools.popPage(); }
+  goBack() { this.toolsPrvd.popPage(); }
 
   ionViewDidLoad() {
     this.getUsers();

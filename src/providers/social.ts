@@ -5,28 +5,36 @@ import 'rxjs/add/operator/map';
 import { LocalStorage } from './local-storage';
 import { Api } from './api';
 
-import { Facebook, TwitterConnect, InAppBrowser } from 'ionic-native';
+import { TwitterConnect, InAppBrowser } from 'ionic-native';
+import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 
 @Injectable()
 export class Social {
   public static FACEBOOK: string = 'facebook';
   public static TWITTER: string = 'twitter';
   public static INSTAGRAM: string = 'instagram';
+  public fbPermissions: Array<string> = [
+    'public_profile',
+    'user_friends',
+    'email',
+    'user_posts'
+  ];
 
   constructor(
     public http: Http,
     public storage: LocalStorage,
-    public api: Api
+    public api: Api,
+    private facebook: Facebook
   ) {}
 
   public connectToFacebook(): Promise<any> {
     return new Promise((resolve, reject) => {
-      Facebook.getLoginStatus().then((data: any) => {
+      this.facebook.getLoginStatus().then((data: any) => {
         if (data.status && data.status == 'connected') {
           this.setSocialAuth(data.authResponse, Social.FACEBOOK);
           resolve(data);
         } else {
-          Facebook.login(['public_profile']).then((data: any) => {
+          this.facebook.login(['public_profile']).then((data: any) => {
             this.setSocialAuth(data.authResponse, Social.FACEBOOK);
             resolve(data);
           }, err => {
@@ -92,6 +100,28 @@ export class Social {
   getTwitterData(): any { return this.getSocialAuth(Social.TWITTER); }
 
   getInstagramData(): any { return this.getSocialAuth(Social.INSTAGRAM); }
+
+  public getFriendList(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let fields: Array<string> = [
+        'picture',
+        'name',
+        'first_name',
+        'last_name',
+        'devices'
+      ];
+      this.facebook.api(
+        'me/friends?fields=' + fields.join(','),
+        this.fbPermissions
+      ).then(res => {
+        resolve(res);
+      }).catch(err => reject(err))
+    });
+  }
+
+  public getFbPermission() {
+
+  }
 
   private getSocialAuth(socialName: string): any {
     let socialAuthData = this.storage.get('social_auth_data') || {};

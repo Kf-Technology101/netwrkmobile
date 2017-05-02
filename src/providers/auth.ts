@@ -17,11 +17,6 @@ import * as moment from 'moment';
 export class Auth {
   public confirmCode: any;
   public registerData: any;
-  private fbPermissions: Array<string> = [
-    'public_profile',
-    'user_friends',
-    'email'
-  ];
   public hostUrl: string;
 
   constructor(
@@ -103,7 +98,8 @@ export class Auth {
         if (data.status && data.status == 'connected') {
           this.loginWithFacebook(data, resolve, reject);
         } else {
-          this.facebook.login(this.fbPermissions).then((data: FacebookLoginResponse) => {
+          this.facebook.login(this.social.fbPermissions)
+            .then((data: FacebookLoginResponse) => {
             this.loginWithFacebook(data, resolve, reject);
           }, err => {
             reject(err);
@@ -176,7 +172,7 @@ export class Auth {
     ];
     this.facebook.api(
       '/me?fields=' + fields.join(','),
-      this.fbPermissions
+      this.social.fbPermissions
     ).then(res => {
       console.log('facebook', res);
       let birthday = res.birthday ? new Date(res.birthday).toISOString() : null;
@@ -202,7 +198,7 @@ export class Auth {
 
       this.facebook.api(
         'me/picture?width=320&height=320&redirect=false',
-        this.fbPermissions
+        this.social.fbPermissions
       ).then(pic => {
         console.log(pic);
         authData.user.image_url = pic ? pic.data.url : null;

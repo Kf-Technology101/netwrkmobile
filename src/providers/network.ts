@@ -40,4 +40,14 @@ export class Network {
     return this.localStorage.set('invitation_sent', invitationSent);
   }
 
+  public getInviteZipAccess(): Array<number> {
+    let invites = this.localStorage.get('invitation_zip_codes');
+    if (!invites) invites = [];
+    return invites;
+  }
+
+  public saveInviteZipAccess(invites: Array<number>) {
+    return this.localStorage.set('invitation_zip_codes', invites);
+  }
+
 }

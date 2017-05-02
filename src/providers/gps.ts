@@ -16,7 +16,7 @@ export class Gps {
     lat: <number> null,
     lng: <number> null
   };
-  public zipCode: string = null;
+  public zipCode: number = null;
   private watch: any;
   public changeZipCallback: (params?: any) => void;
 
@@ -98,7 +98,7 @@ export class Gps {
           seq.map(res => res.json()).subscribe(
             res => {
               // alert(JSON.stringify(res));
-              let zipCode: string = this.parseGoogleAddress(res.results);
+              let zipCode: number = this.parseGoogleAddress(res.results);
               resolve({ zip_code: zipCode });
             },
             err => {
@@ -128,7 +128,7 @@ export class Gps {
     return this.http.get(url, options);
   }
 
-  private parseGoogleAddress(data: any): string {
+  private parseGoogleAddress(data: any): number {
     for (let i = 0; i < data.length; i++)
       for (let j = 0; j < data[i].address_components.length; j++)
         for (let z = 0; z < data[i].address_components[j].types.length; z++)
@@ -146,7 +146,7 @@ export class Gps {
     if (nav && activeNav && activeNav.name == 'ChatPage' && !activeNav.instance.isUndercover) {
       let network = this.localStorage.get('current_network');
       let currentZip = network ? network.post_code : 0;
-      if (parseInt(currentZip) != parseInt(this.zipCode)) {
+      if (currentZip != this.zipCode) {
         this.localStorage.rm('current_network');
         let alert = this.alertCtrl.create({
           title: 'Warning',

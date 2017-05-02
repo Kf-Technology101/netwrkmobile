@@ -53,8 +53,7 @@ export class FeedbackShareModal {
   }
 
   ionViewDidEnter() {
-    console.log('user:', this.params.get('user'));
-    this.share.message = this.params.get('messageText');
+    this.share.message = this.params.get('message');
     this.mainBtn.state = 'fadeInfast';
   }
 }

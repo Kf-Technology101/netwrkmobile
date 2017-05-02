@@ -61,7 +61,6 @@ export class FeedbackModal {
   goShare() {
     let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal,
         {
-          user: this.data.user,
           message: this.params.get('messageText')
         });
     feedbackShareModal.present();

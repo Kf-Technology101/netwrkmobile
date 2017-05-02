@@ -491,15 +491,6 @@ export class ChatPage {
     }
   }
 
-  startMessageUpdateTimer() {
-    if (!this.messagesInterval) {
-      this.showMessages();
-      this.messagesInterval = setInterval(() => {
-        this.showMessages();
-      }, 10000);
-    }
-  }
-
   private scrollToBottom() {
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
   }
@@ -662,6 +653,16 @@ export class ChatPage {
     }, 1000);
   }
 
+
+  private startMessageUpdateTimer() {
+    if (!this.messagesInterval) {
+      this.showMessages();
+      this.messagesInterval = setInterval(() => {
+        this.showMessages();
+      }, 10000);
+    }
+  }
+
   private showMessages() {
     this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
       console.log(data);
@@ -701,9 +702,7 @@ export class ChatPage {
     );
     feedbackModal.onDidDismiss(data => {
       if (data) {
-        // console.log('[likeClose] data:', data);
         this.postMessages[messageId] = data;
-        // console.log('[postMessages] data:', this.postMessages[messageId]);
       } else {
         console.warn('[likeClose] Error, no data returned');
       }

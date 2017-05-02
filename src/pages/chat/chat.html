@@ -100,7 +100,7 @@
   [ngClass]="{'netwrk-content': !isUndercover}"
   [ngStyle]="{'padding-bottom': contentPadding}">
   <div class="chat-container" #chatContainer>
-    <div class="message" *ngFor="let message of postMessages;">
+    <div class="message" *ngFor="let message of postMessages; let i = index">
       <img *ngIf="chatPrvd.users[message.user_id]" (click)="goToProfile(message.user_id)"
         [src]="message.public ? chatPrvd.users[message.user_id].avatar_url : chatPrvd.users[message.user_id].role_image_url"
         class="chat-avatar">
@@ -117,7 +117,7 @@
         <span *ngIf="message.text" class="text"
               [ngClass]="{ 'emoji' : message.isEmoji }">{{ message.text }}</span>
       </p>
-      <button class="feedback-button" (click)="sendFeedback(message)"
+      <button class="feedback-button" (click)="sendFeedback(message, i)"
         [ngClass]="{ 'bottom' : message.image_urls && message.image_urls.length }"
         *ngIf="!message.locked">
       </button>

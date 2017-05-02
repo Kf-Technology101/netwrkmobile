@@ -16,8 +16,7 @@ export class Social {
   public fbPermissions: Array<string> = [
     'public_profile',
     'user_friends',
-    'email',
-    'user_posts'
+    'email'
   ];
 
   constructor(

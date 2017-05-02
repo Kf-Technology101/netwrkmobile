@@ -388,11 +388,11 @@ export class ChatPage {
     }
   }
 
-  postMessage(emoji?:string) {
+  postMessage(emoji?: string) {
     let publicUser: boolean;
     let images = [];
     let messageParams: any;
-    let message: any;
+    let message: any = {};
     let authData = this.authPrvd.getAuthData();
 
     if (!this.isUndercover) {
@@ -411,7 +411,7 @@ export class ChatPage {
       public: publicUser,
     };
 
-    message = messageParams;
+    message = Object.assign(message, messageParams);
     message.image_urls = emoji ? [] : images;
     message.isTemporary = false;
     message.temporaryFor = 0;
@@ -509,7 +509,8 @@ export class ChatPage {
   }
 
   goUndercover() {
-    if (this.isUndercover && !this.chatPrvd.getNetwork()) {
+    let network = this.chatPrvd.getNetwork();
+    if (this.isUndercover && (!network || network.users_count < 10)) {
       this.toolsPrvd.showToast(this.textStrings.noNetwork);
       return;
     }
@@ -651,14 +652,18 @@ export class ChatPage {
   }
 
   private showMessages() {
-    this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
-      console.log(data);
-      this.postMessages = this.chatPrvd.organizeMessages(data);
-      this.messageDateTimer.start(this.postMessages);
-      this.scrollToBottom();
-    }, err => {
-      console.log(err);
-    })
+    let messagesInterval = setInterval(() => {
+      this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
+        console.log(data);
+        if (this.postMessages.length != data.length) {
+          this.postMessages = this.chatPrvd.organizeMessages(data);
+          this.messageDateTimer.start(this.postMessages);
+          this.scrollToBottom();
+        }
+      }, err => {
+        console.log(err);
+      });
+    }, 10000);
   }
 
   private changeZipCallback(params?: any) {
@@ -687,12 +692,8 @@ export class ChatPage {
     feedbackModal.onDidDismiss(data => {
       if (data) {
         console.log('[likeClose] data:', data);
-        for (let m in this.postMessages) {
-          if (data == this.postMessages[m]) {
-            this.postMessages[m] = data;
-            break;
-          }
-        }
+        this.postMessages[messageId] = data;
+        console.log('[postMessages] data:', this.postMessages[messageId]);
       } else {
         console.warn('[likeClose] Error, no data returned');
       }

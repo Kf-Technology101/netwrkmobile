@@ -57,15 +57,13 @@ export class Chat {
     return result;
   }
 
-  public setZipCode(zipCode: any) {
+  public setZipCode(zipCode: number) {
     this.localStorage.set('chat_zip_code', zipCode);
   }
 
   public chatZipCode(): number {
     let chatZipCode = this.localStorage.get('chat_zip_code');
-    console.log(chatZipCode);
     let result = chatZipCode ? chatZipCode : 0;
-    console.log(result);
     return result;
   }
 
@@ -78,17 +76,10 @@ export class Chat {
 
   public sendMessage(data: any): any {
     return new Promise((resolve, reject) => {
-      let params = {
-        message: {
-          text: data.text,
-          user_id: data.user_id,
-          network_id: this.getNetwork() ? this.getNetwork().id : null,
-          lat: this.gps.coords.lat,
-          lng: this.gps.coords.lng,
-          undercover: data.undercover,
-          profile_type: data.profile_type
-        }
-      };
+      let params = { message: data };
+      params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
+      params.message.lat = this.gps.coords.lat;
+      params.message.lng = this.gps.coords.lng;
 
       if (data.images && data.images.length > 0) {
         this.sendMessageWithImage(params, data.images).then(res => {

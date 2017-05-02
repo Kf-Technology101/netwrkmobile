@@ -14,6 +14,7 @@ import { User } from '../../providers/user';
 import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
 import { Network } from '../../providers/network';
+import { Gps } from '../../providers/gps';
 
 // Pipes
 // import { ContactListPipe } from '../../pipes/contact-list';
@@ -38,7 +39,8 @@ export class NetworkContactListPage {
     public userPrvd: User,
     public contactsPrvd: ContactsProvider,
     public tools: Tools,
-    public networkPrvd: Network
+    public networkPrvd: Network,
+    public gpsPrvd: Gps
   ) {
     this.listType = this.navParams.get('type');
     console.log(this.listType);
@@ -73,10 +75,10 @@ export class NetworkContactListPage {
   }
 
   private setErrorMessages(contacts: Array<any>) {
-    let count: number | string = 20;
+    let count: number = 20;
     if (contacts.length > count) {
-      this.selectMinErrorString = 'You need to select 20 or more contacts';
-      this.selectErrorString = 'Please, select 20 or more contacts to continue';
+      this.selectMinErrorString = `You need to select ${count} or more contacts`
+      this.selectErrorString = `Please, select ${count} or more contacts to continue`;
     } else {
       this.selectMinErrorString = 'You need to select all contacts';
       this.selectErrorString = 'Please, select all contacts to continue';
@@ -139,8 +141,12 @@ export class NetworkContactListPage {
             this.auth.getAuthData().id,
             { user: { invitation_sent: true } }
           ).map(res => res.json()).subscribe(res => {
+            let inviteCode = this.gpsPrvd.zipCode;
+            let inviteCodes = this.networkPrvd.getInviteZipAccess();
             this.tools.hideLoader();
             this.tools.popPage();
+            if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode)
+            this.networkPrvd.saveInviteZipAccess(inviteCodes)
             this.networkPrvd.saveInviteAccess(true);
           }, err => {
             this.tools.hideLoader();

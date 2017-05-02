@@ -12,14 +12,18 @@ import { UndercoverProvider } from '../../providers/undercover';
 import { Network } from '../../providers/network';
 import { Gps } from '../../providers/gps';
 import { Chat } from '../../providers/chat';
+import { Auth } from '../../providers/auth';
 
 @Component({
   selector: 'page-network',
   templateUrl: 'network.html'
 })
 export class NetworkPage {
+  public user: any = {};
   public users: Array<any> = [];
   public action: string;
+  public invitationSent: boolean = false;
+  public joined: boolean = false;
   private textStrings: any = {};
   private networkParams: any = {};
 
@@ -28,16 +32,25 @@ export class NetworkPage {
     public navParams: NavParams,
     public toolsPrvd: Tools,
     public undercoverPrvd: UndercoverProvider,
-    public gps: Gps,
+    public gpsPrvd: Gps,
     public networkPrvd: Network,
-    public chatPrvd: Chat
+    public chatPrvd: Chat,
+    public authPrvd: Auth
   ) {
     this.action = this.navParams.get('action');
-    this.networkParams = { post_code: this.gps.zipCode };
+    this.networkParams = { post_code: this.gpsPrvd.zipCode };
+    this.user = this.authPrvd.getAuthData();
+
     this.textStrings.actionError = 'Something went wrong, please reload app and try again';
     this.textStrings.inviteError = 'Please, invite 20 or more friends for create netwrk';
     this.textStrings.created = 'The netwrk already created, please wait for connections';
     this.textStrings.joined = 'You have already joined, please wait for connections';
+
+    let invitation = this.networkPrvd.getInviteZipAccess();
+    let zipCode = this.gpsPrvd.zipCode;
+    if (invitation.indexOf(zipCode) !== -1) {
+      this.invitationSent = true;
+    }
   }
 
   public goToProfile(data: any) {
@@ -74,8 +87,9 @@ export class NetworkPage {
 
     this.networkPrvd.create(this.networkParams).subscribe(res => {
       console.log(res);
-      this.users = this.formateAvatarUrl(res.users);
+      console.log('this.users', this.users);
       this.toolsPrvd.showToast(this.textStrings.created);
+      console.log('this.users', this.users);
     }, err => {
       console.log(err);
       this.toolsPrvd.showToast(this.textStrings.created);
@@ -84,12 +98,11 @@ export class NetworkPage {
 
   private formateAvatarUrl(users: any) {
     for (let u in users) {
+      if (this.user.id == users[u].id) this.joined = true;
       if (!users[u].avatar_url) {
         users[u].avatar_url = this.toolsPrvd.defaultAvatar;
-        console.log('!users[u].avatar_url', users[u].avatar_url)
       } else {
         users[u].avatar_url = this.chatPrvd.hostUrl + users[u].avatar_url;
-        console.log('users[u].avatar_url', users[u].avatar_url)
       }
     }
     return users;
@@ -99,7 +112,9 @@ export class NetworkPage {
 
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       console.log(res);
-      this.users = this.formateAvatarUrl(res.users);
+      let user = this.authPrvd.getAuthData();
+      this.users.push(user);
+      this.joined = true;
       this.afterJoin();
     }, err => {
       console.log(err);
@@ -108,13 +123,14 @@ export class NetworkPage {
   }
 
   private afterJoin() {
+    console.log('this.users', this.users);
     if (this.users.length >= 10) {
       let params: any = {
         action: 'netwrk',
         zipCode: this.navParams.get('zipCode'),
       };
 
-      this.chatPrvd.setZipCode(this.gps.zipCode);
+      this.chatPrvd.setZipCode(this.gpsPrvd.zipCode);
       this.chatPrvd.setState(params.action);
       this.toolsPrvd.pushPage(ChatPage, params);
     } else {
@@ -125,8 +141,7 @@ export class NetworkPage {
   private getUsers() {
     if (this.action == 'create') return;
     this.networkPrvd.getUsers(this.networkParams).subscribe(res => {
-      console.log(res);
-      this.users = this.formateAvatarUrl(res);;
+      this.users = this.formateAvatarUrl(res);
     }, err => {
       console.log(err);
     });
@@ -134,7 +149,7 @@ export class NetworkPage {
 
   goBack() { this.toolsPrvd.popPage(); }
 
-  ionViewDidLoad() {
+  ionViewDidEnter() {
     this.getUsers();
     console.log('ionViewDidLoad NetworkPage');
   }

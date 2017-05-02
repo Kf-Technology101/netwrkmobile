@@ -37,7 +37,7 @@ export class FeedbackShareModal {
 
   shareViaFacebook() {
     this.socialShare.
-    shareViaFacebook(this.share.message, this.share.image, this.share.url).
+    shareViaFacebook(this.share.message).
     then((succ) => {
       console.log('[Facebook share] Success:', succ);
     }).catch((err) => {

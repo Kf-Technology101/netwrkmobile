@@ -692,9 +692,9 @@ export class ChatPage {
     );
     feedbackModal.onDidDismiss(data => {
       if (data) {
-        console.log('[likeClose] data:', data);
+        // console.log('[likeClose] data:', data);
         this.postMessages[messageId] = data;
-        console.log('[postMessages] data:', this.postMessages[messageId]);
+        // console.log('[postMessages] data:', this.postMessages[messageId]);
       } else {
         console.warn('[likeClose] Error, no data returned');
       }

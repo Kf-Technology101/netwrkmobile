@@ -689,9 +689,9 @@ export class ChatPage {
         if (data) {
           console.log('[likeClose] data:', data);
           console.log('[likeClose] messageId:', messageId);
-          for (let m in this.postMessages) {
-            if (data == this.postMessages[m]) {
-              this.postMessages[m] = data;
+          for (let m of this.postMessages) {
+            if (data == m) {
+              m = data;
               break;
             }
           }

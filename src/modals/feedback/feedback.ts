@@ -35,7 +35,6 @@ export class FeedbackModal {
 
   private feedData:any;
 
-  private currentUser:any;
   private data:any;
 
   constructor(
@@ -62,7 +61,7 @@ export class FeedbackModal {
   goShare() {
     let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal,
         {
-          user: this.data.data.user,
+          user: this.data.user,
           message: this.params.get('messageText')
         });
     feedbackShareModal.present();

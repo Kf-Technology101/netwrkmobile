@@ -60,9 +60,9 @@ page-profile {
   }
 
   .content {
-    background: #fff;
-    &.undercover {
-      background: #302f2f;
+    background: #302f2f;
+    &.public-undercover {
+      background: #fff;
     }
 
     .slides {

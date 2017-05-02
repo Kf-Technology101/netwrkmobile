@@ -178,7 +178,7 @@ export class ProfilePage {
     console.log('[PROFILE.ts] viewDidEnter');
     if (this.ownProfile) {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-      let position = this.undercoverPrvd.profileType ? false : true
+      let position = this.undercoverPrvd.profileType == 'undercover' ? true : false
       this.slideAvatarPrvd.sliderInit();
       this.slideAvatarPrvd.setSliderPosition(position);
     }

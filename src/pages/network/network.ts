@@ -61,6 +61,7 @@ export class NetworkPage {
 
   public doAction() {
     if (this.joined) {
+      this.chatPrvd.setState('undercover');
       let params: any = {
         zipCode: this.gpsPrvd.zipCode,
         action: this.chatPrvd.getState()

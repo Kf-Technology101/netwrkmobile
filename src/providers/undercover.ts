@@ -26,20 +26,6 @@ export class UndercoverProvider {
   public setUndercover(status: boolean): boolean {
     this.isUndercover = status;
     return this.isUndercover;
-    // return false;
-  }
-
-  public getPerson(): any {
-    let person = this.localStorage.get('undercover_person');
-    let result = person && person.name && person.description && person.imageUrl
-      ? person : null;
-    return result;
-  }
-
-  public setActivePerson(status: boolean): any {
-    let person = this.getPerson();
-    person ? person.active = status : person = { active: status };
-    return this.localStorage.set('undercover_person', person);
   }
 
   public setPerson(person: any): any {

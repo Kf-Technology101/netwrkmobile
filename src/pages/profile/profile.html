@@ -27,7 +27,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content has-main-btn [ngClass]="{'undercover': isUndercover}">
+<ion-content has-main-btn>
   <ion-row *ngIf="connect.facebook && fbFriends.length > 0" class="facebook" padding>
     <ion-col>
       <label>{{ fbFriends.length }} Сommon Connections</label>

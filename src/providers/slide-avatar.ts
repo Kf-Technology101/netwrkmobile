@@ -50,9 +50,6 @@ export class SlideAvatar {
         }
       }
 
-      // let person = this.undercoverPrvd.getPerson();
-      // this.sliderState = person ? person.active : false;
-
       this.setSliderDimentions();
       // this.setSliderPosition(this.sliderState);
       this.startSliderEvents();

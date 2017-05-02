@@ -41,7 +41,6 @@ export class UndercoverCharacterPage {
     public authPrvd: Auth
   ) {
     this.persons = heroes;
-    // this.undercover.setActivePerson(true);
     this.changeError = 'You can\'t leave this page right now';
     this.textError = 'Something went wrong, please try again later';
 

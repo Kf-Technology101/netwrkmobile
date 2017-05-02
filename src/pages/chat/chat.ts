@@ -525,7 +525,7 @@ export class ChatPage {
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
         this.slideAvatarPrvd.sliderInit();
-        let position = this.undercoverPrvd.profileType ? false : true
+        let position = this.undercoverPrvd.profileType === 'public' ? true : false;
         this.slideAvatarPrvd.setSliderPosition(position);
       } else {
         this.chatPrvd.setState('area');
@@ -654,7 +654,7 @@ export class ChatPage {
   private showMessages() {
     let messagesInterval = setInterval(() => {
       this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
-        console.log(data);
+        // console.log(data);
         if (this.postMessages.length != data.length) {
           this.postMessages = this.chatPrvd.organizeMessages(data);
           this.messageDateTimer.start(this.postMessages);

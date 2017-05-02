@@ -687,7 +687,6 @@ export class ChatPage {
         data: feedbackData,
         totalLikes: messageData.likes_count,
         likedByUser: messageData.like_by_user,
-        user: feedbackData.user,
         messageText: messageData.text
       }
     );

@@ -36,6 +36,7 @@ export class FeedbackModal {
   private feedData:any;
 
   private currentUser:any;
+  private data:any;
 
   constructor(
     private params: NavParams,
@@ -43,13 +44,12 @@ export class FeedbackModal {
     public chatPrvd: Chat,
     public modalCtrl: ModalController
   ) {
-    let data = params.get('data');
-    this.currentUser = ;
+    this.data = params.get('data');
     this.feedData = {
       user_like: {
-        user_id: data.user.id,
-        message_id: data.message_id,
-        message_index: data.message_index
+        user_id: this.data.user.id,
+        message_id: this.data.message_id,
+        message_index: this.data.message_index
       }
     }
   }
@@ -62,7 +62,7 @@ export class FeedbackModal {
   goShare() {
     let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal,
         {
-          data: this.params.get('user'),
+          user: this.data.data.user,
           message: this.params.get('messageText')
         });
     feedbackShareModal.present();

@@ -45,12 +45,6 @@ export class NetworkPage {
     this.textStrings.inviteError = 'Please, invite 20 or more friends for create netwrk';
     this.textStrings.created = 'The netwrk already created, please wait for connections';
     this.textStrings.joined = 'You have already joined, please wait for connections';
-
-    let invitation = this.networkPrvd.getInviteZipAccess();
-    let zipCode = this.gpsPrvd.zipCode;
-    if (invitation.indexOf(zipCode) !== -1) {
-      this.invitationSent = true;
-    }
   }
 
   public goToProfile(data: any) {
@@ -66,14 +60,23 @@ export class NetworkPage {
   }
 
   public doAction() {
-    switch(this.action) {
-      case 'create':
+    if (this.joined) {
+      let params: any = {
+        zipCode: this.gpsPrvd.zipCode,
+        action: this.chatPrvd.getState()
+      };
+
+      this.toolsPrvd.pushPage(ChatPage, params);
+    } else {
+      switch(this.action) {
+        case 'create':
         this.doCreate();
-      break;
-      case 'join':
+        break;
+        case 'join':
         this.doJoin();
-      break;
-      default: this.toolsPrvd.showToast(this.textStrings.actionError);
+        break;
+        default: this.toolsPrvd.showToast(this.textStrings.actionError);
+      }
     }
   }
 
@@ -150,8 +153,14 @@ export class NetworkPage {
   goBack() { this.toolsPrvd.popPage(); }
 
   ionViewDidEnter() {
-    this.getUsers();
     console.log('ionViewDidLoad NetworkPage');
+    this.getUsers();
+
+    let invitation = this.networkPrvd.getInviteZipAccess();
+    let zipCode = this.gpsPrvd.zipCode;
+    if (invitation.indexOf(zipCode) !== -1) {
+      this.invitationSent = true;
+    }
   }
 
 }

@@ -4,9 +4,8 @@
       <img class="sun-icon" src="assets/images/sun_icon.png">
       <ion-card>
         <ion-card-content>
-          <span ion-text color="bk" *ngIf="action == 'join'">
-            <p>Please tap the button to connect to this netwrk.</p>
-            <p></p>
+          <span ion-text color="bk" *ngIf="action == 'join'" hidden>
+            <p>More people are still needed to found this netwrk, send a email or text to get the last few!</p>
           </span>
           <span ion-text color="bk" *ngIf="action == 'create'">
             <p>To become a founder, at least 20 people must be invited from your contact list or by email, and at least 10 need to join.</p>
@@ -52,7 +51,7 @@
   <button *ngIf="invitationSent" ion-button color="bk"
     class="main-action-btn medium has-label"
     (click)="doAction()" outline></button>
-  <span class="main-action-text" ion-text color="bk">
+  <span *ngIf="invitationSent" class="main-action-text" ion-text color="bk">
     <ng-container *ngIf="!joined">
       Tap to continue
     </ng-container>
@@ -61,7 +60,7 @@
     </ng-container>
   </span>
 
-  <button ion-button class="footer-back-button" (click)="goBack()" clear>
+  <button ion-button class="footer-back-button" (click)="goBack()" clear hidden>
     <span color="bk" ion-text>Back</span>
   </button>
 </ion-footer>

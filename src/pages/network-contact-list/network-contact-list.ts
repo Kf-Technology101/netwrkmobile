@@ -144,10 +144,10 @@ export class NetworkContactListPage {
             let inviteCode = this.gpsPrvd.zipCode;
             let inviteCodes = this.networkPrvd.getInviteZipAccess();
             this.tools.hideLoader();
-            this.tools.popPage();
             if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode)
             this.networkPrvd.saveInviteZipAccess(inviteCodes)
             this.networkPrvd.saveInviteAccess(true);
+            this.tools.popPage();
           }, err => {
             this.tools.hideLoader();
             this.tools.showToast(JSON.stringify(err));

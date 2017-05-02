@@ -62,15 +62,15 @@ export class ProfilePage {
 
     console.log(this.connect.facebook);
 
-    this.social.getFriendList().then(res => {
-      console.log(res);
-      this.fbFriends = res.data;
-      console.log(this.fbFriends);
-      if (this.fbSlider) {
-        this.fbSlider.pager = true;
-        this.fbSlider.slidesPerView = 5;
-      }
-    }).catch(err => console.log(err));
+    // this.social.getFriendList().then(res => {
+    //   console.log(res);
+    //   this.fbFriends = res.data;
+    //   console.log(this.fbFriends);
+    //   if (this.fbSlider) {
+    //     this.fbSlider.pager = true;
+    //     this.fbSlider.slidesPerView = 5;
+    //   }
+    // }).catch(err => console.log(err));
   }
 
   connectToFacebook() {

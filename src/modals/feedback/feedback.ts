@@ -35,6 +35,8 @@ export class FeedbackModal {
 
   private feedData:any;
 
+  private currentUser:any;
+
   constructor(
     private params: NavParams,
     private viewCtrl: ViewController,
@@ -42,6 +44,7 @@ export class FeedbackModal {
     public modalCtrl: ModalController
   ) {
     let data = params.get('data');
+    this.currentUser = ;
     this.feedData = {
       user_like: {
         user_id: data.user.id,
@@ -57,7 +60,11 @@ export class FeedbackModal {
   }
 
   goShare() {
-    let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal);
+    let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal,
+        {
+          data: this.params.get('user'),
+          message: this.params.get('messageText')
+        });
     feedbackShareModal.present();
   }
 

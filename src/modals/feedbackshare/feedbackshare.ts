@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController, ModalController } from 'ionic-angular';
-
 import { Chat } from '../../providers/chat';
 import { toggleFade } from '../../includes/animations';
 import { ShareListModal } from '../sharelist/sharelist';
+
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 @Component({
   selector: 'modal-feedbackshare',
@@ -19,12 +20,31 @@ export class FeedbackShareModal {
     hidden: false
   }
 
+  private share: any = {
+    message: <string> '',
+    image: null,
+    url: <string> ''
+  }
+
   constructor(
     private params: NavParams,
     private viewCtrl: ViewController,
     private modalCtrl: ModalController,
-    public chatPrvd: Chat
+    public chatPrvd: Chat,
+    private socialShare: SocialSharing
   ) {
+    let data = params.get('data');
+    console.log('received data:', data);
+  }
+
+  shareViaFacebook() {
+    this.socialShare.
+    shareViaFacebook(this.share.message, this.share.image, this.share.url).
+    then((succ) => {
+      console.log('[Facebook share] Success:', succ);
+    }).catch((err) => {
+      console.log('[Facebook share] Error:', err);
+    });
   }
 
   chooseToShare() {

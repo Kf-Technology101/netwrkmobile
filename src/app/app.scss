@@ -351,7 +351,7 @@ ion-header.incognito-header {
     button.back {
       width: 25px;
       height: 40px;
-      border-color: #5b87aa;
+      border-color: color($colors, bk);
       border-style: solid;
       border-width: 3px;
       border-radius: 7px;
@@ -647,9 +647,12 @@ modal-sharelist {
       width: 25px;
       height: 40px;
       opacity: 0;
-      border-color: #5b87aa;
+      border-color: color($colors, bk);
       border-style: solid;
       bottom: 67px;
+      .icon {
+        color: color($colors, bk);
+      }
     }
   }
 }

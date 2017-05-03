@@ -4,7 +4,7 @@
       <div class="dragline">
         <span class="info">
           <span *ngIf="undercoverPrvd.profileType == 'public'" class="username">
-            {{ user.first_name }} {{ user.last_name }}
+            {{ user.name }}
           </span>
           <span *ngIf="undercoverPrvd.profileType == 'undercover'" class="username">
             {{ user.role_name }}
@@ -83,10 +83,10 @@
           <div class="avatar" (click)="goToProfile(user.id)">
             <img [src]="chatPrvd.users[user.id].avatar_url">
           </div>
-          <span *ngIf="user.first_name || user.last_name" class="username">
-            {{ user.first_name }} {{ user.last_name }}
+          <span *ngIf="user.name" class="username">
+            {{ user.name }}
           </span>
-          <span *ngIf="!user.first_name && !user.last_name" class="username">
+          <span *ngIf="!user.name" class="username">
             {{ user.email }}
           </span>
         </ion-slide>
@@ -110,8 +110,7 @@
       <p class="message-container">
         <span class="username" *ngIf="chatPrvd.users[message.user_id]">
           <ng-container *ngIf="message.public">
-            {{ chatPrvd.users[message.user_id].first_name }}
-            {{ chatPrvd.users[message.user_id].last_name }}
+            {{ chatPrvd.users[message.user_id].name }}
           </ng-container>
           <ng-container *ngIf="!message.public">
             {{ chatPrvd.users[message.user_id].role_name }}

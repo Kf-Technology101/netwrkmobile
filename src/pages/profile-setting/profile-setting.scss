@@ -57,11 +57,21 @@ page-profile-setting {
     .avatar-section {
       .avatar {
         text-align: center;
+        height: 178px;
 
         img {
           border-radius: 100%;
-          height: auto;
-          width: 200px;
+          height: 100%;
+          width: auto;
+        }
+
+        .spinner {
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          margin: auto;
         }
 
         .button {

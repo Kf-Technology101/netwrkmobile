@@ -12,7 +12,7 @@ import { UndercoverCharacterPage } from '../pages/undercover-character/undercove
 import { ChatPage } from '../pages/chat/chat';
 // import { HomePage } from '../pages/home/home';
 // import { ProfilePage } from '../pages/profile/profile';
-// import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
+import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
 // import { NetworkPage } from '../pages/network/network';
 // import { CameraPage } from '../pages/camera/camera';
@@ -90,16 +90,15 @@ export class MyApp {
       // this.rootPage = UndercoverCharacterPage;
       // this.rootPage = SignUpConfirmPage;
       // this.rootPage = SignUpFacebookPage;
+      // this.rootPage = ProfileSettingPage;
     }
   }
 
   private getSimInfo() {
-    this.sim.getSimInfo().then(
-      (info) => {
-        console.log('Sim info: ', info);
-        this.localStoragePrvd.set('country_code', info.countryCode);
-      },
-      (err) => console.log('Unable to get sim info: ', err)
-    );
+    this.sim.getSimInfo().then(info => {
+      console.log('Sim info: ', info);
+      this.localStoragePrvd.set('country_code', info.countryCode);
+    },
+    err => console.log('Unable to get sim info: ', err));
   }
 }

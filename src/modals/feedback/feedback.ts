@@ -93,7 +93,7 @@ export class FeedbackModal {
         this.postStatus.isLiked = !this.postStatus.isLiked;
         res.like_by_user = this.postStatus.isLiked;
         this.endResult.like = {
-          total:<number> res.like_count,
+          total:<number> res.likes_count,
           isActive:<boolean> res.like_by_user
         };
       }

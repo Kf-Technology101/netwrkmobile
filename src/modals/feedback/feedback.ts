@@ -85,16 +85,16 @@ export class FeedbackModal {
         this.postStatus.isLegendary = !this.postStatus.isLegendary;
         res.legendary_by_user = this.postStatus.isLegendary;
         this.endResult.legendary = {
-          total:<number> res.legendary_by_user,
-          isActive:<boolean> res.legendary_count
+          total:<number> res.legendary_count,
+          isActive:<boolean> res.legendary_by_user
         };
       } else if (type === 'like') {
         this.postInf.totalLikes = res.likes_count;
         this.postStatus.isLiked = !this.postStatus.isLiked;
         res.like_by_user = this.postStatus.isLiked;
         this.endResult.like = {
-          total:<number> res.like_by_user,
-          isActive:<boolean> res.like_count
+          total:<number> res.like_count,
+          isActive:<boolean> res.like_by_user
         };
       }
     }, err => {

@@ -35,7 +35,7 @@
       </div>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="connect.facebook && fbFriends.length > 0" class="facebook" padding>
+  <ion-row *ngIf="connect.facebook && fbFriends.length > 0 && profileTypePublic" class="facebook" padding>
     <ion-col>
       <label>{{ fbFriends.length }} Сommon Connections</label>
       <ion-slides #fbSlider slidesPerView="5">
@@ -43,7 +43,7 @@
           <div class="avatar" (click)="getFbProfile(friend.id)">
             <img [src]="friend.picture.data.url">
           </div>
-          <span>{{ friend.name }}</span>
+          <span class="name">{{ friend.name }}</span>
         </ion-slide>
       </ion-slides>
     </ion-col>

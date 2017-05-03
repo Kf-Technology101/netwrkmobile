@@ -68,11 +68,12 @@ page-profile {
     .avatar-section {
       .avatar {
         text-align: center;
+        height: 178px;
 
         img {
           border-radius: 100%;
-          height: auto;
-          width: 200px;
+          height: 100%;
+          width: auto;
         }
       }
     }
@@ -93,6 +94,10 @@ page-profile {
         img {
           border-radius: 100%;
         }
+      }
+
+      .name {
+        font-size: 12px;
       }
 
       .swiper-container {

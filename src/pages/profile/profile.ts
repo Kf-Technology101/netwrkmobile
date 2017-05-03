@@ -52,7 +52,8 @@ export class ProfilePage {
     public api: Api
   ) {
     this.user.id = this.navParams.get('id');
-    this.profileTypePublic = this.navParams.get('public');
+    this.profileTypePublic = this.navParams.get('public') ?
+      this.navParams.get('public') : true;
     console.log(this.user);
     // this.isUndercover = this.undercoverPrvd.isUndercover;
   }
@@ -64,16 +65,6 @@ export class ProfilePage {
     this.connect.snapchat = false;
 
     console.log(this.connect.facebook);
-
-    this.social.getFriendList().then(res => {
-      console.log(res);
-      this.fbFriends = res.data;
-      console.log('this.fbFriends', this.fbFriends);
-      console.log('this.user:', this.user);
-      if (this.fbSlider) {
-        this.fbSlider.pager = true;
-      }
-    }).catch(err => console.log(err));
   }
 
   getFbProfile(userId) {
@@ -176,6 +167,16 @@ export class ProfilePage {
       this.user.name = 'No name';
     }
     this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
+
+    this.social.getFriendList(this.user.provider_id).then(res => {
+      console.log(res);
+      this.fbFriends = res.data;
+      console.log('this.fbFriends', this.fbFriends);
+      console.log('this.user:', this.user);
+      if (this.fbSlider) {
+        this.fbSlider.pager = true;
+      }
+    }).catch(err => console.log(err));
   }
 
   changeCallback(positionLeft?: boolean) {

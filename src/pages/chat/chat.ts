@@ -411,6 +411,7 @@ export class ChatPage {
       images: emoji ? [] : images,
       undercover: this.isUndercover,
       public: publicUser,
+      is_emoji: emoji ? true : false
     };
 
     message = Object.assign(message, messageParams);

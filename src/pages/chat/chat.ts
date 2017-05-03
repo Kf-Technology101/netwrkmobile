@@ -198,10 +198,9 @@ export class ChatPage {
       created_at: '2017-04-22T14:59:29.921Z',
       date_of_birthday: '2004-01-01',
       email: 'olbachinskiy2@gmail.com',
-      first_name: 'Oleksandr',
+      name: 'Oleksandr Bachynskyi',
       id: 55,
       invitation_sent: false,
-      last_name: 'Bachynskyi',
       phone: '1492873128682',
       provider_id: null,
       provider_name: null,
@@ -659,12 +658,11 @@ export class ChatPage {
 
 
   private startMessageUpdateTimer() {
-    if (!this.messagesInterval) {
+    if (this.messagesInterval) clearInterval(this.messagesInterval);
+    this.showMessages();
+    this.messagesInterval = setInterval(() => {
       this.showMessages();
-      this.messagesInterval = setInterval(() => {
-        this.showMessages();
-      }, 10000);
-    }
+    }, 10000);
   }
 
   private showMessages() {

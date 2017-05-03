@@ -66,4 +66,8 @@ export class User {
   public getUserId() {
     return this.auth.getAuthData().id;
   }
+
+  public errorHandler(error) {
+    
+  }
 }

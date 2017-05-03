@@ -663,3 +663,12 @@ modal-sharelist {
 .icon[ios="logo-twitter"] {
   color: #0093ee;
 }
+
+.api-url {
+  position: fixed;
+  z-index: 20000;
+  padding: 0;
+  margin: 0;
+  line-height: 12px;
+  height: 12px;
+}

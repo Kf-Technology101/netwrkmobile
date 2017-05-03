@@ -5,15 +5,26 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class Api {
-  private httpProtocol: string = 'http://';
-  public siteDomain: string = '34.208.20.67'; //192.168.1.13:3000 //34.208.20.67
+  public httpProtocol: string = 'http://';
+  private apiV: string = '/api/v1';
+  public domainLocal: string = '192.168.1.13:3000';
+  public domainServer: string = '34.208.20.67';
+  public siteDomain: string = this.domainServer;
   public hostUrl = this.httpProtocol + this.siteDomain;
-  public url: string = this.hostUrl + '/api/v1';
+  public url: string = this.hostUrl + this.apiV;
 
   constructor(
     public http: Http,
     public storage: LocalStorage
   ) {}
+
+  public changeApiUrl(url: string) {
+    this.siteDomain = url == this.domainServer
+      ? this.domainLocal
+      : this.domainServer;
+    this.hostUrl = this.httpProtocol + this.siteDomain;
+    this.url = this.hostUrl + this.apiV;
+  }
 
   createAuthorizationHeader(options: RequestOptions): RequestOptions {
     if (!options) {

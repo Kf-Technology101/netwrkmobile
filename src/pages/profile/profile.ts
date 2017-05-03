@@ -127,7 +127,9 @@ export class ProfilePage {
   }
 
   openSettings() {
-    this.toolsPrvd.pushPage(ProfileSettingPage);
+    this.toolsPrvd.pushPage(ProfileSettingPage, {
+      public: this.profileTypePublic
+    });
   }
 
   goBack() { this.toolsPrvd.popPage(); }
@@ -158,23 +160,16 @@ export class ProfilePage {
   }
 
   private showUserData(res: any) {
-    this.toolsPrvd.hideLoader();
+    // this.toolsPrvd.hideLoader();
     console.log(res);
 
     this.ownProfile = res.id == this.authPrvd.getAuthData().id ? true : false;
-
     this.user = res;
-    if (res.role_name) {
-      this.user.name = res.role_name;
-    } else {
-      this.user.name = 'No name';
-    }
-
     this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
 
-    this.social.getFriendList(this.user.provider_id).then(res => {
-      console.log(res);
-      this.fbFriends = res.data;
+    this.social.getFriendList(this.user.provider_id).then(friends => {
+      console.log(friends);
+      this.fbFriends = friends.data;
       console.log('this.fbFriends', this.fbFriends);
       console.log('this.user:', this.user);
       if (this.fbSlider) {
@@ -199,7 +194,7 @@ export class ProfilePage {
   }
 
   ionViewDidLoad() {
-    this.toolsPrvd.showLoader();
+    // this.toolsPrvd.showLoader();
     this.loadProfile();
   }
 

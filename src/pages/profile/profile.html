@@ -34,7 +34,12 @@
         <img [src]="profileTypePublic ? user.avatar_url : user.role_image_url">
       </div>
       <span class="username">
-        {{ user.name }}
+        <ng-container *ngIf="undercoverPrvd.profileType == 'undercover' && ownProfile">
+          {{ user.role_name }}
+        </ng-container>
+        <ng-container *ngIf="undercoverPrvd.profileType == 'public' || !ownProfile">
+          {{ user.name }}
+        </ng-container>
       </span>
     </ion-col>
   </ion-row>

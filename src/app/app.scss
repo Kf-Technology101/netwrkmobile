@@ -669,6 +669,10 @@ modal-sharelist {
   z-index: 20000;
   padding: 0;
   margin: 0;
-  line-height: 12px;
-  height: 12px;
+  height: auto;
+  background-color: transparent;
+  span {
+    padding: 2px;
+    background: rgba(0, 0, 0, .5);
+  }
 }

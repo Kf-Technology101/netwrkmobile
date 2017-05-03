@@ -123,7 +123,7 @@
           {{ message.temporaryFor }}
         </span>
         <span *ngIf="message.text" class="text"
-              [ngClass]="{ 'emoji' : message.isEmoji }">{{ message.text }}</span>
+              [ngClass]="{ 'emoji' : message.is_emoji }">{{ message.text }}</span>
       </p>
       <button class="feedback-button" (click)="sendFeedback(message, i)"
         [ngClass]="{ 'bottom' : message.image_urls && message.image_urls.length }"

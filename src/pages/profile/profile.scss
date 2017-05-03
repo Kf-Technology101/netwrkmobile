@@ -65,6 +65,18 @@ page-profile {
       background: #fff;
     }
 
+    .avatar-section {
+      .avatar {
+        text-align: center;
+
+        img {
+          border-radius: 100%;
+          height: auto;
+          width: 200px;
+        }
+      }
+    }
+
     .slides {
       height: auto;
       color: #fff;

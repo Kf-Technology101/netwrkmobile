@@ -35,6 +35,7 @@ export class ProfilePage {
   };
 
   public user: any = {};
+  public profileTypePublic: boolean;
   private fbFriends: any = [];
 
   constructor(
@@ -51,6 +52,7 @@ export class ProfilePage {
     public api: Api
   ) {
     this.user.id = this.navParams.get('id');
+    this.profileTypePublic = this.navParams.get('public');
     console.log(this.user);
     // this.isUndercover = this.undercoverPrvd.isUndercover;
   }
@@ -70,7 +72,6 @@ export class ProfilePage {
       console.log('this.user:', this.user);
       if (this.fbSlider) {
         this.fbSlider.pager = true;
-        this.fbSlider.slidesPerView = 5;
       }
     }).catch(err => console.log(err));
   }

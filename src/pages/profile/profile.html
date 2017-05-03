@@ -1,5 +1,5 @@
-<ion-header *ngIf="ownProfile">
-  <ion-toolbar>
+<ion-header>
+  <ion-toolbar *ngIf="ownProfile">
 
     <div class="drag-container">
       <div class="dragline">
@@ -28,10 +28,17 @@
 </ion-header>
 
 <ion-content has-main-btn>
+  <ion-row *ngIf="!ownProfile" class="avatar-section">
+    <ion-col>
+      <div class="avatar">
+        <img [src]="profileTypePublic ? user.avatar_url : user.role_image_url">
+      </div>
+    </ion-col>
+  </ion-row>
   <ion-row *ngIf="connect.facebook && fbFriends.length > 0" class="facebook" padding>
     <ion-col>
       <label>{{ fbFriends.length }} Сommon Connections</label>
-      <ion-slides #fbSlider>
+      <ion-slides #fbSlider slidesPerView="5">
         <ion-slide *ngFor="let friend of fbFriends">
           <div class="avatar">
             <img [src]="friend.picture.data.url">

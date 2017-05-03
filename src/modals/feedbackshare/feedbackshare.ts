@@ -32,9 +32,11 @@ export class FeedbackShareModal {
     private modalCtrl: ModalController,
     public chatPrvd: Chat,
     private socialShare: SocialSharing
-  ) {}
+  ) {
+  }
 
   shareViaFacebook() {
+    console.log('share message:', this.share.message);
     this.socialShare.shareViaFacebookWithPasteMessageHint(
       this.share.message,
       this.share.image,

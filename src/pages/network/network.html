@@ -4,7 +4,7 @@
       <img class="sun-icon" src="assets/images/sun_icon.png">
       <ion-card>
         <ion-card-content>
-          <span ion-text color="bk" *ngIf="action == 'join'" hidden>
+          <span ion-text color="bk" *ngIf="action != 'create'">
             <p>More people are still needed to found this netwrk, send a email or text to get the last few!</p>
           </span>
           <span ion-text color="bk" *ngIf="action == 'create'">
@@ -52,10 +52,10 @@
     class="main-action-btn medium has-label"
     (click)="doAction()" outline></button>
   <span *ngIf="invitationSent" class="main-action-text" ion-text color="bk">
-    <ng-container *ngIf="!joined">
+    <ng-container *ngIf="!joined || (joined && !isUndercover)">
       Tap to continue
     </ng-container>
-    <ng-container *ngIf="joined">
+    <ng-container *ngIf="joined && isUndercover">
       Go Undercover
     </ng-container>
   </span>

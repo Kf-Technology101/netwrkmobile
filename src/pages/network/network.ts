@@ -24,6 +24,7 @@ export class NetworkPage {
   public action: string;
   public invitationSent: boolean = false;
   public joined: boolean = false;
+  public isUndercover: boolean = true;
   private textStrings: any = {};
   private networkParams: any = {};
 
@@ -61,7 +62,9 @@ export class NetworkPage {
 
   public doAction() {
     if (this.joined) {
-      this.chatPrvd.setState('undercover');
+      let state = this.isUndercover ? 'undercover' : 'area';
+      this.chatPrvd.setState(state);
+
       let params: any = {
         zipCode: this.gpsPrvd.zipCode,
         action: this.chatPrvd.getState()
@@ -117,6 +120,7 @@ export class NetworkPage {
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       console.log(res);
       let user = this.authPrvd.getAuthData();
+      user.avatar_url = this.chatPrvd.hostUrl + user.avatar_url;
       this.users.push(user);
       this.joined = true;
       this.afterJoin();
@@ -146,6 +150,9 @@ export class NetworkPage {
     if (this.action == 'create') return;
     this.networkPrvd.getUsers(this.networkParams).subscribe(res => {
       this.users = this.formateAvatarUrl(res);
+      if (this.users.length >= 10) {
+        this.isUndercover = false;
+      }
     }, err => {
       console.log(err);
     });

@@ -26,7 +26,6 @@ export class ProfilePage {
   greeting: string;
   testSlides: string[] = [];
   public ownProfile: boolean;
-  public publicType: boolean;
 
   connect: any = {
     facebook: false,

@@ -33,6 +33,9 @@
       <div class="avatar">
         <img [src]="profileTypePublic ? user.avatar_url : user.role_image_url">
       </div>
+      <span class="username">
+        {{ user.name }}
+      </span>
     </ion-col>
   </ion-row>
   <ion-row *ngIf="connect.facebook && fbFriends.length > 0 && profileTypePublic" class="facebook" padding>

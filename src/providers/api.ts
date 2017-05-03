@@ -46,12 +46,6 @@ export class Api {
     options = this.createAuthorizationHeader(options);
 
     let res = this.http.get(this.url + '/' + endpoint, options);
-    res.share().map(data => data.json()).subscribe(data => {}, err => {
-      console.log(err);
-      if (err.status == 401) {
-
-      }
-    });
 
     return res;
   }

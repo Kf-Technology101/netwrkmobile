@@ -100,7 +100,7 @@ export class Social {
 
   getInstagramData(): any { return this.getSocialAuth(Social.INSTAGRAM); }
 
-  public getFriendList(): Promise<any> {
+  public getFriendList(id: string): Promise<any> {
     return new Promise((resolve, reject) => {
       let fields: Array<string> = [
         'picture',
@@ -110,7 +110,7 @@ export class Social {
         'devices'
       ];
       this.facebook.api(
-        'me/friends?fields=' + fields.join(','),
+        id + '/friends?fields=' + fields.join(','),
         this.fbPermissions
       ).then(res => {
         resolve(res);

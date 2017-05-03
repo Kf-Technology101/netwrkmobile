@@ -504,9 +504,12 @@ export class ChatPage {
       this.caretPos = oField.selectionStart;
   }
 
-  goToProfile(profileId?: number) {
+  goToProfile(profileId?: number, profileTypePublic?: boolean) {
     if (!profileId) profileId = this.authPrvd.getAuthData().id;
-    let params = { id: profileId, public: !this.isUndercover };
+    let params = {
+      id: profileId,
+      public: profileTypePublic
+    };
     this.toolsPrvd.pushPage(ProfilePage, params);
   }
 

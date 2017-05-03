@@ -101,10 +101,10 @@
   [ngStyle]="{'padding-bottom': contentPadding}">
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let message of postMessages; let i = index">
-      <img *ngIf="chatPrvd.users[message.user_id]" (click)="goToProfile(message.user_id)"
+      <img *ngIf="chatPrvd.users[message.user_id]" (click)="goToProfile(message.user_id, message.public)"
         [src]="message.public ? chatPrvd.users[message.user_id].avatar_url : chatPrvd.users[message.user_id].role_image_url"
         class="chat-avatar">
-      <img *ngIf="!chatPrvd.users[message.user_id]" (click)="goToProfile(message.user_id)"
+      <img *ngIf="!chatPrvd.users[message.user_id]" (click)="goToProfile(message.user_id, message.public)"
         [src]="toolsPrvd.defaultAvatar"
         class="chat-avatar">
       <p class="message-container">

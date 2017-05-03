@@ -708,7 +708,14 @@ export class ChatPage {
     );
     feedbackModal.onDidDismiss(data => {
       if (data) {
-        this.postMessages[messageId] = data;
+        if (data.like) {
+          this.postMessages[messageId].likes_count = data.like.total;
+          this.postMessages[messageId].like_by_user = data.like.isActive;
+        }
+        if (data.legendary) {
+          this.postMessages[messageId].legendary_count = data.legendary.total;
+          this.postMessages[messageId].legendary_by_user = data.legendary.isActive;
+        }
       } else {
         console.warn('[likeClose] Error, no data returned');
       }

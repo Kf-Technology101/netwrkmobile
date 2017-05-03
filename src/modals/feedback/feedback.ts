@@ -81,12 +81,18 @@ export class FeedbackModal {
         this.postInf.totalLegendary = res.legendary_count;
         this.postStatus.isLegendary = !this.postStatus.isLegendary;
         res.legendary_by_user = this.postStatus.isLegendary;
-        this.endResult = res;
+        this.endResult.legendary = {
+          total: res.legendary_by_user,
+          isActive: res.legendary_count
+        };
       } else if (type === 'like') {
         this.postInf.totalLikes = res.likes_count;
         this.postStatus.isLiked = !this.postStatus.isLiked;
         res.like_by_user = this.postStatus.isLiked;
-        this.endResult = res;
+        this.endResult.like = {
+          total: res.like_by_user,
+          isActive: res.like_count
+        };
       }
     }, err => {
       console.log('[' + type + '] err:', err);
@@ -97,7 +103,7 @@ export class FeedbackModal {
     this.postInf.totalLikes = this.params.get('totalLikes');
     this.postStatus.isLiked = this.params.get('likedByUser');
     this.postInf.totalLegendary = this.params.get('totalLegendary');
-    this.postStatus.isLegendary= this.params.get('legendaryByUser');
+    this.postStatus.isLegendary = this.params.get('legendaryByUser');
     if (!this.postInf.totalLikes) {
       this.postInf.totalLikes = 0;
     }

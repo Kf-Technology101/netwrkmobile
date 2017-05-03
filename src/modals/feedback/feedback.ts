@@ -31,7 +31,10 @@ export class FeedbackModal {
     isLegendary: false
   };
 
-  private endResult:any;
+  private endResult:any = {
+    like: null,
+    legendary: null
+  };
 
   private likeData:any;
   private data:any;

@@ -1,7 +1,7 @@
-<ion-header>
+<ion-header *ngIf="ownProfile">
   <ion-toolbar>
 
-    <div class="drag-container" *ngIf="ownProfile">
+    <div class="drag-container">
       <div class="dragline">
         <span class="info">
           <span *ngIf="undercoverPrvd.profileType == 'undercover'" class="username">
@@ -41,7 +41,7 @@
       </ion-slides>
     </ion-col>
   </ion-row>
-  <ion-row class="connect" padding>
+  <ion-row *ngIf="ownProfile" class="connect" padding>
     <ion-col>
       <ion-row>
         <ion-col class="fb">

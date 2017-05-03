@@ -35,6 +35,15 @@ export class User {
     });
   }
 
+  public getFacebookFriendProfile(friendId) {
+    let seq = this.api.get(
+      'profiles/user_by_provider',
+      { provider_id: friendId })
+      .share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+
   public update(id: number, accountInfo: any, type?: string) {
     let seq = this.api.patch('registrations/' + id, accountInfo).share();
     seq.map(res => res.json()).subscribe(

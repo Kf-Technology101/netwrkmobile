@@ -37,12 +37,23 @@ export class FeedbackShareModal {
 
   shareViaFacebook() {
     console.log('share message:', this.share.message);
-    this.socialShare.shareViaFacebookWithPasteMessageHint(
-      this.share.message,
-      this.share.image,
-      this.share.url,
-      this.share.message
-    ).then((succ) => {
+    // this.socialShare.shareViaFacebookWithPasteMessageHint(
+    //   this.share.message,
+    //   this.share.image,
+    //   this.share.url,
+    //   this.share.message
+    // ).then((succ) => {
+    //   console.log('[Facebook share] Success:', succ);
+    // }).catch(err => {
+    //   console.log('[Facebook share] Error:', err);
+    // });
+    // this is the complete list of currently supported params you can pass to the plugin (all optional)
+    let shareOptions = {
+      message: this.share.message, // not supported on some apps (Facebook, Instagram)
+      url: 'https://www.google.com/'
+    }
+
+    this.socialShare.shareWithOptions(shareOptions).then(succ => {
       console.log('[Facebook share] Success:', succ);
     }).catch(err => {
       console.log('[Facebook share] Error:', err);

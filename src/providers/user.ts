@@ -30,7 +30,7 @@ export class User {
         }
       };
 
-      xhr.open('PUT', this.api.url + '/registrations/' + id, true);
+      xhr.open('PUT', `${this.api.url}/registrations/${id}`, true);
       xhr.send(formData);
     });
   }
@@ -45,7 +45,7 @@ export class User {
   }
 
   public update(id: number, accountInfo: any, type?: string) {
-    let seq = this.api.patch('registrations/' + id, accountInfo).share();
+    let seq = this.api.patch(`registrations/${id}`, accountInfo).share();
     seq.map(res => res.json()).subscribe(
       res => {
         console.log(res);
@@ -58,7 +58,7 @@ export class User {
   }
 
   public getUserData(id: number): any {
-    let seq = this.api.get('profiles/' + id).share();
+    let seq = this.api.get(`profiles/${id}`).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }

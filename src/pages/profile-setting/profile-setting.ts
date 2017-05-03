@@ -9,6 +9,7 @@ import { Auth } from '../../providers/auth';
 import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { User } from '../../providers/user';
+import { UndercoverProvider } from '../../providers/undercover';
 
 @Component({
   selector: 'page-profile-setting',
@@ -20,7 +21,7 @@ export class ProfileSettingPage {
   /**
    * Native upload button (hidden)
    */
-  @ViewChild("input")
+  @ViewChild('input')
   private nativeInputBtn: ElementRef;
   public user: any;
 
@@ -31,7 +32,8 @@ export class ProfileSettingPage {
     public tools: Tools,
     public slideAvatar: SlideAvatar,
     public auth: Auth,
-    public userPrvd: User
+    public userPrvd: User,
+    public undercoverPrvd: UndercoverProvider
   ) {
     this.user = this.auth.getAuthData();
   }
@@ -41,12 +43,12 @@ export class ProfileSettingPage {
    * @param  {Event}  event should be a mouse click event
    */
   public callback(event: Event): void {
-    console.log("upload-button callback executed");
+    console.log('upload-button callback executed');
 
     // trigger click event of hidden input
-    let clickEvent: MouseEvent = new MouseEvent("click", {bubbles: true});
+    let clickEvent: MouseEvent = new MouseEvent('click', {bubbles: true});
     this.renderer.invokeElementMethod(
-        this.nativeInputBtn.nativeElement, "dispatchEvent", [clickEvent]);
+        this.nativeInputBtn.nativeElement, 'dispatchEvent', [clickEvent]);
   }
 
   /**
@@ -73,7 +75,7 @@ export class ProfileSettingPage {
         console.log(res);
       }, err => console.error('ERROR', err)
     );
-    console.log("Added files", files);
+    console.log('Added files', files);
   }
 
   goBack() { this.tools.popPage(); }

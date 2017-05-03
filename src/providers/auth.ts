@@ -168,7 +168,8 @@ export class Auth {
       'birthday',
       'email',
       'first_name',
-      'last_name'
+      'last_name',
+      'name'
     ];
     this.facebook.api(
       '/me?fields=' + fields.join(','),
@@ -180,7 +181,8 @@ export class Auth {
         user: {
           date_of_birthday: birthday ? this.formateDate(birthday) : null,
           first_name: res.first_name || null,
-          last_name: res.last_name || null
+          last_name: res.last_name || null,
+          name: res.name || null
         }
       }
 

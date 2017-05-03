@@ -4,7 +4,7 @@
       <div class="dragline">
         <span class="info">
           <span *ngIf="undercoverPrvd.profileType == 'public'" class="username">
-            {{ user.first_name }} {{ user.last_name }}
+            {{ user.name }}
           </span>
           <span *ngIf="undercoverPrvd.profileType == 'undercover'" class="username">
             {{ user.role_name }}

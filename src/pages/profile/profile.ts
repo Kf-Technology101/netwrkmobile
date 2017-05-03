@@ -42,7 +42,7 @@ export class ProfilePage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public social: Social,
-    public tools: Tools,
+    public toolsPrvd: Tools,
     public undercoverPrvd: UndercoverProvider,
     public slideAvatarPrvd: SlideAvatar,
     public userPrvd: User,
@@ -54,7 +54,7 @@ export class ProfilePage {
     this.user.id = this.navParams.get('id');
     this.profileTypePublic = this.navParams.get('public') ?
       this.navParams.get('public') : true;
-    console.log(this.user);
+    // console.log(this.user);
     // this.isUndercover = this.undercoverPrvd.isUndercover;
   }
 
@@ -80,7 +80,7 @@ export class ProfilePage {
   connectToFacebook() {
     // this.social.connectToFacebook().then(res => {
     //   this.connect.facebook = this.social.getFacebookData();
-    //   this.tools.showToast('Facebook already connected');
+    //   this.toolsPrvd.showToast('Facebook already connected');
     // });
     // this.social.getFbPermission();
     let confirm = this.alertCtrl.create({
@@ -107,19 +107,19 @@ export class ProfilePage {
   connectToInstagram() {
     this.social.connectToInstagram().then(() => {
       this.connect.instagram = this.social.getInstagramData();
-      this.tools.showToast('Instagram already connected');
+      this.toolsPrvd.showToast('Instagram already connected');
     });
   }
 
   connectToTwitter() {
     this.social.connectToTwitter().then(res => {
       this.connect.twitter = this.social.getTwitterData();
-      this.tools.showToast('Twitter already connected');
+      this.toolsPrvd.showToast('Twitter already connected');
     });
   }
 
   connectToLinkedIn() {
-    this.tools.showToast('LinkedIn isn\'t connected');
+    this.toolsPrvd.showToast('LinkedIn isn\'t connected');
   }
 
   connectToSnapchat() {
@@ -127,10 +127,10 @@ export class ProfilePage {
   }
 
   openSettings() {
-    this.tools.pushPage(ProfileSettingPage);
+    this.toolsPrvd.pushPage(ProfileSettingPage);
   }
 
-  goBack() { this.tools.popPage(); }
+  goBack() { this.toolsPrvd.popPage(); }
 
   private loadPublicProfile() {
     this.userPrvd.getUserData(this.user.id).subscribe(
@@ -158,15 +158,18 @@ export class ProfilePage {
   }
 
   private showUserData(res: any) {
+    this.toolsPrvd.hideLoader();
     console.log(res);
+
+    this.ownProfile = res.id == this.authPrvd.getAuthData().id ? true : false;
+
     this.user = res;
-    if (res.first_name || res.last_name) {
-      this.user.name = `${res.first_name} ${res.last_name}`;
-    } else if (res.role_name) {
+    if (res.role_name) {
       this.user.name = res.role_name;
     } else {
       this.user.name = 'No name';
     }
+
     this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
 
     this.social.getFriendList(this.user.provider_id).then(res => {
@@ -184,12 +187,9 @@ export class ProfilePage {
     this.zone.run(() => {
       this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
     });
-
-    // console.log('isUndercover', this.isUndercover);
   }
 
   ionViewDidEnter() {
-    console.log('[PROFILE.ts] viewDidEnter');
     if (this.ownProfile) {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       let position = this.undercoverPrvd.profileType == 'undercover' ? true : false
@@ -199,12 +199,8 @@ export class ProfilePage {
   }
 
   ionViewDidLoad() {
+    this.toolsPrvd.showLoader();
     this.loadProfile();
-    console.log('[PROFILE.ts] viewDidLoad');
-  }
-
-  ionViewWillLeave() {
-    console.log('[PROFILE.ts] viewWillLeave');
   }
 
 }

@@ -39,8 +39,8 @@
           <ion-avatar item-left>
             <img [src]="p.avatar_url">
           </ion-avatar>
-          <h2 ion-text color="bk" *ngIf="p.first_name || p.last_name">{{ p.first_name }} {{ p.last_name }}</h2>
-          <h2 ion-text color="bk" *ngIf="!p.first_name && !p.last_name">{{ p.email }}</h2>
+          <h2 ion-text color="bk" *ngIf="p.name">{{ p.name }}</h2>
+          <h2 ion-text color="bk" *ngIf="!p.name">{{ p.email }}</h2>
         </ion-item>
       </ion-list>
     </ion-col>

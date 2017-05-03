@@ -31,12 +31,12 @@ export class NetworkFindPage {
     public chatPrvd: Chat
     // public permission: Permission
   ) {
-    platform.resume.subscribe(() => {
-      console.log('resume')
-      if (this.platform.is('cordova')) {
-        this.getZipCode();
-      }
-    });
+    // platform.resume.subscribe(() => {
+    //   console.log('resume')
+    //   if (this.platform.is('cordova')) {
+    //     this.getZipCode();
+    //   }
+    // });
   }
 
   go() {

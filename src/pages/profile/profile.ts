@@ -79,6 +79,7 @@ export class ProfilePage {
     this.userPrvd.getFacebookFriendProfile(userId)
     .subscribe(res => {
       console.log('[GetfbProfile] Res:', res);
+      this.showUserData(res);
     }, err => {
       console.error('[GetfbProfile] Err:', err);
     });

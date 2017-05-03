@@ -13,6 +13,7 @@ import { User } from '../../providers/user';
 import { Auth } from '../../providers/auth';
 
 import { AlertController } from 'ionic-angular';
+import { Api } from '../../providers/api';
 
 @Component({
   selector: 'page-profile',
@@ -47,7 +48,8 @@ export class ProfilePage {
     public userPrvd: User,
     public authPrvd: Auth,
     public zone: NgZone,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public api: Api
   ) {
     this.user.id = this.navParams.get('id');
     console.log(this.user);
@@ -62,15 +64,22 @@ export class ProfilePage {
 
     console.log(this.connect.facebook);
 
-    // this.social.getFriendList().then(res => {
-    //   console.log(res);
-    //   this.fbFriends = res.data;
-    //   console.log(this.fbFriends);
-    //   if (this.fbSlider) {
-    //     this.fbSlider.pager = true;
-    //     this.fbSlider.slidesPerView = 5;
-    //   }
-    // }).catch(err => console.log(err));
+    this.social.getFriendList().then(res => {
+      console.log(res);
+      this.fbFriends = res.data;
+      console.log('this.fbFriends', this.fbFriends);
+      console.log('this.user:', this.user);
+      if (this.fbSlider) {
+        this.fbSlider.pager = true;
+        this.fbSlider.slidesPerView = 5;
+      }
+    }).catch(err => console.log(err));
+  }
+
+  getFacebookFriends() {
+    let seq = this.api.get('profiles/user_by_provider').share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
   }
 
   connectToFacebook() {

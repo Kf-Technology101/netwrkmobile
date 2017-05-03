@@ -76,10 +76,13 @@ export class ProfilePage {
     }).catch(err => console.log(err));
   }
 
-  getFacebookFriends() {
-    let seq = this.api.get('profiles/user_by_provider').share();
-    let seqMap = seq.map(res => res.json());
-    return seqMap;
+  getFbProfile(userId) {
+    this.userPrvd.getFacebookFriendProfile(userId)
+    .subscribe(res => {
+      console.log('[GetfbProfile] Res:', res);
+    }, err => {
+      console.error('[GetfbProfile] Err:', err);
+    });
   }
 
   connectToFacebook() {

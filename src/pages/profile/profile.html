@@ -33,7 +33,7 @@
       <label>{{ fbFriends.length }} Сommon Connections</label>
       <ion-slides #fbSlider>
         <ion-slide *ngFor="let friend of fbFriends">
-          <div class="avatar">
+          <div class="avatar" (click)="getFbProfile(friend.id)">
             <img [src]="friend.picture.data.url">
           </div>
           <span>{{ friend.name }}</span>

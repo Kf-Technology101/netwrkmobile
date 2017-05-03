@@ -75,14 +75,14 @@ page-profile {
           height: 100%;
           width: auto;
         }
-        .username {
-          font-size: 26px;
-          color: color($colors, white);
-          display: block;
-          width: 100%;
-          text-align: center;
-          margin: 21px 0;
-        }
+      }
+      .username {
+        font-size: 26px;
+        color: color($colors, white);
+        display: block;
+        width: 100%;
+        text-align: center;
+        margin: 21px 0;
       }
     }
 

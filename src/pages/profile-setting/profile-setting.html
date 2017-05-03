@@ -30,7 +30,7 @@
   <ion-row class="avatar-section">
     <ion-col>
       <div class="avatar">
-        <img src="assets/images/incognito.png">
+        <img [src]="profileTypePublic ? user.avatar_url : user.role_image_url">
         <button color="bk" ion-button (click)="callback($event)">
           <ion-icon name="add"></ion-icon>
         </button>

@@ -57,41 +57,35 @@ export class NetworkFindPage {
   private getZipCode() {
     this.gps.getMyZipCode().then( (zipRes: GeolocationInterface) => {
       // alert(JSON.stringify(zipRes));
-      this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(
-        res => {
-          // alert(JSON.stringify(res));
-          console.log(res);
-          let post_code: number = res.network ? res.network.post_code : null;
-          let params: any = {
-            zipCode: post_code,
-            action: null
-          };
+      this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(res => {
+        // alert(JSON.stringify(res));
+        console.log(res);
+        let post_code: number = res.network ? res.network.post_code : null;
+        let params: any = {
+          zipCode: post_code,
+          action: null
+        };
 
-          if (res.message == 'Network not found') {
-            params.action = 'create';
-            this.tools.pushPage(NetworkNoPage, params);
+        if (res.message == 'Network not found') {
+          params.action = 'create';
+          this.tools.pushPage(NetworkNoPage, params);
+        } else {
+          console.log(this.chatPrvd.chatZipCode(), post_code)
+          if (this.chatPrvd.chatZipCode() == post_code &&
+            this.chatPrvd.getCountUser() && this.chatPrvd.getCountUser() > 10
+          ) {
+            params.action = this.chatPrvd.getState();
+            console.log(params.action);
+            this.tools.pushPage(ChatPage, params);
           } else {
-            console.log(this.chatPrvd.chatZipCode(), post_code)
-            if (this.chatPrvd.chatZipCode() == post_code &&
-              this.chatPrvd.getCountUser() && this.chatPrvd.getCountUser() > 10
-            ) {
-              params.action = this.chatPrvd.getState();
-              console.log(params.action);
-              this.tools.pushPage(ChatPage, params);
-            } else {
-              params.action = 'join';
-              this.tools.pushPage(NetworkPage, params);
-            }
-            this.chatPrvd.setZipCode(post_code);
-            this.chatPrvd.saveNetwork(res.network);
+            params.action = 'join';
+            this.tools.pushPage(NetworkPage, params);
           }
-        }, err => {
-          // alert(JSON.stringify(err));
-          console.log(err)
+          this.chatPrvd.setZipCode(post_code);
+          this.chatPrvd.saveNetwork(res.network);
         }
-      );
+      }, err => this.tools.errorHandler(err));
     }, err => {
-      // alert(JSON.stringify(err));
       console.log(err);
       if (err.code && err.code == 1) {
         this.tools.showToast(err.message, null, 'bottom');

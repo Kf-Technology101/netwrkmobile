@@ -25,15 +25,15 @@ export class SlideAvatar {
     public app: App,
     public undercoverPrvd: UndercoverProvider
   ) {
-    this.app.viewDidLoad.subscribe((view) => {
+    this.app.viewDidLoad.subscribe(view => {
       // console.log("<SLIDER.ts> viewDidLoad");
     });
 
-    this.app.viewDidEnter.subscribe((view) => {
+    this.app.viewDidEnter.subscribe(view => {
       // console.log('<SLIDER.ts> viewDidEnter', view);
     });
 
-    this.app.viewWillLeave.subscribe((view) => {
+    this.app.viewWillLeave.subscribe(view => {
       // console.log("<SLIDER.ts> viewWillLeave");
       this.stopSliderEvents();
     });

@@ -1,4 +1,9 @@
-import { Component, ElementRef, ViewChild, Renderer } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  ViewChild,
+  Renderer,
+  NgZone } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 // Pages
@@ -16,32 +21,32 @@ import { UndercoverProvider } from '../../providers/undercover';
   templateUrl: 'profile-setting.html'
 })
 export class ProfileSettingPage {
-  userName: string;
-
-  /**
-   * Native upload button (hidden)
-   */
   @ViewChild('input')
-  private nativeInputBtn: ElementRef;
+
+  userName: string;
   public user: any;
+  public profileTypePublic: boolean;
+  private nativeInputBtn: ElementRef;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
     private renderer: Renderer,
     public tools: Tools,
-    public slideAvatar: SlideAvatar,
+    public slideAvatarPrvd: SlideAvatar,
     public auth: Auth,
     public userPrvd: User,
-    public undercoverPrvd: UndercoverProvider
+    public undercoverPrvd: UndercoverProvider,
+    public zone: NgZone
   ) {
+    this.profileTypePublic = this.navParams.get('public');
     this.user = this.auth.getAuthData();
+    this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
+    this.userName = this.user.name;
+    console.log(this.user);
+    console.log(this.undercoverPrvd.profileType);
   }
 
-  /**
-   * Callback executed when the visible button is pressed
-   * @param  {Event}  event should be a mouse click event
-   */
   public callback(event: Event): void {
     console.log('upload-button callback executed');
 
@@ -51,19 +56,10 @@ export class ProfileSettingPage {
         this.nativeInputBtn.nativeElement, 'dispatchEvent', [clickEvent]);
   }
 
-  /**
-   * Callback which is executed after files from native popup are selected.
-   * @param  {Event}    event change event containing selected files
-   */
   public filesAdded(event: Event): void {
     let files: FileList = this.nativeInputBtn.nativeElement.files;
     let userId = this.auth.getAuthData().id;
-    let params = {
-      user: {
-        first_name: 'a',
-        last_name: 'b',
-      }
-    }
+    let params = { user: { name: this.userName } }
 
     let tempFiles = [];
 
@@ -72,10 +68,16 @@ export class ProfileSettingPage {
     }
 
     this.userPrvd.updateAvatar(userId, tempFiles, params).then(res => {
-        console.log(res);
-      }, err => console.error('ERROR', err)
-    );
-    console.log('Added files', files);
+      console.log(res);
+      this.user = res;
+      this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
+    }, err => console.error('ERROR', err));
+  }
+
+  changeCallback(positionLeft?: boolean) {
+    this.zone.run(() => {
+      this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
+    });
   }
 
   goBack() { this.tools.popPage(); }
@@ -89,10 +91,10 @@ export class ProfileSettingPage {
   }
 
   ionViewDidEnter() {
-    // this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    // let position = this.undercoverPrvd.profileType == 'undercover' ? true : false
-    // this.slideAvatarPrvd.sliderInit();
-    // this.slideAvatarPrvd.setSliderPosition(position);
+    this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+    let position = this.undercoverPrvd.profileType == 'undercover' ? true : false
+    this.slideAvatarPrvd.sliderInit();
+    this.slideAvatarPrvd.setSliderPosition(position);
   }
 
   logOut() {

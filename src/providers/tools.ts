@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { LogInPage } from '../pages/log-in/log-in';
+
 import * as moment from 'moment';
 
 import {
@@ -54,7 +56,7 @@ export class Tools {
   }
 
   hideLoader() {
-    this.loader.dismiss();
+    this.loader.dismiss().catch(() => {});
   }
 
   public pushPage(page: any, params?: any, animate?: boolean) {
@@ -87,6 +89,11 @@ export class Tools {
 
   public getTime(date?: string): string {
     return moment(date).fromNow();
+  }
+
+  public errorHandler(error) {
+    console.log(error);
+    this.app.getActiveNav().setRoot(LogInPage);
   }
 
 }

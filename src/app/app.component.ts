@@ -19,6 +19,7 @@ import { ChatPage } from '../pages/chat/chat';
 // import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
 
 // Providers
+import { Api } from '../providers/api';
 import { Auth } from '../providers/auth';
 import { LocalStorage } from '../providers/local-storage';
 import { Tools } from '../providers/tools';
@@ -40,7 +41,8 @@ export class MyApp {
     private undercoverPrvd: UndercoverProvider,
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
-    private sim: Sim
+    private sim: Sim,
+    private apiPrvd: Api
   ) {
     platform.registerBackButtonAction(() => {
       this.toolsPrvd.doBackButton();

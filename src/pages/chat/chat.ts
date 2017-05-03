@@ -697,9 +697,11 @@ export class ChatPage {
     let feedbackModal = this.modalCtrl.create(FeedbackModal,
       {
         data: feedbackData,
+        messageText: messageData.text,
         totalLikes: messageData.likes_count,
         likedByUser: messageData.like_by_user,
-        messageText: messageData.text
+        totalLegendary: messageData.legendary_count,
+        legendaryByUser: messageData.legendary_by_user
       }
     );
     feedbackModal.onDidDismiss(data => {

@@ -33,8 +33,7 @@ export class FeedbackModal {
 
   private endResult:any;
 
-  private feedData:any;
-
+  private likeData:any;
   private data:any;
 
   constructor(
@@ -44,12 +43,9 @@ export class FeedbackModal {
     public modalCtrl: ModalController
   ) {
     this.data = params.get('data');
-    this.feedData = {
-      user_like: {
-        user_id: this.data.user.id,
-        message_id: this.data.message_id,
-        message_index: this.data.message_index
-      }
+    this.likeData = {
+      user_id: this.data.user.id,
+      message_id: this.data.message_id
     }
   }
 
@@ -60,34 +56,53 @@ export class FeedbackModal {
 
   goShare() {
     let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal,
-        {
-          message: this.params.get('messageText')
-        });
+      {
+        message: this.params.get('messageText')
+      });
     feedbackShareModal.present();
   }
 
-  makeLegendary() {
-    // let legendaryModal = this.modalCtrl.create(LegendaryListModal);
-    // legendaryModal.present();
-  }
-
-  toggleLikes() {
-    this.chatPrvd.sendFeedbackData(this.feedData).subscribe(res => {
-      console.log('[likes] res:', res);
-      this.postInf.totalLikes = res.likes_count;
-      this.postStatus.isLiked = !this.postStatus.isLiked;
-      res.like_by_user = this.postStatus.isLiked;
-      this.endResult = res;
+  toggleLikes(type:string) {
+    let sendObj:any;
+    let sendUrl:string;
+    switch (type) {
+      case 'legendary':
+        sendObj = { legendary: this.likeData };
+        sendUrl = 'legendary_likes';
+      break;
+      case 'like':
+        sendObj = { user_like: this.likeData };
+        sendUrl = 'user_likes';
+      break;
+    }
+    this.chatPrvd.sendFeedbackData(sendUrl, sendObj).subscribe(res => {
+      console.log('[' + type + '] res:', res);
+      if (type === 'legendary') {
+        this.postInf.totalLegendary = res.legendary_count;
+        this.postStatus.isLegendary = !this.postStatus.isLegendary;
+        res.legendary_by_user = this.postStatus.isLegendary;
+        this.endResult = res;
+      } else if (type === 'like') {
+        this.postInf.totalLikes = res.likes_count;
+        this.postStatus.isLiked = !this.postStatus.isLiked;
+        res.like_by_user = this.postStatus.isLiked;
+        this.endResult = res;
+      }
     }, err => {
-      console.log('[likes] err:', err);
+      console.log('[' + type + '] err:', err);
     });
   }
 
   ionViewDidEnter() {
     this.postInf.totalLikes = this.params.get('totalLikes');
     this.postStatus.isLiked = this.params.get('likedByUser');
+    this.postInf.totalLegendary = this.params.get('totalLegendary');
+    this.postStatus.isLegendary= this.params.get('legendaryByUser');
     if (!this.postInf.totalLikes) {
       this.postInf.totalLikes = 0;
+    }
+    if (!this.postInf.totalLegendary) {
+      this.postInf.totalLegendary = 0;
     }
     this.mainBtn.state = 'fadeInfast';
   }

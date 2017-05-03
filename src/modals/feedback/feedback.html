@@ -1,6 +1,6 @@
 <ion-toolbar class="translucent">
   <ion-buttons end>
-    <button class="legendary-btn" (click)="makeLegendary()"
+    <button class="legendary-btn" (click)="toggleLikes('legendary')"
             [ngClass]="{ 'active' : postStatus.isLegendary }">
       <ion-badge>{{ postInf.totalLegendary }}</ion-badge>
     </button>
@@ -9,7 +9,7 @@
 
 <ion-content class="translucent">
   <ion-list>
-    <button class="like-btn" (click)="toggleLikes()"
+    <button class="like-btn" (click)="toggleLikes('like')"
             [ngClass]="{ 'liked': postStatus.isLiked }">
       <div class="like-bg"></div>
       <ion-badge>{{ postInf.totalLikes }}</ion-badge>

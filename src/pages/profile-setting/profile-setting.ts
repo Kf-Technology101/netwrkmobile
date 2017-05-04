@@ -142,6 +142,7 @@ export class ProfileSettingPage {
   }
 
   ionViewDidEnter() {
+    let dragList = document.getElementsByClassName('draggable-element');
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     this.slideAvatarPrvd.sliderInit();
     this.userName = this.user.name;

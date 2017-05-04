@@ -60,7 +60,7 @@ export class NetworkFindPage {
         let post_code: number = res.network ? res.network.post_code : null;
         let params: any = {
           zipCode: post_code,
-          accessed: res.network.accessed,
+          accessed: res.network ? res.network.accessed : null,
           action: null
         };
 

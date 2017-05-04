@@ -109,6 +109,10 @@ export class NetworkContactListPage {
     this.selectAll = !condition;
   }
 
+  private chackUserCount() {
+    this.accessed = this.selectAll;
+  }
+
   goHome() {
     this.tools.showLoader();
     var checkedContacts: Array<any> = [];
@@ -143,7 +147,6 @@ export class NetworkContactListPage {
             this.auth.getAuthData().id,
             { user: { invitation_sent: true } }
           ).map(res => res.json()).subscribe(res => {
-            this.accessed = true;
             let inviteCode = this.gpsPrvd.zipCode;
             let inviteCodes = this.networkPrvd.getInviteZipAccess();
             this.tools.hideLoader();

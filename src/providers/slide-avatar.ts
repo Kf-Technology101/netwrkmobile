@@ -4,7 +4,7 @@ import { App } from 'ionic-angular';
 import { UndercoverProvider } from '../providers/undercover';
 
 @Injectable()
-export class SlideAvatar {
+export class SlideAvatar { 
 
   private sliderState: boolean;
 
@@ -41,15 +41,19 @@ export class SlideAvatar {
   }
 
   public sliderInit(position?: boolean) {
-    let slider = document.getElementsByClassName('draggable-element');
-    if (slider) {
-      for (let i = 0; i < slider.length; i++) {
-        if (slider[i].classList.contains('active') && slider.length > 1) {
-          slider[i].classList.remove('active');
-        } else {
-          slider[i].classList.add('active');
-        }
-      }
+    console.log('activeNav:', this.app.getActiveNav());
+    // let currentView = document.querySelector('ion-view[nav-view="active"]');
+    // this.selectedItem = currentView.querySelectorAll('div.draggable-element')['0'];
+    // console.log('[SLIDER] currentView:', currentView);
+    // console.log('[SLIDER] selectedItem:', this.selectedItem);
+    if (this.selectedItem) {
+      // for (let i = 0; i < slider.length; i++) {
+      //   if (slider[i].classList.contains('active')) {
+      //     slider[i].classList.remove('active');
+      //   } else {
+      //     slider[i].classList.add('active');
+      //   }
+      // }
 
       if (!position && typeof position == 'boolean') {
       } else {
@@ -59,8 +63,9 @@ export class SlideAvatar {
       this.setSliderDimentions();
       this.setSliderPosition(position);
       this.startSliderEvents();
-    } else {
-      console.warn("Slider init. failed. Details:", slider);
+    }
+    else {
+      console.warn("Slider init. failed. Details:", this.selectedItem);
       return false;
     }
   }
@@ -77,19 +82,18 @@ export class SlideAvatar {
 
   public setSliderPosition(state?: boolean) {
     if (!state) state = false;
-    console.log('[setSliderPosition] - ', state);
-    // this.setSliderDimentions();
+    this.setSliderDimentions();
     let slider = document.getElementsByClassName('draggable-element active');
-    if (slider) {
+    if (this.selectedItem) {
       this.sliderState = state;
-      this.arrowIcon = slider['0'].parentElement.children['1'];
+      this.arrowIcon = this.selectedItem.parentElement.children['1'];
       this.arrowIcon.style.opacity = '1';
       if (state) {
-        slider['0'].style.left = this.dEnd + 'px';
+        this.selectedItem.style.left = this.dEnd + 'px';
         this.arrowIcon.classList.add('right');
         this.sliderPosition = 'right';
       } else {
-        slider['0'].style.left = this.dStart + 'px';
+        this.selectedItem.style.left = this.dStart + 'px';
         this.arrowIcon.classList.remove('right');
         this.sliderPosition = 'left';
       }

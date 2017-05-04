@@ -257,6 +257,12 @@ export class ChatPage {
     this.hostUrl = this.chatPrvd.hostUrl;
 
     this.gpsPrvd.changeZipCallback = this.changeZipCallback.bind(this);
+
+    this.gpsPrvd.getMyZipCode().then(zipRes => {
+      console.log('[ChatPage][zipRes] - ', zipRes);
+    }).catch(err => {
+      console.log('[ChatPage][zipRes] err - ', err);
+    })
   }
 
   private changePlaceholderText() {

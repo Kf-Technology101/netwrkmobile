@@ -40,6 +40,7 @@ export class SlideAvatar {
   }
 
   public sliderInit() {
+    console.log('[SLIDER] activeNav:', this.app.getActiveNav());
     let slider = document.getElementsByClassName('draggable-element');
     if (slider) {
       for (let i = 0; i < slider.length; i++) {

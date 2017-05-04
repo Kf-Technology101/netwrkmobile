@@ -80,6 +80,8 @@ export class MyApp {
 
           this.splashScreen.hide();
           break;
+        default:
+          this.rootPage = LogInPage;
       }
     } else {
       this.rootPage = LogInPage;

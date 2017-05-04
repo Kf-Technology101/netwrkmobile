@@ -19,9 +19,6 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { User } from '../../providers/user';
 
-// Interfaces
-import { ResponseAuthData } from '../../interfaces/user';
-
 // Animations
 import {
   scaleMainBtn,

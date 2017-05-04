@@ -22,9 +22,6 @@ import { NetworkFindPage } from '../network-find/network-find';
 import { Auth } from '../../providers/auth';
 import { Tools } from '../../providers/tools';
 
-// Interfaces
-import { ResponseAuthData } from '../../interfaces/user';
-
 // Animations
 import {
   animSpeed,
@@ -189,20 +186,6 @@ export class SignUpPage {
       signUpProcess();
     }
   }
-
-  // doFbLogin() {
-  //   this.auth.signUpFacebook().then((data: ResponseAuthData) => {
-  //     console.log(data);
-  //     if (data.date_of_birthday) {
-  //       let date = new Date(data.date_of_birthday);
-  //       if (typeof date == 'object') {
-  //         this.tools.pushPage(NetworkFindPage);
-  //       }
-  //     } else this.tools.pushPage(SignUpAfterFbPage);
-  //   }, err => {
-  //     this.tools.showToast(this.textStrings.fb);
-  //   });
-  // }
 
   goBack() {
     if (this.activeStateId == 0) {

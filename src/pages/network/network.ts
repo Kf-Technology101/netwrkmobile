@@ -27,6 +27,7 @@ export class NetworkPage {
   public isUndercover: boolean = true;
   private textStrings: any = {};
   private networkParams: any = {};
+  private accessed: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -39,6 +40,7 @@ export class NetworkPage {
     public authPrvd: Auth
   ) {
     this.action = this.navParams.get('action');
+    this.accessed = this.navParams.get('accessed');
     this.networkParams = { post_code: this.gpsPrvd.zipCode };
     this.user = this.authPrvd.getAuthData();
 
@@ -61,7 +63,7 @@ export class NetworkPage {
   }
 
   public doAction() {
-    if (this.joined) {
+    if (this.joined || this.accessed) {
       let state = this.isUndercover ? 'undercover' : 'area';
       this.chatPrvd.setState(state);
 
@@ -92,11 +94,11 @@ export class NetworkPage {
       return false;
     }
 
-    this.networkPrvd.create(this.networkParams).subscribe(res => {
-      console.log(res);
-      console.log('this.users', this.users);
+    this.networkPrvd.create(this.networkParams).subscribe(user => {
+      console.log(user);
+      this.joined = true;
+      this.users.push(user);
       this.toolsPrvd.showToast(this.textStrings.created);
-      console.log('this.users', this.users);
     }, err => {
       console.log(err);
       this.toolsPrvd.showToast(this.textStrings.created);

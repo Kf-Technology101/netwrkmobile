@@ -12,9 +12,6 @@ import { Gps } from '../../providers/gps';
 import { Chat } from '../../providers/chat';
 // import { Permission } from '../../providers/permission';
 
-// Interfaces
-import { GeolocationInterface } from '../../interfaces/gps';
-
 @Component({
   selector: 'page-network-find',
   templateUrl: 'network-find.html'
@@ -55,7 +52,7 @@ export class NetworkFindPage {
   }
 
   private getZipCode() {
-    this.gps.getMyZipCode().then( (zipRes: GeolocationInterface) => {
+    this.gps.getMyZipCode().then(zipRes => {
       // alert(JSON.stringify(zipRes));
       this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(res => {
         // alert(JSON.stringify(res));
@@ -63,6 +60,7 @@ export class NetworkFindPage {
         let post_code: number = res.network ? res.network.post_code : null;
         let params: any = {
           zipCode: post_code,
+          accessed: res.network.accessed,
           action: null
         };
 

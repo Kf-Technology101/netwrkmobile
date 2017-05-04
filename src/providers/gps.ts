@@ -45,18 +45,44 @@ export class Gps {
     return seq;
   }
 
-  getMyZipCode() {
-    // alert('getMyZipCode');
+  getMyZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
 
-      // let options: GeolocationOptions = {
-      //   timeout: 60000,
-      //   // enableHighAccuracy: true,
-      //   // maximumAge: 11000,
-      // }
-      //
-      // this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
+      let options: GeolocationOptions = {
+        timeout: 10000,
+        enableHighAccuracy: true,
+        maximumAge: 3000,
+      }
+
+      if (this.watch) this.watch.unsubscribe();
+
+      this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
+        console.log(resp)
+        if (resp.coords) {
+          let url = 'https://maps.googleapis.com/maps/api/geocode/json';
+          let seq = this.getAddressDetail(url, {
+            latlng: resp.coords.latitude + ',' + resp.coords.longitude,
+            sensor: true,
+            key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
+          }).share();
+          this.coords.lat = resp.coords.latitude;
+          this.coords.lng = resp.coords.longitude;
+          seq.map(res => res.json()).subscribe(res => {
+            let zipCode: number = this.parseGoogleAddress(res.results);
+            resolve({ zip_code: zipCode });
+          },
+          err => reject(err));
+        }
+      }, err => reject(err));
+
+      // alert('Promise');
+      // alert('geolocation' + JSON.stringify(this.geolocation));
+      // console.log(JSON.stringify(this.geolocation.watchPosition()))
+      // console.log(JSON.stringify(this.geolocation), this.geolocation, JSON.stringify(this.geolocation.getCurrentPosition()));
+      // setTimeout(function)
+      // this.geolocation.getCurrentPosition().then(resp => {
       //   console.log(resp)
+      //   // alert(JSON.stringify(resp));
       //   if (resp.coords) {
       //     let url = 'https://maps.googleapis.com/maps/api/geocode/json';
       //     let seq = this.getAddressDetail(url, {
@@ -68,49 +94,20 @@ export class Gps {
       //     this.coords.lng = resp.coords.longitude;
       //     seq.map(res => res.json()).subscribe(
       //       res => {
-      //         this.parseGoogleAddress(res.results);
-      //         this.compareZip();
+      //         // alert(JSON.stringify(res));
+      //         let zipCode: number = this.parseGoogleAddress(res.results);
+      //         resolve({ zip_code: zipCode });
       //       },
-      //       err => console.log(err)
+      //       err => {
+      //         // alert(JSON.stringify(err));
+      //         reject(err)
+      //       }
       //     );
       //   }
-      // }, err => {
-      //   console.log(err);
+      // }).catch(error => {
+      //   console.log(error);
+      //   reject(error);
       // });
-
-      // alert('Promise');
-      // alert('geolocation' + JSON.stringify(this.geolocation));
-      console.log(JSON.stringify(this.geolocation.watchPosition()))
-      console.log(JSON.stringify(this.geolocation), this.geolocation, JSON.stringify(this.geolocation.getCurrentPosition()));
-      // setTimeout(function)
-      this.geolocation.getCurrentPosition().then(resp => {
-        console.log(resp)
-        // alert(JSON.stringify(resp));
-        if (resp.coords) {
-          let url = 'https://maps.googleapis.com/maps/api/geocode/json';
-          let seq = this.getAddressDetail(url, {
-            latlng: resp.coords.latitude + ',' + resp.coords.longitude,
-            sensor: true,
-            key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
-          }).share();
-          this.coords.lat = resp.coords.latitude;
-          this.coords.lng = resp.coords.longitude;
-          seq.map(res => res.json()).subscribe(
-            res => {
-              // alert(JSON.stringify(res));
-              let zipCode: number = this.parseGoogleAddress(res.results);
-              resolve({ zip_code: zipCode });
-            },
-            err => {
-              // alert(JSON.stringify(err));
-              reject(err)
-            }
-          );
-        }
-      }).catch(error => {
-        console.log(error);
-        reject(error);
-      });
     });
   }
 

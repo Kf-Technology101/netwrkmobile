@@ -725,7 +725,7 @@ export class ChatPage {
   }
 
   clearMessages() {
-    let idList;
+    let idList = [];
     for (let m in this.postMessages) {
       idList.push(this.postMessages[m].id);
     }

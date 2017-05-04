@@ -20,6 +20,7 @@ export class SlideAvatar {
   private firedOnce: boolean = true;
 
   public changeCallback: (positionLeft?: boolean) => void;
+  public sliderPosition: string;
 
   constructor(
     public app: App,
@@ -39,7 +40,7 @@ export class SlideAvatar {
     });
   }
 
-  public sliderInit() {
+  public sliderInit(position?: boolean) {
     let slider = document.getElementsByClassName('draggable-element');
     if (slider) {
       for (let i = 0; i < slider.length; i++) {
@@ -50,11 +51,15 @@ export class SlideAvatar {
         }
       }
 
+      if (!position && typeof position == 'boolean') {
+      } else {
+        position = this.sliderPosition == 'right' ? true : false;
+      }
+
       this.setSliderDimentions();
-      // this.setSliderPosition(this.sliderState);
+      this.setSliderPosition(position);
       this.startSliderEvents();
-    }
-    else {
+    } else {
       console.warn("Slider init. failed. Details:", slider);
       return false;
     }
@@ -70,8 +75,10 @@ export class SlideAvatar {
     }
   }
 
-  public setSliderPosition(state: boolean) {
-    this.setSliderDimentions();
+  public setSliderPosition(state?: boolean) {
+    if (!state) state = false;
+    console.log('[setSliderPosition] - ', state);
+    // this.setSliderDimentions();
     let slider = document.getElementsByClassName('draggable-element active');
     if (slider) {
       this.sliderState = state;
@@ -80,11 +87,11 @@ export class SlideAvatar {
       if (state) {
         slider['0'].style.left = this.dEnd + 'px';
         this.arrowIcon.classList.add('right');
-        // console.log('right');
+        this.sliderPosition = 'right';
       } else {
         slider['0'].style.left = this.dStart + 'px';
         this.arrowIcon.classList.remove('right');
-        // console.log('left');
+        this.sliderPosition = 'left';
       }
     }
   }
@@ -134,6 +141,7 @@ export class SlideAvatar {
           if (this.changeCallback) this.changeCallback(true);
           this.arrowIcon.style.opacity = '1';
           this.arrowIcon.classList.remove('right');
+          this.sliderPosition = 'left';
         }, 300);
         this.sliderState = false;
       }
@@ -144,6 +152,7 @@ export class SlideAvatar {
           if (this.changeCallback) this.changeCallback(false);
           this.arrowIcon.style.opacity = '1';
           this.arrowIcon.classList.add('right');
+          this.sliderPosition = 'right';
         }, 300);
         this.sliderState = true;
       }

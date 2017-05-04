@@ -181,8 +181,6 @@ export class Auth {
       let updateObj = {
         user: {
           date_of_birthday: birthday ? this.formateDate(birthday) : null,
-          first_name: res.first_name || null,
-          last_name: res.last_name || null,
           name: res.name || null
         }
       }

@@ -57,7 +57,7 @@ export class Gps {
       if (this.watch) this.watch.unsubscribe();
 
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
-        console.log(resp)
+        // console.log(resp);
         if (resp.coords) {
           let url = 'https://maps.googleapis.com/maps/api/geocode/json';
           let seq = this.getAddressDetail(url, {
@@ -74,40 +74,6 @@ export class Gps {
           err => reject(err));
         }
       }, err => reject(err));
-
-      // alert('Promise');
-      // alert('geolocation' + JSON.stringify(this.geolocation));
-      // console.log(JSON.stringify(this.geolocation.watchPosition()))
-      // console.log(JSON.stringify(this.geolocation), this.geolocation, JSON.stringify(this.geolocation.getCurrentPosition()));
-      // setTimeout(function)
-      // this.geolocation.getCurrentPosition().then(resp => {
-      //   console.log(resp)
-      //   // alert(JSON.stringify(resp));
-      //   if (resp.coords) {
-      //     let url = 'https://maps.googleapis.com/maps/api/geocode/json';
-      //     let seq = this.getAddressDetail(url, {
-      //       latlng: resp.coords.latitude + ',' + resp.coords.longitude,
-      //       sensor: true,
-      //       key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
-      //     }).share();
-      //     this.coords.lat = resp.coords.latitude;
-      //     this.coords.lng = resp.coords.longitude;
-      //     seq.map(res => res.json()).subscribe(
-      //       res => {
-      //         // alert(JSON.stringify(res));
-      //         let zipCode: number = this.parseGoogleAddress(res.results);
-      //         resolve({ zip_code: zipCode });
-      //       },
-      //       err => {
-      //         // alert(JSON.stringify(err));
-      //         reject(err)
-      //       }
-      //     );
-      //   }
-      // }).catch(error => {
-      //   console.log(error);
-      //   reject(error);
-      // });
     });
   }
 

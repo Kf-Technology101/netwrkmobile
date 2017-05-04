@@ -187,9 +187,7 @@ export class ProfilePage {
   ionViewDidEnter() {
     if (this.ownProfile) {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-      let position = this.undercoverPrvd.profileType == 'undercover' ? true : false
       this.slideAvatarPrvd.sliderInit();
-      this.slideAvatarPrvd.setSliderPosition(position);
     }
   }
 

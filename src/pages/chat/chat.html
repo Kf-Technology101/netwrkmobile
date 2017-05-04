@@ -3,16 +3,17 @@
     <div class="drag-container">
       <div class="dragline">
         <span class="info">
-          <span *ngIf="undercoverPrvd.profileType == 'public'" class="username">
+          <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
             {{ user.name }}
           </span>
-          <span *ngIf="undercoverPrvd.profileType == 'undercover'" class="username">
+          <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
             {{ user.role_name }}
           </span>
         </span>
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
         <img class="draggable-element" (click)="goToProfile()"
-          [src]="undercoverPrvd.profileType == 'undercover' ? user.role_image_url : user.avatar_url">
+          [src]="slideAvatarPrvd.sliderPosition == 'right'
+            ? user.role_image_url : user.avatar_url">
       </div>
     </div>
 

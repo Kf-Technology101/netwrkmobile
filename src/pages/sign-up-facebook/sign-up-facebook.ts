@@ -37,8 +37,10 @@ export class SignUpFacebookPage {
         }
       };
 
+      let authData = this.authPrvd.getAuthData();
+
       this.authPrvd.connectAccountToFb(data, res).then(res => {
-        this.userPrvd.update(data.result.id, data.update)
+        this.userPrvd.update(authData.id, data.update)
         .map(res => res.json()).subscribe(res => {
           console.log(res);
           this.toolsPrvd.showToast('Facebook already connected');

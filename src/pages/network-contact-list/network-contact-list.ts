@@ -30,6 +30,7 @@ export class NetworkContactListPage {
   public listType: string;
   private selectErrorString: string;
   private selectMinErrorString: string;
+  private accessed: boolean;
 
   constructor(
     public navCtrl: NavController,
@@ -43,6 +44,7 @@ export class NetworkContactListPage {
     public gpsPrvd: Gps
   ) {
     this.listType = this.navParams.get('type');
+    this.accessed = this.navParams.get('accessed');
     console.log(this.listType);
 
     // if (!this.platform.is('cordova')) {
@@ -141,6 +143,7 @@ export class NetworkContactListPage {
             this.auth.getAuthData().id,
             { user: { invitation_sent: true } }
           ).map(res => res.json()).subscribe(res => {
+            this.accessed = true;
             let inviteCode = this.gpsPrvd.zipCode;
             let inviteCodes = this.networkPrvd.getInviteZipAccess();
             this.tools.hideLoader();

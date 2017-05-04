@@ -4,7 +4,7 @@ import { NavController, NavParams, Content, Platform, ModalController } from 'io
 import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { CameraPage } from '../camera/camera';
-// import { NetworkFindPage } from '../network-find/network-find';
+import { NetworkFindPage } from '../network-find/network-find';
 import { FeedbackModal } from '../../modals/feedback/feedback';
 import { Toggleable } from '../../includes/toggleable';
 import { MessageDateTimer } from '../../includes/messagedatetimer';
@@ -516,7 +516,8 @@ export class ChatPage {
   goUndercover() {
     let network = this.chatPrvd.getNetwork();
     if (this.isUndercover && (!network || network.users_count < 10)) {
-      this.toolsPrvd.showToast(this.textStrings.noNetwork);
+      // this.toolsPrvd.showToast(this.textStrings.noNetwork);
+      this.toolsPrvd.pushPage(NetworkFindPage);
       return;
     }
 
@@ -529,9 +530,7 @@ export class ChatPage {
         // this.flipInput();
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
-        this.slideAvatarPrvd.sliderInit();
-        let position = this.undercoverPrvd.profileType === 'public' ? true : false;
-        this.slideAvatarPrvd.setSliderPosition(position);
+        this.slideAvatarPrvd.sliderInit(true);
       } else {
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
@@ -748,8 +747,8 @@ export class ChatPage {
 
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     if (this.isUndercover) {
-      this.slideAvatarPrvd.sliderInit();
-      this.slideAvatarPrvd.setSliderPosition(true);
+      let position = this.slideAvatarPrvd.sliderPosition ? null : true;
+      this.slideAvatarPrvd.sliderInit(position);
       this.showUsers();
       this.content.resize();
     }

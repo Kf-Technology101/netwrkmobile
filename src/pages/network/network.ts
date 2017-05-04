@@ -48,6 +48,8 @@ export class NetworkPage {
     this.textStrings.inviteError = 'Please, invite 20 or more friends for create netwrk';
     this.textStrings.created = 'The netwrk already created, please wait for connections';
     this.textStrings.joined = 'You have already joined, please wait for connections';
+
+    console.log(this);
   }
 
   public goToProfile(data: any) {
@@ -55,11 +57,21 @@ export class NetworkPage {
   }
 
   public sendEmails() {
-    this.toolsPrvd.pushPage(NetworkContactListPage, { type: 'emails' });
+    let params = {
+      type: 'emails',
+      accessed: this.accessed,
+    };
+
+    this.toolsPrvd.pushPage(NetworkContactListPage, params);
   }
 
   public sendSMS() {
-    this.toolsPrvd.pushPage(NetworkContactListPage, { type: 'phones' });
+    let params = {
+      type: 'phones',
+      accessed: this.accessed,
+    };
+
+    this.toolsPrvd.pushPage(NetworkContactListPage, params);
   }
 
   public doAction() {

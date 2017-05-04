@@ -76,6 +76,7 @@ export class ProfileSettingPage {
       .map(res => res.json()).subscribe(res => {
         console.log(res);
         this.user = res;
+        this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
       }, err => {
         console.log(err);
       });
@@ -120,12 +121,13 @@ export class ProfileSettingPage {
       if (positionLeft) {
         this.undercoverPrvd.profileType = 'public';
         this.profileTypePublic = true;
-        this.userName = this.user.name;
       } else {
         this.undercoverPrvd.profileType = 'undercover';
         this.profileTypePublic = false;
-        this.userName = this.user.role_name;
       }
+      this.userName = this.slideAvatarPrvd.sliderPosition == 'left'
+        ? this.user.name
+        : this.user.role_name;
     });
   }
 
@@ -140,10 +142,9 @@ export class ProfileSettingPage {
   }
 
   ionViewDidEnter() {
+    let dragList = document.getElementsByClassName('draggable-element');
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    let position = this.undercoverPrvd.profileType == 'undercover' ? true : false
     this.slideAvatarPrvd.sliderInit();
-    this.slideAvatarPrvd.setSliderPosition(position);
     this.userName = this.user.name;
   }
 

@@ -25,7 +25,7 @@
 </ion-content>
 
 <ion-footer>
-  <button ion-button color="bk"
+  <button *ngIf="accessed" ion-button color="bk"
     class="main-action-btn medium" outline (click)="goHome()"></button>
 
   <button ion-button class="footer-back-button" (click)="goBack()">

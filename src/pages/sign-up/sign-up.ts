@@ -249,7 +249,7 @@ export class SignUpPage {
 
   private openDatePicker() {
     setTimeout(() => {
-      this.birthdayInput.open();
+      if (!this.birthdayInput._isOpen) this.birthdayInput.open();
     }, 1500);
   }
 

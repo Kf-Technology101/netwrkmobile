@@ -20,6 +20,7 @@ export class SlideAvatar {
   private firedOnce: boolean = true;
 
   public changeCallback: (positionLeft?: boolean) => void;
+  public sliderPosition: string;
 
   constructor(
     public app: App,
@@ -39,24 +40,32 @@ export class SlideAvatar {
     });
   }
 
-  public sliderInit() {
-    console.log('[SLIDER] activeNav:', this.app.getActiveNav());
-    let slider = document.getElementsByClassName('draggable-element');
-    if (slider) {
-      for (let i = 0; i < slider.length; i++) {
-        if (slider[i].classList.contains('active') && slider.length > 1) {
-          slider[i].classList.remove('active');
-        } else {
-          slider[i].classList.add('active');
-        }
+  public sliderInit(position?: boolean) {
+    console.log('activeNav:', this.app.getActiveNav());
+    // let currentView = document.querySelector('ion-view[nav-view="active"]');
+    // this.selectedItem = currentView.querySelectorAll('div.draggable-element')['0'];
+    // console.log('[SLIDER] currentView:', currentView);
+    // console.log('[SLIDER] selectedItem:', this.selectedItem);
+    if (this.selectedItem) {
+      // for (let i = 0; i < slider.length; i++) {
+      //   if (slider[i].classList.contains('active')) {
+      //     slider[i].classList.remove('active');
+      //   } else {
+      //     slider[i].classList.add('active');
+      //   }
+      // }
+
+      if (!position && typeof position == 'boolean') {
+      } else {
+        position = this.sliderPosition == 'right' ? true : false;
       }
 
       this.setSliderDimentions();
-      // this.setSliderPosition(this.sliderState);
+      this.setSliderPosition(position);
       this.startSliderEvents();
     }
     else {
-      console.warn("Slider init. failed. Details:", slider);
+      console.warn("Slider init. failed. Details:", this.selectedItem);
       return false;
     }
   }
@@ -71,21 +80,22 @@ export class SlideAvatar {
     }
   }
 
-  public setSliderPosition(state: boolean) {
+  public setSliderPosition(state?: boolean) {
+    if (!state) state = false;
     this.setSliderDimentions();
     let slider = document.getElementsByClassName('draggable-element active');
-    if (slider) {
+    if (this.selectedItem) {
       this.sliderState = state;
-      this.arrowIcon = slider['0'].parentElement.children['1'];
+      this.arrowIcon = this.selectedItem.parentElement.children['1'];
       this.arrowIcon.style.opacity = '1';
       if (state) {
-        slider['0'].style.left = this.dEnd + 'px';
+        this.selectedItem.style.left = this.dEnd + 'px';
         this.arrowIcon.classList.add('right');
-        // console.log('right');
+        this.sliderPosition = 'right';
       } else {
-        slider['0'].style.left = this.dStart + 'px';
+        this.selectedItem.style.left = this.dStart + 'px';
         this.arrowIcon.classList.remove('right');
-        // console.log('left');
+        this.sliderPosition = 'left';
       }
     }
   }
@@ -135,6 +145,7 @@ export class SlideAvatar {
           if (this.changeCallback) this.changeCallback(true);
           this.arrowIcon.style.opacity = '1';
           this.arrowIcon.classList.remove('right');
+          this.sliderPosition = 'left';
         }, 300);
         this.sliderState = false;
       }
@@ -145,6 +156,7 @@ export class SlideAvatar {
           if (this.changeCallback) this.changeCallback(false);
           this.arrowIcon.style.opacity = '1';
           this.arrowIcon.classList.add('right');
+          this.sliderPosition = 'right';
         }, 300);
         this.sliderState = true;
       }

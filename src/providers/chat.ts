@@ -67,6 +67,12 @@ export class Chat {
     return result;
   }
 
+  public deleteMessages(idList) {
+    let mess = this.api.post('messages/delete', { ids: idList }).share();
+    let messMap = mess.map(res => res.json());
+    return messMap;
+  }
+
   public sendFeedbackData(link: string, data: any) {
     let feed = this.api.post(link, data).share();
     let feedMap = feed.map(res => res.json());

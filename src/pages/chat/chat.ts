@@ -668,6 +668,7 @@ export class ChatPage {
   private showMessages() {
     this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
       // console.log(data);
+
       if (this.postMessages.length != data.length) {
         this.postMessages = this.chatPrvd.organizeMessages(data);
         this.messageDateTimer.start(this.postMessages);
@@ -724,7 +725,15 @@ export class ChatPage {
   }
 
   clearMessages() {
-    this.postMessages = [];
+    let idList;
+    for (let m in this.postMessages) {
+      idList.push(this.postMessages[m].id);
+    }
+    this.chatPrvd.deleteMessages(idList).subscribe( res => {
+      console.log('[clearMessages] Success:', res);
+    }, err => {
+      console.log('[clearMessages] Error:', err);
+    });
   }
 
   flipInput() {

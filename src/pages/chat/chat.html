@@ -11,16 +11,15 @@
           </span>
         </span>
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
-        <img class="draggable-element"
-          [src]="undercoverPrvd.profileType == 'undercover' ? user.role_image_url : user.avatar_url"
-          (click)="goToProfile()">
+        <img class="draggable-element" (click)="goToProfile()"
+          [src]="undercoverPrvd.profileType == 'undercover' ? user.role_image_url : user.avatar_url">
       </div>
     </div>
 
-    <!-- <button ion-button *ngIf="isUndercover && postMessages.length === 0 && !chatPrvd.postBtn.state"
+    <button ion-button *ngIf="isUndercover && postMessages.length === 0 && !chatPrvd.postBtn.state"
             class="side refresh-btn top-icon">
       <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
-    </button> -->
+    </button>
     <button ion-button *ngIf="isUndercover && postMessages.length > 0 && !chatPrvd.postBtn.state"
             class="side clear-btn" (click)="clearMessages()">
       Clear
@@ -125,11 +124,9 @@
               [ngClass]="{ 'emoji' : message.is_emoji }">{{ message.text }}</span>
       </p>
       <button class="feedback-button" (click)="sendFeedback(message, i)"
-        [ngClass]="{ 'bottom' : message.image_urls && message.image_urls.length }"
         *ngIf="!message.locked">
       </button>
       <button class="feedback-button lock"
-        [ngClass]="{ 'bottom' : message.image_urls && message.image_urls.length }"
         *ngIf="message.locked">
         <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
       </button>

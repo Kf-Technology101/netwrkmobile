@@ -1,4 +1,4 @@
-import { Component, ViewChild, NgZone } from '@angular/core';
+import { Component, ViewChild, NgZone, ElementRef } from '@angular/core';
 import { NavController, NavParams, Slides } from 'ionic-angular';
 
 // Pages
@@ -37,6 +37,7 @@ export class ProfilePage {
   public user: any = {};
   public profileTypePublic: boolean;
   private fbFriends: any = [];
+  private pageTag: string;
 
   constructor(
     public navCtrl: NavController,
@@ -49,8 +50,10 @@ export class ProfilePage {
     public authPrvd: Auth,
     public zone: NgZone,
     public alertCtrl: AlertController,
-    public api: Api
+    public api: Api,
+    elRef: ElementRef
   ) {
+    this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.user.id = this.navParams.get('id');
     this.profileTypePublic = this.navParams.get('public') ?
       this.navParams.get('public') : true;
@@ -187,7 +190,7 @@ export class ProfilePage {
   ionViewDidEnter() {
     if (this.ownProfile) {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-      this.slideAvatarPrvd.sliderInit(this.navCtrl.getActive());
+      this.slideAvatarPrvd.sliderInit(this.pageTag);
     }
   }
 

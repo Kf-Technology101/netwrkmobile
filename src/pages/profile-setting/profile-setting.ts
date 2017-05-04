@@ -32,7 +32,7 @@ export class ProfileSettingPage {
   public user: any;
   public profileTypePublic: boolean;
   private imageLoading: boolean = false;
-
+  private pageTag: string;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -43,8 +43,10 @@ export class ProfileSettingPage {
     public auth: Auth,
     public userPrvd: User,
     public undercoverPrvd: UndercoverProvider,
-    public zone: NgZone
+    public zone: NgZone,
+    elRef: ElementRef
   ) {
+    this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.profileTypePublic = this.navParams.get('public');
     this.user = this.auth.getAuthData();
     if (!this.user) this.user = {
@@ -144,7 +146,7 @@ export class ProfileSettingPage {
   ionViewDidEnter() {
     let dragList = document.getElementsByClassName('draggable-element');
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    this.slideAvatarPrvd.sliderInit(this.navCtrl.getActive());
+    this.slideAvatarPrvd.sliderInit(this.pageTag);
     this.userName = this.user.name;
   }
 

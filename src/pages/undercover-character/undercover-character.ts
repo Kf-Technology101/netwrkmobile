@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
 
 import { Slides } from 'ionic-angular';
@@ -30,6 +30,7 @@ export class UndercoverCharacterPage {
   public changeError: string;
   public textError: string;
   private user: any = {};
+  private pageTag: string;
 
   constructor(
     public platform: Platform,
@@ -38,8 +39,10 @@ export class UndercoverCharacterPage {
     public undercoverPrvd: UndercoverProvider,
     public toolsPrvd: Tools,
     public slideAvatarPrvd: SlideAvatar,
-    public authPrvd: Auth
+    public authPrvd: Auth,
+    elRef: ElementRef
   ) {
+    this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.persons = heroes;
     this.changeError = 'You can\'t leave this page right now';
     this.textError = 'Something went wrong, please try again later';
@@ -93,7 +96,7 @@ export class UndercoverCharacterPage {
 
   ionViewDidEnter() {
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    this.slideAvatarPrvd.sliderInit(this.navCtrl.getActive(), false);
+    this.slideAvatarPrvd.sliderInit(this.pageTag, false);
   }
 
 }

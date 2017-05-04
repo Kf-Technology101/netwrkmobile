@@ -93,7 +93,7 @@ export class UndercoverCharacterPage {
 
   ionViewDidEnter() {
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    this.slideAvatarPrvd.sliderInit(false);
+    this.slideAvatarPrvd.sliderInit(this.navCtrl.getActive(), false);
   }
 
 }

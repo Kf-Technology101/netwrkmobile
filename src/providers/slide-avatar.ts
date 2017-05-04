@@ -40,12 +40,28 @@ export class SlideAvatar {
     });
   }
 
-  public sliderInit(position?: boolean) {
-    console.log('activeNav:', this.app.getActiveNav());
-    // let currentView = document.querySelector('ion-view[nav-view="active"]');
-    // this.selectedItem = currentView.querySelectorAll('div.draggable-element')['0'];
-    // console.log('[SLIDER] currentView:', currentView);
-    // console.log('[SLIDER] selectedItem:', this.selectedItem);
+  public sliderInit(navCtrl: any, position?: boolean) {
+    console.log('activeNav:', navCtrl.name);
+
+    let fullPageName = '';
+    let pageName = navCtrl.name.toString();
+
+    pageName = pageName.substr(0, pageName.length - 4); //removing 'Page'
+    console.log("pageName:", pageName);
+
+    for (let i = 0; i < pageName.length; i++) {
+      if (pageName[i].match(/[A-Z]/) != null) {
+          pageName = pageName.slice(0, i) + '-' + pageName.slice(i);
+      }
+    }
+    let pageTag = 'page' + pageName;
+    console.log("pageTag:", pageTag);
+
+    let currentView = document.querySelector(pageTag);
+    this.selectedItem = currentView.querySelectorAll('div.draggable-element')['0'];
+    console.log('[SLIDER] currentView:', currentView);
+    console.log('[SLIDER] selectedItem:', this.selectedItem);
+
     if (this.selectedItem) {
       // for (let i = 0; i < slider.length; i++) {
       //   if (slider[i].classList.contains('active')) {

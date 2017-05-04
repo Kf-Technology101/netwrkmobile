@@ -187,7 +187,7 @@ export class ProfilePage {
   ionViewDidEnter() {
     if (this.ownProfile) {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-      this.slideAvatarPrvd.sliderInit();
+      this.slideAvatarPrvd.sliderInit(this.navCtrl.getActive());
     }
   }
 

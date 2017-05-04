@@ -541,7 +541,7 @@ export class ChatPage {
         // this.flipInput();
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
-        this.slideAvatarPrvd.sliderInit(true);
+        this.slideAvatarPrvd.sliderInit(this.navCtrl.getActive(), true);
       } else {
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
@@ -777,7 +777,7 @@ export class ChatPage {
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     if (this.isUndercover) {
       let position = this.slideAvatarPrvd.sliderPosition ? null : true;
-      this.slideAvatarPrvd.sliderInit(position);
+      this.slideAvatarPrvd.sliderInit(this.navCtrl.getActive(), position);
       this.showUsers();
       this.content.resize();
     }

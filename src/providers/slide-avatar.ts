@@ -40,38 +40,13 @@ export class SlideAvatar {
     });
   }
 
-  public sliderInit(navCtrl: any, position?: boolean) {
-    console.log('activeNav:', navCtrl.name); 
-
-    // let fullPageName = '';
-    // let pageName = navCtrl.name.toString();
-    //
-    // pageName = pageName.substr(0, pageName.length - 4); //removing 'Page'
-    // console.log("pageName:", pageName);
-    //
-    // for (let i = 0; i < pageName.length; i++) {
-    //   console.log('match', pageName[i].match(/[A-Z]/));
-      // if (pageName[i].match(/[A-Z]/) != null) {
-      //     pageName = pageName.slice(0, i) + '-' + pageName.slice(i);
-      // }
-    // }
-    // let pageTag = 'page' + pageName;
-    // console.log("pageTag:", pageTag);
-    //
-    // let currentView = document.querySelector(pageTag);
-    // this.selectedItem = currentView.querySelectorAll('div.draggable-element')['0'];
-    // console.log('[SLIDER] currentView:', currentView);
-    // console.log('[SLIDER] selectedItem:', this.selectedItem);
+  public sliderInit(pageTag: string, position?: boolean) {
+    let currentView = document.querySelector(pageTag);
+    this.selectedItem = currentView.querySelectorAll('.draggable-element')['0'];
+    console.log('[SLIDER] currentView:', currentView);
+    console.log('[SLIDER] selectedItem:', this.selectedItem);
 
     if (this.selectedItem) {
-      // for (let i = 0; i < slider.length; i++) {
-      //   if (slider[i].classList.contains('active')) {
-      //     slider[i].classList.remove('active');
-      //   } else {
-      //     slider[i].classList.add('active');
-      //   }
-      // }
-
       if (!position && typeof position == 'boolean') {
       } else {
         position = this.sliderPosition == 'right' ? true : false;
@@ -88,19 +63,16 @@ export class SlideAvatar {
   }
 
   private setSliderDimentions() {
-    let dragEl = document.getElementsByClassName('draggable-element active')['0'];
-    if (dragEl) {
-      let dragLineW = dragEl.parentElement.clientWidth;
+    if (this.selectedItem) {
+      let dragLineW = this.selectedItem.parentElement.clientWidth;
 
-      this.dStart = 0 - dragEl.offsetWidth/2;
-      this.dEnd = dragLineW - dragEl.offsetWidth/2;
+      this.dStart = 0 - this.selectedItem.offsetWidth/2;
+      this.dEnd = dragLineW - this.selectedItem.offsetWidth/2;
     }
   }
 
   public setSliderPosition(state?: boolean) {
     if (!state) state = false;
-    this.setSliderDimentions();
-    let slider = document.getElementsByClassName('draggable-element active');
     if (this.selectedItem) {
       this.sliderState = state;
       this.arrowIcon = this.selectedItem.parentElement.children['1'];

@@ -1,4 +1,4 @@
-import { Component, ViewChild, NgZone, HostBinding } from '@angular/core';
+import { Component, ViewChild, NgZone, HostBinding, ElementRef } from '@angular/core';
 import { NavController, NavParams, Content, Platform, ModalController } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
@@ -127,6 +127,8 @@ export class ChatPage {
   private idList: any = [];
   private messageRefreshInterval: any;
 
+  private pageTag: string;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -143,8 +145,10 @@ export class ChatPage {
     public networkPrvd: Network,
     public gpsPrvd: Gps,
     public plt: Platform,
-    public modalCtrl: ModalController
+    public modalCtrl: ModalController,
+    elRef: ElementRef
   ) {
+    this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.keyboard.disableScroll(true);
 
     this.keyboard.onKeyboardShow().subscribe(res => {
@@ -541,7 +545,7 @@ export class ChatPage {
         // this.flipInput();
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
-        this.slideAvatarPrvd.sliderInit(this.navCtrl.getActive(), true);
+        this.slideAvatarPrvd.sliderInit(this.pageTag, true);
       } else {
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
@@ -777,7 +781,7 @@ export class ChatPage {
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     if (this.isUndercover) {
       let position = this.slideAvatarPrvd.sliderPosition ? null : true;
-      this.slideAvatarPrvd.sliderInit(this.navCtrl.getActive(), position);
+      this.slideAvatarPrvd.sliderInit(this.pageTag, position);
       this.showUsers();
       this.content.resize();
     }

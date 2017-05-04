@@ -11,7 +11,7 @@ export class User {
     private auth: Auth
   ) {}
 
-  public updateAvatar(id:number, files: File[], userData: any) {
+  public updateAvatar(id:number, files: File[], userData?: any) {
     return new Promise((resolve, reject) => {
       let xhr: XMLHttpRequest = new XMLHttpRequest();
 
@@ -68,6 +68,6 @@ export class User {
   }
 
   public errorHandler(error) {
-    
+
   }
 }

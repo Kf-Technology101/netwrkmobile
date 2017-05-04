@@ -114,6 +114,7 @@ export class Auth {
   public logout() {
     this.storage.rm('auth_type');
     this.storage.rm('auth_data');
+    this.facebook.logout().then(() => {}).catch(() => {});
   }
 
   public getAuthType():any { return this.storage.get('auth_type'); }
@@ -122,7 +123,7 @@ export class Auth {
 
   public saveRegisterData(data: any) { this.registerData = data; }
 
-  public saveAuthData(authData: any, type: string) {
+  public saveAuthData(authData: any, type?: string) {
     this.storage.set('auth_type', type);
     this.storage.set('auth_data', authData);
 

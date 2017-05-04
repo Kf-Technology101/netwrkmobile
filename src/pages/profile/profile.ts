@@ -128,7 +128,7 @@ export class ProfilePage {
 
   openSettings() {
     this.toolsPrvd.pushPage(ProfileSettingPage, {
-      public: this.profileTypePublic
+      public: this.undercoverPrvd.profileType == 'public'
     });
   }
 

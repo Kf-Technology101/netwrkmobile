@@ -56,6 +56,11 @@ export class LogInPage {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
     this.textStrings.require = 'Please fill all fields';
+
+    // this.repeat(1000, () => Promise.all([this.myfunction()]))
+    // .then(data => {
+    //   console.log('repeat start')
+    // });
   }
 
   doLogin(form: any) {

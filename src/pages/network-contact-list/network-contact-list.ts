@@ -107,10 +107,14 @@ export class NetworkContactListPage {
 
   private toggleSelectAll(condition: boolean) {
     this.selectAll = !condition;
+    this.chackContactsCount();
   }
 
-  private chackUserCount() {
-    this.accessed = this.selectAll;
+  private chackContactsCount() {
+    let count = 0;
+    for (let c in this.contacts) if (this.contacts[c].checked) count++;
+    this.accessed = count > 20 ? true : false;
+    console.log(this.accessed);
   }
 
   goHome() {

@@ -45,6 +45,25 @@ export class Gps {
     return seq;
   }
 
+  // private intervalID = 0;
+  //
+  // private wait(ms) {
+  //   return new Promise(r => setTimeout(r, ms));
+  // }
+  //
+  // private myfunction() {
+  //   return new Promise((r: any) => {
+  //     r(console.log('repeating...'))
+  //   });
+  // }
+  //
+  // public repeat(ms, func) {
+  //   return new Promise((resolve, reject) => {
+  //     this.intervalID = setInterval(func, ms),
+  //     this.wait(ms).then(resolve)
+  //   })
+  // }
+
   getMyZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
 

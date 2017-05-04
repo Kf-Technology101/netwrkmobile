@@ -123,6 +123,10 @@ export class ChatPage {
   };
   private contentPadding: string;
 
+  private canRefresh: boolean = false;
+  private idList: any = [];
+  private messageRefreshInterval: any;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -448,6 +452,7 @@ export class ChatPage {
         } else {
           message.isEmoji = true;
         }
+        this.canRefresh = false;
         this.postMessages.push(message);
         this.messageDateTimer.start(this.postMessages);
       }
@@ -656,9 +661,9 @@ export class ChatPage {
     }, 1000);
   }
 
-
   private startMessageUpdateTimer() {
     if (this.messagesInterval) clearInterval(this.messagesInterval);
+    if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
     this.showMessages();
     this.messagesInterval = setInterval(() => {
       this.showMessages();
@@ -724,16 +729,34 @@ export class ChatPage {
     }, chatAnim/2);
   }
 
-  clearMessages() {
+  private getMessagesIds(messageArray) {
     let idList = [];
-    for (let m in this.postMessages) {
-      idList.push(this.postMessages[m].id);
+    for (let m in messageArray) {
+      idList.push(messageArray[m].id);
     }
-    this.chatPrvd.deleteMessages(idList).subscribe( res => {
-      console.log('[clearMessages] Success:', res);
+    return idList;
+  }
+
+  private sendDeletedMessages() {
+    this.chatPrvd.deleteMessages(this.idList).subscribe( res => {
+      console.log('[sendDeletedMessages] Success:', res);
+      // this.postMessages = res ? res : [];
     }, err => {
-      console.log('[clearMessages] Error:', err);
+      console.log('[sendDeletedMessages] Error:', err);
     });
+  }
+
+  private clearMessages() {
+    if (this.messagesInterval) clearInterval(this.messagesInterval);
+    if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
+    this.canRefresh = true;
+    this.idList = this.getMessagesIds(this.postMessages);
+    this.postMessages = [];
+    this.messageRefreshInterval = setTimeout(() => {
+      this.canRefresh = false;
+      this.sendDeletedMessages();
+      this.startMessageUpdateTimer();
+    }, 10000);
   }
 
   flipInput() {
@@ -777,5 +800,10 @@ export class ChatPage {
     console.log('[UNDERCOVER.ts] viewWillLeave');
     this.messageDateTimer.stop();
     clearInterval(this.messagesInterval);
+    if (this.idList && this.idList.length > 0) {
+      this.canRefresh = false;
+      this.sendDeletedMessages();
+      this.startMessageUpdateTimer();
+    }
   }
 }

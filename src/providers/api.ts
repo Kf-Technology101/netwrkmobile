@@ -7,9 +7,11 @@ import 'rxjs/add/operator/map';
 export class Api {
   public httpProtocol: string = 'http://';
   private apiV: string = '/api/v1';
-  public domainLocal: string = '192.168.1.13:3000';
-  public domainServer: string = '34.208.20.67';
-  public siteDomain: string = this.domainServer;
+  public domain: any = {
+    local: '192.168.1.13:3000',
+    remote: '34.208.20.67'
+  };
+  public siteDomain: string = this.domain.local;
   public hostUrl = this.httpProtocol + this.siteDomain;
   public url: string = this.hostUrl + this.apiV;
 
@@ -19,9 +21,9 @@ export class Api {
   ) {}
 
   public changeApiUrl(url: string) {
-    this.siteDomain = url == this.domainServer
-      ? this.domainLocal
-      : this.domainServer;
+    this.siteDomain = url == this.domain.remote
+      ? this.domain.local
+      : this.domain.remote;
     this.hostUrl = this.httpProtocol + this.siteDomain;
     this.url = this.hostUrl + this.apiV;
   }

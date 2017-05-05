@@ -37,6 +37,7 @@ export class ProfilePage {
   public user: any = {};
   public profileTypePublic: boolean;
   private fbFriends: any = [];
+  private fbPosts: Array<any> = [];
   private pageTag: string;
 
   constructor(
@@ -170,18 +171,19 @@ export class ProfilePage {
     this.user = res;
     this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
 
-    this.socialPrvd.getUserPosts(this.user.provider_id).then(posts => {
-      console.log(posts);
-    }).catch(err => console.log(err));
+
 
     this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
       console.log(friends);
       this.fbFriends = friends.data;
       console.log('this.fbFriends', this.fbFriends);
       console.log('this.user:', this.user);
-      if (this.fbSlider) {
-        this.fbSlider.pager = true;
-      }
+
+      this.socialPrvd.getFbUserPosts(this.user.provider_id).then(posts => {
+        console.log('[ProfilePage][posts]', posts);
+        this.fbPosts = posts.data;
+      }).catch(err => console.log('[ProfilePage][posts]', err));
+
     }).catch(err => console.log(err));
   }
 

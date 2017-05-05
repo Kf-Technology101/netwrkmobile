@@ -429,6 +429,7 @@ page-chat {
         overflow-y: scroll;
         padding-bottom: 110px;
       }
+
       p.message{
         & {
           font-size: 12px;
@@ -440,6 +441,7 @@ page-chat {
           margin: 10px 5px;
         }
       }
+
       p.message:before,
       .social-ico {
         font-family: 'Ionicons';
@@ -457,6 +459,7 @@ page-chat {
         font-size: 12px;
         box-shadow: 0px 5px 9px -4px rgba(0, 0, 0, .3);
       }
+
       .facebook:before {
         content: "\f236";
         color: #195e99;
@@ -470,16 +473,20 @@ page-chat {
         color: #0077b5;
       }
       .img-container {
-        & {
-          position: relative;
-        }
+        position: relative;
+
         img {
           width: 100%;
           // max-height: 250px;
           // object-fit: cover;
         }
+
         .social-ico {
           left: 15px;
+        }
+
+        .message {
+          position: absolute;
         }
       }
     }

@@ -339,6 +339,7 @@ export class ChatPage {
       this.setContentPadding(false);
       setTimeout(() => {
         container.hide();
+        this.socialPosts = [];
       }, chatAnim / 2);
     }
 
@@ -375,7 +376,9 @@ export class ChatPage {
         container.setState('off');
         setTimeout(() => {
           container.hide();
+          this.socialPosts = [];
         }, chatAnim / 2);
+
       }
     }
   }
@@ -407,7 +410,17 @@ export class ChatPage {
     }
   }
 
-  postMessage(emoji?: string) {
+  postMessageFromSocial(post) {
+    let params: any = {
+      text: post.message,
+      social_urls: post.full_picture ? [post.full_picture] : [],
+      social: post.type,
+    }
+
+    this.postMessage(null, params);
+  }
+
+  postMessage(emoji?: string, params?: any) {
     let publicUser: boolean;
     let images = [];
     let messageParams: any;
@@ -431,8 +444,16 @@ export class ChatPage {
       is_emoji: emoji ? true : false
     };
 
+    if (params) Object.assign(messageParams, params);
+
+    console.log('[ChatPage][messageParams]', messageParams);
+
     message = Object.assign(message, messageParams);
-    message.image_urls = emoji ? [] : images;
+
+    let imageUrls = emoji ? [] : images;
+
+    message.image_urls = messageParams.social_urls
+      ? messageParams.social_urls : imageUrls;
     message.isTemporary = false;
     message.temporaryFor = 0;
 
@@ -498,7 +519,7 @@ export class ChatPage {
         }
       }).catch(err => {
         console.log(err);
-        pushMessage(err);
+        // pushMessage(err);
       });
       if (!emoji) {
         this.chatPrvd.appendContainer.setState('off');

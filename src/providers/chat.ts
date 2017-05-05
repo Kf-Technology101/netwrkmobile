@@ -47,6 +47,11 @@ export class Chat {
     this.hostUrl = this.api.hostUrl;
   }
 
+  public playSound(audioName) {
+    let sound = new Audio('assets/sound/' + audioName + '.mp3');
+    sound.play();
+  }
+
   public setState(state: string) {
     this.localStorage.set('chat_state', state);
   }

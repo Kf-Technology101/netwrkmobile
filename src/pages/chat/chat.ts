@@ -468,6 +468,7 @@ export class ChatPage {
         }
         this.canRefresh = false;
         this.postMessages.push(message);
+        this.chatPrvd.playSound('message');
         this.messageDateTimer.start(this.postMessages);
       }
 

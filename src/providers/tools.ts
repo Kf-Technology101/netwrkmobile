@@ -56,7 +56,11 @@ export class Tools {
   }
 
   hideLoader() {
-    this.loader.dismiss().catch(() => {});
+    setTimeout(() => {
+      this.loader.dismiss().catch( err => {
+        console.log('[loader close] Error:', err);
+      });
+    }, 1);
   }
 
   public pushPage(page: any, params?: any, animate?: boolean) {

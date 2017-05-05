@@ -87,7 +87,8 @@ export class SignUpPage {
 
     this.textStrings.fb = 'Unable to SignUp with Facebook.';
     this.textStrings.login = 'Please enter valid phone or email';
-    this.textStrings.password = 'The passwords not match!';
+    this.textStrings.password = 'Passwords do not match';
+    this.textStrings.pass_length = 'Password is to short (min. 6 chars.)';
     this.textStrings.require = 'Please fill all fields';
     this.textStrings.email = 'Email is not valid';
     this.textStrings.phone = 'Phone is not valid';
@@ -216,7 +217,19 @@ export class SignUpPage {
           status = false;
         }
       } else {
-        this.tools.showToast(this.textStrings.require);
+        if (form.controls.password.value &&
+            form.controls.confirm_password.value &&
+            (form.controls.password.value.length < 6 &&
+            form.controls.password.value.length > 0) &&
+            (form.controls.confirm_password.value.length > 0 &&
+            form.controls.confirm_password.value.length < 6)) {
+          this.tools.showToast(this.textStrings.pass_length);
+        }
+        if (!form.controls.password.value ||
+            !form.controls.confirm_password.value) {
+          this.tools.showToast(this.textStrings.require);
+        }
+
         status = false;
       }
     } else if (this.activeStateId == 2) {

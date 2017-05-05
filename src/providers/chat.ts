@@ -34,6 +34,10 @@ export class Chat {
   }
   public hostUrl: string;
 
+  private sounds:any = {
+    message: new Audio('assets/sound/message.mp3')
+  }
+
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -48,8 +52,11 @@ export class Chat {
   }
 
   public playSound(audioName) {
-    let sound = new Audio('assets/sound/' + audioName + '.mp3');
-    sound.play();
+    if (this.sounds[audioName]) {
+      this.sounds[audioName].play();
+    } else {
+      console.error('Error playing sound. audioName:', audioName);
+    }
   }
 
   public setState(state: string) {

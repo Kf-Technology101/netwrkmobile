@@ -46,7 +46,7 @@
   <ion-row *ngIf="connect.facebook && fbFriends.length > 0 && profileTypePublic" class="facebook" padding>
     <ion-col>
       <label>{{ fbFriends.length }} Сommon Connections</label>
-      <ion-slides #fbSlider slidesPerView="5">
+      <ion-slides #fbSlider slidesPerView="5" pager="true">
         <ion-slide *ngFor="let friend of fbFriends">
           <div class="avatar" (click)="getFbProfile(friend.id)">
             <img [src]="friend.picture.data.url">
@@ -104,30 +104,35 @@
       <ion-col>
         <h3><span>Recent</span></h3>
 
-        <ion-row class="facebook-post">
-          <ion-col col-10>
-            <ion-card>
-              <ion-card-content>
-                <ion-card-title>Shared via Facebook - 6h</ion-card-title>
-                <p>
-                  Just waking up in the morning, gotta thank God. I don't know, but today seems kinda odd. No barking from the dog, no smog. And momma cooked a breakfast with no hog. I got my grub on, but didn't pig out. Just waking up in the morning, gotta thank God. I don't know, but today seems kinda odd. No barking from the dog, no smog. And momma cooked a breakfast with no hog.
-                </p>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-          <ion-col col-2>
-            <ion-badge item-right>
-              0
-              <img class="icon-img" src="assets/images/legendary.png">
-            </ion-badge>
-            <ion-badge item-right>
-              0
-              <img class="icon-img" src="assets/images/joy.png">
-            </ion-badge>
-          </ion-col>
-        </ion-row>
+        <ng-container *ngFor="let post of fbPosts">
+          <ion-row *ngIf="post.message || post.picture">
+            <ion-col col-10>
+              <ion-card>
+                <ion-card-content>
+                  <ion-card-title>
+                    Shared via
+                    <ng-container>Facebook</ng-container>
+                    -
+                    {{ toolsPrvd.getTime(post.created_time) }}
+                  </ion-card-title>
+                  <p>{{ post.message }}</p>
+                </ion-card-content>
+              </ion-card>
+            </ion-col>
+            <ion-col col-2>
+              <ion-badge item-right>
+                0
+                <img class="icon-img" src="assets/images/legendary.png">
+              </ion-badge>
+              <ion-badge item-right>
+                0
+                <img class="icon-img" src="assets/images/joy.png">
+              </ion-badge>
+            </ion-col>
+          </ion-row>
+        </ng-container>
 
-        <ion-row class="instagram-post">
+        <!-- <ion-row class="image-post">
           <ion-col>
             <img src="assets/images/instagram.png">
             <ion-card>
@@ -136,7 +141,7 @@
               </ion-card-content>
             </ion-card>
           </ion-col>
-        </ion-row>
+        </ion-row> -->
       </ion-col>
     </ion-row>
   </ion-grid>

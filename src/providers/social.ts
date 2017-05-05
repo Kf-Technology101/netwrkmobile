@@ -119,7 +119,7 @@ export class Social {
     });
   }
 
-  public getUserPosts(id: string): Promise<any> {
+  public getFbUserPosts(id: string): Promise<any> {
     return new Promise((resolve, reject) => {
       let fields: Array<string> = [
         'created_time',
@@ -129,13 +129,15 @@ export class Social {
         'link',
         'name',
         'picture',
+        'full_picture',
         'type'
       ];
-      this.facebook.api(`${id}/feed?fields=${fields.join(',')}&limit=10`,
-        this.fbPermissions
-      ).then(res => {
+      let requestPath: string = `${id}/feed?fields=${fields.join(',')}&limit=10`
+      this.facebook.api(requestPath, this.fbPermissions).then(res => {
         resolve(res);
-      }).catch(err => reject(err))
+      }).catch(err => {
+        reject(err)
+      })
     });
   }
 

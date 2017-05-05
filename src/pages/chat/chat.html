@@ -1,4 +1,5 @@
-<ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover}">
+<ion-header class="incognito-header" isScrolling="false"
+  [ngClass]="{'chat-header': !isUndercover}">
   <ion-toolbar *ngIf="isUndercover">
     <div class="drag-container">
       <div class="dragline">
@@ -17,9 +18,9 @@
       </div>
     </div>
 
-    <button ion-button *ngIf="isUndercover && postMessages.length === 0 && !chatPrvd.postBtn.state"
+    <button *ngIf="isUndercover && postMessages.length === 0 && !chatPrvd.postBtn.state"
             class="side refresh-btn top-icon" (click)="startMessageUpdateTimer()"
-            [hidden]="!canRefresh">
+            [hidden]="!canRefresh" ion-button>
       <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
     </button>
     <button ion-button class="side clear-btn" (click)="clearMessages()"
@@ -42,7 +43,8 @@
 
   </ion-toolbar>
 
-  <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state" class="post-timer">
+  <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state"
+    class="post-timer">
     <button (click)="setPostTimer(0)">None</button>
     <button (click)="setPostTimer(10, 'h')">10 hours</button>
     <button (click)="setPostTimer(1, 'd')">1 day</button>
@@ -50,7 +52,8 @@
     <button (click)="setPostTimer(1, 'm')">1 month</button>
   </ion-toolbar>
 
-  <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state" class="post-lock">
+  <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state"
+    class="post-lock">
     <form (submit)="sendLockInfo(lockForm)" #lockForm="ngForm">
       <ion-item>
         <ion-input type="password" placeholder="Password" name="password"
@@ -75,7 +78,8 @@
     </ion-toolbar>
     <ion-toolbar>
       <ion-slides slidesPerView="4" class="netwrk-slider">
-        <ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide" (click)="joinToNetwork()">
+        <ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide"
+          (click)="joinToNetwork()">
           <div class="avatar add-to-netwrk">
             <img src="assets/images/netwrk_plus.svg">
           </div>
@@ -102,10 +106,14 @@
   [ngStyle]="{'padding-bottom': contentPadding}">
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let message of postMessages; let i = index">
-      <img *ngIf="chatPrvd.users[message.user_id]" (click)="goToProfile(message.user_id, message.public)"
-        [src]="message.public ? chatPrvd.users[message.user_id].avatar_url : chatPrvd.users[message.user_id].role_image_url"
+      <img *ngIf="chatPrvd.users[message.user_id]"
+        (click)="goToProfile(message.user_id, message.public)"
+        [src]="message.public
+          ? chatPrvd.users[message.user_id].avatar_url
+          : chatPrvd.users[message.user_id].role_image_url"
         class="chat-avatar">
-      <img *ngIf="!chatPrvd.users[message.user_id]" (click)="goToProfile(message.user_id, message.public)"
+      <img *ngIf="!chatPrvd.users[message.user_id]"
+        (click)="goToProfile(message.user_id, message.public)"
         [src]="toolsPrvd.defaultAvatar"
         class="chat-avatar">
       <p class="message-container">
@@ -140,7 +148,8 @@
 <ion-footer class="has-input chatFooter">
 
   <div item-content class="appended-pictures-container"
-    [hidden]="chatPrvd.appendContainer.hidden" [@containerState]="chatPrvd.appendContainer.state">
+    [hidden]="chatPrvd.appendContainer.hidden"
+    [@containerState]="chatPrvd.appendContainer.state">
     <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures; let indx = index" >
       <img class="img-preview" [src]="i"/>
       <button (click)="removeAppendedImage(indx)">
@@ -159,73 +168,77 @@
     [hidden]="shareContainer.hidden" [@containerState]="shareContainer.state">
     <ion-toolbar>
       <div class="slide-container sl-facebook">
-        <div #slfb [ngClass]="{'active': checkbox.facebook}" class="toggle-el"
+        <div #slfb [ngClass]="{'active': shareCheckbox.facebook}" class="toggle-el"
           (click)="toggleShareSlider('facebook')">
-          <span class="toggle-state" *ngIf="checkbox.facebook">on</span>
-          <span class="toggle-state" *ngIf="!checkbox.facebook">off</span>
-          <div [ngClass]="{'right': checkbox.facebook}" class="toggleable">
+          <span class="toggle-state" *ngIf="shareCheckbox.facebook">on</span>
+          <span class="toggle-state" *ngIf="!shareCheckbox.facebook">off</span>
+          <div [ngClass]="{'right': shareCheckbox.facebook}" class="toggleable">
             <ion-icon ios="logo-facebook" md="logo-facebook"></ion-icon>
           </div>
-          <input type="checkbox" [checked]="checkbox.facebook">
+          <input type="checkbox" [checked]="shareCheckbox.facebook">
         </div>
       </div>
 
-      <div class="slide-container sl-linkedin">
-        <div #slln [ngClass]="{'active': checkbox.linkedin}" class="toggle-el"
+      <!-- <div class="slide-container sl-linkedin">
+        <div #slln [ngClass]="{'active': shareCheckbox.linkedin}" class="toggle-el"
           (click)="toggleShareSlider('linkedin')">
-          <span class="toggle-state" *ngIf="checkbox.linkedin">on</span>
-          <span class="toggle-state" *ngIf="!checkbox.linkedin">off</span>
-          <div [ngClass]="{'right': checkbox.linkedin}" class="toggleable">
+          <span class="toggle-state" *ngIf="shareCheckbox.linkedin">on</span>
+          <span class="toggle-state" *ngIf="!shareCheckbox.linkedin">off</span>
+          <div [ngClass]="{'right': shareCheckbox.linkedin}" class="toggleable">
             <ion-icon ios="logo-linkedin" md="logo-linkedin"></ion-icon>
           </div>
-          <input type="checkbox" [checked]="checkbox.linkedin">
+          <input type="checkbox" [checked]="shareCheckbox.linkedin">
         </div>
       </div>
 
       <div class="slide-container sl-twitter">
-        <div #sltw [ngClass]="{'active': checkbox.twitter}" class="toggle-el"
+        <div #sltw [ngClass]="{'active': shareCheckbox.twitter}" class="toggle-el"
           (click)="toggleShareSlider('twitter')">
-          <span class="toggle-state" *ngIf="checkbox.twitter">on</span>
-          <span class="toggle-state" *ngIf="!checkbox.twitter">off</span>
-          <div [ngClass]="{'right': checkbox.twitter}" class="toggleable">
+          <span class="toggle-state" *ngIf="shareCheckbox.twitter">on</span>
+          <span class="toggle-state" *ngIf="!shareCheckbox.twitter">off</span>
+          <div [ngClass]="{'right': shareCheckbox.twitter}" class="toggleable">
             <ion-icon ios="logo-twitter" md="logo-twitter"></ion-icon>
           </div>
-          <input type="checkbox" [checked]="checkbox.twitter">
+          <input type="checkbox" [checked]="shareCheckbox.twitter">
         </div>
-      </div>
+      </div> -->
 
     </ion-toolbar>
 
     <div ion-content class="share-content">
-      <p class="message facebook">
-        Unseen University had never admitted women, muttering something about problems with the plumbing, but the real reason was an unspoken dread that if women were allowed to mess around with magic they would probably be embarrassingly good at it ...
-      </p>
-      <div class="img-container">
+      <ng-container *ngFor="let post of socialPosts">
+        <ng-container *ngIf="post.full_picture">
+          <div (click)="postMessageFromSocial(post)" class="img-container">
+            <span *ngIf="!post.message" class="social-ico {{ post.type }}"></span>
+            <p *ngIf="post.message" class="message {{ post.type }}">
+              {{ post.message }}
+            </p>
+            <img [src]="post.full_picture">
+          </div>
+        </ng-container>
+        <ng-container *ngIf="!post.full_picture">
+          <p (click)="postMessageFromSocial(post)"
+            class="message {{ post.type }}">{{ post.message }}</p>
+        </ng-container>
+      </ng-container>
+      <!-- <div class="img-container">
         <span class="social-ico linkedin"></span>
         <img src="http://travel.usnews.com/images/destinations/94/yosemite_mirror_lake_getty_michael_h_spiva.jpg">
       </div>
       <p class="message twitter">
         The first rule of magic is simple. Don't waste your time waving your hands and hoping when a rock or a club will do.
       </p>
-      <p class="message facebook">
-        Do not meddle in the affairs of wizards, for they become soggy and hard to light.
-      </p>
-      <p class="message facebook">
-        "I'm gonna be a famous hero just like Neil Armstrong and those other brave guys no one ever heard of."
-      </p>
-      <div class="img-container">
-        <span class="social-ico facebook"></span>
-        <img src="https://s-media-cache-ak0.pinimg.com/736x/f5/a0/62/f5a0626a80fe6026c0ac65cdc2d8ede2.jpg">
-      </div>
       <p class="message twitter">
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis deleniti perspiciatis sit, obcaecati ut blanditiis aliquid alias rem impedit odit vitae maiores voluptate exercitationem. Perferendis modi eius distinctio illum labore.
-      </p>
+      </p> -->
     </div>
 
   </div>
 
-  <button isScrolling="false" tapable [hidden]="chatPrvd.mainBtn.hidden" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
-  class="main-action-btn big has-footer transparent chatMainBtn" (click)="goUndercover()"></button>
+  <button isScrolling="false" tapable [hidden]="chatPrvd.mainBtn.hidden"
+    [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
+    class="main-action-btn big has-footer transparent chatMainBtn"
+    (click)="goUndercover()"></button>
 
   <div ion-content class="flip-container" [ngClass]="{'hover' : flipHover}">
     <ion-item class="text front" #inputItem
@@ -238,13 +251,16 @@
               toggleContainer(shareContainer, 'hide')">
           <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
         </button>
-        <button ion-button [@inputState]="chatBtns.state[1]" (click)="chatPrvd.openGallery()">
+        <button ion-button [@inputState]="chatBtns.state[1]"
+          (click)="chatPrvd.openGallery()">
            <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
         </button>
-        <button ion-button [@inputState]="chatBtns.state[2]" (click)="toggleContainer(shareContainer);">
+        <button ion-button [@inputState]="chatBtns.state[2]"
+          (click)="toggleContainer(shareContainer, null, 'shareContainer');">
           <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
         </button>
-        <button ion-button [@inputState]="chatBtns.state[3]" (click)="toggleContainer(emojiContainer);">
+        <button ion-button [@inputState]="chatBtns.state[3]"
+          (click)="toggleContainer(emojiContainer);">
           <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
         </button>
         <button ion-button [@inputState]="chatBtns.state[4]"></button>
@@ -259,16 +275,21 @@
         <ion-icon ios="ios-add" md="ios-add"></ion-icon>
       </button>
 
-      <ion-input #textInput id="textInput" type="text" [placeholder]="placeholderText"
-                 (keyup)="getCaretPos(textInput); calculateInputChar(textInput)">
+      <ion-input #textInput id="textInput" type="text"
+        [placeholder]="placeholderText"
+        (keyup)="getCaretPos(textInput); calculateInputChar(textInput)">
       </ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
-      <button ion-button item-right clear [ngClass]="{ 'post-button' : chatPrvd.postBtn.state }"
-              (click)="postMessage()" class="post-message">
-        <img *ngIf="!chatPrvd.postBtn.state && !isUndercover" src="assets/icon/netwrk-chat.svg">
-        <span *ngIf="chatPrvd.postBtn.state && !isUndercover && bgState.state != 'stretched'">Post</span>
-        <span *ngIf="chatPrvd.postBtn.state && isUndercover && bgState.state != 'stretched'">Hang</span>
+      <button ion-button item-right clear
+        [ngClass]="{ 'post-button' : chatPrvd.postBtn.state }"
+        (click)="postMessage()" class="post-message">
+        <img *ngIf="!chatPrvd.postBtn.state && !isUndercover"
+          src="assets/icon/netwrk-chat.svg">
+        <span *ngIf="chatPrvd.postBtn.state
+          && !isUndercover && bgState.state != 'stretched'">Post</span>
+        <span *ngIf="chatPrvd.postBtn.state
+          && isUndercover && bgState.state != 'stretched'">Hang</span>
         <ion-icon *ngIf="!chatPrvd.postBtn.state && isUndercover"
         ios="ios-text-outline" md="ios-text-outline"></ion-icon>
       </button>

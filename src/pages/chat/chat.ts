@@ -19,6 +19,7 @@ import { Camera } from '../../providers/camera';
 import { Chat } from '../../providers/chat';
 import { Network } from '../../providers/network';
 import { Gps } from '../../providers/gps';
+import { Social } from '../../providers/social';
 
 import { ProfilePage } from '../profile/profile';
 
@@ -97,9 +98,9 @@ export class ChatPage {
 
   public user: any;
 
-  public checkbox: any = {
-    facebook: false,
-    twitter: true,
+  public shareCheckbox: any = {
+    facebook: true,
+    twitter: false,
     linkedin: false
   };
 
@@ -126,7 +127,7 @@ export class ChatPage {
   private canRefresh: boolean = false;
   private idList: any = [];
   private messageRefreshInterval: any;
-
+  private socialPosts: Array<any> = [];
   private pageTag: string;
 
   constructor(
@@ -146,6 +147,7 @@ export class ChatPage {
     public gpsPrvd: Gps,
     public plt: Platform,
     public modalCtrl: ModalController,
+    public socialPrvd: Social,
     elRef: ElementRef
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
@@ -323,7 +325,7 @@ export class ChatPage {
     this.scrollToBottom();
   }
 
-  toggleContainer(container, visibility?:string) {
+  toggleContainer(container, visibility?: string, name?: string) {
     if (visibility == 'hide') {
       // this.setContentPadding(false);
 
@@ -358,6 +360,8 @@ export class ChatPage {
             }, chatAnim / 2);
           }
         }
+
+        if (name && name == 'shareContainer') this.getSocialPosts();
       } else {
         // console.log('setContentPadding', false);
         this.setContentPadding(false);
@@ -556,7 +560,8 @@ export class ChatPage {
   }
 
   toggleShareSlider(mess){
-    this.checkbox[mess] = !this.checkbox[mess];
+    this.shareCheckbox[mess] = !this.shareCheckbox[mess];
+    this.getSocialPosts();
   }
 
   changeCallback(positionLeft?: boolean) {
@@ -634,6 +639,20 @@ export class ChatPage {
       console.log(err);
       this.toolsPrvd.hideLoader();
     });
+  }
+
+  private getSocialPosts() {
+    this.socialPosts = [];
+    if (this.shareCheckbox.facebook) {
+      this.socialPrvd.getFbUserPosts(this.user.provider_id).then(posts => {
+        console.log('[ChatPage][getSocialPosts]', posts.data);
+        for (let post of posts.data) {
+          let fbPost = post;
+          fbPost.type = 'facebook';
+          this.socialPosts.push(fbPost);
+        }
+      }).catch(err => console.log(err));
+    }
   }
 
   private getUsers() {

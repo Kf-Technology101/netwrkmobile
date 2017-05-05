@@ -130,10 +130,15 @@ export const toggleFade: any = trigger('fadeState', [
   state('fadeOutfast', style({
     opacity: '0'
   })),
+
+  state('fadeInVeryFast', style({
+    opacity: '1'
+  })),
   transition('* => fadeIn', animate(animSpeed.fadeIn + 'ms ease-in')),
   transition('* => fadeOut', animate(animSpeed.fadeIn + 'ms ease-in')),
   transition('* => fadeOutfast', animate(animSpeed.fadeIn/2 + 'ms ease-in')),
   transition('* => fadeInfast', animate(animSpeed.fadeIn/2 + 'ms ease-in')),
+  transition('* => fadeInVeryFast', animate(200 + 'ms ease-out'))
 ]);
 
 export const cameraUIanimation: any = trigger('cameraUIstate', [

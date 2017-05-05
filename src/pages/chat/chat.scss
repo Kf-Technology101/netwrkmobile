@@ -494,8 +494,8 @@ page-chat {
         padding: 0;
         margin: 0;
         position: relative;
-        transition: all .3s ease-out;
         margin-top: 24px;
+        opacity: 0;
         .chat-avatar {
           border-radius: 50%;
           width: 42px;

@@ -42,7 +42,7 @@ export class ProfilePage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    public social: Social,
+    public socialPrvd: Social,
     public toolsPrvd: Tools,
     public undercoverPrvd: UndercoverProvider,
     public slideAvatarPrvd: SlideAvatar,
@@ -62,9 +62,9 @@ export class ProfilePage {
   }
 
   ngAfterViewInit() {
-    this.connect.facebook = this.social.getFacebookData();
-    this.connect.instagram = this.social.getInstagramData();
-    this.connect.twitter = this.social.getTwitterData();
+    this.connect.facebook = this.socialPrvd.getFacebookData();
+    this.connect.instagram = this.socialPrvd.getInstagramData();
+    this.connect.twitter = this.socialPrvd.getTwitterData();
     this.connect.snapchat = false;
 
     console.log(this.connect.facebook);
@@ -108,15 +108,15 @@ export class ProfilePage {
   }
 
   connectToInstagram() {
-    this.social.connectToInstagram().then(() => {
-      this.connect.instagram = this.social.getInstagramData();
+    this.socialPrvd.connectToInstagram().then(() => {
+      this.connect.instagram = this.socialPrvd.getInstagramData();
       this.toolsPrvd.showToast('Instagram already connected');
     });
   }
 
   connectToTwitter() {
-    this.social.connectToTwitter().then(res => {
-      this.connect.twitter = this.social.getTwitterData();
+    this.socialPrvd.connectToTwitter().then(res => {
+      this.connect.twitter = this.socialPrvd.getTwitterData();
       this.toolsPrvd.showToast('Twitter already connected');
     });
   }
@@ -170,7 +170,11 @@ export class ProfilePage {
     this.user = res;
     this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
 
-    this.social.getFriendList(this.user.provider_id).then(friends => {
+    this.socialPrvd.getUserPosts(this.user.provider_id).then(posts => {
+      console.log(posts);
+    }).catch(err => console.log(err));
+
+    this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
       console.log(friends);
       this.fbFriends = friends.data;
       console.log('this.fbFriends', this.fbFriends);

@@ -11,8 +11,8 @@ import { UndercoverCharacterPage } from '../pages/undercover-character/undercove
 // import { SignUpFacebookPage } from '../pages/sign-up-facebook/sign-up-facebook';
 import { ChatPage } from '../pages/chat/chat';
 // import { HomePage } from '../pages/home/home';
-// import { ProfilePage } from '../pages/profile/profile';
-import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
+import { ProfilePage } from '../pages/profile/profile';
+// import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 // import { NetworkNoPage } from '../pages/network-no/network-no';
 // import { NetworkPage } from '../pages/network/network';
 // import { CameraPage } from '../pages/camera/camera';

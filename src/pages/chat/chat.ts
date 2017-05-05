@@ -489,7 +489,6 @@ export class ChatPage {
         }
         this.canRefresh = false;
         this.postMessages.push(message);
-        this.chatPrvd.playSound('message');
         this.messageDateTimer.start(this.postMessages);
       }
 
@@ -726,6 +725,7 @@ export class ChatPage {
 
       if (this.postMessages.length != data.length) {
         this.postMessages = this.chatPrvd.organizeMessages(data);
+        this.chatPrvd.playSound('message');
         this.messageDateTimer.start(this.postMessages);
         this.scrollToBottom();
       }

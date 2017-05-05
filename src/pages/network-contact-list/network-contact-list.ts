@@ -93,6 +93,7 @@ export class NetworkContactListPage {
     for (let c in this.contacts) {
       this.contacts[c].checked = this.selectAll;
     }
+    this.chackContactsCount();
   }
 
   doChange(contact: any) {
@@ -103,14 +104,17 @@ export class NetworkContactListPage {
       }
     }
     this.toggleSelectAll(hasUnchanged);
+    this.chackContactsCount();
   }
 
   private toggleSelectAll(condition: boolean) {
     this.selectAll = !condition;
   }
 
-  private chackUserCount() {
-    this.accessed = this.selectAll;
+  private chackContactsCount() {
+    let count = 0;
+    for (let c in this.contacts) if (this.contacts[c].checked) count++;
+    this.accessed = count >= 20 ? true : false;
   }
 
   goHome() {

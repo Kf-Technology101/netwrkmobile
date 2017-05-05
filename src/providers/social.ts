@@ -16,7 +16,9 @@ export class Social {
   public fbPermissions: Array<string> = [
     'public_profile',
     'user_friends',
-    'email'
+    'email',
+    'user_birthday',
+    'user_posts',
   ];
 
   constructor(
@@ -109,8 +111,27 @@ export class Social {
         'last_name',
         'devices'
       ];
-      this.facebook.api(
-        id + '/friends?fields=' + fields.join(','),
+      this.facebook.api(`${id}/friends?fields=${fields.join(',')}`,
+        this.fbPermissions
+      ).then(res => {
+        resolve(res);
+      }).catch(err => reject(err))
+    });
+  }
+
+  public getUserPosts(id: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+      let fields: Array<string> = [
+        'created_time',
+        'description',
+        'is_published',
+        'message',
+        'link',
+        'name',
+        'picture',
+        'type'
+      ];
+      this.facebook.api(`${id}/feed?fields=${fields.join(',')}&limit=10`,
         this.fbPermissions
       ).then(res => {
         resolve(res);

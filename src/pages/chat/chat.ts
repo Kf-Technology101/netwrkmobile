@@ -822,6 +822,20 @@ export class ChatPage {
     this.flipHover = !this.flipHover;
   }
 
+  refreshChat(refresher) {
+    console.log('Begin async operation', refresher);
+    this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
+    .subscribe(res => {
+      for (let i = res.length; i >= 0; i--) {
+        this.postMessages.unshift(res[i]);
+      }
+      refresher.complete();
+    }, err => {
+      console.log('[getMessages] Err:', err);
+    });
+
+  }
+
   ionViewDidEnter() {
     this.mainInput.setState('fadeIn');
     this.mainInput.show();
@@ -848,20 +862,6 @@ export class ChatPage {
     // if (this.cameraPrvd.takenPictures) {
     //   this.postMessage();
     // }
-    this.content.ionScroll.subscribe(ev => {
-      if (this.content.scrollTop == 0) {
-        console.log('[scroll] TOP');
-        this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
-        .subscribe(res => {
-          for (let i = res.length; i >= 0; i--) {
-            this.postMessages.unshift(res[i]);
-          }
-
-        }, err => {
-          console.log('[getMessages] Err:', err);
-        });
-      }
-    });
   }
 
   ionViewDidLoad() {

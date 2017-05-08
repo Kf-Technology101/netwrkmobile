@@ -240,11 +240,7 @@ export class ChatPage {
       this.isUndercover = this.undercoverPrvd.setUndercover(this.chatPrvd.getState() == 'undercover');
     }
 
-    if (this.isUndercover) {
-      this.flipHover = true;
-    } else {
-      this.flipHover = false;
-    }
+    this.flipHover = this.isUndercover ? true : false;
 
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
     this.cameraPreview.startCamera(cameraOptions).then(res => {

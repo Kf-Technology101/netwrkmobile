@@ -26,7 +26,8 @@
         <ion-spinner *ngIf="imageLoading"></ion-spinner>
         <img [src]="slideAvatarPrvd.sliderPosition == 'left'
           ? user.avatar_url : user.role_image_url">
-        <button color="bk" ion-button (click)="callback($event)">
+        <button *ngIf="slideAvatarPrvd.sliderPosition == 'left'"
+          color="bk" ion-button (click)="callback($event)">
           <ion-icon name="add"></ion-icon>
         </button>
         <input #input type="file" (change)="filesAdded($event)"
@@ -47,7 +48,7 @@
   </ion-row>
   <ion-row class="description-section">
     <ion-col>
-      <ion-card>
+      <!-- <ion-card>
         <h1 text-center>Will you be a super hero or a villain?</h1>
         <p>
           Points are given by bringing joy to netwrk, or becoming a legend. Being vulgar or blocked takes them away.
@@ -55,6 +56,9 @@
         <p>
           Beware: too much negativity and your powers will be recinded.
         </p>
+      </ion-card> -->
+      <ion-card *ngIf="slideAvatarPrvd.sliderPosition == 'right'">
+        <p>{{ user.role_description }}</p>
       </ion-card>
     </ion-col>
   </ion-row>

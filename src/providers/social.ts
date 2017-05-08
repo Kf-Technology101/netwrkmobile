@@ -111,9 +111,10 @@ export class Social {
         'last_name',
         'devices'
       ];
-      this.facebook.api(`${id}/friends?fields=${fields.join(',')}`,
-        this.fbPermissions
-      ).then(res => {
+      let requestPath: string = `${id}/friends?fields=${fields.join(',')}`;
+
+      console.log('[Social][getFriendList]', requestPath);
+      this.facebook.api(requestPath, this.fbPermissions).then(res => {
         resolve(res);
       }).catch(err => reject(err))
     });
@@ -133,6 +134,8 @@ export class Social {
         'type'
       ];
       let requestPath: string = `${id}/feed?fields=${fields.join(',')}&limit=10`
+
+      console.log('[Social][getFbUserPosts]', requestPath);
       this.facebook.api(requestPath, this.fbPermissions).then(res => {
         resolve(res);
       }).catch(err => {

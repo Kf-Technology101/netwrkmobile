@@ -72,7 +72,12 @@ export class ProfileSettingPage {
     this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
 
     this.keyboard.onKeyboardHide().subscribe(keyboard => {
-      let params = { user: { name: this.userName } }
+      let params: any;
+      if (this.slideAvatarPrvd.sliderPosition == 'right') {
+        params = { user: { role_name: this.userName } }
+      } else {
+        params = { user: { name: this.userName } }
+      }
 
       this.userPrvd.update(this.user.id, params)
       .map(res => res.json()).subscribe(res => {
@@ -147,7 +152,9 @@ export class ProfileSettingPage {
     let dragList = document.getElementsByClassName('draggable-element');
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     this.slideAvatarPrvd.sliderInit(this.pageTag);
-    this.userName = this.user.name;
+    this.userName = this.slideAvatarPrvd.sliderPosition == 'left'
+      ? this.user.name
+      : this.user.role_name;
   }
 
   logOut() {

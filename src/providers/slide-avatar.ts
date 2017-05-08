@@ -130,22 +130,22 @@ export class SlideAvatar {
       if (this.xPos - this.xElem <= this.dEnd/2 + 3) {
         this.selectedItem.style.left = this.dStart + 'px';
         this.selectedItem.classList.add('transition');
+        this.sliderPosition = 'left';
         setTimeout(() => {
           if (this.changeCallback) this.changeCallback(true);
           this.arrowIcon.style.opacity = '1';
           this.arrowIcon.classList.remove('right');
-          this.sliderPosition = 'left';
         }, 300);
         this.sliderState = false;
       }
       if (this.xPos - this.xElem > this.dEnd/2 + 3) {
         this.selectedItem.style.left = this.dEnd + 'px';
         this.selectedItem.classList.add('transition');
+        this.sliderPosition = 'right';
         setTimeout(() => {
           if (this.changeCallback) this.changeCallback(false);
           this.arrowIcon.style.opacity = '1';
           this.arrowIcon.classList.add('right');
-          this.sliderPosition = 'right';
         }, 300);
         this.sliderState = true;
       }

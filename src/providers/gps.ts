@@ -76,13 +76,13 @@ export class Gps {
       if (this.watch) this.watch.unsubscribe();
 
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
-        // console.log(resp);
+        console.log('[Gps][getMyZipCode]', resp);
         if (resp.coords) {
           let url = 'https://maps.googleapis.com/maps/api/geocode/json';
           let seq = this.getAddressDetail(url, {
             latlng: resp.coords.latitude + ',' + resp.coords.longitude,
             sensor: true,
-            key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
+            key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
           }).share();
           this.coords.lat = resp.coords.latitude;
           this.coords.lng = resp.coords.longitude;
@@ -90,9 +90,15 @@ export class Gps {
             let zipCode: number = this.parseGoogleAddress(res.results);
             resolve({ zip_code: zipCode });
           },
-          err => reject(err));
+          err => {
+            console.log('[Gps][getMyZipCode]', err);
+            reject(err);
+          });
         }
-      }, err => reject(err));
+      }, err => {
+        console.log('[Gps][getMyZipCode]', err);
+        reject(err);
+      });
     });
   }
 

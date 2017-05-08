@@ -56,10 +56,13 @@ export class ProfilePage {
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.user.id = this.navParams.get('id');
-    this.profileTypePublic = this.navParams.get('public') ?
-      this.navParams.get('public') : true;
+
+    let publicProfile = this.navParams.get('public');
+    this.profileTypePublic = typeof publicProfile == 'boolean' ? publicProfile : true;
     // console.log(this.user);
     // this.isUndercover = this.undercoverPrvd.isUndercover;
+    console.log('[ProfilePage][constructor]', this.navParams.get('public'));
+    console.log('[ProfilePage][constructor]', this.profileTypePublic);
   }
 
   ngAfterViewInit() {

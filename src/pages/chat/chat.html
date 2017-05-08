@@ -209,7 +209,7 @@
     <div ion-content class="share-content">
       <ng-container *ngFor="let post of socialPosts">
         <ng-container *ngIf="post.full_picture">
-          <div (click)="postMessageFromSocial(post)" class="img-container">
+          <div *ngIf="post.message || post.full_picture" (click)="postMessageFromSocial(post)" class="img-container">
             <span *ngIf="!post.message" class="social-ico {{ post.type }}"></span>
             <p *ngIf="post.message" class="message {{ post.type }}">
               {{ post.message }}
@@ -217,7 +217,7 @@
             <img [src]="post.full_picture">
           </div>
         </ng-container>
-        <ng-container *ngIf="!post.full_picture">
+        <ng-container *ngIf="!post.full_picture && post.message">
           <p (click)="postMessageFromSocial(post)"
             class="message {{ post.type }}">{{ post.message }}</p>
         </ng-container>
@@ -284,7 +284,7 @@
 
       <button ion-button item-right clear
         [ngClass]="{ 'post-button' : chatPrvd.postBtn.state }"
-        (click)="postMessage()" class="post-message">
+        (tap)="postMessage()" class="post-message">
         <img *ngIf="!chatPrvd.postBtn.state && !isUndercover"
           src="assets/icon/netwrk-chat.svg">
         <span *ngIf="chatPrvd.postBtn.state

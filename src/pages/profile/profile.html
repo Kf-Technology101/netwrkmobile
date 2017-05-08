@@ -34,13 +34,14 @@
         <img [src]="profileTypePublic ? user.avatar_url : user.role_image_url">
       </div>
       <span class="username">
-        <ng-container *ngIf="undercoverPrvd.profileType == 'undercover' && ownProfile">
+        <ng-container *ngIf="slideAvatarPrvd.sliderPosition == 'right' && ownProfile">
           {{ user.role_name }}
         </ng-container>
-        <ng-container *ngIf="undercoverPrvd.profileType == 'public' || !ownProfile">
+        <ng-container *ngIf="slideAvatarPrvd.sliderPosition == 'left' || !ownProfile">
           {{ user.name }}
         </ng-container>
       </span>
+      <p *ngIf="!profileTypePublic">{{ user.role_description }}</p>
     </ion-col>
   </ion-row>
   <ion-row *ngIf="connect.facebook && fbFriends.length > 0 && profileTypePublic" class="facebook" padding>
@@ -99,7 +100,7 @@
       </ion-row>
     </ion-col>
   </ion-row>
-  <ion-grid no-padding>
+  <ion-grid *ngIf="fbPosts.length > 0" no-padding>
     <ion-row class="feed">
       <ion-col>
         <h3><span>Recent</span></h3>

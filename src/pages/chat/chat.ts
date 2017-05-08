@@ -430,7 +430,7 @@ export class ChatPage {
     if (!this.isUndercover) {
       publicUser = true;
     } else {
-      publicUser = this.undercoverPrvd.profileType === 'public' ? true : false;
+      publicUser = this.slideAvatarPrvd.sliderPosition == 'left' ? true : false;
     }
 
     if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
@@ -532,7 +532,9 @@ export class ChatPage {
   }
 
   private scrollToBottom() {
-    this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
+    setTimeout(() => {
+      this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
+    }, 500);
   }
 
   calculateInputChar(inputEl) {
@@ -545,6 +547,7 @@ export class ChatPage {
   }
 
   goToProfile(profileId?: number, profileTypePublic?: boolean) {
+    console.log('[ChatPage][goToProfile]', profileTypePublic);
     if (!profileId) profileId = this.authPrvd.getAuthData().id;
     let params = {
       id: profileId,
@@ -721,7 +724,7 @@ export class ChatPage {
 
   private showMessages() {
     this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
-      // console.log(data);
+      console.log('[ChatPage][showMessages]', data);
 
       if (this.postMessages.length != data.length) {
         this.postMessages = this.chatPrvd.organizeMessages(data);
@@ -832,6 +835,8 @@ export class ChatPage {
     this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
     this.chatPrvd.updateAppendContainer();
+
+    this.startMessageUpdateTimer();
 
     this.messageDateTimer.start(this.postMessages);
     // if (this.cameraPrvd.takenPictures) {

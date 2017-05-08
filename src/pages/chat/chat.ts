@@ -419,7 +419,7 @@ export class ChatPage {
     this.postMessage(null, params);
   }
 
-  pushMessage(data?: any, message?:any, emoji?:any) {
+  pushMessage(data: any, message?:any, emoji?:any) {
     message.created_at = moment();
     message.dateStr = 'a moment ago';
     message.locked = data.locked;
@@ -720,17 +720,26 @@ export class ChatPage {
   private showMessages() {
     this.chatPrvd.getMessages(this.isUndercover, this.postMessages).subscribe(data => {
       console.log('[ChatPage][showMessages]', data);
-
-      if ((this.postMessages.length > 0 &&
-          this.postMessages[this.postMessages.length - 1].id != data[0].id) ||
-          this.postMessages.length == 0) {
+      console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
+      if (this.postMessage.length == 0) {
         this.postMessages = this.chatPrvd.organizeMessages(data);
-        this.chatPrvd.playSound('message');
-        this.messageDateTimer.start(this.postMessages);
-        this.scrollToBottom();
+      }
+      if (this.postMessages.length > 0) {
+        let lastDate = new Date(
+          moment(this.postMessages[this.postMessages.length - 1].created_at)
+          .format('DD-MM-YYYY HH:mm:ss'));
+        let newDate = new Date(
+          moment(data[data.length - 1].created_at)
+          .format('DD-MM-YYYY HH:mm:ss'));
+        if (lastDate < newDate) {
+          this.postMessages = this.chatPrvd.organizeMessages(data);
+          this.chatPrvd.playSound('message');
+          this.messageDateTimer.start(this.postMessages);
+          this.scrollToBottom();
+        }
       }
     }, err => {
-      console.log(err);
+      console.log('[getMessage] Err:', err);
     });
   }
 

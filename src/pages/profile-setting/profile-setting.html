@@ -26,8 +26,7 @@
         <ion-spinner *ngIf="imageLoading"></ion-spinner>
         <img [src]="slideAvatarPrvd.sliderPosition == 'left'
           ? user.avatar_url : user.role_image_url">
-        <button *ngIf="slideAvatarPrvd.sliderPosition == 'left'"
-          color="bk" ion-button (click)="callback($event)">
+        <button color="bk" ion-button (click)="uploadCallback($event)">
           <ion-icon name="add"></ion-icon>
         </button>
         <input #input type="file" (change)="filesAdded($event)"

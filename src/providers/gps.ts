@@ -92,6 +92,7 @@ export class Gps {
           },
           err => {
             console.log('[Gps][getMyZipCode]', err);
+            resolve({ zip_code: 79000 });
             reject(err);
           });
         }

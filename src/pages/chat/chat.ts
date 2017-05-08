@@ -721,7 +721,7 @@ export class ChatPage {
   }
 
   private showMessages() {
-    this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
+    this.chatPrvd.getMessages(this.isUndercover, this.postMessages).subscribe(data => {
       console.log('[ChatPage][showMessages]', data);
 
       if (this.postMessages.length != data.length) {

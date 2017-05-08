@@ -419,7 +419,7 @@ export class ChatPage {
     this.postMessage(null, params);
   }
 
-  pushMessage(data: any, message: any, emoji?:any) {
+  pushMessage(data?: any, message?:any, emoji?:any) {
     message.created_at = moment();
     message.dateStr = 'a moment ago';
     message.locked = data.locked;
@@ -446,6 +446,7 @@ export class ChatPage {
     }
     this.canRefresh = false;
     this.postMessages.push(message);
+    this.scrollToBottom();
   }
 
   postMessage(emoji?: string, params?: any) {
@@ -499,7 +500,7 @@ export class ChatPage {
 
           this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
             console.log('[lock] res:', lockRes);
-            this.pushMessage(message, lockRes, emoji);
+            this.pushMessage(lockRes, message, emoji);
             this.postLockData = {
               id: null,
               hint: null,
@@ -509,11 +510,11 @@ export class ChatPage {
             console.log('[lock] err:', lockErr);
           });
         } else {
-          this.pushMessage(message, res, emoji);
+          this.pushMessage(res, message, emoji);
         }
       }).catch(err => {
         console.log(err);
-        // pushMessage(err);
+        this.pushMessage(err, message);
       });
       if (!emoji) {
         this.chatPrvd.appendContainer.setState('off');
@@ -522,14 +523,13 @@ export class ChatPage {
         }, chatAnim/2);
         this.cameraPrvd.takenPictures = [];
       }
-      this.scrollToBottom();
     }
   }
 
   private scrollToBottom() {
-    setTimeout(() => {
+    // setTimeout(() => {
       this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
-    }, 500);
+    // }, 1);
   }
 
   calculateInputChar(inputEl) {
@@ -837,6 +837,17 @@ export class ChatPage {
     // if (this.cameraPrvd.takenPictures) {
     //   this.postMessage();
     // }
+    this.content.ionScroll.subscribe(ev => {
+      if (this.content.scrollTop == 0) {
+        console.log('[scroll] TOP');
+        this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
+        .subscribe(res => {
+          this.postMessages.unshift(res);
+        }, err => {
+          console.log('[getMessages] Err:', err);
+        });
+      }
+    });
   }
 
   ionViewDidLoad() {

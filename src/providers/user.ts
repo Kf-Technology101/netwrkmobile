@@ -11,12 +11,12 @@ export class User {
     private auth: Auth
   ) {}
 
-  public updateAvatar(id:number, files: File[], userData?: any) {
+  public updateAvatar(id:number, files: File[], userData?: any, fieldName?: string) {
     return new Promise((resolve, reject) => {
       let xhr: XMLHttpRequest = new XMLHttpRequest();
 
       let formData = this.api.createFormData(userData);
-      formData.append('user[avatar]', files[0], files[0].name);
+      formData.append(`user[${fieldName}]`, files[0], files[0].name);
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {

@@ -92,7 +92,7 @@ export class ProfileSettingPage {
     });
   }
 
-  public callback(event: Event): void {
+  public uploadCallback(event: Event): void {
     this.imageLoading = true;
     console.log('upload-button callback executed');
 
@@ -105,14 +105,21 @@ export class ProfileSettingPage {
   public filesAdded(event: Event): void {
     let files: FileList = this.nativeInputBtn.nativeElement.files;
     let userId = this.auth.getAuthData().id;
-
+    let fieldName: string;
     let tempFiles = [];
+
+    console.log('[ProfileSettingPage][filesAdded]', this.slideAvatarPrvd.sliderPosition);
+    if (this.slideAvatarPrvd.sliderPosition == 'right') {
+      fieldName = 'hero_avatar';
+    } else {
+      fieldName = 'avatar';
+    }
 
     for (let i = 0; i < files.length; i++) {
       tempFiles.push(files.item(i));
     }
 
-    this.userPrvd.updateAvatar(userId, tempFiles).then(res => {
+    this.userPrvd.updateAvatar(userId, tempFiles, null, fieldName).then(res => {
       console.log(res);
       this.imageLoading = false;
       this.user = res;
@@ -149,7 +156,6 @@ export class ProfileSettingPage {
   }
 
   ionViewDidEnter() {
-    let dragList = document.getElementsByClassName('draggable-element');
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     this.slideAvatarPrvd.sliderInit(this.pageTag);
     this.userName = this.slideAvatarPrvd.sliderPosition == 'left'

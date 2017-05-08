@@ -721,9 +721,6 @@ export class ChatPage {
     this.chatPrvd.getMessages(this.isUndercover, this.postMessages).subscribe(data => {
       console.log('[ChatPage][showMessages]', data);
       console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
-      if (this.postMessage.length == 0) {
-        this.postMessages = this.chatPrvd.organizeMessages(data);
-      }
       if (this.postMessages.length > 0) {
         let lastDate = new Date(
           moment(this.postMessages[this.postMessages.length - 1].created_at)
@@ -737,6 +734,8 @@ export class ChatPage {
           this.messageDateTimer.start(this.postMessages);
           this.scrollToBottom();
         }
+      } else {
+        this.postMessages = this.chatPrvd.organizeMessages(data);
       }
     }, err => {
       console.log('[getMessage] Err:', err);

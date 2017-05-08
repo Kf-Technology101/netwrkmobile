@@ -720,7 +720,8 @@ export class ChatPage {
     this.chatPrvd.getMessages(this.isUndercover, this.postMessages).subscribe(data => {
       console.log('[ChatPage][showMessages]', data);
 
-      if (this.postMessages.length != data.length) {
+      if (this.postMessages[this.postMessages.length - 1].id !=
+          data[0].id) {
         this.postMessages = this.chatPrvd.organizeMessages(data);
         this.chatPrvd.playSound('message');
         this.messageDateTimer.start(this.postMessages);

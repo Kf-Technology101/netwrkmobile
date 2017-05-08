@@ -59,7 +59,7 @@ export class Api {
     options = this.createAuthorizationHeader(options);
 
     let res = this.http.get(this.url + '/' + endpoint, options);
-
+    
     return res;
   }
 

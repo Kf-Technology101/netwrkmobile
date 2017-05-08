@@ -113,7 +113,7 @@ export class Social {
       ];
       let requestPath: string = `${id}/friends?fields=${fields.join(',')}`;
 
-      console.log('[Social][getFriendList]', requestPath);
+      console.log('[Social][getFbUserPosts]', requestPath);
       this.facebook.api(requestPath, this.fbPermissions).then(res => {
         resolve(res);
       }).catch(err => reject(err))

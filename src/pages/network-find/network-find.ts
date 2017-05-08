@@ -84,7 +84,7 @@ export class NetworkFindPage {
         }
       }, err => this.tools.errorHandler(err));
     }, err => {
-      console.log(err);
+      console.log('[getZipCode] err:', err);
       if (err.code && err.code == 1) {
         this.tools.showToast(err.message, null, 'bottom');
         // this.permission.geolocationPermission();

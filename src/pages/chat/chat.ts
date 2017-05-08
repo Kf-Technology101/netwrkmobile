@@ -130,7 +130,7 @@ export class ChatPage {
   private socialPosts: Array<any> = [];
   private pageTag: string;
 
-  private authData = this.authPrvd.getAuthData();
+  private authData: any;
 
   constructor(
     public navCtrl: NavController,
@@ -154,6 +154,7 @@ export class ChatPage {
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.keyboard.disableScroll(true);
+    this.authData = this.authPrvd.getAuthData();
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       // console.log(res);

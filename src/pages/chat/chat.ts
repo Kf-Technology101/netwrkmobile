@@ -854,7 +854,10 @@ export class ChatPage {
         console.log('[scroll] TOP');
         this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
         .subscribe(res => {
-          this.postMessages.unshift(res);
+          for (let i = res.length; i >= 0; i--) {
+            this.postMessages.unshift(res[i]);
+          }
+
         }, err => {
           console.log('[getMessages] Err:', err);
         });

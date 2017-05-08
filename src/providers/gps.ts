@@ -32,6 +32,10 @@ export class Gps {
     if (this.platform.is('cordova')) {
       this.watchPosition();
     }
+
+    // let zipInterval = setInterval(() => {
+    //   this.getZipCode();
+    // });
   }
 
   getNetwrk(zipCode: string): any {
@@ -45,25 +49,6 @@ export class Gps {
     return seq;
   }
 
-  // private intervalID = 0;
-  //
-  // private wait(ms) {
-  //   return new Promise(r => setTimeout(r, ms));
-  // }
-  //
-  // private myfunction() {
-  //   return new Promise((r: any) => {
-  //     r(console.log('repeating...'))
-  //   });
-  // }
-  //
-  // public repeat(ms, func) {
-  //   return new Promise((resolve, reject) => {
-  //     this.intervalID = setInterval(func, ms),
-  //     this.wait(ms).then(resolve)
-  //   })
-  // }
-
   getMyZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
 
@@ -76,24 +61,10 @@ export class Gps {
       if (this.watch) this.watch.unsubscribe();
 
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
-        console.log('[Gps][getMyZipCode]', resp);
+        // console.log('[Gps][getMyZipCode]', resp);
         if (resp.coords) {
-          let url = 'https://maps.googleapis.com/maps/api/geocode/json';
-          let seq = this.getAddressDetail(url, {
-            latlng: resp.coords.latitude + ',' + resp.coords.longitude,
-            sensor: true,
-            key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
-          }).share();
           this.coords.lat = resp.coords.latitude;
           this.coords.lng = resp.coords.longitude;
-          seq.map(res => res.json()).subscribe(res => {
-            let zipCode: number = this.parseGoogleAddress(res.results);
-            resolve({ zip_code: zipCode });
-          },
-          err => {
-            console.log('[Gps][getMyZipCode]', err);
-            reject(err);
-          });
         }
       }, err => {
         console.log('[Gps][getMyZipCode]', err);
@@ -171,6 +142,22 @@ export class Gps {
         this.watch.unsubscribe();
       }
     }
+  }
+
+  private getZipCode() {
+    let url = 'https://maps.googleapis.com/maps/api/geocode/json';
+    let seq = this.getAddressDetail(url, {
+      latlng: this.coords.lat + ',' + this.coords.lng,
+      sensor: true,
+      key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
+    }).share();
+    seq.map(res => res.json()).subscribe(res => {
+      this.parseGoogleAddress(res.results);
+      console.log('[Gps][getZipCode]', this.zipCode);
+    },
+    err => {
+      console.log('[Gps][getZipCode]', err);
+    });
   }
 
   private watchPosition() {

@@ -489,7 +489,7 @@ export class ChatPage {
         }
         this.canRefresh = false;
         this.postMessages.push(message);
-        this.messageDateTimer.start(this.postMessages);
+        // this.messageDateTimer.start(this.postMessages);
       }
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
@@ -589,9 +589,11 @@ export class ChatPage {
   }
 
   changeCallback(positionLeft?: boolean) {
+    this.toolsPrvd.showLoader();
     this.zone.run(() => {
       this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
     });
+    this.toolsPrvd.hideLoader();
   }
 
   removeAppendedImage(ind) {

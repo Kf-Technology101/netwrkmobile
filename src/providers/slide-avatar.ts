@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { App } from 'ionic-angular';
+import { Tools } from '../providers/tools';
 
 import { UndercoverProvider } from '../providers/undercover';
 
@@ -24,7 +25,8 @@ export class SlideAvatar {
 
   constructor(
     public app: App,
-    public undercoverPrvd: UndercoverProvider
+    public undercoverPrvd: UndercoverProvider,
+    public toolsPrvd: Tools
   ) {
     this.app.viewDidLoad.subscribe(view => {
       // console.log("<SLIDER.ts> viewDidLoad");
@@ -127,26 +129,24 @@ export class SlideAvatar {
   private onTouchEnd(e) {
     if (e.target.classList.contains('draggable-element')) {
       this.selectedItem = e.target;
-      if (this.xPos - this.xElem <= this.dEnd/2 + 3) {
-        this.selectedItem.style.left = this.dStart + 'px';
-        this.selectedItem.classList.add('transition');
-        this.sliderPosition = 'left';
-        setTimeout(() => {
+      if (this.xPos - this.xElem <= this.dEnd/2 + 3 &&
+          this.selectedItem.style.left != this.dStart + 'px') {
+          this.selectedItem.style.left = this.dStart + 'px';
+          this.selectedItem.classList.add('transition');
+          this.sliderPosition = 'left';
           if (this.changeCallback) this.changeCallback(true);
           this.arrowIcon.style.opacity = '1';
           this.arrowIcon.classList.remove('right');
-        }, 300);
-        this.sliderState = false;
+          this.sliderState = false;
       }
-      if (this.xPos - this.xElem > this.dEnd/2 + 3) {
+      if (this.xPos - this.xElem > this.dEnd/2 + 3 &&
+          this.selectedItem.style.left != this.dEnd + 'px') {
         this.selectedItem.style.left = this.dEnd + 'px';
         this.selectedItem.classList.add('transition');
         this.sliderPosition = 'right';
-        setTimeout(() => {
-          if (this.changeCallback) this.changeCallback(false);
-          this.arrowIcon.style.opacity = '1';
-          this.arrowIcon.classList.add('right');
-        }, 300);
+        if (this.changeCallback) this.changeCallback(false);
+        this.arrowIcon.style.opacity = '1';
+        this.arrowIcon.classList.add('right');
         this.sliderState = true;
       }
       this.selectedItem = null;

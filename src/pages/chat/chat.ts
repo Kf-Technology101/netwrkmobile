@@ -420,6 +420,37 @@ export class ChatPage {
     this.postMessage(null, params);
   }
 
+  pushMessage(data: any, message: any, emoji?:any) {
+    message.created_at = moment();
+    message.dateStr = 'a moment ago';
+    message.locked = data.locked;
+    message.id = data.id;
+    if (!emoji) {
+      this.txtIn.value = '';
+      this.chatPrvd.mainBtn.setState('normal');
+      this.chatPrvd.postBtn.setState(false);
+
+      if (this.postTimer.isVisible()) {
+        setTimeout(() => {
+          this.postTimer.hide();
+        }, chatAnim/2);
+        this.postTimer.setState('slideUp');
+      }
+
+      console.log(message);
+
+      if (this.debug.postHangTime != 0) {
+        message.isTemporary = true;
+        message.temporaryFor = this.debug.postHangTime;
+        this.debug.postHangTime = 0;
+      }
+    } else {
+      message.isEmoji = true;
+    }
+    this.canRefresh = false;
+    this.postMessages.push(message);
+  }
+
   postMessage(emoji?: string, params?: any) {
     let publicUser: boolean;
     let images = [];
@@ -460,38 +491,6 @@ export class ChatPage {
     if (message.text.trim() != '' || message.images.length > 0) {
       console.log(messageParams);
 
-      let pushMessage = (data: any) => {
-        message.created_at = moment();
-        message.dateStr = 'a moment ago';
-        message.locked = data.locked;
-        message.id = data.id;
-        if (!emoji) {
-          this.txtIn.value = '';
-          this.chatPrvd.mainBtn.setState('normal');
-          this.chatPrvd.postBtn.setState(false);
-
-          if (this.postTimer.isVisible()) {
-            setTimeout(() => {
-              this.postTimer.hide();
-            }, chatAnim/2);
-            this.postTimer.setState('slideUp');
-          }
-
-          console.log(message);
-
-          if (this.debug.postHangTime != 0) {
-            message.isTemporary = true;
-            message.temporaryFor = this.debug.postHangTime;
-            this.debug.postHangTime = 0;
-          }
-        } else {
-          message.isEmoji = true;
-        }
-        this.canRefresh = false;
-        this.postMessages.push(message);
-        // this.messageDateTimer.start(this.postMessages);
-      }
-
       this.chatPrvd.sendMessage(messageParams).then(res => {
         console.log(res);
 
@@ -504,7 +503,7 @@ export class ChatPage {
 
           this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
             console.log('[lock] res:', lockRes);
-            pushMessage(lockRes);
+            this.pushMessage(message, lockRes, emoji);
             this.postLockData = {
               id: null,
               hint: null,
@@ -514,7 +513,7 @@ export class ChatPage {
             console.log('[lock] err:', lockErr);
           });
         } else {
-          pushMessage(res);
+          this.pushMessage(message, res, emoji);
         }
       }).catch(err => {
         console.log(err);
@@ -589,11 +588,9 @@ export class ChatPage {
   }
 
   changeCallback(positionLeft?: boolean) {
-    this.toolsPrvd.showLoader();
     this.zone.run(() => {
       this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
     });
-    this.toolsPrvd.hideLoader();
   }
 
   removeAppendedImage(ind) {

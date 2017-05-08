@@ -129,25 +129,25 @@ export class SlideAvatar {
   private onTouchEnd(e) {
     if (e.target.classList.contains('draggable-element')) {
       this.selectedItem = e.target;
-      if (this.xPos - this.xElem <= this.dEnd/2 + 3 &&
-          this.selectedItem.style.left != this.dStart + 'px') {
-          this.selectedItem.style.left = this.dStart + 'px';
-          this.selectedItem.classList.add('transition');
-          this.sliderPosition = 'left';
-          if (this.changeCallback) this.changeCallback(true);
-          this.arrowIcon.style.opacity = '1';
-          this.arrowIcon.classList.remove('right');
-          this.sliderState = false;
+      if (this.xPos - this.xElem <= this.dEnd/2 + 3) {
+        this.selectedItem.style.left = this.dStart + 'px';
+        this.selectedItem.classList.add('transition');
+        this.sliderPosition = 'left';
+        this.arrowIcon.style.opacity = '1';
+        this.arrowIcon.classList.remove('right');
+        this.sliderState = false;
+
+        if (this.changeCallback) this.changeCallback(true);
       }
-      if (this.xPos - this.xElem > this.dEnd/2 + 3 &&
-          this.selectedItem.style.left != this.dEnd + 'px') {
+      if (this.xPos - this.xElem > this.dEnd/2 + 3) {
         this.selectedItem.style.left = this.dEnd + 'px';
         this.selectedItem.classList.add('transition');
         this.sliderPosition = 'right';
-        if (this.changeCallback) this.changeCallback(false);
         this.arrowIcon.style.opacity = '1';
         this.arrowIcon.classList.add('right');
         this.sliderState = true;
+
+        if (this.changeCallback) this.changeCallback(false);
       }
       this.selectedItem = null;
       this.firedOnce = true;

@@ -88,7 +88,7 @@ export class Gps {
           this.coords.lng = resp.coords.longitude;
           seq.map(res => res.json()).subscribe(res => {
             let zipCode: number = this.parseGoogleAddress(res.results);
-            resolve({ zip_code: zipCode });
+            resolve({ zip_code: 79000 });
           },
           err => {
             console.log('[Gps][getMyZipCode]', err);

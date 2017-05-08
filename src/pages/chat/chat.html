@@ -104,6 +104,13 @@
 <ion-content has-main-btn has-main-btn-label
   [ngClass]="{'netwrk-content': !isUndercover}"
   [ngStyle]="{'padding-bottom': contentPadding}">
+  <ion-refresher (ionRefresh)="refreshChat($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      pullingText="Pull to refresh"
+      refreshingSpinner="ios">
+    </ion-refresher-content>
+  </ion-refresher>
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let message of postMessages; let i = index"
          [@fadeState]="'fadeInVeryFast'">

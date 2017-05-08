@@ -130,6 +130,8 @@ export class ChatPage {
   private socialPosts: Array<any> = [];
   private pageTag: string;
 
+  private authData = this.authPrvd.getAuthData();
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -432,9 +434,7 @@ export class ChatPage {
         }, chatAnim/2);
         this.postTimer.setState('slideUp');
       }
-
       console.log(message);
-
       if (this.debug.postHangTime != 0) {
         message.isTemporary = true;
         message.temporaryFor = this.debug.postHangTime;
@@ -452,7 +452,6 @@ export class ChatPage {
     let images = [];
     let messageParams: any;
     let message: any = {};
-    let authData = this.authPrvd.getAuthData();
 
     if (!this.isUndercover) {
       publicUser = true;
@@ -464,7 +463,7 @@ export class ChatPage {
 
     messageParams = {
       text: emoji ?  emoji : this.txtIn.value,
-      user_id: authData ? authData.id : 0,
+      user_id: this.authData ? this.authData.id : 0,
       images: emoji ? [] : images,
       undercover: this.isUndercover,
       public: publicUser,

@@ -13,7 +13,7 @@
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
         <img class="draggable-element"
           [src]="slideAvatarPrvd.sliderPosition == 'right' ?
-            user.role_image_url : user.avatar_url">
+            user.hero_avatar_url : user.avatar_url">
       </div>
     </div>
   </ion-toolbar>
@@ -25,7 +25,7 @@
       <div class="avatar">
         <ion-spinner *ngIf="imageLoading"></ion-spinner>
         <img [src]="slideAvatarPrvd.sliderPosition == 'left'
-          ? user.avatar_url : user.role_image_url">
+          ? user.avatar_url : user.hero_avatar_url">
         <button color="bk" ion-button (click)="uploadCallback($event)">
           <ion-icon name="add"></ion-icon>
         </button>
@@ -57,7 +57,7 @@
         </p>
       </ion-card> -->
       <ion-card *ngIf="slideAvatarPrvd.sliderPosition == 'right'">
-        <p>{{ user.role_description }}</p>
+        <textarea [(ngModel)]="userName">{{ user.role_description }}</textarea>
       </ion-card>
     </ion-col>
   </ion-row>

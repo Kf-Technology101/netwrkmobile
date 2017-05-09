@@ -44,7 +44,7 @@ export class UndercoverProvider {
         { user: updateObj }
       ).map(res => res.json()).subscribe(res => {
         this.tools.hideLoader();
-        this.localStorage.set('undercover_person', person);
+        // this.localStorage.set('undercover_person', person);
         resolve(res);
       }, err => {
         this.tools.hideLoader();

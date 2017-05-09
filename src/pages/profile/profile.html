@@ -14,7 +14,7 @@
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
         <img class="draggable-element"
           [src]="slideAvatarPrvd.sliderPosition == 'right' ?
-            user.role_image_url : user.avatar_url">
+            user.hero_avatar_url : user.avatar_url">
       </div>
     </div>
 
@@ -31,7 +31,7 @@
   <ion-row *ngIf="!ownProfile" class="avatar-section">
     <ion-col>
       <div class="avatar">
-        <img [src]="profileTypePublic ? user.avatar_url : user.role_image_url">
+        <img [src]="profileTypePublic ? user.avatar_url : user.hero_avatar_url">
       </div>
       <span class="username">
         <ng-container *ngIf="slideAvatarPrvd.sliderPosition == 'right' && ownProfile">

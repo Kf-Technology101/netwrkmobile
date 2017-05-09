@@ -124,19 +124,19 @@ export class Auth {
   public saveRegisterData(data: any) { this.registerData = data; }
 
   public saveAuthData(authData: any, type?: string) {
-    this.storage.set('auth_type', type);
+    if (type) this.storage.set('auth_type', type);
     this.storage.set('auth_data', authData);
 
-    let undercover = {
-      name: authData.role_name,
-      description: authData.role_description,
-      imageUrl: authData.role_image_url,
-      active: false
-    };
-
-    if (undercover.name && undercover.description && undercover.imageUrl) {
-      this.storage.set('undercover_person', undercover);
-    }
+    // let undercover = {
+    //   name: authData.role_name,
+    //   description: authData.role_description,
+    //   imageUrl: authData.hero_avatar_url,
+    //   active: false
+    // };
+    //
+    // if (undercover.name && undercover.description && undercover.imageUrl) {
+    //   this.storage.set('undercover_person', undercover);
+    // }
 
     this.network.saveInviteAccess(authData.invitation_sent);
   }

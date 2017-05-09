@@ -806,7 +806,7 @@ export class ChatPage {
     });
   }
 
-  private clearMessages() {
+  clearMessages() {
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
     this.canRefresh = true;
@@ -846,6 +846,7 @@ export class ChatPage {
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     if (this.isUndercover) {
       let position = this.slideAvatarPrvd.sliderPosition ? null : true;
+      console.log('[ChatPage][ionViewDidEnter]', position);
       this.slideAvatarPrvd.sliderInit(this.pageTag, position);
       this.showUsers();
       this.content.resize();

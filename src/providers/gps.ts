@@ -32,10 +32,6 @@ export class Gps {
     if (this.platform.is('cordova')) {
       this.watchPosition();
     }
-
-    // let zipInterval = setInterval(() => {
-    //   this.getZipCode();
-    // });
   }
 
   getNetwrk(zipCode: string): any {
@@ -63,8 +59,19 @@ export class Gps {
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
         // console.log('[Gps][getMyZipCode]', resp);
         if (resp.coords) {
-          this.coords.lat = resp.coords.latitude;
-          this.coords.lng = resp.coords.longitude;
+          if (!this.coords.lat && !this.coords.lng) {
+            this.coords.lat = resp.coords.latitude;
+            this.coords.lng = resp.coords.longitude;
+            this.getZipCode().then(zip => {
+              resolve({ zip_code: zip });
+            }).catch(err => reject(err));
+            let zipInterval = setInterval(() => {
+              this.getZipCode();
+            }, 60000);
+          } else {
+            this.coords.lat = resp.coords.latitude;
+            this.coords.lng = resp.coords.longitude;
+          }
         }
       }, err => {
         console.log('[Gps][getMyZipCode]', err);
@@ -144,19 +151,25 @@ export class Gps {
     }
   }
 
-  private getZipCode() {
-    let url = 'https://maps.googleapis.com/maps/api/geocode/json';
-    let seq = this.getAddressDetail(url, {
-      latlng: this.coords.lat + ',' + this.coords.lng,
-      sensor: true,
-      key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
-    }).share();
-    seq.map(res => res.json()).subscribe(res => {
-      this.parseGoogleAddress(res.results);
-      console.log('[Gps][getZipCode]', this.zipCode);
-    },
-    err => {
-      console.log('[Gps][getZipCode]', err);
+  private getZipCode(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.coords.lat && this.coords.lng) {
+        let url = 'https://maps.googleapis.com/maps/api/geocode/json';
+        let seq = this.getAddressDetail(url, {
+          latlng: this.coords.lat + ',' + this.coords.lng,
+          sensor: true,
+          key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
+        }).share();
+        seq.map(res => res.json()).subscribe(res => {
+          let zipCode: number = this.parseGoogleAddress(res.results);
+          console.log('[Gps][getZipCode]', this.zipCode);
+          resolve(zipCode);
+        },
+        err => {
+          console.log('[Gps][getZipCode]', err);
+          reject(err);
+        });
+      }
     });
   }
 

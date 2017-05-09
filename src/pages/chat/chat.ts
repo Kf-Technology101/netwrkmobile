@@ -722,7 +722,7 @@ export class ChatPage {
     this.chatPrvd.getMessages(this.isUndercover, this.postMessages).subscribe(data => {
       console.log('[ChatPage][showMessages]', data);
       console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
-      if (this.postMessages.length > 0) {
+      if (this.postMessages.length > 0 && data.length > 0) {
         let lastDate = new Date(
           moment(this.postMessages[this.postMessages.length - 1].created_at)
           .format('DD-MM-YYYY HH:mm:ss'));

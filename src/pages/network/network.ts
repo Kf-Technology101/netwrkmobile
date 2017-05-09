@@ -120,11 +120,6 @@ export class NetworkPage {
   private formateAvatarUrl(users: any) {
     for (let u in users) {
       if (this.user.id == users[u].id) this.joined = true;
-      if (!users[u].avatar_url) {
-        users[u].avatar_url = this.toolsPrvd.defaultAvatar;
-      } else {
-        users[u].avatar_url = this.chatPrvd.hostUrl + users[u].avatar_url;
-      }
     }
     return users;
   }
@@ -134,7 +129,6 @@ export class NetworkPage {
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       console.log(res);
       let user = this.authPrvd.getAuthData();
-      user.avatar_url = this.chatPrvd.hostUrl + user.avatar_url;
       this.users.push(user);
       this.joined = true;
       this.afterJoin();

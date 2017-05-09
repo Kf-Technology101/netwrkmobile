@@ -172,6 +172,7 @@ export class ProfilePage {
 
     this.ownProfile = res.id == this.authPrvd.getAuthData().id ? true : false;
     this.user = res;
+    // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
 
     this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
       console.log(friends);
@@ -199,6 +200,7 @@ export class ProfilePage {
       this.slideAvatarPrvd.sliderInit(this.pageTag);
     }
     this.user = this.authPrvd.getAuthData();
+    // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
   }
 
   ionViewDidLoad() {

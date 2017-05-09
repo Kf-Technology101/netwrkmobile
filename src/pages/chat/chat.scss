@@ -497,6 +497,16 @@ page-chat {
     & {
       // background-color: lightblue!important;
     }
+    .refresher-pulling-icon,
+    .refresher-refreshing-icon {
+      padding: 5px;
+      margin: 0 auto;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      box-sizing: content-box;
+      background: rgba(255, 255, 255, .6);
+    }
     .chat-container {
       .message {
         padding: 0;
@@ -525,6 +535,7 @@ page-chat {
           margin-right: 50px;
           position: relative;
           z-index: 2;
+          box-shadow: 0px 2px 6px 0px rgba(0,0,0,.1);
           .username {
             font-size: 16px;
             display: inline-block;

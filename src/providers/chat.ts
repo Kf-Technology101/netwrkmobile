@@ -128,7 +128,7 @@ export class Chat {
 
   public getMessages(undercover: boolean, messagesArray?: Array<any>) {
     let offset: number;
-    if (messagesArray.length) {
+    if (messagesArray && messagesArray.length) {
       offset = messagesArray.length;
     } else {
       offset = 0;

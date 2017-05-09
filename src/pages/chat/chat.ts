@@ -229,7 +229,7 @@ export class ChatPage {
     } else {
       this.user.avatar_url = this.chatPrvd.hostUrl + this.user.avatar_url;
     }
-    if (!this.user.hero_avatar_url) this.user.hero_avatar_url = this.toolsPrvd.defaultAvatar;
+    if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
     this.textStrings.sendError = 'Error sending message';
     this.textStrings.noNetwork = 'Netwrk not found';
     this.textStrings.require = 'Please fill all fields';
@@ -684,8 +684,8 @@ export class ChatPage {
           users[i].avatar_url = !users[i].avatar_url
             ? this.toolsPrvd.defaultAvatar
             : this.hostUrl + users[i].avatar_url;
-          if (!users[i].hero_avatar_url)
-            users[i].hero_avatar_url = this.toolsPrvd.defaultAvatar;
+          if (!users[i].role_image_url)
+            users[i].role_image_url = this.toolsPrvd.defaultAvatar;
         }
         this.chatPrvd.setStorageUsers(users);
         this.chatUsers = users;
@@ -725,7 +725,7 @@ export class ChatPage {
       refresher.complete();
       console.error('[getMessages] Err:', err);
     });
-  } 
+  }
 
   private startMessageUpdateTimer() {
     if (this.messagesInterval) clearInterval(this.messagesInterval);
@@ -867,8 +867,9 @@ export class ChatPage {
     this.startMessageUpdateTimer();
 
     this.messageDateTimer.start(this.postMessages);
-
-    this.user = this.authPrvd.getAuthData();
+    // if (this.cameraPrvd.takenPictures) {
+    //   this.postMessage();
+    // }
   }
 
   ionViewDidLoad() {

@@ -128,8 +128,8 @@ export class Chat {
 
   public getMessages(undercover: boolean, messagesArray?: Array<any>) {
     let offset: number;
-    if (messagesArray && messagesArray.length > 0) {
-      offset = messagesArray.length + 20;
+    if (messagesArray.length) {
+      offset = messagesArray.length;
     } else {
       offset = 0;
     }
@@ -138,8 +138,8 @@ export class Chat {
       undercover: undercover,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
-      // offset: offset,
-      limit: offset
+      offset: offset,
+      limit: 20,
     };
     let seq = this.api.get('messages', data).share();
     let seqMap = seq.map(res => res.json());

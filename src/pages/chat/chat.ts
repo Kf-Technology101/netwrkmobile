@@ -735,7 +735,8 @@ export class ChatPage {
           this.messageDateTimer.start(this.postMessages);
           this.scrollToBottom();
         }
-      } else {
+      }
+      if (this.postMessages.length == 0 && data.length > 0) {
         this.postMessages = this.chatPrvd.organizeMessages(data);
       }
     }, err => {

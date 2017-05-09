@@ -127,12 +127,18 @@ export class Chat {
   }
 
   public getMessages(undercover: boolean, messagesArray?: Array<any>) {
+    let offset: number;
+    if (messagesArray && messagesArray.length >= 20) {
+      offset = messagesArray.length + 1;
+    } else {
+      offset = 0;
+    }
     let data = {
       post_code: this.gps.zipCode,
       undercover: undercover,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
-      offset: messagesArray ? messagesArray.length : 0,
+      offset: offset,
       limit: 20,
     };
     let seq = this.api.get('messages', data).share();

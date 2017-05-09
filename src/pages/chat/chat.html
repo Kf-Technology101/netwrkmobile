@@ -14,7 +14,7 @@
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
         <img class="draggable-element" (click)="goToProfile()"
           [src]="slideAvatarPrvd.sliderPosition == 'right'
-            ? user.role_image_url : user.avatar_url">
+            ? user.hero_avatar_url : user.avatar_url">
       </div>
     </div>
 
@@ -118,7 +118,7 @@
         (click)="goToProfile(message.user_id, message.public)"
         [src]="message.public
           ? chatPrvd.users[message.user_id].avatar_url
-          : chatPrvd.users[message.user_id].role_image_url"
+          : chatPrvd.users[message.user_id].hero_avatar_url"
         class="chat-avatar">
       <img *ngIf="!chatPrvd.users[message.user_id]"
         (click)="goToProfile(message.user_id, message.public)"

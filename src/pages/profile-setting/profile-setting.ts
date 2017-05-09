@@ -67,6 +67,7 @@ export class ProfileSettingPage {
       role_description: null,
       role_image_url: 'assets/images/incognito.png',
       role_name: null,
+      hero_avatar_url: null,
       updated_at: '2017-04-22T14:59:29.921Z',
     }
     this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;

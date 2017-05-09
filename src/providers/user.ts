@@ -22,7 +22,7 @@ export class User {
         if (xhr.readyState === 4) {
           if (xhr.status === 200) {
             let res = JSON.parse(xhr.response);
-            this.auth.saveAuthData(res, 'email');
+            this.auth.saveAuthData(res);
             resolve(res);
           } else {
             reject(xhr.response);

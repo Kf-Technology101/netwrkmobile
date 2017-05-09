@@ -528,9 +528,7 @@ export class ChatPage {
   }
 
   private scrollToBottom() {
-    // setTimeout(() => {
-      this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
-    // }, 1);
+    this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
   }
 
   calculateInputChar(inputEl) {
@@ -563,8 +561,8 @@ export class ChatPage {
     this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
     this.flipInput();
     this.changePlaceholderText();
-    this.startMessageUpdateTimer();
     setTimeout(() => {
+      this.postMessages = [];
       if (this.isUndercover) {
         // this.flipInput();
         this.chatPrvd.setState('undercover');
@@ -576,6 +574,7 @@ export class ChatPage {
       }
       this.showUsers();
       this.content.resize();
+      this.startMessageUpdateTimer();
     }, 100);
   }
 
@@ -739,7 +738,8 @@ export class ChatPage {
 
   private showMessages() {
     this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
-      console.log('[ChatPage][showMessages]', data);
+      console.log('[ChatPage][showMessages] isUndercover:', this.isUndercover);
+      console.log('[ChatPage][showMessages] data:', data);
       // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
       if (this.postMessages.length > 0 && data.length > 0) {
         let lastDate = new Date(

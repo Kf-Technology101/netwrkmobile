@@ -709,34 +709,55 @@ export class ChatPage {
     }, 1000);
   }
 
+  refreshChat(refresher) {
+    console.log('Begin async operation', refresher);
+    this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
+    .subscribe(res => {
+      console.log('[REFRESHER] postMessages:', this.postMessages);
+      console.log('[REFRESHER] res:', res);
+      res = this.chatPrvd.organizeMessages(res);
+      for (let i in res) {
+        this.postMessages.unshift(res[i]);
+      }
+      this.messageDateTimer.start(this.postMessages);
+      refresher.complete();
+    }, err => {
+      refresher.complete();
+      console.error('[getMessages] Err:', err);
+    });
+  } 
+
   private startMessageUpdateTimer() {
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
     this.showMessages();
     this.messagesInterval = setInterval(() => {
+      console.log('[messageTimer] starting interval...');
       this.showMessages();
     }, 10000);
   }
 
   private showMessages() {
-    this.chatPrvd.getMessages(this.isUndercover, this.postMessages).subscribe(data => {
+    this.chatPrvd.getMessages(this.isUndercover).subscribe(data => {
       console.log('[ChatPage][showMessages]', data);
-      console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
+      // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
       if (this.postMessages.length > 0 && data.length > 0) {
         let lastDate = new Date(
           moment(this.postMessages[this.postMessages.length - 1].created_at)
           .format('DD-MM-YYYY HH:mm:ss'));
         let newDate = new Date(
-          moment(data[data.length - 1].created_at)
+          moment(data[0].created_at)
           .format('DD-MM-YYYY HH:mm:ss'));
         if (lastDate < newDate) {
-          this.postMessages = this.chatPrvd.organizeMessages(data);
+          this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
           this.chatPrvd.playSound('message');
           this.messageDateTimer.start(this.postMessages);
           this.scrollToBottom();
         }
-      } else {
-        this.postMessages = this.chatPrvd.organizeMessages(data);
+      } else if (data.length > 0) {
+        this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
+        this.messageDateTimer.start(this.postMessages);
+        this.scrollToBottom();
       }
     }, err => {
       console.log('[getMessage] Err:', err);
@@ -820,20 +841,6 @@ export class ChatPage {
 
   flipInput() {
     this.flipHover = !this.flipHover;
-  }
-
-  refreshChat(refresher) {
-    console.log('Begin async operation', refresher);
-    this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
-    .subscribe(res => {
-      for (let i = res.length; i >= 0; i--) {
-        this.postMessages.unshift(res[i]);
-      }
-      refresher.complete();
-    }, err => {
-      console.log('[getMessages] Err:', err);
-    });
-
   }
 
   ionViewDidEnter() {

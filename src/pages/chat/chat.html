@@ -28,7 +28,7 @@
       Clear
     </button>
 
-    <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
+    <!-- <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
             class="side lock-btn top-icon" (click)="toggleTopSlider('lock')">
       <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
     </button>
@@ -36,7 +36,7 @@
             class="side left timer-btn top-icon" (click)="toggleTopSlider('timer')"
             [ngClass]="{'active' : debug.postHangTime != 0}">
       <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
-    </button>
+    </button> -->
     <ion-badge *ngIf="debug.postHangTime != 0 && chatPrvd.postBtn.state && isUndercover">
       {{ debug.postHangTime }}
     </ion-badge>

@@ -114,23 +114,23 @@
   <div class="chat-container" #chatContainer>
     <div class="message" *ngFor="let message of postMessages; let i = index"
          [@fadeState]="'fadeInVeryFast'">
-      <img *ngIf="chatPrvd.users[message.user_id]"
+      <img *ngIf="message.user"
         (click)="goToProfile(message.user_id, message.public)"
         [src]="message.public
-          ? chatPrvd.users[message.user_id].avatar_url
-          : chatPrvd.users[message.user_id].hero_avatar_url"
+          ? message.user.avatar_url
+          : message.user.hero_avatar_url"
         class="chat-avatar">
-      <img *ngIf="!chatPrvd.users[message.user_id]"
+      <img *ngIf="!message.user"
         (click)="goToProfile(message.user_id, message.public)"
         [src]="toolsPrvd.defaultAvatar"
         class="chat-avatar">
       <p class="message-container">
-        <span class="username" *ngIf="chatPrvd.users[message.user_id]">
+        <span class="username" *ngIf="message.user">
           <ng-container *ngIf="message.public">
-            {{ chatPrvd.users[message.user_id].name }}
+            {{ message.user.name }}
           </ng-container>
           <ng-container *ngIf="!message.public">
-            {{ chatPrvd.users[message.user_id].role_name }}
+            {{ message.user.role_name }}
           </ng-container>
         </span>
         <span class="message-date">{{ message.dateStr }}</span>

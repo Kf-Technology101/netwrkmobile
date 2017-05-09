@@ -128,22 +128,31 @@ page-profile-setting {
     }
 
     .description-section {
-      .card {
+      background: transparent;
+      box-shadow: none;
+
+      h1 {
+        color: #fff;
+        font-size: 2rem;
+        margin-bottom: 20px;
+      }
+
+      p {
+        color: #fff;
+        margin-bottom: 10px;
+        padding: 0 10%;
+        line-height: 1.2;
+      }
+
+      textarea {
+        color: #fff;
+        margin-bottom: 10px;
+        padding: 0;
+        line-height: 1.2;
         background: transparent;
-        box-shadow: none;
-
-        h1 {
-          color: #fff;
-          font-size: 2rem;
-          margin-bottom: 20px;
-        }
-
-        p {
-          color: #fff;
-          margin-bottom: 10px;
-          padding: 0 10%;
-          line-height: 1.2;
-        }
+        width: 100%;
+        text-align: center;
+        border: none;
       }
     }
   }

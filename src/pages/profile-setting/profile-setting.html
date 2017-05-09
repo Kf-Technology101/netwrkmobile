@@ -45,8 +45,7 @@
       <span>- 67 points</span>
     </ion-col>
   </ion-row>
-  <ion-row class="description-section">
-    <ion-col>
+  <div ion-content class="description-section">
       <!-- <ion-card>
         <h1 text-center>Will you be a super hero or a villain?</h1>
         <p>
@@ -56,11 +55,10 @@
           Beware: too much negativity and your powers will be recinded.
         </p>
       </ion-card> -->
-      <ion-card *ngIf="slideAvatarPrvd.sliderPosition == 'right'">
-        <textarea [(ngModel)]="userName">{{ user.role_description }}</textarea>
-      </ion-card>
-    </ion-col>
-  </ion-row>
+      <ng-container *ngIf="slideAvatarPrvd.sliderPosition == 'right'">
+        <textarea autosize [(ngModel)]="userDescription">{{ userDescription }}</textarea>
+      </ng-container>
+  </div>
   <ion-row class="feed" hidden>
     <ion-col>
       <h3><span>Recent</span></h3>

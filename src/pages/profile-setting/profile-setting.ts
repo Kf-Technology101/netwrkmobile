@@ -4,7 +4,7 @@ import {
   ViewChild,
   Renderer,
   NgZone } from '@angular/core';
-import { NavController, NavParams } from 'ionic-angular';
+import { NavController, NavParams, IonicPage } from 'ionic-angular';
 
 // Pages
 import { LogInPage } from '../log-in/log-in';
@@ -18,6 +18,7 @@ import { UndercoverProvider } from '../../providers/undercover';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
+@IonicPage()
 @Component({
   selector: 'page-profile-setting',
   templateUrl: 'profile-setting.html',
@@ -28,7 +29,8 @@ import { Keyboard } from '@ionic-native/keyboard';
 export class ProfileSettingPage {
   @ViewChild('input') nativeInputBtn: ElementRef
 
-  userName: string;
+  public userName: string;
+  public userDescription: string;
   public user: any;
   public profileTypePublic: boolean;
   private imageLoading: boolean = false;
@@ -70,21 +72,29 @@ export class ProfileSettingPage {
       hero_avatar_url: null,
       updated_at: '2017-04-22T14:59:29.921Z',
     }
-    this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
+    // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
 
     this.keyboard.onKeyboardHide().subscribe(keyboard => {
       let params: any;
       if (this.slideAvatarPrvd.sliderPosition == 'right') {
-        params = { user: { role_name: this.userName } }
+        if (this.userName && this.userDescription)
+        params = {
+          user: {
+            role_name: this.userName,
+            role_description: this.userDescription,
+          }
+        }
       } else {
+        if (this.userName)
         params = { user: { name: this.userName } }
       }
 
+      if (params)
       this.userPrvd.update(this.user.id, params)
       .map(res => res.json()).subscribe(res => {
         console.log(res);
         this.user = res;
-        this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
+        // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
       }, err => {
         console.log(err);
       });
@@ -124,7 +134,7 @@ export class ProfileSettingPage {
       console.log(res);
       this.imageLoading = false;
       this.user = res;
-      this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
+      // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
     }, err => {
       console.error('ERROR', err);
       this.imageLoading = false;
@@ -143,6 +153,7 @@ export class ProfileSettingPage {
       this.userName = this.slideAvatarPrvd.sliderPosition == 'left'
         ? this.user.name
         : this.user.role_name;
+      this.userDescription = this.user.role_description;
     });
   }
 
@@ -162,6 +173,7 @@ export class ProfileSettingPage {
     this.userName = this.slideAvatarPrvd.sliderPosition == 'left'
       ? this.user.name
       : this.user.role_name;
+    this.userDescription = this.user.role_description;
   }
 
   logOut() {

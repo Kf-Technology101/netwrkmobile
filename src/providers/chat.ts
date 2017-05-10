@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, ViewChild } from '@angular/core';
 
 import { Platform } from 'ionic-angular';
 
@@ -14,22 +14,26 @@ import { MainButton } from '../includes/mainButton';
 // Gallery
 import { ImagePicker } from 'ionic-native';
 import { Camera } from '../providers/camera';
-
+import { chatAnim } from '../includes/animations';
 // File transfer
 import { File } from '@ionic-native/file';
 import {
   Transfer,
   FileUploadOptions,
-  TransferObject } from '@ionic-native/transfer';
+  TransferObject
+} from '@ionic-native/transfer';
 
 @Injectable()
 export class Chat {
   public users: any = {};
   private message: any = null;
 
-  public appendContainer= new Toggleable('off', true);
+  public appendContainer = new Toggleable('off', true);
   public mainBtn = new Toggleable('normal', false);
   public postBtn = new Toggleable(false);
+  public bgState = new Toggleable('compressed');
+  public plusBtn = new Toggleable('default');
+  public chatBtns = new Toggleable(['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']);
 
   private pickerOptions = {
     maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
@@ -102,8 +106,10 @@ export class Chat {
       params.message.lng = this.gps.coords.lng;
 
       if (data.images && data.images.length > 0) {
+        this.tools.showLoader();
         this.sendMessageWithImage(params, data.images).then(res => {
           console.log(res);
+          this.tools.hideLoader();
           resolve(res);
         }).catch(err => {
           console.log(err);
@@ -269,10 +275,16 @@ export class Chat {
     return seqMap;
   }
 
-  public updateAppendContainer(): void {
+  public updateAppendContainer() {
     console.log("[chatPrvd] updateAppendContainer()...");
     let pictures = this.cameraPrvd.takenPictures;
     if (pictures && pictures.length > 0) {
+      this.plusBtn.setState('default');
+      this.bgState.setState('compressed');
+      for (let i = 0; i < this.chatBtns.state.length; i++) {
+        this.chatBtns.state[i] = 'btnHidden';
+      }
+      this.postBtn.setState(true);
       this.appendContainer.show();
       this.appendContainer.setState('on_append');
       if (this.mainBtn.state != "moved-n-scaled")

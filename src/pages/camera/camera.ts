@@ -80,7 +80,11 @@ export class CameraPage {
     this.cameraPreview.takePicture(pictureOpts).then(imageData => {
       console.log(imageData);
       // this.cameraPrvd.takenPictures = data:image/jpeg;base64,' + imageData[0];
-      this.mainBtn.state =  'normal';
+      this.cameraUI.button = 'photoButtonFadeOut';
+      this.cameraUI.tooltip = 'tooltipFadeOut';
+      setTimeout(() => {
+        this.mainBtn.state = 'normal';
+      }, animSpeed.fadeIn/2);
       this.imgBg = `url(data:image/jpeg;base64,${imageData[0]})`;
       // this.imgUrl = 'data:image/jpeg;base64,' + imageData[0];
 
@@ -95,7 +99,7 @@ export class CameraPage {
       // this.goBack();
     }, err => {
       console.log(err);
-      this.mainBtn.state =  'normal';
+      this.mainBtn.state = 'normal';
       this.imgBg = 'url(http://www.designboom.com/wp-content/uploads/2016/07/patricia-piccinini-graham-transport-accident-commission-designboom-01.jpg)';
       this.imgUrl = 'http://www.designboom.com/wp-content/uploads/2016/07/patricia-piccinini-graham-transport-accident-commission-designboom-01.jpg';
       // this.goBack();

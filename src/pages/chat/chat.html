@@ -157,7 +157,8 @@
 
   <div item-content class="appended-pictures-container"
     [hidden]="chatPrvd.appendContainer.hidden"
-    [@containerState]="chatPrvd.appendContainer.state">
+    [@containerState]="chatPrvd.appendContainer.state"
+    [ngClass]="{ 'netwrk' : !isUndercover }">
     <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures; let indx = index" >
       <img class="img-preview" [src]="i"/>
       <button (click)="removeAppendedImage(indx)">
@@ -240,7 +241,6 @@
         Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis deleniti perspiciatis sit, obcaecati ut blanditiis aliquid alias rem impedit odit vitae maiores voluptate exercitationem. Perferendis modi eius distinctio illum labore.
       </p> -->
     </div>
-
   </div>
 
   <button isScrolling="false" tapable [hidden]="chatPrvd.mainBtn.hidden"
@@ -252,33 +252,33 @@
     <ion-item class="text front" #inputItem
               [@fadeState]="mainInput.state" [hidden]="mainInput.hidden"
               [ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state}">
-      <div item-content id="textInpBtns" [@bgState]="bgState.state">
-        <button ion-button [@inputState]="chatBtns.state[0]"
+      <div item-content id="textInpBtns" [@bgState]="chatPrvd.bgState.state">
+        <button ion-button [@inputState]="chatPrvd.chatBtns.state[0]"
         (click)="openCamera();
               toggleContainer(emojiContainer, 'hide');
               toggleContainer(shareContainer, 'hide')">
           <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
         </button>
-        <button ion-button [@inputState]="chatBtns.state[1]"
+        <button ion-button [@inputState]="chatPrvd.chatBtns.state[1]"
           (click)="chatPrvd.openGallery()">
            <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
         </button>
-        <button ion-button [@inputState]="chatBtns.state[2]"
+        <button ion-button [@inputState]="chatPrvd.chatBtns.state[2]"
           (click)="toggleContainer(shareContainer, null, 'shareContainer');">
           <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
         </button>
-        <button ion-button [@inputState]="chatBtns.state[3]"
+        <button ion-button [@inputState]="chatPrvd.chatBtns.state[3]"
           (click)="toggleContainer(emojiContainer);">
           <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
         </button>
-        <button ion-button [@inputState]="chatBtns.state[4]"></button>
+        <button ion-button [@inputState]="chatPrvd.chatBtns.state[4]"></button>
       </div>
 
       <button ion-button
-        (click)=" toggleChatOptions();
+        (click)="toggleChatOptions();
           toggleContainer(emojiContainer, 'hide');
           toggleContainer(shareContainer, 'hide')"
-        [@rotState]="chatOptions.state" ion-button item-left clear
+        [@rotState]="chatPrvd.plusBtn.state" ion-button item-left clear
         id="plus-btn">
         <ion-icon ios="ios-add" md="ios-add"></ion-icon>
       </button>
@@ -295,9 +295,9 @@
         <img *ngIf="!chatPrvd.postBtn.state && !isUndercover"
           src="assets/icon/netwrk-chat.svg">
         <span *ngIf="chatPrvd.postBtn.state
-          && !isUndercover && bgState.state != 'stretched'">Post</span>
+          && !isUndercover && chatPrvd.bgState.state != 'stretched'">Post</span>
         <span *ngIf="chatPrvd.postBtn.state
-          && isUndercover && bgState.state != 'stretched'">Hang</span>
+          && isUndercover && chatPrvd.bgState.state != 'stretched'">Hang</span>
         <ion-icon *ngIf="!chatPrvd.postBtn.state && isUndercover"
         ios="ios-text-outline" md="ios-text-outline"></ion-icon>
       </button>

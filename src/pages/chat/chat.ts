@@ -441,7 +441,7 @@ export class ChatPage {
       message.isEmoji = true;
     }
     this.canRefresh = false;
-    this.postMessages.push(message);
+    this.postMessages.push(data);
     this.scrollToBottom();
   }
 

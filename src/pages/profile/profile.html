@@ -34,17 +34,19 @@
         <img [src]="profileTypePublic ? user.avatar_url : user.hero_avatar_url">
       </div>
       <span class="username">
-        <ng-container *ngIf="slideAvatarPrvd.sliderPosition == 'right' && ownProfile">
+        <ng-container *ngIf="!profileTypePublic">
           {{ user.role_name }}
         </ng-container>
-        <ng-container *ngIf="slideAvatarPrvd.sliderPosition == 'left' || !ownProfile">
+        <ng-container *ngIf="profileTypePublic">
           {{ user.name }}
         </ng-container>
       </span>
-      <p *ngIf="!profileTypePublic">{{ user.role_description }}</p>
+      <p class="description" *ngIf="!profileTypePublic">
+        {{ user.role_description }
+      </p>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="connect.facebook && fbFriends.length > 0 && profileTypePublic" class="facebook" padding>
+  <ion-row *ngIf="fbFriends.length > 0 && profileTypePublic" class="facebook" padding>
     <ion-col>
       <label>{{ fbFriends.length }} Сommon Connections</label>
       <ion-slides #fbSlider slidesPerView="5" pager="true">
@@ -57,7 +59,7 @@
       </ion-slides>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="ownProfile" class="connect" padding>
+  <ion-row *ngIf="ownProfile" class="connect" padding hidden>
     <ion-col>
       <ion-row>
         <ion-col class="fb">
@@ -106,8 +108,10 @@
         <h3><span>Recent</span></h3>
 
         <ng-container *ngFor="let post of fbPosts">
-          <ion-row *ngIf="post.message || post.picture">
-            <ion-col col-10>
+          <ion-row [ngClass]="{'image-post': post.full_picture}"
+            *ngIf="post.message || post.full_picture">
+            <ion-col>
+              <img *ngIf="post.full_picture" [src]="post.full_picture">
               <ion-card>
                 <ion-card-content>
                   <ion-card-title>
@@ -120,7 +124,7 @@
                 </ion-card-content>
               </ion-card>
             </ion-col>
-            <ion-col col-2>
+            <ion-col col-2 *ngIf="!post.full_picture">
               <ion-badge item-right>
                 0
                 <img class="icon-img" src="assets/images/legendary.png">

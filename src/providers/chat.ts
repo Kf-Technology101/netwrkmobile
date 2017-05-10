@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { Platform } from 'ionic-angular';
+
 import { LocalStorage } from './local-storage';
 import { Gps } from './gps';
 import { Api } from './api';
@@ -45,7 +47,8 @@ export class Chat {
     public tools: Tools,
     private file: File,
     private transfer: Transfer,
-    public cameraPrvd: Camera
+    public cameraPrvd: Camera,
+    public plt: Platform
   ) {
     console.log('Hello Chat Provider');
     this.hostUrl = this.api.hostUrl;
@@ -286,8 +289,14 @@ export class Chat {
     } else {
       ImagePicker.getPictures(pickerOptions).then(file_uris => {
         for (let fileUrl of file_uris) {
-          if (fileUrl.indexOf('file:///') !== -1)
-            this.cameraPrvd.takenPictures.push(fileUrl);
+          if (this.cameraPrvd.takenPictures.length < 3) {
+            if (this.plt.is('android')) {
+              if (fileUrl.indexOf('file:///') !== -1)
+                this.cameraPrvd.takenPictures.push(fileUrl);
+            } else {
+              this.cameraPrvd.takenPictures.push(fileUrl);
+            }
+          }
         }
         this.updateAppendContainer();
       }, err => console.log('[imagePicker] err:', err));

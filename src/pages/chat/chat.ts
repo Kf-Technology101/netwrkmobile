@@ -553,6 +553,7 @@ export class ChatPage {
       return;
     }
 
+    // this.toolsPrvd.showLoader();
     this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
     this.flipInput();
     this.changePlaceholderText();
@@ -570,7 +571,7 @@ export class ChatPage {
       this.showUsers();
       this.content.resize();
       this.startMessageUpdateTimer();
-    }, 100);
+    }, 1);
   }
 
   toggleShareSlider(mess){
@@ -674,13 +675,6 @@ export class ChatPage {
     this.networkPrvd.getUsers(this.networkParams).subscribe(users => {
       console.log(users);
       if (users) {
-        // for (let i in users) {
-        //   users[i].avatar_url = !users[i].avatar_url
-        //     ? this.toolsPrvd.defaultAvatar
-        //     : this.hostUrl + users[i].avatar_url;
-        //   if (!users[i].role_image_url)
-        //     users[i].role_image_url = this.toolsPrvd.defaultAvatar;
-        // }
         this.chatPrvd.setStorageUsers(users);
         this.chatUsers = users;
         this.startMessageUpdateTimer();

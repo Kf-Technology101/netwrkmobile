@@ -93,6 +93,7 @@ export class MyApp {
       // this.rootPage = SignUpConfirmPage;
       // this.rootPage = SignUpFacebookPage;
       // this.rootPage = ProfileSettingPage;
+      this.splashScreen.hide();
     }
   }
 

@@ -160,6 +160,10 @@ ion-app .ion-page .content {
   }
 }
 
+.text-input-ios {
+  padding: 0 8px;
+}
+
 .item-md {
   &.item-input.ng-valid.input-has-value:not(.input-has-focus) .item-inner,
   &.item-datetime.input-has-value:not(.input-has-focus) .item-inner {

@@ -147,21 +147,27 @@ export class NetworkContactListPage {
       this.contactsPrvd.sendInvitations(checkedContacts)
         .map(res => res.json()).subscribe(
         res => {
-          this.userPrvd.update(
-            this.auth.getAuthData().id,
-            { user: { invitation_sent: true } }
-          ).map(res => res.json()).subscribe(res => {
-            let inviteCode = this.gpsPrvd.zipCode;
-            let inviteCodes = this.networkPrvd.getInviteZipAccess();
-            this.tools.hideLoader();
-            if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode)
-            this.networkPrvd.saveInviteZipAccess(inviteCodes)
-            this.networkPrvd.saveInviteAccess(true);
-            this.tools.popPage();
-          }, err => {
-            this.tools.hideLoader();
-            this.tools.showToast(JSON.stringify(err));
-          });
+          // this.userPrvd.update(
+          //   this.auth.getAuthData().id,
+          //   { user: { invitation_sent: true } }
+          // ).map(res => res.json()).subscribe(res => {
+
+          if (this.listType == 'emails')
+            this.contactsPrvd.sendContacts(this.contacts).subscribe(
+              () => {}, () => {}
+            );
+
+          let inviteCode = this.gpsPrvd.zipCode;
+          let inviteCodes = this.networkPrvd.getInviteZipAccess();
+          this.tools.hideLoader();
+          if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode)
+          this.networkPrvd.saveInviteZipAccess(inviteCodes)
+          this.networkPrvd.saveInviteAccess(true);
+          this.tools.popPage();
+          // }, err => {
+          //   this.tools.hideLoader();
+          //   this.tools.showToast(JSON.stringify(err));
+          // });
         },
         err => this.tools.hideLoader()
       );

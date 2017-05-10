@@ -48,8 +48,6 @@ export class NetworkPage {
     this.textStrings.inviteError = 'Please, invite 20 or more friends for create netwrk';
     this.textStrings.created = 'The netwrk already created, please wait for connections';
     this.textStrings.joined = 'You have already joined, please wait for connections';
-
-    console.log(this);
   }
 
   public goToProfile(data: any) {
@@ -151,6 +149,7 @@ export class NetworkPage {
       this.toolsPrvd.pushPage(ChatPage, params);
     } else {
       this.toolsPrvd.showToast(this.textStrings.joined);
+      this.accessed = true;
     }
   }
 

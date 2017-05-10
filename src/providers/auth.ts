@@ -126,18 +126,6 @@ export class Auth {
   public saveAuthData(authData: any, type?: string) {
     if (type) this.storage.set('auth_type', type);
     this.storage.set('auth_data', authData);
-
-    // let undercover = {
-    //   name: authData.role_name,
-    //   description: authData.role_description,
-    //   imageUrl: authData.hero_avatar_url,
-    //   active: false
-    // };
-    //
-    // if (undercover.name && undercover.description && undercover.imageUrl) {
-    //   this.storage.set('undercover_person', undercover);
-    // }
-
     this.network.saveInviteAccess(authData.invitation_sent);
   }
 
@@ -170,7 +158,8 @@ export class Auth {
       'email',
       'first_name',
       'last_name',
-      'name'
+      'name',
+      'gender',
     ];
     this.facebook.api(
       '/me?fields=' + fields.join(','),
@@ -181,7 +170,8 @@ export class Auth {
       let updateObj = {
         user: {
           date_of_birthday: birthday ? this.formateDate(birthday) : null,
-          name: res.name || null
+          name: res.name || null,
+          gender: res.gender || 'male'
         }
       }
 

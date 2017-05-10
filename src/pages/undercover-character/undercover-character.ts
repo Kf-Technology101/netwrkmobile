@@ -14,6 +14,8 @@ import { Auth } from '../../providers/auth';
 
 import { heroes } from '../../includes/heroes';
 
+import * as moment from 'moment';
+
 @Component({
   selector: 'page-undercover-character',
   templateUrl: 'undercover-character.html'
@@ -43,16 +45,11 @@ export class UndercoverCharacterPage {
     elRef: ElementRef
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
-    this.persons = heroes;
     this.changeError = 'You can\'t leave this page right now';
     this.textError = 'Something went wrong, please try again later';
 
     this.user = this.authPrvd.getAuthData();
-    if (!this.user.avatar_url) {
-      this.user.avatar_url = this.toolsPrvd.defaultAvatar;
-    } else {
-      this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
-    }
+    this.getPersons();
   }
 
   choosePerson() {
@@ -61,6 +58,19 @@ export class UndercoverCharacterPage {
     }, err => {
       this.toolsPrvd.showToast(this.textError);
     });
+  }
+
+  private getPersons() {
+    let age = moment().diff(this.user.date_of_birthday, 'years');
+    console.log('[UndercoverCharacterPage][getPersons] age ', age);
+    if (age >= 13 && age < 20) {
+      age = 13;
+    } else if (age >= 20 && age < 40) {
+      age = 20;
+    } else {
+      age = 40;
+    }
+    this.persons = heroes[this.user.gender][age];
   }
 
   private changeSlider() {

@@ -63,17 +63,14 @@ export class ChatPage {
   public isUndercover: boolean;
 
   @ViewChild('galleryCont') gCont;
-  @ViewChild('textInput') txtIn;
   @ViewChild(Content) content: Content;
+  @ViewChild('textInput') txtIn;
 
-  chatOptions = new Toggleable('default');
-  bgState = new Toggleable('compressed');
   shareContainer = new Toggleable('off', true);
   emojiContainer = new Toggleable('off', true);
   mainInput = new Toggleable('fadeIn', false);
   postTimer = new Toggleable('slideUp', true);
   postLock = new Toggleable('slideUp', true);
-  chatBtns = new Toggleable(['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']);
 
   flipHover: boolean;
 
@@ -266,6 +263,29 @@ export class ChatPage {
     })
   }
 
+
+  public toggleChatOptions() {
+    this.chatPrvd.plusBtn.setState((this.chatPrvd.plusBtn.getState() == 'spined') ? 'default' : 'spined');
+    this.chatPrvd.bgState.setState((this.chatPrvd.bgState.getState() == 'stretched') ? 'compressed' : 'stretched');
+
+    if (this.chatPrvd.bgState.getState() == 'stretched') {
+      this.chatPrvd.postBtn.setState(false);
+      for (let i = 0; i < this.chatPrvd.chatBtns.state.length; i++) {
+        setTimeout(() => {
+          this.chatPrvd.chatBtns.state[i] = 'btnShown';
+        }, chatAnim/3 + (i*50));
+      }
+    } else {
+      if (this.txtIn.value.trim() != '' ||
+          this.cameraPrvd.takenPictures.length > 0) {
+        this.chatPrvd.postBtn.setState(true);
+      }
+      for (let i = 0; i < this.chatPrvd.chatBtns.state.length; i++) {
+        this.chatPrvd.chatBtns.state[i] = 'btnHidden';
+      }
+    }
+  }
+
   private changePlaceholderText() {
     this.placeholderText = this.isUndercover ? 'On your location...' : 'Share with your area';
   }
@@ -288,28 +308,6 @@ export class ChatPage {
         this.toolsPrvd.pushPage(CameraPage);
       }, chatAnim/2);
     }, animSpeed.fadeIn/2);
-  }
-
-  toggleChatOptions() {
-    this.chatOptions.setState((this.chatOptions.getState() == 'spined') ? 'default' : 'spined');
-    this.bgState.setState((this.bgState.getState() == 'stretched') ? 'compressed' : 'stretched');
-
-    if (this.bgState.getState() == 'stretched') {
-      this.chatPrvd.postBtn.setState(false);
-      for (let i = 0; i < this.chatBtns.state.length; i++) {
-        setTimeout(() => {
-          this.chatBtns.state[i] = 'btnShown';
-        }, chatAnim/3 + (i*50));
-      }
-    } else {
-      if (this.txtIn.value.trim() != '' ||
-          this.cameraPrvd.takenPictures.length > 0) {
-        this.chatPrvd.postBtn.setState(true);
-      }
-      for (let i = 0; i < this.chatBtns.state.length; i++) {
-        this.chatBtns.state[i] = 'btnHidden';
-      }
-    }
   }
 
   setContentPadding(status) {
@@ -416,10 +414,7 @@ export class ChatPage {
   }
 
   pushMessage(data: any, message?:any, emoji?:any) {
-    message.created_at = moment();
-    message.dateStr = 'a moment ago';
-    message.locked = data.locked;
-    message.id = data.id;
+    console.log(data);
     if (!emoji) {
       this.txtIn.value = '';
       this.chatPrvd.mainBtn.setState('normal');
@@ -431,14 +426,9 @@ export class ChatPage {
         }, chatAnim/2);
         this.postTimer.setState('slideUp');
       }
-      console.log(message);
       if (this.debug.postHangTime != 0) {
-        message.isTemporary = true;
-        message.temporaryFor = this.debug.postHangTime;
         this.debug.postHangTime = 0;
       }
-    } else {
-      message.isEmoji = true;
     }
     this.canRefresh = false;
     this.postMessages.push(data);

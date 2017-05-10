@@ -1,9 +1,9 @@
 <ion-content padding isScrolling="false" no-bounce>
-  <div [hidden]="!imgBg" class="img-preview" [ngStyle]="{'background-image': imgBg ? imgBg : 'transparent'}"></div>
+  <div *ngIf="imgBg" class="img-preview" [ngStyle]="{'background-image': imgBg ? imgBg : 'transparent'}"></div>
   <ion-grid>
     <ion-row align-items-end>
       <ion-col>
-        <div [hidden]="imgBg" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
+        <div *ngIf="!imgBg" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
           Tap for a picture
           <div></div>
         </div>

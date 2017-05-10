@@ -28,24 +28,15 @@ export class Gps {
     private localStorage: LocalStorage,
     private platform: Platform,
     private alertCtrl: AlertController
-  ) {
-    if (this.platform.is('cordova')) {
-      this.watchPosition();
-    }
-  }
+  ) {}
 
-  getNetwrk(zipCode: string): any {
+  getNetwrk(zipCode: number): any {
     let seq = this.api.get('networks', { post_code: zipCode }).share();
-    seq.map(res => res.json()).subscribe(
-      res => {
-        console.log(res)
-      }, err => console.error('ERROR', err)
-    );
-
-    return seq;
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
   }
 
-  getMyZipCode(): Promise<any> {
+  public getMyZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
 
       let options: GeolocationOptions = {
@@ -54,7 +45,11 @@ export class Gps {
         maximumAge: 3000,
       }
 
-      if (this.watch) this.watch.unsubscribe();
+      if (this.watch) {
+        this.coords.lat = null;
+        this.coords.lng = null;
+        this.watch.unsubscribe();
+      }
 
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
         // console.log('[Gps][getMyZipCode]', resp);
@@ -123,7 +118,6 @@ export class Gps {
               handler: () => {
                 let alertDismiss = alert.dismiss();
                 alertDismiss.then(() => {
-                  this.watchPosition();
                   if (this.changeZipCallback) this.changeZipCallback({
                     undercover: true
                   });
@@ -136,7 +130,6 @@ export class Gps {
               handler: () => {
                 let alertDismiss = alert.dismiss();
                 alertDismiss.then(() => {
-                  this.watchPosition();
                   nav.push(NetworkFindPage, null, { animate: false })
                 });
                 return false;
@@ -171,35 +164,6 @@ export class Gps {
         });
       }
     });
-  }
-
-  private watchPosition() {
-    let options: GeolocationOptions = {
-      timeout: 60000,
-      // enableHighAccuracy: true,
-      // maximumAge: 11000,
-    }
-
-    // this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
-    //   console.log(resp)
-    //   if (resp.coords) {
-    //     let url = 'https://maps.googleapis.com/maps/api/geocode/json';
-    //     let seq = this.getAddressDetail(url, {
-    //       latlng: resp.coords.latitude + ',' + resp.coords.longitude,
-    //       sensor: true,
-    //       key: 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
-    //     }).share();
-    //     this.coords.lat = resp.coords.latitude;
-    //     this.coords.lng = resp.coords.longitude;
-    //     seq.map(res => res.json()).subscribe(
-    //       res => {
-    //         this.parseGoogleAddress(res.results);
-    //         this.compareZip();
-    //       },
-    //       err => console.log(err)
-    //     );
-    //   }
-    // });
   }
 
 }

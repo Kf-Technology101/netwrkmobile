@@ -28,12 +28,11 @@ export class NetworkFindPage {
     public chatPrvd: Chat
     // public permission: Permission
   ) {
-    // platform.resume.subscribe(() => {
-    //   console.log('resume')
-    //   if (this.platform.is('cordova')) {
-    //     this.getZipCode();
-    //   }
-    // });
+    platform.resume.subscribe(() => {
+      if (this.platform.is('cordova')) {
+        this.getZipCode();
+      }
+    });
   }
 
   go() {
@@ -46,17 +45,18 @@ export class NetworkFindPage {
   }
 
   ionViewDidEnter() {
+    console.log('[NetworkFindPage][ionViewDidEnter]');
     this.hideSearch = false;
-    // alert('ionViewDidLoad');
     this.getZipCode();
   }
 
   private getZipCode() {
     this.gps.getMyZipCode().then(zipRes => {
       // alert(JSON.stringify(zipRes));
-      this.gps.getNetwrk(zipRes.zip_code).map(res => res.json()).subscribe(res => {
+      console.log('[NetworkFindPage][getZipCode] zipRes ', zipRes);
+      this.gps.getNetwrk(zipRes.zip_code).subscribe(res => {
         // alert(JSON.stringify(res));
-        // console.log(res);
+        console.log('[NetworkFindPage][getZipCode] res ', res);
         let post_code: number = res.network ? res.network.post_code : null;
         let params: any = {
           zipCode: post_code,
@@ -70,7 +70,7 @@ export class NetworkFindPage {
         } else {
           console.log(this.chatPrvd.chatZipCode(), post_code)
           if (this.chatPrvd.chatZipCode() == post_code &&
-            this.chatPrvd.getCountUser() && this.chatPrvd.getCountUser() > 10
+            res.network.users_count && res.network.users_count >= 10
           ) {
             params.action = this.chatPrvd.getState();
             console.log(params.action);

@@ -849,6 +849,10 @@ export class ChatPage {
 
     this.user = this.authPrvd.getAuthData();
     // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
+
+    this.gpsPrvd.getNetwrk(this.gpsPrvd.zipCode).subscribe(res => {
+      this.chatPrvd.saveNetwork(res.network);
+    })
   }
 
   ionViewDidLoad() {

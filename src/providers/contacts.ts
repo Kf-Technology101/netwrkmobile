@@ -39,6 +39,24 @@ export class ContactsProvider {
     return seq;
   }
 
+  public sendContacts(list: Array<any>) {
+    let emails: Array<string> = [];
+    console.log(list)
+    for (let contact of list) {
+      console.log(contact)
+      for (let email of contact.emails) {
+        console.log(email)
+        emails.push(email.value);
+      }
+    }
+    let contactList = { contact_list: emails };
+
+    let seq = this.api.post('contacts', contactList).share();
+    let seqMap = seq.map(res => res.json());
+
+    return seqMap;
+  }
+
   getContacts(type: string): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.contacts[type].length > 0) {

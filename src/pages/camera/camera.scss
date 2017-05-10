@@ -98,10 +98,8 @@ page-camera {
         // transform: scale(0.9);
 
         &.activated {
-          background: #fff;
-
           .white {
-            background: transparent;
+            background: #fff;
           }
         }
 

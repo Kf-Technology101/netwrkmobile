@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavParams, ViewController, ModalController } from 'ionic-angular';
+import { NavParams, ViewController, ModalController, AlertController } from 'ionic-angular';
 
 import { Chat } from '../../providers/chat';
 import { toggleFade } from '../../includes/animations';
@@ -43,7 +43,8 @@ export class FeedbackModal {
     private params: NavParams,
     private viewCtrl: ViewController,
     public chatPrvd: Chat,
-    public modalCtrl: ModalController
+    public modalCtrl: ModalController,
+    public alertCtrl: AlertController
   ) {
     this.data = params.get('data');
     this.likeData = {
@@ -99,6 +100,12 @@ export class FeedbackModal {
       }
     }, err => {
       console.log('[' + type + '] err:', err);
+      let alert = this.alertCtrl.create({
+        title: 'Legendary',
+        subTitle: err.error,
+        buttons: ['Ok']
+      });
+      alert.present();
     });
   }
 

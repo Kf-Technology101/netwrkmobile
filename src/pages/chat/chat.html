@@ -148,7 +148,8 @@
         *ngIf="message.locked">
         <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
       </button>
-      <img *ngFor="let j of message.image_urls" src="{{j}}"/>
+      <img *ngFor="let j of message.image_urls" src="{{j}}"
+            (load)="calcLoadedImages()"/>
     </div>
   </div>
 </ion-content>
@@ -243,10 +244,10 @@
     </div>
   </div>
 
-  <button isScrolling="false" tapable [hidden]="chatPrvd.mainBtn.hidden"
+  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
     class="main-action-btn big has-footer transparent chatMainBtn"
-    (click)="goUndercover()" [disabled]="isMainBtnDisabled"></button>
+    (click)="goUndercover($event)" [disabled]="isMainBtnDisabled"></button>
 
   <div ion-content class="flip-container" [ngClass]="{'hover' : flipHover}">
     <ion-item class="text front" #inputItem

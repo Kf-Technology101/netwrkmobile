@@ -33,7 +33,8 @@ export class FeedbackModal {
 
   private endResult:any = {
     like: null,
-    legendary: null
+    legendary: null,
+    isBlocked: false
   };
 
   private likeData:any;
@@ -86,27 +87,75 @@ export class FeedbackModal {
         this.postStatus.isLegendary = !this.postStatus.isLegendary;
         res.legendary_by_user = this.postStatus.isLegendary;
         this.endResult.legendary = {
-          total:<number> res.legendary_count,
-          isActive:<boolean> res.legendary_by_user
+          total: <number> res.legendary_count,
+          isActive: <boolean> res.legendary_by_user
         };
       } else if (type === 'like') {
         this.postInf.totalLikes = res.likes_count;
         this.postStatus.isLiked = !this.postStatus.isLiked;
         res.like_by_user = this.postStatus.isLiked;
         this.endResult.like = {
-          total:<number> res.likes_count,
-          isActive:<boolean> res.like_by_user
+          total: <number> res.likes_count,
+          isActive: <boolean> res.like_by_user
         };
       }
     }, err => {
       console.log('[' + type + '] err:', err);
+      let errorMessage = JSON.parse(err['_body']).error;
       let alert = this.alertCtrl.create({
         title: 'Legendary',
-        subTitle: err['error'],
+        subTitle: errorMessage,
         buttons: ['Ok']
       });
       alert.present();
     });
+  }
+
+  blockMessage() {
+    let confirmBlockAlert = this.alertCtrl.create({
+      title: 'Confirm block',
+      message: 'Are you sure you want to block this post?',
+      buttons: [
+        {
+          text: 'Cancel',
+          role: 'cancel',
+          handler: () => {
+            console.log('Cancel clicked');
+          }
+        },
+        {
+          text: 'Block',
+          handler: () => {
+            let messageId = [];
+            messageId.push(this.likeData.message_id);
+            this.chatPrvd.deleteMessages(messageId).subscribe(res => {
+              console.log('[BLOCK MESSAGE] res:', res);
+              let OkAlert = this.alertCtrl.create({
+                title: 'Block info',
+                subTitle: 'Post successfully blocked',
+                buttons: [{
+                  text: 'OK',
+                  handler: () => {
+                    this.endResult.isBlocked = true;
+                    this.closeModal();
+                  }
+                }]
+              });
+              OkAlert.present();
+            }, err => {
+              console.log('[BLOCK MESSAGE] err:', err);
+              let ErrAlert = this.alertCtrl.create({
+                title: 'Block error',
+                subTitle: 'Error blocking post\n(' + err.status + ') ' + err.statusText,
+                buttons: ['OK']
+              });
+              ErrAlert.present();
+            });
+          }
+        }
+      ]
+    });
+    confirmBlockAlert.present();
   }
 
   ionViewDidEnter() {
@@ -114,6 +163,7 @@ export class FeedbackModal {
     this.postStatus.isLiked = this.params.get('likedByUser');
     this.postInf.totalLegendary = this.params.get('totalLegendary');
     this.postStatus.isLegendary = this.params.get('legendaryByUser');
+    console.log('isLegendary:', this.postStatus.isLegendary);
     if (!this.postInf.totalLikes) {
       this.postInf.totalLikes = 0;
     }

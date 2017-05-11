@@ -166,7 +166,7 @@ export class Chat {
     this.users = stUsers;
   }
 
-  public organizeMessages(data: any): any {
+  public organizeMessages(data: any, fn?: any): any {
     let messages: Array<any> = [];
     for (let i in data) {
       for (let u in data[i].image_urls) {

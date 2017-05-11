@@ -131,6 +131,13 @@ export class ChatPage {
 
   private isMainBtnDisabled: boolean = false;
 
+  private imagesToLoad:any;
+  private loadedImages:any;
+  private scrollTimer:any = {
+    timeout: null,
+    interval: null
+  };
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -514,10 +521,6 @@ export class ChatPage {
     }
   }
 
-  private scrollToBottom() {
-    this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
-  }
-
   calculateInputChar(inputEl) {
     this.chatPrvd.postBtn.setState(inputEl.value.trim().length > 0 ? true : false);
   }
@@ -537,14 +540,18 @@ export class ChatPage {
     this.toolsPrvd.pushPage(ProfilePage, params);
   }
 
-  goUndercover() {
+  goUndercover(event?:any) {
+    if (event) {
+      event.stopPropagation();
+    }
     // Disable main button on view load
     this.isMainBtnDisabled = true;
 
     let network = this.chatPrvd.getNetwork();
     if (this.isUndercover && (!network || network.users_count < 10)) {
-      // this.toolsPrvd.showToast(this.textStrings.noNetwork);
       this.toolsPrvd.pushPage(NetworkFindPage);
+      // Enable main button after view loaded
+      this.isMainBtnDisabled = false;
       return;
     }
 
@@ -555,7 +562,6 @@ export class ChatPage {
     setTimeout(() => {
       this.postMessages = [];
       if (this.isUndercover) {
-        // this.flipInput();
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
         this.slideAvatarPrvd.sliderInit(this.pageTag, true);
@@ -567,9 +573,6 @@ export class ChatPage {
       this.content.resize();
       this.startMessageUpdateTimer();
     }, 1);
-
-    // Enable main button after view loaded
-    this.isMainBtnDisabled = false;
   }
 
   toggleShareSlider(mess){
@@ -695,6 +698,39 @@ export class ChatPage {
     }, 1000);
   }
 
+  calcLoadedImages() {
+    this.loadedImages++;
+  }
+
+  calcTotalImages() {
+    this.loadedImages = 0;
+    this.imagesToLoad = 0;
+    for (let i in this.postMessages) {
+      if (this.postMessages[i].image_urls.length > 0) {
+        this.imagesToLoad += this.postMessages[i].image_urls.length;
+      }
+    }
+  }
+
+  private scrollToBottom() {
+    if (this.scrollTimer.interval) {
+      clearInterval(this.scrollTimer.interval);
+    }
+    if (this.scrollTimer.timeout) {
+      clearTimeout(this.scrollTimer.timeout);
+    }
+    this.scrollTimer.interval = setInterval(() => {
+      console.log('[scrollToBottom] loaded:', this.loadedImages + '/' + this.imagesToLoad);
+      if (this.imagesToLoad == this.loadedImages) {
+        this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
+        clearInterval(this.scrollTimer.interval);
+      }
+    }, 300);
+    this.scrollTimer.timeout = setTimeout(() => {
+      clearInterval(this.scrollTimer.interval);
+    }, 3000);
+  }
+
   refreshChat(refresher) {
     console.log('Begin async operation', refresher);
     this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
@@ -737,14 +773,22 @@ export class ChatPage {
           .format('DD-MM-YYYY HH:mm:ss'));
         if (lastDate < newDate) {
           this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
+          this.calcTotalImages();
           this.chatPrvd.playSound('message');
           this.messageDateTimer.start(this.postMessages);
           this.scrollToBottom();
+          setTimeout(() => {
+            this.isMainBtnDisabled = false;
+          }, 1);
         }
       } else if (data.length > 0) {
         this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
+        this.calcTotalImages();
         this.messageDateTimer.start(this.postMessages);
         this.scrollToBottom();
+        setTimeout(() => {
+          this.isMainBtnDisabled = false;
+        }, 1);
       }
     }, err => {
       console.log('[getMessage] Err:', err);
@@ -786,6 +830,9 @@ export class ChatPage {
         if (data.legendary) {
           this.postMessages[messageId].legendary_count = data.legendary.total;
           this.postMessages[messageId].legendary_by_user = data.legendary.isActive;
+        }
+        if (data.isBlocked) {
+          this.startMessageUpdateTimer();
         }
       } else {
         console.warn('[likeClose] Error, no data returned');
@@ -831,6 +878,8 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+    this.loadedImages = 0;
+    this.imagesToLoad = 0;
     this.mainInput.setState('fadeIn');
     this.mainInput.show();
     this.chatPrvd.mainBtn.setState('normal');
@@ -847,7 +896,6 @@ export class ChatPage {
 
     this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
-    this.content.scrollTo(0, this.content.getContentDimensions().scrollHeight, 100);
 
     this.chatPrvd.updateAppendContainer();
 

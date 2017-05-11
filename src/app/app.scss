@@ -517,12 +517,13 @@ modal-sharelist {
       height: 42px;
       border-radius: 11px;
       border: 1px solid #eee;
-      background: url('../assets/icon/legendary_dis.png') no-repeat center;
+      background: url('../assets/icon/legendary_dis.svg') no-repeat center;
       background-color: color($colors, bk);
+      background-size: 90% auto;
       &.active {
-        background: url('../assets/icon/legendary_act.png') no-repeat center;
+        background: url('../assets/icon/legendary_act.svg') no-repeat center;
         background-color: color($colors, white);
-        background-size: 35px;
+        background-size: 90% auto;
       }
       .badge {
         bottom: -4px;

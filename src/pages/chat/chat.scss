@@ -514,6 +514,9 @@ page-chat {
         position: relative;
         margin-top: 24px;
         opacity: 0;
+        &.facebook {
+
+        }
         .chat-avatar {
           border-radius: 50%;
           width: 42px;
@@ -543,6 +546,11 @@ page-chat {
           .message-date {
             font-size: 12px;
             color: #7a7a7a;
+          }
+          .shared-status {
+            display: block;
+            width: 100%;
+            font-size: 14px;
           }
           .visible-for {
             color: color($colors, bk-red);

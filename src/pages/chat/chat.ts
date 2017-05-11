@@ -811,16 +811,19 @@ export class ChatPage {
     console.log('message data:', messageData);
     console.log('feedback data:', feedbackData);
     this.chatPrvd.mainBtn.setState('minimised');
-    let feedbackModal = this.modalCtrl.create(FeedbackModal,
-      {
-        data: feedbackData,
-        messageText: messageData.text,
-        totalLikes: messageData.likes_count,
-        likedByUser: messageData.like_by_user,
-        totalLegendary: messageData.legendary_count,
-        legendaryByUser: messageData.legendary_by_user
-      }
-    );
+    console.log('messageData.image_urls', messageData.image_urls);
+    let image = messageData.image_urls.length > 0 ? messageData.image_urls[0] : null;
+    console.log('image', image);
+    let params = {
+      data: feedbackData,
+      messageText: messageData.text,
+      messageImage: image,
+      totalLikes: messageData.likes_count,
+      likedByUser: messageData.like_by_user,
+      totalLegendary: messageData.legendary_count,
+      legendaryByUser: messageData.legendary_by_user
+    };
+    let feedbackModal = this.modalCtrl.create(FeedbackModal, params);
     feedbackModal.onDidDismiss(data => {
       if (data) {
         if (data.like) {

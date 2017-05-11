@@ -1,10 +1,17 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController, ModalController } from 'ionic-angular';
+
+import { NetworkContactListPage } from '../../pages/network-contact-list/network-contact-list';
+
 import { Chat } from '../../providers/chat';
+import { Tools } from '../../providers/tools';
+
 import { toggleFade } from '../../includes/animations';
+
 import { ShareListModal } from '../sharelist/sharelist';
 
 import { SocialSharing } from '@ionic-native/social-sharing';
+import { Facebook } from '@ionic-native/facebook';
 
 @Component({
   selector: 'modal-feedbackshare',
@@ -23,7 +30,7 @@ export class FeedbackShareModal {
   private share: any = {
     message: null,
     image: null,
-    url: null
+    url: 'http://netwrk.com'
   }
 
   constructor(
@@ -31,33 +38,44 @@ export class FeedbackShareModal {
     private viewCtrl: ViewController,
     private modalCtrl: ModalController,
     public chatPrvd: Chat,
-    private socialShare: SocialSharing
+    public toolsPrvd: Tools,
+    private socialShare: SocialSharing,
+    private facebook: Facebook
   ) {
   }
 
-  shareViaFacebook() {
-    console.log('share message:', this.share.message);
-    // this.socialShare.shareViaFacebookWithPasteMessageHint(
-    //   this.share.message,
-    //   this.share.image,
-    //   this.share.url,
-    //   this.share.message
-    // ).then((succ) => {
-    //   console.log('[Facebook share] Success:', succ);
-    // }).catch(err => {
-    //   console.log('[Facebook share] Error:', err);
-    // });
-    // this is the complete list of currently supported params you can pass to the plugin (all optional)
-    let shareOptions = {
-      message: this.share.message, // not supported on some apps (Facebook, Instagram)
-      url: 'https://www.google.com/'
+  public sendSMS() {
+    if (!this.share.message) {
+      this.toolsPrvd.showToast('The post doesn\'t has text message');
+      return;
     }
 
-    this.socialShare.shareWithOptions(shareOptions).then(succ => {
-      console.log('[Facebook share] Success:', succ);
-    }).catch(err => {
-      console.log('[Facebook share] Error:', err);
-    });
+    let params = {
+      type: 'phones',
+      accessed: true,
+      message: this.share.message
+    };
+
+    this.toolsPrvd.pushPage(NetworkContactListPage, params);
+  }
+
+  shareViaFacebook() {
+    console.log('share:', this.share);
+
+    // if (!this.share.image)
+    //   this.share.image = 'http://netwrk.com/assets/logo-88088611a0d6230481f2a5e9aabf7dee19b26eb5b8a24d0576000c6c33ccc867.png';
+    if (!this.share.message)
+      this.share.message = 'Shared from netwrk';
+
+    this.facebook.showDialog({
+      method: 'share',
+      href: this.share.url,
+      caption: 'Netwrk',
+      description: this.share.message,
+      picture: this.share.image
+    }).then(res => {
+      console.log('shareViaFacebook', res);
+    }).catch(err => console.log(err));
   }
 
   chooseToShare() {
@@ -71,6 +89,8 @@ export class FeedbackShareModal {
 
   ionViewDidEnter() {
     this.share.message = this.params.get('message');
+    this.share.image = this.params.get('image');
+
     this.mainBtn.state = 'fadeInfast';
   }
 }

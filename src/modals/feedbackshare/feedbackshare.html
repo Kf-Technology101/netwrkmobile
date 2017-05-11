@@ -9,7 +9,7 @@
             <span class="social-name">Facebook</span>
             <button class="share-btn" (click)="shareViaFacebook()">Share</button>
           </ion-col>
-          <ion-col col-12>
+          <ion-col col-12 hidden>
             <ion-icon ios="logo-twitter" md="logo-twitter"></ion-icon>
             <span class="social-name">Twitter</span>
             <button class="share-btn">Share</button>
@@ -23,7 +23,7 @@
         </ion-row>
 
         <ion-row>
-          <button class="send-sms-btn">Send a text</button>
+          <button class="send-sms-btn" (click)="sendSMS()">Send a text</button>
         </ion-row>
       </ion-grid>
     </ion-col>

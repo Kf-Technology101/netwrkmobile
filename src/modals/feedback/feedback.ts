@@ -59,10 +59,10 @@ export class FeedbackModal {
   }
 
   goShare() {
-    let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal,
-      {
-        message: this.params.get('messageText')
-      });
+    let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal, {
+      message: this.params.get('messageText'),
+      image: this.params.get('messageImage')
+    });
     feedbackShareModal.present();
   }
 

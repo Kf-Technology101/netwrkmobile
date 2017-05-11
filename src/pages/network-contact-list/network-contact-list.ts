@@ -30,7 +30,9 @@ export class NetworkContactListPage {
   public listType: string;
   private selectErrorString: string;
   private selectMinErrorString: string;
+  private selectMinSMSErrorString: string;
   private accessed: boolean;
+  private message: string;
 
   constructor(
     public navCtrl: NavController,
@@ -45,6 +47,7 @@ export class NetworkContactListPage {
   ) {
     this.listType = this.navParams.get('type');
     this.accessed = this.navParams.get('accessed');
+    this.message = this.navParams.get('message');
     console.log(this.listType);
 
     // if (!this.platform.is('cordova')) {
@@ -85,6 +88,7 @@ export class NetworkContactListPage {
       this.selectMinErrorString = 'You need to select all contacts';
       this.selectErrorString = 'Please, select all contacts to continue';
     }
+    this.selectMinSMSErrorString = 'Please, select minimum one contact';
   }
 
   doSelectAll() {
@@ -93,7 +97,7 @@ export class NetworkContactListPage {
     for (let c in this.contacts) {
       this.contacts[c].checked = this.selectAll;
     }
-    this.chackContactsCount();
+    this.checkContactsCount();
   }
 
   doChange(contact: any) {
@@ -104,17 +108,19 @@ export class NetworkContactListPage {
       }
     }
     this.toggleSelectAll(hasUnchanged);
-    this.chackContactsCount();
+    this.checkContactsCount();
   }
 
   private toggleSelectAll(condition: boolean) {
     this.selectAll = !condition;
   }
 
-  private chackContactsCount() {
-    let count = 0;
-    for (let c in this.contacts) if (this.contacts[c].checked) count++;
-    this.accessed = count >= 20 ? true : false;
+  private checkContactsCount() {
+    if (this.listType == 'emails') {
+      let count = 0;
+      for (let c in this.contacts) if (this.contacts[c].checked) count++;
+      this.accessed = count >= 20 ? true : false;
+    }
   }
 
   goHome() {
@@ -144,14 +150,11 @@ export class NetworkContactListPage {
         this.tools.showToast(this.selectMinErrorString);
         return;
       }
+
+      console.log('this.message', this.message);
       this.contactsPrvd.sendInvitations(checkedContacts)
         .map(res => res.json()).subscribe(
         res => {
-          // this.userPrvd.update(
-          //   this.auth.getAuthData().id,
-          //   { user: { invitation_sent: true } }
-          // ).map(res => res.json()).subscribe(res => {
-
           if (this.listType == 'emails')
             this.contactsPrvd.sendContacts(this.contacts).subscribe(
               () => {}, () => {}
@@ -164,16 +167,16 @@ export class NetworkContactListPage {
           this.networkPrvd.saveInviteZipAccess(inviteCodes)
           this.networkPrvd.saveInviteAccess(true);
           this.tools.popPage();
-          // }, err => {
-          //   this.tools.hideLoader();
-          //   this.tools.showToast(JSON.stringify(err));
-          // });
         },
         err => this.tools.hideLoader()
       );
     } else {
       this.tools.hideLoader();
-      this.tools.showToast(this.selectErrorString);
+      if (this.listType == 'emails') {
+        this.tools.showToast(this.selectErrorString);
+      } else {
+        this.tools.showToast(this.selectMinSMSErrorString);
+      }
     }
   }
 

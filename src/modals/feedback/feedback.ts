@@ -102,7 +102,7 @@ export class FeedbackModal {
       console.log('[' + type + '] err:', err);
       let alert = this.alertCtrl.create({
         title: 'Legendary',
-        subTitle: err.error,
+        subTitle: err['error'],
         buttons: ['Ok']
       });
       alert.present();

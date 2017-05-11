@@ -86,9 +86,9 @@ export class SignUpPage {
     this.maxBirthday = this.tools.getToday();
 
     this.textStrings.fb = 'Unable to SignUp with Facebook.';
-    this.textStrings.login = 'Please enter valid phone or email';
-    this.textStrings.password = 'Passwords do not match';
-    this.textStrings.pass_length = 'Password is to short (min. 6 chars.)';
+    this.textStrings.login = 'Check it again my friend, something is off';
+    this.textStrings.password = 'Hmmm, it looks like they don\'t match';
+    this.textStrings.pass_length = 'We like your style, but for your own good, it needs to be longer';
     this.textStrings.require = 'Please fill all fields';
     this.textStrings.email = 'Email is not valid';
     this.textStrings.phone = 'Phone is not valid';

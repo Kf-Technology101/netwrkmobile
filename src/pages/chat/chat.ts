@@ -538,7 +538,7 @@ export class ChatPage {
   }
 
   goUndercover() {
-    // Disable main button when view is loading
+    // Disable main button on view load
     this.isMainBtnDisabled = true;
 
     let network = this.chatPrvd.getNetwork();

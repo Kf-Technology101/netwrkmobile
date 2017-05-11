@@ -129,6 +129,8 @@ export class ChatPage {
 
   private authData: any;
 
+  private isMainBtnDisabled: boolean = false;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -536,6 +538,9 @@ export class ChatPage {
   }
 
   goUndercover() {
+    // Disable main button when view is loading
+    this.isMainBtnDisabled = true;
+
     let network = this.chatPrvd.getNetwork();
     if (this.isUndercover && (!network || network.users_count < 10)) {
       // this.toolsPrvd.showToast(this.textStrings.noNetwork);
@@ -562,6 +567,9 @@ export class ChatPage {
       this.content.resize();
       this.startMessageUpdateTimer();
     }, 1);
+
+    // Enable main button after view loaded
+    this.isMainBtnDisabled = false;
   }
 
   toggleShareSlider(mess){

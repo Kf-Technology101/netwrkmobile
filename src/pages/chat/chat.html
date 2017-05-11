@@ -246,7 +246,7 @@
   <button isScrolling="false" tapable [hidden]="chatPrvd.mainBtn.hidden"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
     class="main-action-btn big has-footer transparent chatMainBtn"
-    (click)="goUndercover()"></button>
+    (click)="goUndercover()" [disabled]="isMainBtnDisabled"></button>
 
   <div ion-content class="flip-container" [ngClass]="{'hover' : flipHover}">
     <ion-item class="text front" #inputItem

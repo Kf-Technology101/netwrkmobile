@@ -170,15 +170,15 @@ export class ChatPage {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
-    let socket = 'http://192.168.1.13:3000/cable';
-    this.ng2cable.subscribe(socket, 'ChatChannel_${this.gpsPrvd.zipCode}');
-    this.broadcaster.on<any>(`ChatChannel_${this.gpsPrvd.zipCode}`).subscribe(
-      data => {
-        console.log('[broadcaster] ChatChannel', data);
-        this.postMessages.push(data);
-        this.txtIn.value = '';
-      }
-    );
+    // let socket = 'http://192.168.1.13:3000/cable';
+    // this.ng2cable.subscribe(socket, 'ChatChannel_${this.gpsPrvd.zipCode}');
+    // this.broadcaster.on<any>(`ChatChannel_${this.gpsPrvd.zipCode}`).subscribe(
+    //   data => {
+    //     console.log('[broadcaster] ChatChannel', data);
+    //     this.postMessages.push(data);
+    //     this.txtIn.value = '';
+    //   }
+    // );
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       // console.log(res);
@@ -773,13 +773,13 @@ export class ChatPage {
   private startMessageUpdateTimer() {
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
-    if (this.chatPrvd.getState() != 'area') {
+    // if (this.chatPrvd.getState() != 'area') {
       this.showMessages();
       this.messagesInterval = setInterval(() => {
         console.log('[messageTimer] starting interval...');
         this.showMessages();
       }, 10000);
-    }
+    // }
   }
 
   private showMessages() {

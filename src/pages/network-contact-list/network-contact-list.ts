@@ -51,31 +51,31 @@ export class NetworkContactListPage {
     console.log(this.listType);
 
     // if (!this.platform.is('cordova')) {
-      this.contacts = [];
-      for (let i = 0; i < 20; i++) {
-        this.contacts.push({
-          name: {
-            formatted: `Test ${i}`,
-          },
-          emails: [{
-            value: `test${i}@mail.com`
-          }],
-          phoneNumbers: [{
-            value: `+1 000 000 00${i}`
-          }],
-          checked: false
-        });
-      }
-      this.setErrorMessages(this.contacts);
+      // this.contacts = [];
+      // for (let i = 0; i < 20; i++) {
+      //   this.contacts.push({
+      //     name: {
+      //       formatted: `Test ${i}`,
+      //     },
+      //     emails: [{
+      //       value: `test${i}@mail.com`
+      //     }],
+      //     phoneNumbers: [{
+      //       value: `+1 000 000 00${i}`
+      //     }],
+      //     checked: false
+      //   });
+      // }
+      // this.setErrorMessages(this.contacts);
     // }
 
-    // this.contactsPrvd.getContacts(this.listType).then(data => {
-    //   console.log(data);
-    //   this.contacts = data;
-    //   this.setErrorMessages(this.contacts);
-    // }, err => {
-    //   console.log(err);
-    // });
+    this.contactsPrvd.getContacts(this.listType).then(data => {
+      console.log(data);
+      this.contacts = data;
+      this.setErrorMessages(this.contacts);
+    }, err => {
+      console.log(err);
+    });
 
   }
 

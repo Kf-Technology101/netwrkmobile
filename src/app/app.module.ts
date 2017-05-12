@@ -62,6 +62,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 import { File } from '@ionic-native/file';
 import { Transfer } from '@ionic-native/transfer';
 import { Facebook } from '@ionic-native/facebook';
+import { Keyboard } from '@ionic-native/keyboard';
 
 // enableProdMode();
 
@@ -127,6 +128,7 @@ export function providers() {
     SocialSharing,
     File,
     Transfer,
+    Keyboard,
 
     SplashScreen,
     StatusBar,

@@ -56,7 +56,6 @@ import {
     slideToggle
   ],
   providers: [
-    Keyboard,
     Ng2Cable,
     Broadcaster
   ]
@@ -670,14 +669,14 @@ export class ChatPage {
   }
 
   joinToNetwork() {
-    this.toolsPrvd.showLoader();
+    // this.toolsPrvd.showLoader();
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       console.log(res);
       this.getUsers();
-      this.toolsPrvd.hideLoader();
+      // this.toolsPrvd.hideLoader();
     }, err => {
       console.log(err);
-      this.toolsPrvd.hideLoader();
+      // this.toolsPrvd.hideLoader();
     });
   }
 

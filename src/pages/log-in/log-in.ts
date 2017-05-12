@@ -19,7 +19,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { User } from '../../providers/user';
 
-import { Keyboard } from '@ionic-native/keyboard';
+// import { Keyboard } from '@ionic-native/keyboard';
 
 // Animations
 import {
@@ -29,7 +29,7 @@ import {
 
 // Animations
 import { chatAnim } from '../../includes/animations';
-import { Toggleable } from '../includes/toggleable';
+import { Toggleable } from '../../includes/toggleable';
 
 @Component({
   selector: 'page-log-in',
@@ -60,8 +60,7 @@ export class LogInPage {
     public contactsPrvd: ContactsProvider,
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider,
-    public user: User,
-    private keyboard: Keyboard
+    public user: User
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';

@@ -18,8 +18,9 @@ export class SlideAvatar {
   private xPos: number = 0;
   private xElem: number = 0;
 
-  private dStart: number = -13 - 18;
-  private dEnd: number = 200 - 13 - 18;
+  // def: start: -31  end: 129  dragline: 160
+  private dStart: number = -31;
+  private dEnd: number = 129;
 
   private firedOnce: boolean = true;
 
@@ -73,6 +74,7 @@ export class SlideAvatar {
 
       this.dStart = 0 - this.selectedItem.offsetWidth/2;
       this.dEnd = dragLineW - this.selectedItem.offsetWidth/2;
+      console.log('start:', this.dStart, ' end:', this.dEnd, ' dragline:', dragLineW);
     }
   }
 

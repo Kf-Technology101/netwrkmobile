@@ -75,10 +75,6 @@ export class ProfilePage {
     console.log(this.connect.facebook);
   }
 
-  goToSocketTest() {
-    this.toolsPrvd.pushPage(Sockets);
-  }
-
   getFbProfile(userId) {
     this.userPrvd.getFacebookFriendProfile(userId)
     .subscribe(res => {
@@ -221,9 +217,11 @@ export class ProfilePage {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(this.pageTag);
     }
-    if (this.navParams.get('currentUser').log_in_count > 1) {
-      this.showFirstTimeMessage();
-    }
+    
+    // if (this.navParams.get('currentUser').log_in_count > 1) {
+    //   this.showFirstTimeMessage();
+    // }
+
     this.user = this.authPrvd.getAuthData();
     // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
   }

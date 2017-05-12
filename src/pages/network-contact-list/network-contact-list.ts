@@ -152,24 +152,30 @@ export class NetworkContactListPage {
       }
 
       console.log('this.message', this.message);
-      this.contactsPrvd.sendInvitations(checkedContacts)
-        .map(res => res.json()).subscribe(
-        res => {
-          if (this.listType == 'emails')
-            this.contactsPrvd.sendContacts(this.contacts).subscribe(
-              () => {}, () => {}
-            );
-
-          let inviteCode = this.gpsPrvd.zipCode;
-          let inviteCodes = this.networkPrvd.getInviteZipAccess();
+      if (this.message) {
+        this.contactsPrvd.sendSMS(checkedContacts, this.message)
+        .subscribe(res => {
           this.tools.hideLoader();
-          if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode)
-          this.networkPrvd.saveInviteZipAccess(inviteCodes)
-          this.networkPrvd.saveInviteAccess(true);
           this.tools.popPage();
-        },
-        err => this.tools.hideLoader()
-      );
+        }, err => this.tools.hideLoader());
+      } else {
+        this.contactsPrvd.sendInvitations(checkedContacts)
+          .map(res => res.json()).subscribe(res => {
+            if (this.listType == 'emails')
+              this.contactsPrvd.sendContacts(this.contacts).subscribe(
+                () => {}, () => {}
+              );
+
+            let inviteCode = this.gpsPrvd.zipCode;
+            let inviteCodes = this.networkPrvd.getInviteZipAccess();
+            this.tools.hideLoader();
+            if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode)
+            this.networkPrvd.saveInviteZipAccess(inviteCodes)
+            this.networkPrvd.saveInviteAccess(true);
+            this.tools.popPage();
+          },
+          err => this.tools.hideLoader());
+      }
     } else {
       this.tools.hideLoader();
       if (this.listType == 'emails') {

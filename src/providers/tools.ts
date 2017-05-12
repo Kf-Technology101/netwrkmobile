@@ -83,9 +83,10 @@ export class Tools {
     return result;
   }
 
-  public getToday(): string {
+  public getToday(age?: number): string {
     let myDate = new Date();
     let year = myDate.getFullYear();
+    if (age) year = year - age;
     let month = myDate.getMonth() < 10 ? '0' + (myDate.getMonth() + 1) : myDate.getMonth() + 1;
     let day = myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate();
     return `${year}-${month}-${day}`;

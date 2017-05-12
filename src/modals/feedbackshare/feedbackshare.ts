@@ -62,8 +62,8 @@ export class FeedbackShareModal {
   shareViaFacebook() {
     console.log('share:', this.share);
 
-    // if (!this.share.image)
-    //   this.share.image = 'http://netwrk.com/assets/logo-88088611a0d6230481f2a5e9aabf7dee19b26eb5b8a24d0576000c6c33ccc867.png';
+    if (!this.share.image)
+      this.share.image = 'http://netwrk.com/assets/logo-88088611a0d6230481f2a5e9aabf7dee19b26eb5b8a24d0576000c6c33ccc867.png';
     if (!this.share.message)
       this.share.message = 'Shared from netwrk';
 
@@ -76,6 +76,12 @@ export class FeedbackShareModal {
     }).then(res => {
       console.log('shareViaFacebook', res);
     }).catch(err => console.log(err));
+
+    // this.facebook.login(['publish_actions']).then(data => {
+    //   console.log(data);
+    // }, err => {
+    //   console.log(err);
+    // });
   }
 
   chooseToShare() {

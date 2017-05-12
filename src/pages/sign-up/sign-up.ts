@@ -83,7 +83,7 @@ export class SignUpPage {
     public tools: Tools,
     public formBuilder: FormBuilder
   ) {
-    this.maxBirthday = this.tools.getToday();
+    this.maxBirthday = this.tools.getToday(13);
 
     this.textStrings.fb = 'Unable to SignUp with Facebook.';
     this.textStrings.login = 'Check it again my friend, something is off';

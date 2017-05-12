@@ -44,7 +44,7 @@ export class SignUpConfirmPage {
     public tools: Tools
   ) {
     this.signUpErrorString = 'Unable to Sign Up. Please check your account information and try again.';
-    this.codeErrorString = 'Code error!';
+    this.codeErrorString = 'We wish it was right... But its not.';
   }
 
   doSignUp() {
@@ -54,11 +54,11 @@ export class SignUpConfirmPage {
     if (this.confirmCode == this.auth.confirmCode) {
       this.auth.signup(this.auth.registerData)
         .map(res => res.json())
-        .subscribe((resp) => {
+        .subscribe(resp => {
           this.tools.hideLoader();
           console.log(resp);
           this.tools.pushPage(SignUpFacebookPage);
-        }, (err) => {
+        }, err => {
           this.tools.hideLoader();
           this.tools.showToast(this.signUpErrorString);
         });

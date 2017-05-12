@@ -74,6 +74,22 @@ export class ContactsProvider {
     });
   }
 
+  sendSMS(contacts: any, message: string) {
+    let numbers = [];
+    console.log('[sendSMS] contacts ', contacts);
+    for (let c of contacts) numbers.push(c.phone);
+    console.log('[sendSMS] numbers ', numbers);
+    let params = {
+      phone_numbers: numbers,
+      message: message
+    }
+
+    let seq = this.api.post('messages/sms_sharing', params).share();
+    let seqMap = seq.map(res => res.json());
+
+    return seqMap;
+  }
+
   private readContacts() {
     this.tools.showLoader();
     return Contacts.find(['emails']).then(data => {

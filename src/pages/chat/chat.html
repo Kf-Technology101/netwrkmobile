@@ -134,6 +134,7 @@
           </ng-container>
         </span>
         <span class="message-date">{{ message.dateStr }}</span>
+        <span *ngIf="message.social" class="shared-status">Shared via {{ message.social }}</span>
         <span *ngIf="message.isTemporary" class="visible-for">
           <ion-icon ios="ios-time-outline" md="ios-time-outline"></ion-icon>
           {{ message.temporaryFor }}

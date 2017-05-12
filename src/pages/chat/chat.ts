@@ -426,7 +426,8 @@ export class ChatPage {
     console.log(data);
     if (!emoji) {
       this.txtIn.value = '';
-      this.chatPrvd.mainBtn.setState('normal');
+      if (!data.social)
+        this.chatPrvd.mainBtn.setState('normal');
       this.chatPrvd.postBtn.setState(false);
 
       if (this.postTimer.isVisible()) {

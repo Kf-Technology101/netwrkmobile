@@ -57,6 +57,7 @@ export class Auth {
     let user = { user: accountInfo };
 
     let seq = this.api.post('sessions', user).share();
+    console.log('[login] user:', user);
     seq.map(res => res.json()).subscribe(
       res => this.saveAuthData(res, 'email'),
       err => console.error('ERROR', err)

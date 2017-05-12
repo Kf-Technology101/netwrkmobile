@@ -100,7 +100,9 @@ export class Chat {
 
   public sendMessage(data: any): any {
     return new Promise((resolve, reject) => {
-      let params = { message: data };
+      let params = {
+        message: data
+      };
       params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
       params.message.lat = this.gps.coords.lat;
       params.message.lng = this.gps.coords.lng;

@@ -7,11 +7,14 @@ import { UndercoverProvider } from '../providers/undercover';
 @Injectable()
 export class SlideAvatar {
 
+  // sliderState represents slider position:
+  // true  - right
+  // false - left
   private sliderState: boolean;
 
   private selectedItem: any = null;
   private arrowIcon: any = null;
-  // private activateOnce: any = true;
+
   private xPos: number = 0;
   private xElem: number = 0;
 
@@ -74,7 +77,7 @@ export class SlideAvatar {
   }
 
   public setSliderPosition(state?: boolean) {
-    if (!state) state = false;
+    if (!state) state = true;
     if (this.selectedItem) {
       this.sliderState = state;
       this.arrowIcon = this.selectedItem.parentElement.children['1'];

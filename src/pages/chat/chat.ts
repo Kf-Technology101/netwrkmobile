@@ -26,6 +26,9 @@ import { ProfilePage } from '../profile/profile';
 import { Keyboard } from '@ionic-native/keyboard';
 
 import * as moment from 'moment';
+// Sockets
+import { Ng2Cable, Broadcaster } from 'ng2-cable/js/index';
+import 'rxjs';
 
 // Animations
 import {
@@ -53,7 +56,9 @@ import {
     slideToggle
   ],
   providers: [
-    Keyboard
+    Keyboard,
+    Ng2Cable,
+    Broadcaster
   ]
 })
 
@@ -156,11 +161,24 @@ export class ChatPage {
     public plt: Platform,
     public modalCtrl: ModalController,
     public socialPrvd: Social,
-    elRef: ElementRef
+    elRef: ElementRef,
+    private ng2cable: Ng2Cable,
+    private broadcaster: Broadcaster
   ) {
+
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
+
+    let socket = 'http://192.168.1.13:3000/cable';
+    this.ng2cable.subscribe(socket, 'ChatChannel_${this.gpsPrvd.zipCode}');
+    this.broadcaster.on<any>(`ChatChannel_${this.gpsPrvd.zipCode}`).subscribe(
+      data => {
+        console.log('[broadcaster] ChatChannel', data);
+        this.postMessages.push(data);
+        this.txtIn.value = '';
+      }
+    );
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       // console.log(res);
@@ -208,27 +226,28 @@ export class ChatPage {
     });
 
     this.user = this.authPrvd.getAuthData();
-    if (!this.user) this.user = {
-      avatar_content_type: null,
-      avatar_file_name: null,
-      avatar_file_size: null,
-      avatar_updated_at: null,
-      avatar_url: null,
-      created_at: '2017-04-22T14:59:29.921Z',
-      date_of_birthday: '2004-01-01',
-      email: 'olbachinskiy2@gmail.com',
-      name: 'Oleksandr Bachynskyi',
-      id: 55,
-      invitation_sent: false,
-      phone: '1492873128682',
-      provider_id: null,
-      provider_name: null,
-      role_description: null,
-      role_image_url: null,
-      role_name: null,
-      hero_avatar_url: null,
-      updated_at: '2017-04-22T14:59:29.921Z',
-    }
+    if (!this.user)
+      this.user = {
+        avatar_content_type: null,
+        avatar_file_name: null,
+        avatar_file_size: null,
+        avatar_updated_at: null,
+        avatar_url: null,
+        created_at: '2017-04-22T14:59:29.921Z',
+        date_of_birthday: '2004-01-01',
+        email: 'olbachinskiy2@gmail.com',
+        name: 'Oleksandr Bachynskyi',
+        id: 55,
+        invitation_sent: false,
+        phone: '1492873128682',
+        provider_id: null,
+        provider_name: null,
+        role_description: null,
+        role_image_url: null,
+        role_name: null,
+        hero_avatar_url: null,
+        updated_at: '2017-04-22T14:59:29.921Z',
+      }
 
     if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
     this.textStrings.sendError = 'Error sending message';
@@ -422,7 +441,7 @@ export class ChatPage {
     this.postMessage(null, params);
   }
 
-  pushMessage(data: any, message?:any, emoji?:any) {
+  updatePost(data: any, message?:any, emoji?:any) {
     console.log(data);
     if (!emoji) {
       this.txtIn.value = '';
@@ -496,7 +515,7 @@ export class ChatPage {
 
           this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
             console.log('[lock] res:', lockRes);
-            this.pushMessage(lockRes, message, emoji);
+            this.updatePost(lockRes, message, emoji);
             this.postLockData = {
               id: null,
               hint: null,
@@ -506,11 +525,11 @@ export class ChatPage {
             console.log('[lock] err:', lockErr);
           });
         } else {
-          this.pushMessage(res, message, emoji);
+          this.updatePost(res, message, emoji);
         }
       }).catch(err => {
         console.log(err);
-        this.pushMessage(err, message);
+        this.updatePost(err, message);
       });
       if (!emoji) {
         this.chatPrvd.appendContainer.setState('off');
@@ -536,7 +555,8 @@ export class ChatPage {
     if (!profileId) profileId = this.authPrvd.getAuthData().id;
     let params = {
       id: profileId,
-      public: profileTypePublic
+      public: profileTypePublic,
+      currentUser: this.user,
     };
     this.toolsPrvd.pushPage(ProfilePage, params);
   }
@@ -753,11 +773,13 @@ export class ChatPage {
   private startMessageUpdateTimer() {
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
-    this.showMessages();
-    this.messagesInterval = setInterval(() => {
-      console.log('[messageTimer] starting interval...');
+    if (this.chatPrvd.getState() != 'area') {
       this.showMessages();
-    }, 10000);
+      this.messagesInterval = setInterval(() => {
+        console.log('[messageTimer] starting interval...');
+        this.showMessages();
+      }, 10000);
+    }
   }
 
   private showMessages() {
@@ -882,9 +904,6 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
-
-    console.log('[current user]:', this.user);
-
     this.loadedImages = 0;
     this.imagesToLoad = 0;
     this.mainInput.setState('fadeIn');
@@ -911,6 +930,12 @@ export class ChatPage {
     this.messageDateTimer.start(this.postMessages);
 
     this.user = this.authPrvd.getAuthData();
+    console.log('[current user]:', this.user);
+
+    // if (this.user.log_in_count > 1 /*&&
+    // this.chatPrvd.getState() == 'area'*/) {
+    //   this.goToProfile();
+    // }
     // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
 
     this.gpsPrvd.getNetwrk(this.gpsPrvd.zipCode).subscribe(res => {

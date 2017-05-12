@@ -3,6 +3,7 @@ import { NavController, NavParams, Slides } from 'ionic-angular';
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
+import { Sockets } from '../sockets/sockets';
 
 // Providers
 import { Social } from '../../providers/social';
@@ -72,6 +73,10 @@ export class ProfilePage {
     this.connect.snapchat = false;
 
     console.log(this.connect.facebook);
+  }
+
+  goToSocketTest() {
+    this.toolsPrvd.pushPage(Sockets);
   }
 
   getFbProfile(userId) {
@@ -194,10 +199,30 @@ export class ProfilePage {
     });
   }
 
+  showFirstTimeMessage() {
+    let welcomeAlert = this.alertCtrl.create({
+      title: 'Welcome',
+      subTitle: `We\'re glad you decided to connect to this area! You can now,
+                 once a month, call a post legendary either under cover or on the
+                 area shareboard. This is a big responsibility, legends
+                 eventually become timeless tradition, and tradition shapes
+                 areas over time.` + '<br>' + `Your connected accounts will now
+                  auto-share to the area shareboard, building awareness and
+                  boosting followers for you!
+                Connected accounts can also be shared manually, click the + and
+                then (share icon) to share under cover or with your area`,
+      buttons: ['OK']
+    });
+    welcomeAlert.present();
+  }
+
   ionViewDidEnter() {
     if (this.ownProfile) {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(this.pageTag);
+    }
+    if (this.navParams.get('currentUser').log_in_count > 1) {
+      this.showFirstTimeMessage();
     }
     this.user = this.authPrvd.getAuthData();
     // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;

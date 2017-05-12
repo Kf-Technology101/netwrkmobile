@@ -170,9 +170,12 @@ export class ChatPage {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
-    // let socket = 'http://192.168.1.13:3000/cable';
-    // this.ng2cable.subscribe(socket, 'ChatChannel_${this.gpsPrvd.zipCode}');
-    // this.broadcaster.on<any>(`ChatChannel_${this.gpsPrvd.zipCode}`).subscribe(
+    // let socket_url = 'http://192.168.1.13:3000/cable';
+    // let channel = `ChatChannel`;
+    // let lobby = 'chat_channel' + this.gpsPrvd.zipCode;
+    //
+    // this.ng2cable.subscribe(socket_url, channel);
+    // this.broadcaster.on<any>(channel).subscribe(
     //   data => {
     //     console.log('[broadcaster] ChatChannel', data);
     //     this.postMessages.push(data);

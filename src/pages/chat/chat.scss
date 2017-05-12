@@ -59,7 +59,7 @@ page-chat {
     &.netwrk-content.content-ios,
     &.netwrk-content.content-md {
       .scroll-content {
-        margin-top: 160px!important;
+        margin-top: 155px!important;
       }
     }
 
@@ -738,6 +738,7 @@ page-chat {
       }
 
       .front {
+        box-sizing: content-box;
         border: 1px solid color($colors, bk);
       }
     }

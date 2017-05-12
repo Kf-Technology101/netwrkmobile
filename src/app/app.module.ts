@@ -32,7 +32,6 @@ import { ChatPage } from '../pages/chat/chat';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 
 import { CameraPage } from '../pages/camera/camera';
-import { Sockets } from '../pages/sockets/sockets';
 
 // Modals
 import { ShareListModal } from '../modals/sharelist/sharelist';
@@ -92,7 +91,6 @@ let pages = [
   UndercoverCharacterPage,
 
   CameraPage,
-  Sockets
 ];
 
 export function declarations() {

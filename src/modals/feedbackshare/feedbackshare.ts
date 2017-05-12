@@ -76,6 +76,12 @@ export class FeedbackShareModal {
     }).then(res => {
       console.log('shareViaFacebook', res);
     }).catch(err => console.log(err));
+
+    // this.facebook.login(['publish_actions']).then(data => {
+    //   console.log(data);
+    // }, err => {
+    //   console.log(err);
+    // });
   }
 
   chooseToShare() {

@@ -772,7 +772,9 @@ export class ChatPage {
         let newDate = new Date(
           moment(data[0].created_at)
           .format('DD-MM-YYYY HH:mm:ss'));
-        if (lastDate < newDate) {
+          // alert('lastDate < newDate' + lastDate + newDate);
+        // if (lastDate < newDate) {
+        if (this.postMessages.length != data.length) {
           this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
           this.calcTotalImages();
           this.chatPrvd.playSound('message');

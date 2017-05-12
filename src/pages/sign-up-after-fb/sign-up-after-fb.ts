@@ -34,7 +34,7 @@ export class SignUpAfterFbPage {
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider
   ) {
-    this.maxBirthday = this.tools.getToday();
+    this.maxBirthday = this.tools.getToday(13);
     this.validBirthdayErrorString = 'Please fill all fields';
 
     setTimeout(() => {

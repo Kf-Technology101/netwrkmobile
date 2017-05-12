@@ -29,25 +29,25 @@ export class SignUpFacebookPage {
   ) {}
 
   public connectToFacebook() {
-    this.socialPrvd.connectToFacebook().then(res => {
+    this.socialPrvd.connectToFacebook().then(fbRes => {
       let data: any = {
         provider: {
           name: 'fb',
-          token: res.authResponse.accessToken
+          token: fbRes.authResponse.accessToken
         }
       };
 
       let authData = this.authPrvd.getAuthData();
 
-      this.authPrvd.connectAccountToFb(data, res).then(res => {
-        this.userPrvd.update(authData.id, data.update)
-        .map(res => res.json()).subscribe(res => {
-          console.log(res);
+      this.authPrvd.connectAccountToFb(data, fbRes).then(connectRes => {
+        this.userPrvd.update(authData.id, connectRes.update)
+        .map(connectRes => connectRes.json()).subscribe(updateRes => {
+          console.log(updateRes);
           this.toolsPrvd.showToast('Facebook already connected');
           this.toolsPrvd.pushPage(UndercoverCharacterPage);
         }, err => {
           console.log(err);
-          this.toolsPrvd.showToast(JSON.stringify(err));
+          // this.toolsPrvd.showToast(JSON.stringify(err));
         });
       }).catch(err => console.error('ERROR', err));
     });

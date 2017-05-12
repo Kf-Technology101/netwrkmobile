@@ -96,11 +96,11 @@ export class Auth {
       this.facebook.getLoginStatus().then((data: FacebookLoginResponse) => {
 
         if (data.status && data.status == 'connected') {
-          this.loginWithFacebook(data, resolve, reject);
+          this.loginWithFacebook(data, resolve, reject, true);
         } else {
           this.facebook.login(this.social.fbPermissions)
             .then((data: FacebookLoginResponse) => {
-            this.loginWithFacebook(data, resolve, reject);
+            this.loginWithFacebook(data, resolve, reject, true);
           }, err => {
             reject(err);
           });
@@ -141,7 +141,7 @@ export class Auth {
     return result;
   }
 
-  public connectAccountToFb(accountInfo: any, fbData: FacebookLoginResponse) {
+  public connectAccountToFb(accountInfo: any, fbData: FacebookLoginResponse): Promise<any> {
     return new Promise((resolve, reject) => {
       let seq = this.api.post('providers', accountInfo).share();
       let seqMap = seq.map(res => res.json()).subscribe(res => {
@@ -150,7 +150,7 @@ export class Auth {
     });
   }
 
-  private loginWithFacebook(data: FacebookLoginResponse, resolve, reject, oAuth: boolean = true) {
+  private loginWithFacebook(data: FacebookLoginResponse, resolve, reject, oAuth: boolean) {
     this.social.setSocialAuth(data.authResponse, Social.FACEBOOK);
 
     let fields: Array<string> = [

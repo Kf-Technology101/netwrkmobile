@@ -882,6 +882,9 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+
+    console.log('[current user]:', this.user);
+
     this.loadedImages = 0;
     this.imagesToLoad = 0;
     this.mainInput.setState('fadeIn');

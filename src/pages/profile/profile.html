@@ -46,7 +46,8 @@
       </p>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="fbFriends.length > 0 && profileTypePublic" class="facebook" padding>
+  <ion-row *ngIf="fbFriends.length > 0 && profileTypePublic && !ownProfile"
+    class="facebook" padding>
     <ion-col>
       <label>{{ fbFriends.length }} Сommon Connections</label>
       <ion-slides #fbSlider slidesPerView="5" pager="true">

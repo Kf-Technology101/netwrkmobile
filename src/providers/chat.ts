@@ -138,21 +138,25 @@ export class Chat {
     return seqMap;
   }
 
-  public getMessages(undercover: boolean, messagesArray?: Array<any>) {
-    let offset: number;
-    if (messagesArray && messagesArray.length) {
-      offset = messagesArray.length;
-    } else {
-      offset = 0;
-    }
+  public getMessages(
+    undercover: boolean,
+    messagesArray?: Array<any>,
+    params?: any
+  ) {
+    let offset: number = messagesArray && messagesArray.length
+      ? messagesArray.length : 0;
+
     let data = {
       post_code: this.gps.zipCode,
       undercover: undercover,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       offset: offset,
-      limit: 20,
+      limit: 20
     };
+
+    if (params) Object.assign(data, params);
+
     let seq = this.api.get('messages', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;

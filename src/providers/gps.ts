@@ -17,8 +17,9 @@ export class Gps {
     lng: <number> null
   };
   public zipCode: number = null;
-  private watch: any;
   public changeZipCallback: (params?: any) => void;
+  private watch: any;
+  private maxDistance: number = 50;
 
   constructor(
     public app: App,
@@ -34,6 +35,22 @@ export class Gps {
     let seq = this.api.get('networks', { post_code: zipCode }).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
+  }
+
+  public calculateDistance(firstCoords: any, secondCoords?: any): boolean {
+    if (!secondCoords) secondCoords = this.coords;
+    let p: number = 0.017453292519943295; // Math.PI / 180
+    let cos: any = Math.cos;
+    let a = 0.5 - cos((secondCoords.lat - firstCoords.lat) * p) / 2 +
+      cos(firstCoords.lat * p) *
+      cos(secondCoords.lat * p) *
+      (1 - cos((secondCoords.lng - firstCoords.lng) * p)) / 2;
+    let sum = 12742 * Math.asin(Math.sqrt(a)); // R * 2; R = 6371 km
+    let miles = sum * 0.621371192; // Kilometers to miles
+    let yards = miles * 1760; // Miles to yards
+    let result: boolean = yards <= this.maxDistance;
+
+    return result;
   }
 
   public getMyZipCode(): Promise<any> {

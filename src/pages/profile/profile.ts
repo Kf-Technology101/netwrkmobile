@@ -11,6 +11,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { User } from '../../providers/user';
+import { Chat } from '../../providers/chat';
 import { Auth } from '../../providers/auth';
 
 import { AlertController } from 'ionic-angular';
@@ -53,6 +54,7 @@ export class ProfilePage {
     public zone: NgZone,
     public alertCtrl: AlertController,
     public api: Api,
+    public chatPrvd: Chat,
     elRef: ElementRef
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
@@ -91,25 +93,26 @@ export class ProfilePage {
     //   this.toolsPrvd.showToast('Facebook already connected');
     // });
     // this.social.getFbPermission();
-    let confirm = this.alertCtrl.create({
-      title: 'Facebook authentication',
-      message: 'You need to sign into Facebook to use this feature. Sign in now?',
-      buttons: [
-        {
-          text: 'Cancel',
-          handler: () => {
-            console.log('Disagree clicked');
-          }
-        },
-        {
-          text: 'OK',
-          handler: () => {
-            console.log('Agree clicked');
-          }
-        }
-      ]
-    });
-    confirm.present();
+
+    // let confirm = this.alertCtrl.create({
+    //   title: 'Facebook authentication',
+    //   message: 'You need to sign into Facebook to use this feature. Sign in now?',
+    //   buttons: [
+    //     {
+    //       text: 'Cancel',
+    //       handler: () => {
+    //         console.log('Disagree clicked');
+    //       }
+    //     },
+    //     {
+    //       text: 'OK',
+    //       handler: () => {
+    //         console.log('Agree clicked');
+    //       }
+    //     }
+    //   ]
+    // });
+    // confirm.present();
   }
 
   connectToInstagram() {
@@ -191,7 +194,23 @@ export class ProfilePage {
 
   changeCallback(positionLeft?: boolean) {
     this.zone.run(() => {
-      this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
+      if (positionLeft) {
+        this.undercoverPrvd.profileType = 'public';
+      } else {
+        this.undercoverPrvd.profileType = 'undercover';
+      }
+    });
+  }
+
+  private showMessages(undercover) {
+    let params: any = {
+      user_id: this.user.id,
+    };
+
+    this.chatPrvd.getMessages(undercover, null, params).subscribe(res => {
+      console.log(res);
+    }, err => {
+      console.log(err);
     });
   }
 
@@ -217,7 +236,7 @@ export class ProfilePage {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(this.pageTag);
     }
-    
+
     // if (this.navParams.get('currentUser').log_in_count > 1) {
     //   this.showFirstTimeMessage();
     // }

@@ -169,6 +169,13 @@ export class ChatPage {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
+    // let messageCoords = {
+    //   lat: 49.808411,
+    //   lng: 24.014874
+    // }
+    // let insideUndercover = this.gpsPrvd.calculateDistance(messageCoords);
+    // console.log(insideUndercover);
+
     // let socket_url = 'http://192.168.1.13:3000/cable';
     // let channel = `ChatChannel`;
     // let lobby = 'chat_channel' + this.gpsPrvd.zipCode;

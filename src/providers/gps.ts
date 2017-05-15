@@ -39,6 +39,8 @@ export class Gps {
 
   public calculateDistance(firstCoords: any, secondCoords?: any): boolean {
     if (!secondCoords) secondCoords = this.coords;
+    console.log('calculateDistance() firstCoords:', firstCoords);
+    console.log('calculateDistance() secondCoords:', secondCoords);
     let p: number = 0.017453292519943295; // Math.PI / 180
     let cos: any = Math.cos;
     let a = 0.5 - cos((secondCoords.lat - firstCoords.lat) * p) / 2 +

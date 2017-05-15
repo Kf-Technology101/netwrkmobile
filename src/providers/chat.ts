@@ -176,9 +176,6 @@ export class Chat {
   public organizeMessages(data: any, fn?: any): any {
     let messages: Array<any> = [];
     for (let i in data) {
-      for (let u in data[i].image_urls) {
-        data[i].image_urls[u] = this.api.hostUrl + data[i].image_urls[u];
-      }
       data[i].date = moment(data[i].created_at).fromNow();
       messages.push(data[i]);
     }

@@ -168,8 +168,6 @@ export class ChatPage {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
-    let insideUndercover = this.gpsPrvd.calculateDistance(this.debug.messageCoords);
-
     let socket_url: string = 'http://192.168.1.13:3000/cable';
     let channel = 'ChatChannel';
     let lobby = 'messages' + this.gpsPrvd.zipCode + 'chat';
@@ -186,10 +184,16 @@ export class ChatPage {
         console.log('[SOCKET] Message received:', data);
         let insideUndercover = this.gpsPrvd
         .calculateDistance({
-          lan: data.message.lan,
-          lng: data.message.lng
+          lat: <number> parseFloat(data.message.lat),
+          lng: <number> parseFloat(data.message.lng)
         });
-        if (this.isUndercover && insideUndercover) {
+        if (this.isUndercover) {
+          if (data.message.undercover && insideUndercover) {
+            this.postMessages.push(data.message);
+            this.messageDateTimer.start(this.postMessages);
+            this.txtIn.value = '';
+          }
+        } else if (!this.isUndercover && !data.message.undercover) {
           this.postMessages.push(data.message);
           this.messageDateTimer.start(this.postMessages);
           this.txtIn.value = '';
@@ -623,6 +627,7 @@ export class ChatPage {
       }
       this.content.resize();
       // this.startMessageUpdateTimer();
+      this.showMessages();
     }, 1);
   }
 
@@ -811,14 +816,19 @@ export class ChatPage {
       console.log('[ChatPage][showMessages] isUndercover:', this.isUndercover);
       console.log('[ChatPage][showMessages] data:', data);
       // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
-      if (!data) return;
+      if (!data) {
+        console.warn('[showMessages] NO DATA');
+        this.toolsPrvd.hideLoader();
+        this.isMainBtnDisabled = false;
+        return;
+      };
       if (this.postMessages.length > 0 && data.messages.length > 0) {
-        let lastDate = new Date(
-          moment(this.postMessages[this.postMessages.length - 1].created_at)
-          .format('DD-MM-YYYY HH:mm:ss'));
-        let newDate = new Date(
-          moment(data.messages[0].created_at)
-          .format('DD-MM-YYYY HH:mm:ss'));
+        // let lastDate = new Date(
+        //   moment(this.postMessages[this.postMessages.length - 1].created_at)
+        //   .format('DD-MM-YYYY HH:mm:ss'));
+        // let newDate = new Date(
+        //   moment(data.messages[0].created_at)
+        //   .format('DD-MM-YYYY HH:mm:ss'));
           // alert('lastDate < newDate' + lastDate + newDate);
         // if (lastDate < newDate) {
         if (this.postMessages.length != data.length) {
@@ -890,6 +900,7 @@ export class ChatPage {
         }
         if (data.isBlocked) {
           // this.startMessageUpdateTimer();
+          this.showMessages();
         }
       } else {
         console.warn('[likeClose] Error, no data returned');
@@ -956,6 +967,7 @@ export class ChatPage {
     this.chatPrvd.updateAppendContainer();
 
     // this.startMessageUpdateTimer();
+    this.showMessages();
 
     this.messageDateTimer.start(this.postMessages);
 

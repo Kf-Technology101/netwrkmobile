@@ -115,7 +115,7 @@ export class ChatPage {
   public placeholderText: string;
 
   private debug: any = {
-    postHangTime: 0
+    postHangTime: 0,
   };
   private postLockData: any = {
     id: null,
@@ -168,6 +168,8 @@ export class ChatPage {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
+    let insideUndercover = this.gpsPrvd.calculateDistance(this.debug.messageCoords);
+
     let socket_url: string = 'http://192.168.1.13:3000/cable';
     let channel = 'ChatChannel';
     let lobby = 'messages' + this.gpsPrvd.zipCode + 'chat';
@@ -182,9 +184,16 @@ export class ChatPage {
     this.broadcaster.on<any>(channel).subscribe(
       data => {
         console.log('[SOCKET] Message received:', data);
-        this.postMessages.push(data.message);
-        this.messageDateTimer.start(this.postMessages);
-        this.txtIn.value = '';
+        let insideUndercover = this.gpsPrvd
+        .calculateDistance({
+          lan: data.message.lan,
+          lng: data.message.lng
+        });
+        if (this.isUndercover && insideUndercover) {
+          this.postMessages.push(data.message);
+          this.messageDateTimer.start(this.postMessages);
+          this.txtIn.value = '';
+        }
       }, err => {
         console.error('[SOCKET] Message error:', err);
       }
@@ -451,7 +460,7 @@ export class ChatPage {
 
   postMessageFromSocial(post) {
     let params: any = {
-      text: post.message,
+      text: post.message || '',
       social_urls: post.full_picture ? [post.full_picture] : [],
       social: post.type,
     }
@@ -518,8 +527,10 @@ export class ChatPage {
     message.isTemporary = false;
     message.temporaryFor = 0;
 
-    if (message.text.trim() != '' || message.images.length > 0) {
-      console.log('[messageParams]:', messageParams);
+    if (message.text.trim() != ''
+      || message.images.length > 0
+      || message.social_urls.length > 0) {
+      console.log(messageParams);
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
         console.log('[sendMessage] res:', res);
@@ -611,7 +622,7 @@ export class ChatPage {
         this.cameraPreview.hide();
       }
       this.content.resize();
-      this.startMessageUpdateTimer();
+      // this.startMessageUpdateTimer();
     }, 1);
   }
 
@@ -718,7 +729,7 @@ export class ChatPage {
       if (users) {
         this.chatPrvd.setStorageUsers(users);
         this.chatUsers = users;
-        this.startMessageUpdateTimer();
+        // this.startMessageUpdateTimer();
       } else {
         this.chatUsers.push(this.user);
       }
@@ -771,7 +782,7 @@ export class ChatPage {
     .subscribe(res => {
       console.log('[REFRESHER] postMessages:', this.postMessages);
       console.log('[REFRESHER] res:', res);
-      res = this.chatPrvd.organizeMessages(res);
+      res = this.chatPrvd.organizeMessages(res.messages);
       for (let i in res) {
         this.postMessages.unshift(res[i]);
       }
@@ -800,17 +811,18 @@ export class ChatPage {
       console.log('[ChatPage][showMessages] isUndercover:', this.isUndercover);
       console.log('[ChatPage][showMessages] data:', data);
       // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
-      if (this.postMessages.length > 0 && data.length > 0) {
+      if (!data) return;
+      if (this.postMessages.length > 0 && data.messages.length > 0) {
         let lastDate = new Date(
           moment(this.postMessages[this.postMessages.length - 1].created_at)
           .format('DD-MM-YYYY HH:mm:ss'));
         let newDate = new Date(
-          moment(data[0].created_at)
+          moment(data.messages[0].created_at)
           .format('DD-MM-YYYY HH:mm:ss'));
           // alert('lastDate < newDate' + lastDate + newDate);
         // if (lastDate < newDate) {
         if (this.postMessages.length != data.length) {
-          this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
+          this.postMessages = this.chatPrvd.organizeMessages(data.messages.reverse());
           this.calcTotalImages();
           this.chatPrvd.playSound('message');
           this.messageDateTimer.start(this.postMessages);
@@ -820,9 +832,8 @@ export class ChatPage {
             this.isMainBtnDisabled = false;
           }, 1);
         }
-      } else if (data.length > 0) {
-
-        this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
+      } else if (data.messages.length > 0) {
+        this.postMessages = this.chatPrvd.organizeMessages(data.messages.reverse());
         this.calcTotalImages();
         this.messageDateTimer.start(this.postMessages);
         this.scrollToBottom();
@@ -878,7 +889,7 @@ export class ChatPage {
           this.postMessages[messageId].legendary_by_user = data.legendary.isActive;
         }
         if (data.isBlocked) {
-          this.startMessageUpdateTimer();
+          // this.startMessageUpdateTimer();
         }
       } else {
         console.warn('[likeClose] Error, no data returned');
@@ -915,7 +926,7 @@ export class ChatPage {
     this.messageRefreshInterval = setTimeout(() => {
       this.canRefresh = false;
       this.sendDeletedMessages();
-      this.startMessageUpdateTimer();
+      // this.startMessageUpdateTimer();
     }, 10000);
   }
 
@@ -944,7 +955,7 @@ export class ChatPage {
 
     this.chatPrvd.updateAppendContainer();
 
-    this.startMessageUpdateTimer();
+    // this.startMessageUpdateTimer();
 
     this.messageDateTimer.start(this.postMessages);
 
@@ -976,7 +987,7 @@ export class ChatPage {
     if (this.idList && this.idList.length > 0) {
       this.canRefresh = false;
       this.sendDeletedMessages();
-      this.startMessageUpdateTimer();
+      // this.startMessageUpdateTimer();
     }
   }
 }

@@ -66,7 +66,8 @@ export class MyApp {
         case 'facebook':
           this.authPrvd.getFbLoginStatus().then(data => {
             this.rootPage = data.status && data.status == 'connected' ?
-              this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage) :
+              this.undercoverPrvd.getCharacterPerson(
+                UndercoverCharacterPage, NetworkFindPage, ChatPage) :
               LogInPage;
 
             this.splashScreen.hide();
@@ -75,7 +76,8 @@ export class MyApp {
         case 'email':
           let fbConnected = this.authPrvd.getFbConnected();
           this.rootPage = fbConnected ?
-            this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage) :
+            this.undercoverPrvd.getCharacterPerson(
+              UndercoverCharacterPage, NetworkFindPage, ChatPage) :
             LogInPage;
 
           this.splashScreen.hide();

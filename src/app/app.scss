@@ -58,17 +58,25 @@ ion-app .ion-page .content {
     }
 
     &.big {
-      width: 68px;
-      height: 110px;
+      // width: 68px;
+      // height: 110px;
+      // border-width: 5px;
+      // border-radius: 11px;
+      width: 54px;
+      height: 90px;
       border-width: 5px;
       border-radius: 11px;
     }
 
     &.medium {
-      width: 42px;
-      height: 68px;
-      border-width: 3px;
-      border-radius: 7px;
+      // width: 42px;
+      // height: 68px;
+      // border-width: 3px;
+      // border-radius: 7px;
+      width: 54px;
+      height: 90px;
+      border-width: 5px;
+      border-radius: 11px;
     }
 
     &.small {

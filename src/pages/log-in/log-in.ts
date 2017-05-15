@@ -19,11 +19,17 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { User } from '../../providers/user';
 
+// import { Keyboard } from '@ionic-native/keyboard';
+
 // Animations
 import {
   scaleMainBtn,
   toggleFade
 } from '../../includes/animations';
+
+// Animations
+import { chatAnim } from '../../includes/animations';
+import { Toggleable } from '../../includes/toggleable';
 
 @Component({
   selector: 'page-log-in',
@@ -40,8 +46,11 @@ export class LogInPage {
     password: ''
   };
   public contentState: string = 'fadeOut';
-  public mainBtn: any = { state: 'normal' };
+  // public mainBtn: any = { state: 'normal' };
   private textStrings: any = {};
+
+  public mainBtn = new Toggleable('normal', false);
+  public postBtn = new Toggleable(false);
 
   constructor(
     public navCtrl: NavController,
@@ -60,6 +69,38 @@ export class LogInPage {
     // this.repeat(1000, () => Promise.all([this.myfunction()]))
     // .then(data => {
     //   console.log('repeat start')
+    // });
+
+    // this.keyboard.onKeyboardShow().subscribe(res => {
+    //   // console.log(res);
+    //   this.postBtn.setState(true);
+    //   setTimeout(() => {
+    //     this.mainBtn.setState('minimised');
+    //     if (!this.chatPrvd.appendContainer.hidden) {
+    //       this.mainBtn.setState('above_append');
+    //     }
+    //   }, chatAnim / 2 + 1);
+    // }, err => {
+    //   console.log(err);
+    // });
+    //
+    // this.keyboard.onKeyboardHide().subscribe(res => {
+    //   // console.log(res);
+    //   setTimeout(() => {
+    //     if (!this.chatPrvd.appendContainer.hidden) {
+    //       this.mainBtn.setState('above_append');
+    //     }
+    //     if (this.chatPrvd.appendContainer.hidden) {
+    //       this.mainBtn.setState('normal');
+    //     }
+    //     if (this.txtIn.value.trim() == '' &&
+    //         !this.chatPrvd.appendContainer.isVisible()) {
+    //       this.chatPrvd.postBtn.setState(false);
+    //     }
+    //   }, chatAnim/2 + 1);
+    //
+    // }, err => {
+    //   console.log(err);
     // });
   }
 

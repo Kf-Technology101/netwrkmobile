@@ -55,7 +55,7 @@
     <ng-container *ngIf="!joined || (joined && !isUndercover)">
       Tap to continue
     </ng-container>
-    <ng-container *ngIf="accessed || (joined && isUndercover)">
+    <ng-container *ngIf="(accessed && isUndercover) || (joined && isUndercover)">
       Go Undercover
     </ng-container>
   </span>

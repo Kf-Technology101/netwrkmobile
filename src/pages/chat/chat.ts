@@ -767,7 +767,7 @@ export class ChatPage {
     .subscribe(res => {
       console.log('[REFRESHER] postMessages:', this.postMessages);
       console.log('[REFRESHER] res:', res);
-      res = this.chatPrvd.organizeMessages(res);
+      res = this.chatPrvd.organizeMessages(res.messages);
       for (let i in res) {
         this.postMessages.unshift(res[i]);
       }
@@ -796,17 +796,17 @@ export class ChatPage {
       console.log('[ChatPage][showMessages] isUndercover:', this.isUndercover);
       console.log('[ChatPage][showMessages] data:', data);
       // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
-      if (this.postMessages.length > 0 && data.length > 0) {
+      if (this.postMessages.length > 0 && data.messages.length > 0) {
         let lastDate = new Date(
           moment(this.postMessages[this.postMessages.length - 1].created_at)
           .format('DD-MM-YYYY HH:mm:ss'));
         let newDate = new Date(
-          moment(data[0].created_at)
+          moment(data.messages[0].created_at)
           .format('DD-MM-YYYY HH:mm:ss'));
           // alert('lastDate < newDate' + lastDate + newDate);
         // if (lastDate < newDate) {
         if (this.postMessages.length != data.length) {
-          this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
+          this.postMessages = this.chatPrvd.organizeMessages(data.messages.reverse());
           this.calcTotalImages();
           this.chatPrvd.playSound('message');
           this.messageDateTimer.start(this.postMessages);
@@ -815,8 +815,8 @@ export class ChatPage {
             this.isMainBtnDisabled = false;
           }, 1);
         }
-      } else if (data.length > 0) {
-        this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
+      } else if (data.messages.length > 0) {
+        this.postMessages = this.chatPrvd.organizeMessages(data.messages.reverse());
         this.calcTotalImages();
         this.messageDateTimer.start(this.postMessages);
         this.scrollToBottom();

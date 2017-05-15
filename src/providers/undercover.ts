@@ -51,7 +51,7 @@ export class UndercoverProvider {
     });
   }
 
-  public getCharacterPerson(UCPage: any, NFPage: any): any {
+  public getCharacterPerson(UCPage: any, NFPage: any, ChatPage?: any): any {
     let authData = this.auth.getAuthData();
     if (authData && authData.role_name
       && authData.role_description && authData.role_image_url) {

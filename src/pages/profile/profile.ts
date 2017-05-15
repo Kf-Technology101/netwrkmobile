@@ -3,7 +3,6 @@ import { NavController, NavParams, Slides } from 'ionic-angular';
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
-import { Sockets } from '../sockets/sockets';
 
 // Providers
 import { Social } from '../../providers/social';
@@ -39,7 +38,7 @@ export class ProfilePage {
   public user: any = {};
   public profileTypePublic: boolean;
   private fbFriends: any = [];
-  private fbPosts: Array<any> = [];
+  private posts: Array<any> = [];
   private pageTag: string;
 
   constructor(
@@ -160,6 +159,7 @@ export class ProfilePage {
   }
 
   private loadProfile() {
+    this.toolsPrvd.showLoader();
     console.log(this.user.id, this.authPrvd.getAuthData().id)
     if (this.user.id == this.authPrvd.getAuthData().id) {
       this.ownProfile = true;
@@ -176,7 +176,20 @@ export class ProfilePage {
 
     this.ownProfile = res.id == this.authPrvd.getAuthData().id ? true : false;
     this.user = res;
-    // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
+
+    if (this.ownProfile) {
+      if (this.slideAvatarPrvd.sliderPosition == 'right') {
+        this.showMessages();
+      } else {
+        this.showMessages(false);
+      }
+    } else {
+      if (this.profileTypePublic) {
+        this.showMessages(false);
+      } else {
+        this.showMessages(true);
+      }
+    }
 
     this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
       console.log(friends);
@@ -184,10 +197,10 @@ export class ProfilePage {
       console.log('this.fbFriends', this.fbFriends);
       console.log('this.user:', this.user);
 
-      this.socialPrvd.getFbUserPosts(this.user.provider_id).then(posts => {
-        console.log('[ProfilePage][posts]', posts);
-        this.fbPosts = posts.data;
-      }).catch(err => console.log('[ProfilePage][posts]', err));
+      // this.socialPrvd.getFbUserPosts(this.user.provider_id).then(posts => {
+      //   console.log('[ProfilePage][posts]', posts);
+      //   this.fbPosts = posts.data;
+      // }).catch(err => console.log('[ProfilePage][posts]', err));
 
     }).catch(err => console.log(err));
   }
@@ -196,22 +209,28 @@ export class ProfilePage {
     this.zone.run(() => {
       if (positionLeft) {
         this.undercoverPrvd.profileType = 'public';
+        this.showMessages(false);
       } else {
         this.undercoverPrvd.profileType = 'undercover';
+        this.showMessages();
       }
     });
   }
 
-  private showMessages(undercover) {
+  private showMessages(undercover?: any) {
+    console.log('showMessages')
     let params: any = {
       user_id: this.user.id,
     };
 
     this.chatPrvd.getMessages(undercover, null, params).subscribe(res => {
       console.log(res);
+      this.posts = res.messages;
+      this.toolsPrvd.hideLoader();
     }, err => {
       console.log(err);
-    });
+      this.toolsPrvd.hideLoader();
+    }).unsubscribe();
   }
 
   showFirstTimeMessage() {

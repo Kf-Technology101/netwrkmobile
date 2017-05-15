@@ -1,5 +1,5 @@
 import { Component, ViewChild, NgZone, ElementRef } from '@angular/core';
-import { NavController, NavParams, Slides } from 'ionic-angular';
+import { NavController, NavParams, Slides, Content } from 'ionic-angular';
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
@@ -23,6 +23,7 @@ import { Api } from '../../providers/api';
 export class ProfilePage {
   @ViewChild('fbSlider') fbSlider: Slides;
   @ViewChild('incognitoSlider') incoSlider;
+  @ViewChild(Content) content: Content;
 
   greeting: string;
   testSlides: string[] = [];
@@ -40,6 +41,7 @@ export class ProfilePage {
   private fbFriends: any = [];
   private posts: Array<any> = [];
   private pageTag: string;
+  private postLoading: boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -142,6 +144,19 @@ export class ProfilePage {
     });
   }
 
+  ionScrollionScroll() {
+    let posts: any = document.getElementsByClassName('post');
+    let lastPost = posts[posts.length - 1];
+    let lastPostOffset = lastPost.offsetTop;
+    let dimensions = this.content.getContentDimensions();
+
+    if (!this.postLoading && dimensions.scrollTop < (dimensions.scrollHeight - 800)) {
+      this.postLoading = true;
+      this.showMessagesWithType();
+    }
+    // console.log(this.content, lastPost, lastPostOffset, this.content.getContentDimensions());
+  }
+
   goBack() { this.toolsPrvd.popPage(); }
 
   private loadPublicProfile() {
@@ -170,13 +185,7 @@ export class ProfilePage {
     }
   }
 
-  private showUserData(res: any) {
-    // this.toolsPrvd.hideLoader();
-    console.log(res);
-
-    this.ownProfile = res.id == this.authPrvd.getAuthData().id ? true : false;
-    this.user = res;
-
+  private showMessagesWithType() {
     if (this.ownProfile) {
       if (this.slideAvatarPrvd.sliderPosition == 'right') {
         this.showMessages();
@@ -190,6 +199,16 @@ export class ProfilePage {
         this.showMessages(true);
       }
     }
+  }
+
+  private showUserData(res: any) {
+    // this.toolsPrvd.hideLoader();
+    console.log(res);
+
+    this.ownProfile = res.id == this.authPrvd.getAuthData().id ? true : false;
+    this.user = res;
+
+    this.showMessagesWithType();
 
     this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
       console.log(friends);
@@ -221,16 +240,22 @@ export class ProfilePage {
     console.log('showMessages')
     let params: any = {
       user_id: this.user.id,
+      offset: this.posts.length,
     };
 
-    this.chatPrvd.getMessages(undercover, null, params).subscribe(res => {
+    let mesReq = this.chatPrvd.getMessages(undercover, null, params).subscribe(res => {
       console.log(res);
-      this.posts = res.messages;
+      if (params.offset == 0) this.posts = res.messages;
+      else for (let m of res.messages) this.posts.push(m);
+      this.postLoading = false;
       this.toolsPrvd.hideLoader();
+      mesReq.unsubscribe()
     }, err => {
       console.log(err);
+      this.postLoading = false;
       this.toolsPrvd.hideLoader();
-    }).unsubscribe();
+      mesReq.unsubscribe()
+    });
   }
 
   showFirstTimeMessage() {

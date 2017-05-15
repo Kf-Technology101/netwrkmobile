@@ -228,6 +228,8 @@ ion-app .ion-page .content {
       margin-top: 10px;
 
       .row {
+        position: relative;
+
         &.image-post {
           .card {
             width: auto;
@@ -235,10 +237,21 @@ ion-app .ion-page .content {
             top: 6px;
           }
         }
-      }
 
-      .col {
-        padding: 0;
+        .col {
+          padding: 0;
+
+          &.likes {
+            text-align: right;
+            margin-right: 10px;
+
+            &.images {
+              position: absolute;
+              right: 0;
+              top: 10px;
+            }
+          }
+        }
       }
 
       h3 {

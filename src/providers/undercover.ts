@@ -55,7 +55,11 @@ export class UndercoverProvider {
     let authData = this.auth.getAuthData();
     if (authData && authData.role_name
       && authData.role_description && authData.role_image_url) {
-      return NFPage;
+      // if (ChatPage && this.localStorage.get('chat_zip_code')) {
+      //   return ChatPage;
+      // } else {
+        return NFPage;
+      // }
     } else {
       return UCPage;
     }

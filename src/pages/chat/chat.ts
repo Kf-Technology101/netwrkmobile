@@ -442,7 +442,7 @@ export class ChatPage {
 
   postMessageFromSocial(post) {
     let params: any = {
-      text: post.message,
+      text: post.message || '',
       social_urls: post.full_picture ? [post.full_picture] : [],
       social: post.type,
     }
@@ -509,7 +509,9 @@ export class ChatPage {
     message.isTemporary = false;
     message.temporaryFor = 0;
 
-    if (message.text.trim() != '' || message.images.length > 0) {
+    if (message.text.trim() != ''
+      || message.images.length > 0
+      || message.social_urls.length > 0) {
       console.log(messageParams);
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
@@ -796,6 +798,7 @@ export class ChatPage {
       console.log('[ChatPage][showMessages] isUndercover:', this.isUndercover);
       console.log('[ChatPage][showMessages] data:', data);
       // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
+      if (!data) return;
       if (this.postMessages.length > 0 && data.messages.length > 0) {
         let lastDate = new Date(
           moment(this.postMessages[this.postMessages.length - 1].created_at)

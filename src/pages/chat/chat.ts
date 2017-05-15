@@ -106,7 +106,6 @@ export class ChatPage {
   };
 
   public sendError: string;
-  public showUserSlider: boolean = false;
   private networkParams: any = {};
   private textStrings: any = {};
 
@@ -162,27 +161,45 @@ export class ChatPage {
     public socialPrvd: Social,
     elRef: ElementRef,
     private ng2cable: Ng2Cable,
-    private broadcaster: Broadcaster
+    private broadcaster: Broadcaster,
   ) {
 
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
-    // let socket_url = 'http://192.168.1.13:3000/cable';
-    // let channel = `ChatChannel`;
-    // let lobby = 'chat_channel' + this.gpsPrvd.zipCode;
-    //
-    // this.ng2cable.subscribe(socket_url, channel);
-    // this.broadcaster.on<any>(channel).subscribe(
-    //   data => {
-    //     console.log('[broadcaster] ChatChannel', data);
-    //     this.postMessages.push(data);
-    //     this.txtIn.value = '';
-    //   }
-    // );
+    let socket_url: string = 'http://192.168.1.13:3000/cable';
+    let channel = 'ChatChannel';
+    let lobby = 'messages' + this.gpsPrvd.zipCode + 'chat';
+
+    console.log('[SOCKET] lobby:', lobby);
+
+    this.ng2cable.subscribe(socket_url, {
+      channel: <string> channel,
+      post_code: this.gpsPrvd.zipCode
+    });
+
+    this.broadcaster.on<any>(channel).subscribe(
+      data => {
+        console.log('[SOCKET] Message received:', data);
+        this.postMessages.push(data.message);
+        this.messageDateTimer.start(this.postMessages);
+        this.txtIn.value = '';
+      }, err => {
+        console.error('[SOCKET] Message error:', err);
+      }
+    );
+
+    this.broadcaster.on<any>(lobby).subscribe(
+      data => {
+        console.log('[SOCKET] lobby:', data);
+      }, err => {
+        console.error('[SOCKET] lobby error:', err);
+      }
+    );
 
     this.keyboard.onKeyboardShow().subscribe(res => {
+      console.log('[onKeyboardShow]');
       // console.log(res);
       this.chatPrvd.postBtn.setState(true);
       if (this.plt.is('ios')) {
@@ -191,13 +208,13 @@ export class ChatPage {
         scrollEl.style.bottom = res.keyboardHeight + 'px';
         footerEl.style.bottom = res.keyboardHeight + 'px';
       }
-      setTimeout(() => {
-        this.chatPrvd.mainBtn.setState('minimised');
-        if (!this.chatPrvd.appendContainer.hidden) {
-          this.chatPrvd.mainBtn.setState('above_append');
-        }
-        this.scrollToBottom();
-      }, chatAnim / 2 + 1);
+      this.chatPrvd.mainBtn.setState('minimised');
+      if (!this.chatPrvd.appendContainer.hidden) {
+        this.chatPrvd.mainBtn.setState('above_append');
+      }
+      this.scrollToBottom();
+      // setTimeout(() => {
+      // }, chatAnim / 2 + 1);
     }, err => {
       console.log(err);
     });
@@ -210,18 +227,18 @@ export class ChatPage {
         footerEl.style.bottom = '0';
         scrollEl.style.bottom = '0';
       }
-      setTimeout(() => {
-        if (!this.chatPrvd.appendContainer.hidden) {
-          this.chatPrvd.mainBtn.setState('above_append');
-        }
-        if (this.chatPrvd.appendContainer.hidden) {
-          this.chatPrvd.mainBtn.setState('normal');
-        }
-        if (this.txtIn.value.trim() == '' &&
-            !this.chatPrvd.appendContainer.isVisible()) {
-          this.chatPrvd.postBtn.setState(false);
-        }
-      }, chatAnim/2 + 1);
+      // setTimeout(() => {
+      if (!this.chatPrvd.appendContainer.hidden) {
+        this.chatPrvd.mainBtn.setState('above_append');
+      }
+      if (this.chatPrvd.appendContainer.hidden) {
+        this.chatPrvd.mainBtn.setState('normal');
+      }
+      if (this.txtIn.value.trim() == '' &&
+          !this.chatPrvd.appendContainer.isVisible()) {
+        this.chatPrvd.postBtn.setState(false);
+      }
+      // }, chatAnim/2 + 1);
 
     }, err => {
       console.log(err);
@@ -279,7 +296,6 @@ export class ChatPage {
     });
 
     this.changePlaceholderText();
-    this.showUsers();
 
     this.networkParams = { post_code: this.gpsPrvd.zipCode };
     this.hostUrl = this.chatPrvd.hostUrl;
@@ -462,7 +478,7 @@ export class ChatPage {
       }
     }
     this.canRefresh = false;
-    this.postMessages.push(data);
+    // this.postMessages.push(data);
     this.scrollToBottom();
   }
 
@@ -503,10 +519,10 @@ export class ChatPage {
     message.temporaryFor = 0;
 
     if (message.text.trim() != '' || message.images.length > 0) {
-      console.log(messageParams);
+      console.log('[messageParams]:', messageParams);
 
       this.chatPrvd.sendMessage(messageParams).then(res => {
-        console.log(res);
+        console.log('[sendMessage] res:', res);
 
         if (this.postLockData.hint && this.postLockData.password) {
           let lockObj:any = {
@@ -582,17 +598,18 @@ export class ChatPage {
     this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
     this.flipInput();
     this.changePlaceholderText();
+    this.toolsPrvd.hideLoader();
+    this.toolsPrvd.showLoader();
     setTimeout(() => {
       this.postMessages = [];
       if (this.isUndercover) {
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
-        this.slideAvatarPrvd.sliderInit(this.pageTag, true);
+        this.slideAvatarPrvd.sliderInit(this.pageTag, this.isUndercover);
       } else {
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
       }
-      this.showUsers();
       this.content.resize();
       this.startMessageUpdateTimer();
     }, 1);
@@ -715,12 +732,6 @@ export class ChatPage {
     });
   }
 
-  private showUsers() {
-    setTimeout(() => {
-      this.showUserSlider = this.isUndercover;
-    }, 1000);
-  }
-
   calcLoadedImages() {
     this.loadedImages++;
   }
@@ -775,13 +786,13 @@ export class ChatPage {
   private startMessageUpdateTimer() {
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
-    // if (this.chatPrvd.getState() != 'area') {
+    if (this.chatPrvd.getState() != 'area') {
       this.showMessages();
       this.messagesInterval = setInterval(() => {
         console.log('[messageTimer] starting interval...');
         this.showMessages();
       }, 10000);
-    // }
+    }
   }
 
   private showMessages() {
@@ -805,19 +816,24 @@ export class ChatPage {
           this.messageDateTimer.start(this.postMessages);
           this.scrollToBottom();
           setTimeout(() => {
+            this.toolsPrvd.hideLoader();
             this.isMainBtnDisabled = false;
           }, 1);
         }
       } else if (data.length > 0) {
+
         this.postMessages = this.chatPrvd.organizeMessages(data.reverse());
         this.calcTotalImages();
         this.messageDateTimer.start(this.postMessages);
         this.scrollToBottom();
         setTimeout(() => {
+          this.toolsPrvd.hideLoader();
           this.isMainBtnDisabled = false;
         }, 1);
       }
     }, err => {
+      this.toolsPrvd.hideLoader();
+      this.isMainBtnDisabled = false;
       console.log('[getMessage] Err:', err);
     });
   }
@@ -920,7 +936,6 @@ export class ChatPage {
       let position = this.slideAvatarPrvd.sliderPosition ? null : true;
       console.log('[ChatPage][ionViewDidEnter]', position);
       this.slideAvatarPrvd.sliderInit(this.pageTag, position);
-      this.showUsers();
       this.content.resize();
     }
 

@@ -121,7 +121,7 @@ export class Chat {
       } else {
         console.log('params', params);
         this.sendMessageWithoutImage(params).subscribe(res => {
-          console.log(res);
+          console.log('[SEND MESSAGE] res:', res);
           resolve(res);
         }, err => {
           console.log(err);
@@ -300,7 +300,7 @@ export class Chat {
       maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
     }
     if (pickerOptions.maximumImagesCount <= 0) {
-      // this.tools.showToast('You can\'t append more pictures');
+      this.tools.showToast('You can\'t append more pictures');
     } else {
       ImagePicker.getPictures(pickerOptions).then(file_uris => {
         for (let fileUrl of file_uris) {

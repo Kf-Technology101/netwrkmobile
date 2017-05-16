@@ -28,6 +28,7 @@ export class ProfilePage {
   greeting: string;
   testSlides: string[] = [];
   public ownProfile: boolean;
+  private postLoaded: boolean = false;
 
   connect: any = {
     facebook: false,
@@ -144,15 +145,18 @@ export class ProfilePage {
     });
   }
 
-  ionScrollionScroll() {
-    let posts: any = document.getElementsByClassName('post');
-    let lastPost = posts[posts.length - 1];
-    let lastPostOffset = lastPost.offsetTop;
-    let dimensions = this.content.getContentDimensions();
+  ionScroll() {
+    if (!this.postLoaded) {
+      let posts: any = document.getElementsByClassName('post');
+      let lastPost = posts[posts.length - 1];
+      let lastPostOffset = lastPost.offsetTop;
+      let dimensions = this.content.getContentDimensions();
 
-    if (!this.postLoading && dimensions.scrollTop < (dimensions.scrollHeight - 800)) {
-      this.postLoading = true;
-      this.showMessagesWithType();
+      if (!this.postLoading
+        && dimensions.scrollTop < (dimensions.scrollHeight - 800)) {
+        this.postLoading = true;
+        this.showMessagesWithType();
+      }
     }
     // console.log(this.content, lastPost, lastPostOffset, this.content.getContentDimensions());
   }
@@ -225,13 +229,12 @@ export class ProfilePage {
   }
 
   changeCallback(positionLeft?: boolean) {
+    positionLeft ? this.showMessages(false) : this.showMessages();
     this.zone.run(() => {
       if (positionLeft) {
         this.undercoverPrvd.profileType = 'public';
-        this.showMessages(false);
       } else {
         this.undercoverPrvd.profileType = 'undercover';
-        this.showMessages();
       }
     });
   }
@@ -245,6 +248,7 @@ export class ProfilePage {
 
     let mesReq = this.chatPrvd.getMessages(undercover, null, params).subscribe(res => {
       console.log(res);
+      if (res.messages && res.messages.length == 0) this.postLoaded = true;
       if (params.offset == 0) this.posts = res.messages;
       else for (let m of res.messages) this.posts.push(m);
       this.postLoading = false;

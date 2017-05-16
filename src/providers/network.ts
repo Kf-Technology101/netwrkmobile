@@ -32,6 +32,10 @@ export class Network {
     return seqMap;
   }
 
+  public getNetworkId(): number {
+    return this.localStorage.get('current_network').id;
+  }
+
   public getInviteAccess(): boolean {
     return this.localStorage.get('invitation_sent');
   }

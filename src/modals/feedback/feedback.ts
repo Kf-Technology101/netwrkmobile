@@ -5,7 +5,6 @@ import { Chat } from '../../providers/chat';
 import { toggleFade } from '../../includes/animations';
 
 import { FeedbackShareModal } from '../feedbackshare/feedbackshare';
-import { LegendaryListModal } from '../legendarylist/legendarylist';
 
 @Component({
   selector: 'modal-feedback',
@@ -36,6 +35,8 @@ export class FeedbackModal {
     legendary: null,
     isBlocked: false
   };
+
+  private showLegendary: boolean;
 
   private likeData:any;
   private data:any;
@@ -159,6 +160,7 @@ export class FeedbackModal {
   }
 
   ionViewDidEnter() {
+    this.showLegendary = this.params.get('showLegendary');
     this.postInf.totalLikes = this.params.get('totalLikes');
     this.postStatus.isLiked = this.params.get('likedByUser');
     this.postInf.totalLegendary = this.params.get('totalLegendary');

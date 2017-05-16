@@ -37,6 +37,7 @@ import { CameraPage } from '../pages/camera/camera';
 import { ShareListModal } from '../modals/sharelist/sharelist';
 import { FeedbackShareModal } from '../modals/feedbackshare/feedbackshare';
 import { FeedbackModal } from '../modals/feedback/feedback';
+import { LegendaryListModal} from '../modals/legendarylist/legendarylist';
 
 // Services
 import { Api } from '../providers/api';
@@ -88,6 +89,7 @@ let pages = [
   ShareListModal,
   FeedbackShareModal,
   FeedbackModal,
+  LegendaryListModal,
   ChatPage,
   UndercoverCharacterPage,
 

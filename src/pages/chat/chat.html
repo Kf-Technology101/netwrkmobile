@@ -74,7 +74,8 @@
       <img [src]="user.avatar_url ? user.avatar_url : toolsPrvd.defaultAvatar"
         (click)="goToProfile(null, true)" class="ic user-icon">
 
-      <img class="ic legendary-icon" src="assets/images/sun_icon.png" hidden>
+      <img class="ic legendary-icon" src="assets/images/sun_icon.png"
+          (click)="goToLegendayList()">
     </ion-toolbar>
     <ion-toolbar>
       <ion-slides slidesPerView="4" class="netwrk-slider">
@@ -142,7 +143,7 @@
         <span *ngIf="message.text" class="text"
               [ngClass]="{ 'emoji' : message.is_emoji }">{{ message.text }}</span>
       </p>
-      <button class="feedback-button" (click)="sendFeedback(message, i)"
+      <button class="feedback-button" (click)="openFeedbackModal(message, i)"
         *ngIf="!message.locked">
       </button>
       <button class="feedback-button lock"
@@ -150,7 +151,7 @@
         <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
       </button>
       <img *ngFor="let j of message.image_urls" src="{{j}}"
-            (load)="calcLoadedImages()"/>
+            (load)="chatPrvd.calcLoadedImages()"/>
     </div>
   </div>
 </ion-content>
@@ -248,7 +249,7 @@
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
     class="main-action-btn big has-footer transparent chatMainBtn"
-    (click)="goUndercover($event)" [disabled]="isMainBtnDisabled"></button>
+    (click)="goUndercover($event)" [disabled]="chatPrvd.isMainBtnDisabled"></button>
 
   <div ion-content class="flip-container" [ngClass]="{'hover' : flipHover}">
     <ion-item class="text front" #inputItem

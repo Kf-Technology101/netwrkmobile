@@ -1,4 +1,5 @@
-page-chat {
+page-chat,
+modal-legendarylist {
 
   .header {
     &.header::after {
@@ -60,6 +61,7 @@ page-chat {
     &.netwrk-content.content-md {
       .scroll-content {
         margin-top: 155px!important;
+        margin-bottom: 70px;
       }
     }
 
@@ -71,6 +73,7 @@ page-chat {
 
     .scroll-content {
       margin-top: 44px!important;
+      margin-bottom: 70px;
       padding-bottom: inherit;
       border-top: none;
     }

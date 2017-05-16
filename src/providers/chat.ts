@@ -1,11 +1,12 @@
 import { Injectable, ViewChild } from '@angular/core';
 
-import { Platform } from 'ionic-angular';
+import { Platform, ModalController } from 'ionic-angular';
 
 import { LocalStorage } from './local-storage';
 import { Gps } from './gps';
 import { Api } from './api';
 import { Tools } from './tools';
+import { Auth } from './auth';
 
 import * as moment from 'moment';
 import { Toggleable } from '../includes/toggleable';
@@ -23,6 +24,9 @@ import {
   TransferObject
 } from '@ionic-native/transfer';
 
+// Custom libs
+import { MessageDateTimer } from '../includes/messagedatetimer';
+
 @Injectable()
 export class Chat {
   public users: any = {};
@@ -35,6 +39,8 @@ export class Chat {
   public plusBtn = new Toggleable('default');
   public chatBtns = new Toggleable(['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']);
 
+  public messageDateTimer: any = new MessageDateTimer();
+
   private pickerOptions = {
     maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
   }
@@ -44,6 +50,15 @@ export class Chat {
     message: new Audio('assets/sound/message.mp3')
   }
 
+  public isMainBtnDisabled: boolean;
+
+  public imagesToLoad:any;
+  public loadedImages:any;
+  public scrollTimer:any = {
+    timeout: null,
+    interval: null
+  };
+
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -52,7 +67,9 @@ export class Chat {
     private file: File,
     private transfer: Transfer,
     public cameraPrvd: Camera,
-    public plt: Platform
+    public plt: Platform,
+    public authPrvd: Auth,
+    public modalCtrl: ModalController
   ) {
     console.log('Hello Chat Provider');
     this.hostUrl = this.api.hostUrl;
@@ -187,6 +204,7 @@ export class Chat {
   }
 
   public getLegendaryHistory(netId:number) {
+    console.log('[getLegendaryHistory] netId:', netId);
     let legendaryList = this.api.get('messages/legendary_list', { network_id: netId }).share();
     let legendaryMap = legendaryList.map(res => res.json());
     return legendaryMap;
@@ -325,4 +343,128 @@ export class Chat {
     }
   }
 
+  public sendFeedback(messageData: any, mIndex: number) {
+    return new Promise(res => {
+      let feedbackData = {
+        message_index: mIndex,
+        message_id: messageData.id,
+        user: this.authPrvd.getAuthData()
+      };
+      console.log('message data:', messageData);
+      console.log('feedback data:', feedbackData);
+      this.mainBtn.setState('minimised');
+      console.log('messageData.image_urls', messageData.image_urls);
+      let image = messageData.image_urls.length > 0 ? messageData.image_urls[0] : null;
+      console.log('image', image);
+      let params = {
+        data: feedbackData,
+        messageText: messageData.text,
+        messageImage: image,
+        totalLikes: messageData.likes_count,
+        likedByUser: messageData.like_by_user,
+        totalLegendary: messageData.legendary_count,
+        legendaryByUser: messageData.legendary_by_user,
+        showLegendary: true
+      };
+      res(params);
+    });
+  }
+
+  public goToProfile(profileId?: number, profileTypePublic?: boolean): Promise<any> {
+    return new Promise(res => {
+      console.log('[ChatProvider][goToProfile]', profileTypePublic);
+      if (!profileId) profileId = this.authPrvd.getAuthData().id;
+      let params = {
+        id: profileId,
+        public: profileTypePublic,
+        currentUser: this.authPrvd.getAuthData(),
+      };
+      res(params);
+    });
+  }
+
+  public calcLoadedImages() {
+    this.loadedImages++;
+  }
+
+  public calcTotalImages(messages:any) {
+    this.loadedImages = 0;
+    this.imagesToLoad = 0;
+    for (let i in messages) {
+      if (messages[i].image_urls.length > 0) {
+        this.imagesToLoad += messages[i].image_urls.length;
+      }
+    }
+  }
+
+  public scrollToBottom(): Promise<any> {
+    return new Promise(res => {
+      if (this.scrollTimer.interval) {
+        clearInterval(this.scrollTimer.interval);
+      }
+      if (this.scrollTimer.timeout) {
+        clearTimeout(this.scrollTimer.timeout);
+      }
+      this.scrollTimer.interval = setInterval(() => {
+        console.log('[scrollToBottom] loaded:', this.loadedImages + '/' + this.imagesToLoad);
+        if (this.imagesToLoad == this.loadedImages) {
+          res();
+          clearInterval(this.scrollTimer.interval);
+        }
+      }, 300);
+      this.scrollTimer.timeout = setTimeout(() => {
+        clearInterval(this.scrollTimer.interval);
+      }, 3000);
+    });
+  }
+
+  public showMessages(messages:any, isUndercover: boolean): Promise<any> {
+    return new Promise(res => {
+      this.getMessages(isUndercover).subscribe(data => {
+        console.log('[ChatPage][showMessages] isUndercover:', isUndercover);
+        console.log('[ChatPage][showMessages] data:', data);
+        // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
+        if (!data) {
+          console.warn('[showMessages] NO DATA');
+          this.tools.hideLoader();
+          this.isMainBtnDisabled = false;
+          return;
+        };
+        if (messages.length > 0 && data.messages.length > 0) {
+          res({
+            messages: this.organizeMessages(data.messages.reverse()),
+            callback: () => {
+              console.log('[showMessages] messages:', messages);
+              this.calcTotalImages(messages);
+              this.playSound('message');
+              this.messageDateTimer.start(messages);
+              this.scrollToBottom();
+              setTimeout(() => {
+                this.tools.hideLoader();
+                this.isMainBtnDisabled = false;
+              }, 1);
+            }
+          });
+        } else if (data.messages.length > 0) {
+          res({
+            messages: this.organizeMessages(data.messages.reverse()),
+            callback: () => {
+              console.log('[showMessages] messages:', messages);
+              this.calcTotalImages(messages);
+              this.messageDateTimer.start(messages);
+              this.scrollToBottom();
+              setTimeout(() => {
+                this.tools.hideLoader();
+                this.isMainBtnDisabled = false;
+              }, 1);
+            }
+          });
+        }
+      }, err => {
+        this.tools.hideLoader();
+        this.isMainBtnDisabled = false;
+        console.log('[getMessage] Err:', err);
+      });
+    })
+  }
 }

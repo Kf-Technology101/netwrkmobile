@@ -186,6 +186,12 @@ export class Chat {
     return this.localStorage.get('current_network');
   }
 
+  public getLegendaryHistory(netId:number) {
+    let legendaryList = this.api.get('messages/legendary_list', { network_id: netId }).share();
+    let legendaryMap = legendaryList.map(res => res.json());
+    return legendaryMap;
+  }
+
   public removeNetwork() {
     this.localStorage.rm('current_network');
   }

@@ -15,6 +15,7 @@ import { MainButton } from '../includes/mainButton';
 // Gallery
 import { ImagePicker } from 'ionic-native';
 import { Camera } from '../providers/camera';
+import { Network } from '../providers/network';
 import { chatAnim } from '../includes/animations';
 // File transfer
 import { File } from '@ionic-native/file';
@@ -71,7 +72,8 @@ export class Chat {
     public cameraPrvd: Camera,
     public plt: Platform,
     public authPrvd: Auth,
-    public modalCtrl: ModalController
+    public modalCtrl: ModalController,
+    private networkPrvd: Network
   ) {
     console.log('Hello Chat Provider');
     this.hostUrl = this.api.hostUrl;
@@ -105,8 +107,9 @@ export class Chat {
     return result;
   }
 
-  public deleteMessages(idList) {
-    let mess = this.api.post('messages/delete', { ids: idList }).share();
+  public deleteMessages() {
+    let params = { network_id: this.networkPrvd.getNetworkId() };
+    let mess = this.api.post('messages/delete', params).share();
     let messMap = mess.map(res => res.json());
     return messMap;
   }

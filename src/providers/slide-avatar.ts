@@ -41,12 +41,15 @@ export class SlideAvatar {
     });
 
     this.app.viewWillLeave.subscribe(view => {
-      // console.log("<SLIDER.ts> viewWillLeave");
+      console.log('<SLIDER.ts> viewWillLeave');
       this.stopSliderEvents();
     });
+
+    console.log('getActiveNav', this.app.getActiveNav());
   }
 
   public sliderInit(pageTag: string, position?: boolean) {
+    this.stopSliderEvents();
     let interval = setInterval(() => {
       let currentView = document.querySelector(pageTag);
 
@@ -163,18 +166,27 @@ export class SlideAvatar {
       this.selectedItem.classList.add('transition');
       if (xPosxElem <= dEndDivTwo) {
         this.selectedItem.style.left = this.dStart + 'px';
-        this.sliderPosition = 'left';
         this.arrowIcon.classList.remove('right');
         this.sliderState = false;
+        if (this.changeCallback) {
+          if (this.sliderPosition != 'left') {
+            this.sliderPosition = 'left';
+            this.changeCallback(true);
+          }
+        }
       } else if (xPosxElem > dEndDivTwo) {
         this.selectedItem.style.left = this.dEnd + 'px';
-        this.sliderPosition = 'right';
         this.arrowIcon.classList.add('right');
         this.sliderState = true;
+        if (this.changeCallback) {
+          if (this.sliderPosition != 'right') {
+            this.sliderPosition = 'right';
+            this.changeCallback(false);
+          }
+        }
       }
       this.selectedItem = null;
       this.firedOnce = true;
-      if (this.changeCallback) this.changeCallback(!this.sliderState);
     }
   }
 

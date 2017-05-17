@@ -87,7 +87,7 @@ export class MyApp {
       }
     } else {
       this.rootPage = LogInPage;
-      // this.rootPage = NetworkFindPage;
+      // this.rootPage = NetworkFindPage; 
       // this.rootPage = ProfilePage;
       // this.rootPage = ChatPage;
       // this.rootPage = CameraPage;

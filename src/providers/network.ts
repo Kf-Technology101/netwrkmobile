@@ -32,7 +32,7 @@ export class Network {
     return seqMap;
   }
 
-  public getNetworkId(): any {
+  public getNetworkId(): number {
     let netwrk = this.localStorage.get('current_network');
     if (netwrk) {
       return netwrk.id;

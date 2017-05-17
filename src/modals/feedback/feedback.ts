@@ -129,7 +129,7 @@ export class FeedbackModal {
           handler: () => {
             let messageId = [];
             messageId.push(this.likeData.message_id);
-            this.chatPrvd.deleteMessages(messageId).subscribe(res => {
+            this.chatPrvd.deleteMessages().subscribe(res => {
               console.log('[BLOCK MESSAGE] res:', res);
               let OkAlert = this.alertCtrl.create({
                 title: 'Block info',

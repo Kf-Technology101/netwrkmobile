@@ -1,5 +1,16 @@
-import { Component, ViewChild, NgZone, HostBinding, ElementRef } from '@angular/core';
-import { NavController, NavParams, Content, Platform, ModalController } from 'ionic-angular';
+import {
+  Component,
+  ViewChild,
+  NgZone,
+  HostBinding,
+  ElementRef,
+  Renderer } from '@angular/core';
+import {
+  NavController,
+  NavParams,
+  Content,
+  Platform,
+  ModalController } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 // Pages
@@ -137,8 +148,6 @@ export class ChatPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public zone: NgZone,
-    private cameraPreview: CameraPreview,
-    private keyboard: Keyboard,
     // public share: Share,
     public undercoverPrvd: UndercoverProvider,
     public slideAvatarPrvd: SlideAvatar,
@@ -151,9 +160,12 @@ export class ChatPage {
     public plt: Platform,
     public socialPrvd: Social,
     public elRef: ElementRef,
+    public modalCtrl: ModalController,
+    private cameraPreview: CameraPreview,
     private ng2cable: Ng2Cable,
     private broadcaster: Broadcaster,
-    public modalCtrl: ModalController
+    private keyboard: Keyboard,
+    private renderer: Renderer
   ) {
 
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
@@ -822,7 +834,8 @@ export class ChatPage {
   }
 
   private sendDeletedMessages() {
-    this.chatPrvd.deleteMessages(this.idList).subscribe( res => {
+    // this.idList
+    this.chatPrvd.deleteMessages().subscribe( res => {
       console.log('[sendDeletedMessages] Success:', res);
       // this.postMessages = res ? res : [];
     }, err => {
@@ -912,5 +925,6 @@ export class ChatPage {
       this.sendDeletedMessages();
       // this.startMessageUpdateTimer();
     }
+    this.slideAvatarPrvd.changeCallback = null;
   }
 }

@@ -165,6 +165,7 @@ export class ProfileSettingPage {
 
   ionViewWillLeave() {
     // this.slideAvatar.stopSliderEvents();
+    this.slideAvatarPrvd.changeCallback = null;
   }
 
   ionViewDidEnter() {

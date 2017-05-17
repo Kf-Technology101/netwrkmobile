@@ -229,6 +229,7 @@ export class ProfilePage {
   }
 
   changeCallback(positionLeft?: boolean) {
+    console.log('changeCallback', positionLeft);
     positionLeft ? this.showMessages(false) : this.showMessages();
     this.zone.run(() => {
       if (positionLeft) {
@@ -249,8 +250,11 @@ export class ProfilePage {
     let mesReq = this.chatPrvd.getMessages(undercover, null, params).subscribe(res => {
       console.log(res);
       if (res.messages && res.messages.length == 0) this.postLoaded = true;
-      if (params.offset == 0) this.posts = res.messages;
-      else for (let m of res.messages) this.posts.push(m);
+      if (params.offset == 0) this.posts = [];
+      for (let m of res.messages) {
+        m.date = this.toolsPrvd.getTime(m.created_at)
+        this.posts.push(m);
+      }
       this.postLoading = false;
       this.toolsPrvd.hideLoader();
       mesReq.unsubscribe()
@@ -295,6 +299,10 @@ export class ProfilePage {
 
   ionViewDidLoad() {
     this.loadProfile();
+  }
+
+  ionViewWillLeave() {
+    this.slideAvatarPrvd.changeCallback = null;
   }
 
 }

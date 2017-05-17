@@ -25,7 +25,7 @@ export class SlideAvatar {
   private firedOnce: boolean = true;
 
   public changeCallback: (positionLeft?: boolean) => void;
-  public sliderPosition: string;
+  public sliderPosition: string = null;
 
   constructor(
     public app: App,
@@ -47,39 +47,60 @@ export class SlideAvatar {
   }
 
   public sliderInit(pageTag: string, position?: boolean) {
-    let currentView = document.querySelector(pageTag);
-    this.selectedItem = currentView.querySelectorAll('.draggable-element')['0'];
-    console.log('[SLIDER] currentView:', currentView);
-    console.log('[SLIDER] selectedItem:', this.selectedItem);
+    let interval = setInterval(() => {
+      let currentView = document.querySelector(pageTag);
 
-    if (this.selectedItem) {
-      if (!position && typeof position == 'boolean') {
-      } else {
-        position = this.sliderPosition == 'right' ? true : false;
+      if (currentView) {
+        this.selectedItem = currentView.querySelectorAll('.draggable-element')['0'];
+        console.log('[SLIDER] currentView:', currentView);
+        console.log('[SLIDER] selectedItem:', this.selectedItem);
+
+        console.log('slider position ', this.sliderPosition);
+
+        if (this.selectedItem) {
+          clearInterval(interval);
+          if (typeof position == 'boolean') {
+
+          } else {
+            position = this.sliderPosition == 'right' ? true : false;
+          }
+
+          if (!this.sliderPosition) {
+            this.setSliderDimentions();
+            this.setSliderPosition(position);
+          } else {
+            position = this.sliderPosition == 'right' ? true : false;
+            this.setSliderPosition(position);
+          }
+          this.startSliderEvents();
+        } else {
+          console.log('error');
+        }
       }
-
-      this.setSliderDimentions();
-      this.setSliderPosition(position);
-      this.startSliderEvents();
-    }
-    else {
-      console.warn("Slider init. failed. Details:", this.selectedItem);
-      return false;
-    }
+    }, 100);
   }
 
   private setSliderDimentions() {
-    if (this.selectedItem) {
-      let dragLineW = this.selectedItem.parentElement.clientWidth;
+    let interval = setInterval(() => {
+      if (this.selectedItem) {
+        clearInterval(interval);
+        let dragLineW = this.selectedItem.parentElement.clientWidth;
 
-      this.dStart = 0 - this.selectedItem.offsetWidth/2;
-      this.dEnd = dragLineW - this.selectedItem.offsetWidth/2;
-      console.log('start:', this.dStart, ' end:', this.dEnd, ' dragline:', dragLineW);
-    }
+        if (dragLineW > 0 && this.selectedItem.offsetWidth > 0) {
+          console.log(dragLineW);
+
+          this.dStart = 0 - this.selectedItem.offsetWidth / 2;
+          this.dEnd = dragLineW - this.selectedItem.offsetWidth / 2;
+        }
+        console.log(this.selectedItem.offsetWidth);
+
+        console.log('start:', this.dStart, ' end:', this.dEnd, ' dragline:', dragLineW);
+      }
+    }, 100);
   }
 
   public setSliderPosition(state?: boolean) {
-    if (!state) state = true;
+    // if (!state) state = true;
     if (this.selectedItem) {
       this.sliderState = state;
       this.arrowIcon = this.selectedItem.parentElement.children['1'];
@@ -134,28 +155,26 @@ export class SlideAvatar {
   private onTouchEnd(e) {
     if (e.target.classList.contains('draggable-element')) {
       this.selectedItem = e.target;
-      if (this.xPos - this.xElem <= this.dEnd/2 + 3) {
+      let xPosxElem = this.xPos - this.xElem;
+      let dEndDivTwo = this.dEnd / 2 + 3;
+      console.log(this.xPos, this.xElem)
+
+      this.arrowIcon.style.opacity = '1';
+      this.selectedItem.classList.add('transition');
+      if (xPosxElem <= dEndDivTwo) {
         this.selectedItem.style.left = this.dStart + 'px';
-        this.selectedItem.classList.add('transition');
         this.sliderPosition = 'left';
-        this.arrowIcon.style.opacity = '1';
         this.arrowIcon.classList.remove('right');
         this.sliderState = false;
-
-        if (this.changeCallback) this.changeCallback(true);
-      }
-      if (this.xPos - this.xElem > this.dEnd/2 + 3) {
+      } else if (xPosxElem > dEndDivTwo) {
         this.selectedItem.style.left = this.dEnd + 'px';
-        this.selectedItem.classList.add('transition');
         this.sliderPosition = 'right';
-        this.arrowIcon.style.opacity = '1';
         this.arrowIcon.classList.add('right');
         this.sliderState = true;
-
-        if (this.changeCallback) this.changeCallback(false);
       }
       this.selectedItem = null;
       this.firedOnce = true;
+      if (this.changeCallback) this.changeCallback(!this.sliderState);
     }
   }
 

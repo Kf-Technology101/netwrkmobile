@@ -160,13 +160,12 @@ export class ChatPage {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
-    let socket_url: string = 'http://192.168.1.13:3000/cable';
     let channel = 'ChatChannel';
     let lobby = 'messages' + this.gpsPrvd.zipCode + 'chat';
 
     console.log('[SOCKET] lobby:', lobby);
 
-    this.ng2cable.subscribe(socket_url, {
+    this.ng2cable.subscribe(this.chatPrvd.hostUrl + '/cable', {
       channel: <string> channel,
       post_code: this.gpsPrvd.zipCode
     });
@@ -190,10 +189,9 @@ export class ChatPage {
           this.chatPrvd.messageDateTimer.start(this.postMessages);
           this.txtIn.value = '';
         }
-      }, err => {
-        console.error('[SOCKET] Message error:', err);
-      }
-    );
+    }, err => {
+      console.error('[SOCKET] Message error:', err);
+    });
 
     this.broadcaster.on<any>(lobby).subscribe(
       data => {
@@ -494,81 +492,85 @@ export class ChatPage {
   }
 
   postMessage(emoji?: string, params?: any) {
-    let publicUser: boolean;
-    let images = [];
-    let messageParams: any;
-    let message: any = {};
+    try {
+      let publicUser: boolean;
+      let images = [];
+      let messageParams: any;
+      let message: any = {};
 
-    if (!this.isUndercover) {
-      publicUser = true;
-    } else {
-      publicUser = this.slideAvatarPrvd.sliderPosition == 'left' ? true : false;
-    }
-
-    if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
-
-    messageParams = {
-      text: emoji ?  emoji : this.txtIn.value,
-      user_id: this.authData ? this.authData.id : 0,
-      images: emoji ? [] : images,
-      undercover: this.isUndercover,
-      public: publicUser,
-      is_emoji: emoji ? true : false
-    };
-
-    if (params) Object.assign(messageParams, params);
-
-    console.log('[ChatPage][messageParams]', messageParams);
-
-    message = Object.assign(message, messageParams);
-
-    let imageUrls = emoji ? [] : images;
-
-    message.image_urls = messageParams.social_urls
-      ? messageParams.social_urls : imageUrls;
-    message.isTemporary = false;
-    message.temporaryFor = 0;
-
-    if (message.text.trim() != ''
-      || message.images.length > 0
-      || message.social_urls.length > 0) {
-      console.log(messageParams);
-
-      this.chatPrvd.sendMessage(messageParams).then(res => {
-        console.log('[sendMessage] res:', res);
-
-        if (this.postLockData.hint && this.postLockData.password) {
-          let lockObj:any = {
-            id: res.id,
-            hint: this.postLockData.hint,
-            password: this.postLockData.password
-          }
-
-          this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
-            console.log('[lock] res:', lockRes);
-            this.updatePost(lockRes, message, emoji);
-            this.postLockData = {
-              id: null,
-              hint: null,
-              password: null
-            }
-          }, lockErr => {
-            console.log('[lock] err:', lockErr);
-          });
-        } else {
-          this.updatePost(res, message, emoji);
-        }
-      }).catch(err => {
-        console.log(err);
-        this.updatePost(err, message);
-      });
-      if (!emoji) {
-        this.chatPrvd.appendContainer.setState('off');
-        setTimeout(() => {
-          this.chatPrvd.appendContainer.hide();
-        }, chatAnim/2);
-        this.cameraPrvd.takenPictures = [];
+      if (!this.isUndercover) {
+        publicUser = true;
+      } else {
+        publicUser = this.slideAvatarPrvd.sliderPosition == 'left' ? true : false;
       }
+
+      if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
+
+      messageParams = {
+        text: emoji ?  emoji : this.txtIn.value,
+        user_id: this.authData ? this.authData.id : 0,
+        images: emoji ? [] : images,
+        undercover: this.isUndercover,
+        public: publicUser,
+        is_emoji: emoji ? true : false
+      };
+
+      if (params) Object.assign(messageParams, params);
+
+      console.log('[ChatPage][messageParams]', messageParams);
+
+      message = Object.assign(message, messageParams);
+
+      let imageUrls = emoji ? [] : images;
+
+      message.image_urls = messageParams.social_urls
+        ? messageParams.social_urls : imageUrls;
+      message.isTemporary = false;
+      message.temporaryFor = 0;
+
+      if ((message.text && message.text.trim() != '')
+        || (message.images && message.images.length > 0)
+        || (message.social_urls && message.social_urls.length > 0)) {
+        console.log(messageParams);
+
+        this.chatPrvd.sendMessage(messageParams).then(res => {
+          console.log('[sendMessage] res:', res);
+
+          if (this.postLockData.hint && this.postLockData.password) {
+            let lockObj:any = {
+              id: res.id,
+              hint: this.postLockData.hint,
+              password: this.postLockData.password
+            }
+
+            this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
+              console.log('[lock] res:', lockRes);
+              this.updatePost(lockRes, message, emoji);
+              this.postLockData = {
+                id: null,
+                hint: null,
+                password: null
+              }
+            }, lockErr => {
+              console.log('[lock] err:', lockErr);
+            });
+          } else {
+            this.updatePost(res, message, emoji);
+          }
+        }).catch(err => {
+          console.log(err);
+          this.updatePost(err, message);
+        });
+        if (!emoji) {
+          this.chatPrvd.appendContainer.setState('off');
+          setTimeout(() => {
+            this.chatPrvd.appendContainer.hide();
+          }, chatAnim/2);
+          this.cameraPrvd.takenPictures = [];
+        }
+      }
+    } catch (e) {
+      console.error('Error in postMessage', e);
     }
   }
 
@@ -884,7 +886,8 @@ export class ChatPage {
 
     this.gpsPrvd.getNetwrk(this.gpsPrvd.zipCode).subscribe(res => {
       this.chatPrvd.saveNetwork(res.network);
-    })
+    });
+
   }
 
   goToProfile(profileId?: number, profileTypePublic?: boolean) {

@@ -93,7 +93,11 @@ export class Tools {
   }
 
   public getTime(date?: string): string {
-    return moment(date).fromNow();
+    try {
+      return moment(date).fromNow();
+    } catch (e) {
+      return null;
+    }
   }
 
   public errorHandler(error) {

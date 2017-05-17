@@ -9,16 +9,18 @@ export class Api {
   private apiV: string = '/api/v1';
   public domain: any = {
     local: '192.168.1.13:3000',
-    remote: '34.208.20.67'
+    remote: 'netwrk.com'
   };
-  public siteDomain: string = this.domain.local;
+  public siteDomain: string = this.domain.remote;
   public hostUrl = this.httpProtocol + this.siteDomain;
   public url: string = this.hostUrl + this.apiV;
 
   constructor(
     public http: Http,
     public storage: LocalStorage
-  ) {}
+  ) {
+
+  }
 
   public changeApiUrl(url: string) {
     this.siteDomain = url == this.domain.remote

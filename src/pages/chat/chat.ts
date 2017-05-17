@@ -223,7 +223,7 @@ export class ChatPage {
         let footerEl = document.getElementsByClassName('chatFooter')['0'];
         let scrollEl = document.getElementsByClassName('scroll-content')['0'];
         scrollEl.style.bottom = res.keyboardHeight + 'px';
-        scrollEl.style.marginBottom = res.keyboardHeight + 70 + 'px';
+        scrollEl.style.marginBottom = res.keyboardHeight + 70 + 'px!important';
         footerEl.style.bottom = res.keyboardHeight + 'px';
       }
       this.chatPrvd.mainBtn.setState('minimised');
@@ -244,7 +244,7 @@ export class ChatPage {
         let scrollEl = document.getElementsByClassName('scroll-content')['0'];
         footerEl.style.bottom = '0';
         scrollEl.style.bottom = '0';
-        scrollEl.style.marginBottom = '70px';
+        scrollEl.style.marginBottom = '70px!important';
       }
       // setTimeout(() => {
       if (!this.chatPrvd.appendContainer.hidden) {

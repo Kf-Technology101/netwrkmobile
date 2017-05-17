@@ -32,8 +32,14 @@ export class Network {
     return seqMap;
   }
 
-  public getNetworkId(): number {
-    return this.localStorage.get('current_network').id;
+  public getNetworkId(): any {
+    let netwrk = this.localStorage.get('current_network');
+    if (netwrk) {
+      return netwrk.id;
+    } else {
+      console.error('[getNetworkId] No \'current_network\' in local storage');
+      return -1;
+    }
   }
 
   public getInviteAccess(): boolean {

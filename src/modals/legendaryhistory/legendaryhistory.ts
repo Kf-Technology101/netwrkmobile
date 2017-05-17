@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavParams, ViewController, ModalController } from 'ionic-angular';
+import { Component, ViewChild } from '@angular/core';
+import { NavParams, ViewController, ModalController, Content } from 'ionic-angular';
 
 // Pages
 import { ProfilePage } from '../../pages/profile/profile';
@@ -7,10 +7,6 @@ import { ProfilePage } from '../../pages/profile/profile';
 // Providers
 import { Chat } from '../../providers/chat';
 import { Tools } from '../../providers/tools';
-import { Auth } from '../../providers/auth';
-
-// Custom libs
-import { MessageDateTimer } from '../../includes/messagedatetimer';
 
 // Modals
 import { FeedbackModal } from '../feedback/feedback';
@@ -23,29 +19,33 @@ import {
 } from '../../includes/animations';
 
 @Component({
-  selector: 'modal-legendary',
+  selector: 'modal-legendaryhistory',
   templateUrl: 'legendaryhistory.html',
   animations: [
     scaleMainBtn,
-    toggleFade,
-    chatAnim
+    toggleFade
   ]
 })
-export class LegendaryHistoryModal {
+export class LegendaryModal {
+  @ViewChild(Content) content: Content;
 
-  public lgMessages: Array<any> = [];
+  private areSomeLegendary: boolean = false;
+  public lgMessages: any = [];
   public netwrkId: number;
-  public user: any;
-  public messageDateTimer = new MessageDateTimer();
+  private mainBtn: any = {
+    state: 'fadeOut',
+    hidden: false
+  };
 
   constructor(
-    private params: NavParams,
-    private viewCtrl: ViewController,
+    public params: NavParams,
+    public viewCtrl: ViewController,
     public chatPrvd: Chat,
-    public authPrvd: Auth,
     public toolsPrvd: Tools,
     public modalCtrl: ModalController
-  ) {}
+  ) {
+    console.log('LegendaryModal constructor');
+  }
 
   closeModal() {
     this.chatPrvd.mainBtn.setPrevState();
@@ -58,7 +58,7 @@ export class LegendaryHistoryModal {
     });
   }
 
-  openFeedbackModal(messageData, mIndex) {
+  openFeedback(messageData: any, mIndex: any) {
     this.chatPrvd.sendFeedback(messageData, mIndex).then(res => {
       let feedbackModal = this.modalCtrl.create(FeedbackModal, res);
       feedbackModal.onDidDismiss(data => {
@@ -84,22 +84,44 @@ export class LegendaryHistoryModal {
     })
   }
 
-  public showLegendaryMessages() {
-    this.chatPrvd.getLegendaryHistory(this.netwrkId).subscribe(res => {
-      console.log('[showLegendaryMessages] res:', res);
-      this.lgMessages = res.messages;
+  refreshLegendaryList(refresher) {
+    console.log('[refreshLegendaryList] Begin async operation', refresher);
+    this.chatPrvd.getLegendaryHistory(this.netwrkId)
+    .subscribe(res => {
+      console.log('[REFRESHER] res:', res);
+      if (res.messages && res.messages.length > 0 &&
+          this.lgMessages.length != res.messages.length) {
+        this.areSomeLegendary = true;
+        res = this.chatPrvd.organizeMessages(res.messages);
+        this.lgMessages = res.messages;
+        this.chatPrvd.messageDateTimer.start(this.lgMessages);
+      }
+      refresher.complete();
     }, err => {
-      console.error('[showLegendaryMessages] error:', err);
-    })
+      refresher.complete();
+      console.error('[refreshLegendaryList] Err:', err);
+    });
+  }
+
+  showLegendaryMessages() {
+    this.chatPrvd.showMessages(this.lgMessages, 'legendary').then(res => {
+      if (res.messages && res.messages.length > 0 &&
+          this.lgMessages.length != res.messages.length) {
+        this.areSomeLegendary = true;
+        this.lgMessages = res.messages;
+        res.callback(this.lgMessages);
+        this.chatPrvd.scrollToBottom(this.content);
+      }
+    }, err => {
+      console.error('[showLegendaryMessages] Error:', err);
+    });
   }
 
   ionViewDidEnter() {
+    this.mainBtn.state = 'minimisedForCamera';
+    console.log('[LegendaryList][DidEnter]');
     this.netwrkId = this.params.get('netwrk_id');
     console.log('[LegendaryList][DidEnter] netwrkId:', this.netwrkId);
     this.showLegendaryMessages();
-  }
-
-  ionViewDidLoad() {
-    console.log('[LegendaryListModal][DidLoad]');
   }
 }

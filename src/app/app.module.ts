@@ -34,10 +34,10 @@ import { UndercoverCharacterPage } from '../pages/undercover-character/undercove
 import { CameraPage } from '../pages/camera/camera';
 
 // Modals
+import { LegendaryModal } from '../modals/legendaryhistory/legendaryhistory';
 import { ShareListModal } from '../modals/sharelist/sharelist';
 import { FeedbackShareModal } from '../modals/feedbackshare/feedbackshare';
 import { FeedbackModal } from '../modals/feedback/feedback';
-import { LegendaryHistoryModal} from '../modals/legendaryhistory/legendaryhistory';
 
 // Services
 import { Api } from '../providers/api';
@@ -86,10 +86,10 @@ let pages = [
   NetworkNoPage,
   NetworkFaqPage,
   NetworkContactListPage,
+  LegendaryModal,
   ShareListModal,
   FeedbackShareModal,
   FeedbackModal,
-  LegendaryHistoryModal,
   ChatPage,
   UndercoverCharacterPage,
 

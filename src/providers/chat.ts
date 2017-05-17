@@ -60,6 +60,8 @@ export class Chat {
     interval: null
   };
 
+  public isMessagesVisible: boolean = false;
+
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -400,31 +402,46 @@ export class Chat {
     }
   }
 
-  public scrollToBottom(): Promise<any> {
-    return new Promise(res => {
-      if (this.scrollTimer.interval) {
+  public scrollToBottom(content:any){
+    if (this.scrollTimer.interval) {
+      clearInterval(this.scrollTimer.interval);
+    }
+    if (this.scrollTimer.timeout) {
+      clearTimeout(this.scrollTimer.timeout);
+    }
+    this.scrollTimer.interval = setInterval(() => {
+      console.log('[scrollToBottom] loaded:', this.loadedImages + '/' + this.imagesToLoad);
+      if (this.imagesToLoad == this.loadedImages) {
+        content.scrollTo(0, content.getContentDimensions().scrollHeight, 100);
         clearInterval(this.scrollTimer.interval);
+        this.isMessagesVisible = true;
       }
-      if (this.scrollTimer.timeout) {
-        clearTimeout(this.scrollTimer.timeout);
-      }
-      this.scrollTimer.interval = setInterval(() => {
-        console.log('[scrollToBottom] loaded:', this.loadedImages + '/' + this.imagesToLoad);
-        if (this.imagesToLoad == this.loadedImages) {
-          res();
-          clearInterval(this.scrollTimer.interval);
-        }
-      }, 300);
-      this.scrollTimer.timeout = setTimeout(() => {
-        clearInterval(this.scrollTimer.interval);
-      }, 3000);
-    });
+    }, 300);
+    this.scrollTimer.timeout = setTimeout(() => {
+      clearInterval(this.scrollTimer.interval);
+    }, 3000);
   }
 
-  public showMessages(messages:any, isUndercover: boolean): Promise<any> {
+  public showMessages(messages:any, location: any, isUndercover?: boolean): Promise<any> {
+    let loadMessages:any;
+    let arg:any;
+    switch (location) {
+      case 'chat':
+        loadMessages = this.getMessages.bind(this);
+        arg = isUndercover;
+      break;
+      case 'legendary':
+        loadMessages = this.getLegendaryHistory.bind(this);
+        arg = this.getNetwork().id
+      break;
+      default:
+        loadMessages = this.getMessages.bind(this);
+        arg = isUndercover;
+      break;
+    }
+    console.log('[ChatPage][showMessages] isUndercover:', isUndercover);
     return new Promise(res => {
-      this.getMessages(isUndercover).subscribe(data => {
-        console.log('[ChatPage][showMessages] isUndercover:', isUndercover);
+      loadMessages(arg).subscribe(data => {
         console.log('[ChatPage][showMessages] data:', data);
         // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
         if (!data) {
@@ -436,12 +453,10 @@ export class Chat {
         if (messages.length > 0 && data.messages.length > 0) {
           res({
             messages: this.organizeMessages(data.messages.reverse()),
-            callback: () => {
-              console.log('[showMessages] messages:', messages);
-              this.calcTotalImages(messages);
-              this.playSound('message');
-              this.messageDateTimer.start(messages);
-              this.scrollToBottom();
+            callback: (mess) => {
+              console.log('[showMessages] messages:', mess);
+              this.calcTotalImages(mess);
+              this.messageDateTimer.start(mess);
               setTimeout(() => {
                 this.tools.hideLoader();
                 this.isMainBtnDisabled = false;
@@ -451,11 +466,10 @@ export class Chat {
         } else if (data.messages.length > 0) {
           res({
             messages: this.organizeMessages(data.messages.reverse()),
-            callback: () => {
-              console.log('[showMessages] messages:', messages);
-              this.calcTotalImages(messages);
-              this.messageDateTimer.start(messages);
-              this.scrollToBottom();
+            callback: (mess) => {
+              console.log('[showMessages] messages:', mess);
+              this.calcTotalImages(mess);
+              this.messageDateTimer.start(mess);
               setTimeout(() => {
                 this.tools.hideLoader();
                 this.isMainBtnDisabled = false;

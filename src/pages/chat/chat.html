@@ -75,7 +75,7 @@
         (click)="goToProfile(null, true)" class="ic user-icon">
 
       <img class="ic legendary-icon" src="assets/images/sun_icon.png"
-          (click)="goToLegendayList()">
+          (click)="goToLegendaryList()">
     </ion-toolbar>
     <ion-toolbar>
       <ion-slides slidesPerView="4" class="netwrk-slider">
@@ -108,11 +108,11 @@
   <ion-refresher (ionRefresh)="refreshChat($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
-      pullingText="Pull to refresh"
       refreshingSpinner="ios">
     </ion-refresher-content>
   </ion-refresher>
-  <div class="chat-container" #chatContainer>
+  <div class="chat-container" #chatContainer
+      [ngClass]="{'visible' : chatPrvd.isMessagesVisible}">
     <div class="message" *ngFor="let message of postMessages; let i = index"
          [@fadeState]="'fadeInVeryFast'">
       <img *ngIf="message.user"

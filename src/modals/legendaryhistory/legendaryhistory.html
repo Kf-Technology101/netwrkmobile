@@ -1,5 +1,21 @@
+<ion-header class="incognito-header chat-header">
+  <div class="netwrk-header">
+    <ion-toolbar class="area-head no-bg">
+      <span>Area legend</span>
+      <img class="ic legendary-icon" src="assets/images/sun_icon.png">
+    </ion-toolbar>
+  </div>
+</ion-header>
+
 <ion-content has-main-btn has-main-btn-label>
-  <div class="chat-container" #chatContainer>
+  <ion-refresher (ionRefresh)="refreshLegendaryList($event)">
+    <ion-refresher-content
+      pullingIcon="arrow-dropdown"
+      refreshingSpinner="ios">
+    </ion-refresher-content>
+  </ion-refresher>
+  <h3 class="no-legendary" *ngIf="!areSomeLegendary">Nothing legendary has happened here yet</h3>
+  <div class="chat-container visible" *ngIf="areSomeLegendary">
     <div class="message" *ngFor="let message of lgMessages; let i = index"
          [@fadeState]="'fadeInVeryFast'">
       <img *ngIf="message.user"
@@ -30,7 +46,7 @@
         <span *ngIf="message.text" class="text"
               [ngClass]="{ 'emoji' : message.is_emoji }">{{ message.text }}</span>
       </p>
-      <button class="feedback-button" (click)="openFeedbackModal(message, i)"
+      <button class="feedback-button" (click)="openFeedback(message, i)"
         *ngIf="!message.locked">
       </button>
       <button class="feedback-button lock"
@@ -44,9 +60,9 @@
 </ion-content>
 
 <ion-footer>
-  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
-    [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
-    class="main-action-btn big has-footer transparent chatMainBtn"
-    (click)="closeModal()">
+  <button ion-button color="bk"
+    class="main-action-btn transparent small"
+    (click)="closeModal()" outline>
+    <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
   </button>
 </ion-footer>

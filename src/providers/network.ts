@@ -33,9 +33,13 @@ export class Network {
   }
 
   public getNetworkId(): number {
-    let network = this.localStorage.get('current_network');
-    if (network) return network.id;
-    else return null;
+    let netwrk = this.localStorage.get('current_network');
+    if (netwrk) {
+      return netwrk.id;
+    } else {
+      console.error('[getNetworkId] No \'current_network\' in local storage');
+      return -1;
+    }
   }
 
   public getInviteAccess(): boolean {

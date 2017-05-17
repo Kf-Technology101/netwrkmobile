@@ -1,5 +1,5 @@
 <ion-toolbar class="translucent">
-  <ion-buttons end *ngIf="showLegendary">
+  <ion-buttons end>
     <button class="legendary-btn" (click)="toggleLikes('legendary')"
             [ngClass]="{ 'active' : postStatus.isLegendary }">
       <ion-badge>{{ postInf.totalLegendary }}</ion-badge>

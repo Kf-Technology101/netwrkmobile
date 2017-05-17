@@ -1,5 +1,5 @@
 page-chat,
-modal-legendarylist {
+modal-legendaryhistory {
 
   .header {
     &.header::after {
@@ -510,7 +510,24 @@ modal-legendarylist {
       box-sizing: content-box;
       background: rgba(255, 255, 255, .6);
     }
+    h3 {
+      position: absolute;
+      width: 100%;
+      top: 0;
+      bottom: 0;
+      display: block;
+      margin: auto;
+      text-align: center;
+      height: 43px;
+      line-height: 43px;
+      font-weight: 300;
+    }
     .chat-container {
+      opacity: 0;
+      transition: 0.5s;
+      &.visible {
+        opacity: 1;
+      }
       .message {
         padding: 0;
         margin: 0;
@@ -672,7 +689,19 @@ modal-legendarylist {
         &.area-head {
           background: url('../assets/icon/logo.png') no-repeat center;
           background-size: auto 26px;
-
+          &.no-bg {
+            background: #fff;
+            span {
+              display: block;
+              position: absolute;
+              left: 0;
+              right: 0;
+              top: 0;
+              bottom: 0;
+              line-height: 43px;
+              pointer-events: none;
+            }
+          }
           .ic {
             display: block;
             width: 26px;

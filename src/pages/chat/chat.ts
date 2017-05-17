@@ -11,7 +11,7 @@ import { ProfilePage } from '../profile/profile';
 import { Toggleable } from '../../includes/toggleable';
 
 // Modals
-import { LegendaryListModal } from '../../modals/legendarylist/legendarylist';
+import { LegendaryHistoryModal } from '../../modals/legendaryhistory/legendaryhistory';
 import { FeedbackModal } from '../../modals/feedback/feedback';
 
 // Providers
@@ -611,7 +611,7 @@ export class ChatPage {
   }
 
   goToLegendayList() {
-    let legendaryModal = this.modalCtrl.create(LegendaryListModal, {
+    let legendaryModal = this.modalCtrl.create(LegendaryHistoryModal, {
       netwrk_id: this.networkPrvd.getNetworkId()
     });
     legendaryModal.present();

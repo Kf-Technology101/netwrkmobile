@@ -23,20 +23,20 @@ import {
 } from '../../includes/animations';
 
 @Component({
-  selector: 'modal-legendarylist',
-  templateUrl: 'legendarylist.html',
+  selector: 'modal-legendary',
+  templateUrl: 'legendaryhistory.html',
   animations: [
     scaleMainBtn,
     toggleFade,
     chatAnim
   ]
 })
-export class LegendaryListModal {
+export class LegendaryHistoryModal {
 
-  private lgMessages: Array<any> = [];
-  private netwrkId: number;
-  private user: any;
-  private messageDateTimer = new MessageDateTimer();
+  public lgMessages: Array<any> = [];
+  public netwrkId: number;
+  public user: any;
+  public messageDateTimer = new MessageDateTimer();
 
   constructor(
     private params: NavParams,
@@ -84,7 +84,7 @@ export class LegendaryListModal {
     })
   }
 
-  showLegendaryMessages() {
+  public showLegendaryMessages() {
     this.chatPrvd.getLegendaryHistory(this.netwrkId).subscribe(res => {
       console.log('[showLegendaryMessages] res:', res);
       this.lgMessages = res.messages;
@@ -95,7 +95,11 @@ export class LegendaryListModal {
 
   ionViewDidEnter() {
     this.netwrkId = this.params.get('netwrk_id');
-    console.log('[LegendaryList] netwrkId:', this.netwrkId);
+    console.log('[LegendaryList][DidEnter] netwrkId:', this.netwrkId);
     this.showLegendaryMessages();
+  }
+
+  ionViewDidLoad() {
+    console.log('[LegendaryListModal][DidLoad]');
   }
 }

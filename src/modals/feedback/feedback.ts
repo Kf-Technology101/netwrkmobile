@@ -36,8 +36,6 @@ export class FeedbackModal {
     isBlocked: false
   };
 
-  private showLegendary: boolean;
-
   private likeData:any;
   private data:any;
 
@@ -160,7 +158,6 @@ export class FeedbackModal {
   }
 
   ionViewDidEnter() {
-    this.showLegendary = this.params.get('showLegendary');
     this.postInf.totalLikes = this.params.get('totalLikes');
     this.postStatus.isLiked = this.params.get('likedByUser');
     this.postInf.totalLegendary = this.params.get('totalLegendary');

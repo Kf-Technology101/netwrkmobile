@@ -135,6 +135,7 @@ export class ChatPage {
     hint: null,
   };
   private contentPadding: string;
+  private contentMargin: string;
 
   private canRefresh: boolean = false;
   private idList: any = [];
@@ -220,11 +221,17 @@ export class ChatPage {
       // console.log(res);
       this.chatPrvd.postBtn.setState(true);
       if (this.plt.is('ios')) {
-        let footerEl = document.getElementsByClassName('chatFooter')['0'];
-        let scrollEl = document.getElementsByClassName('scroll-content')['0'];
-        scrollEl.style.bottom = res.keyboardHeight + 'px';
-        scrollEl.style.margin = '0px 0px ' + res.keyboardHeight + 70 + 'px 0px';
-        footerEl.style.bottom = res.keyboardHeight + 'px';
+        try {
+          let footerEl = document.getElementsByClassName('chatFooter')['0'];
+          let scrollEl = document.getElementsByClassName('scroll-content')['0'];
+          scrollEl.style.bottom = res.keyboardHeight + 'px';
+          // scrollEl.style.margin = '0px 0px ' + res.keyboardHeight + 70 + 'px 0px';
+          footerEl.style.bottom = res.keyboardHeight + 'px';
+
+          this.contentMargin = res.keyboardHeight + 70 + 'px';
+        } catch (e) {
+          console.log(e);
+        }
       }
       this.chatPrvd.mainBtn.setState('minimised');
       if (!this.chatPrvd.appendContainer.hidden) {
@@ -240,11 +247,17 @@ export class ChatPage {
     this.keyboard.onKeyboardHide().subscribe(res => {
       // console.log(res);
       if (this.plt.is('ios')) {
-        let footerEl = document.getElementsByClassName('chatFooter')['0'];
-        let scrollEl = document.getElementsByClassName('scroll-content')['0'];
-        footerEl.style.bottom = '0';
-        scrollEl.style.margin = '0px 0px 70px 0px';
-        scrollEl.style.bottom = '0';
+        try {
+          let footerEl = document.getElementsByClassName('chatFooter')['0'];
+          let scrollEl = document.getElementsByClassName('scroll-content')['0'];
+          footerEl.style.bottom = '0';
+          // scrollEl.style.margin = '0px 0px 70px 0px';
+          scrollEl.style.bottom = '0';
+
+          this.contentMargin = null;
+        } catch (e) {
+          console.log(e);
+        }
       }
       // setTimeout(() => {
       if (!this.chatPrvd.appendContainer.hidden) {
@@ -377,10 +390,14 @@ export class ChatPage {
 
   setContentPadding(status) {
     // console.log(document.documentElement.clientHeight + '');
-    this.contentPadding = status
-      ? document.documentElement.clientHeight / 2 + 76 + 'px'
-      : '130px';
-    this.chatPrvd.scrollToBottom(this.content);
+    try {
+      this.contentPadding = status
+        ? document.documentElement.clientHeight / 2 + 76 + 'px'
+        : '130px';
+      this.chatPrvd.scrollToBottom(this.content);
+    } catch (e) {
+      console.log(e);
+    }
   }
 
   toggleContainer(container, visibility?: string, name?: string) {

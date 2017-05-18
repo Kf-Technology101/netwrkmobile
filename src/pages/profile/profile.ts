@@ -245,9 +245,11 @@ export class ProfilePage {
     let params: any = {
       user_id: this.user.id,
       offset: this.posts.length,
+      undercover: undercover,
+      public: this.profileTypePublic,
     };
 
-    let mesReq = this.chatPrvd.getMessages(undercover, null, params).subscribe(res => {
+    let mesReq = this.chatPrvd.getMessagesByUserId(params).subscribe(res => {
       console.log(res);
       if (res.messages && res.messages.length == 0) this.postLoaded = true;
       if (params.offset == 0) this.posts = [];

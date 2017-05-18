@@ -104,7 +104,8 @@
 
 <ion-content has-main-btn has-main-btn-label
   [ngClass]="{'netwrk-content': !isUndercover}"
-  [ngStyle]="{'padding-bottom': contentPadding}">
+  [ngStyle]="{'padding-bottom': contentPadding,
+    'margin-bottom': contentMargin}">
   <ion-refresher (ionRefresh)="refreshChat($event)">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"

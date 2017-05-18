@@ -196,6 +196,21 @@ export class Chat {
     return seqMap;
   }
 
+  public getMessagesByUserId(params: any) {
+    let data: any = {
+      network_id: this.networkPrvd.getNetworkId(),
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng,
+      limit: 20
+    };
+
+    if (params) Object.assign(data, params);
+
+    let seq = this.api.get('messages', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+
   public saveNetwork(network: any) {
     this.localStorage.set('current_network', network);
   }

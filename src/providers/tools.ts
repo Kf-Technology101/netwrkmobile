@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { Network } from '@ionic-native/network';
 
 import { LogInPage } from '../pages/log-in/log-in';
@@ -64,7 +65,6 @@ export class Tools {
       });
     }, 1);
   }
-
 
   public initNetworkSubscribtion() {
     // watch network for a disconnect
@@ -133,4 +133,5 @@ export class Tools {
     console.log(error);
     this.app.getActiveNav().setRoot(LogInPage);
   }
+
 }

@@ -256,7 +256,7 @@ export class ChatPage {
 
           this.contentMargin = null;
         } catch (e) {
-          console.log(e);
+          console.log('on-keyboard-show error:', e);
         }
       }
       // setTimeout(() => {
@@ -935,32 +935,21 @@ export class ChatPage {
       this.content.resize();
     }
 
-    this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
+    // this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
 
     this.chatPrvd.updateAppendContainer();
 
-    // this.startMessageUpdateTimer();
-    // this.updateMessagesAndScrollDown();
-
     this.user = this.authPrvd.getAuthData();
-    // console.log('[current user]:', this.user);
-
-    // if (this.user.log_in_count > 1 /*&&
-    // this.chatPrvd.getState() == 'area'*/) {
-    //   this.goToProfile();
-    // }
-    // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
 
     this.gpsPrvd.getNetwrk(this.gpsPrvd.zipCode).subscribe(res => {
       this.chatPrvd.saveNetwork(res.network);
     });
 
-    if (this.isUndercover) {
-      this.startMessageUpdateTimer();
-    } else {
+    if (this.chatPrvd.getState() == 'area')
       this.updateMessagesAndScrollDown();
-    }
+    else
+      this.startMessageUpdateTimer();
   }
 
   goToProfile(profileId?: number, profileTypePublic?: boolean) {
@@ -979,7 +968,8 @@ export class ChatPage {
   ionViewWillLeave() {
     // console.log('[UNDERCOVER.ts] viewWillLeave');
     this.chatPrvd.messageDateTimer.stop();
-    clearInterval(this.messagesInterval);
+    if (this.messagesInterval) clearInterval(this.messagesInterval);
+    if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
     if (this.idList && this.idList.length > 0) {
       this.canRefresh = false;
       this.sendDeletedMessages();

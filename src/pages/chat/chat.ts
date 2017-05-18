@@ -962,6 +962,7 @@ export class ChatPage {
   }
 
   ionViewDidLoad() {
+    this.toolsPrvd.initNetworkSubscribtion();
     // console.log('[UNDERCOVER.ts] viewDidLoad');
     this.chatPrvd.messageDateTimer.enableLogMessages = true;
     this.generateEmoticons();

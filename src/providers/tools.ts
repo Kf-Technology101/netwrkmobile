@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Network } from '@ionic-native/network';
 
 import { LogInPage } from '../pages/log-in/log-in';
 
@@ -24,7 +25,8 @@ export class Tools {
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
     public auth: Auth,
-    public app: App
+    public app: App,
+    private network: Network
   ) {}
 
   public doBackButton() {
@@ -61,6 +63,33 @@ export class Tools {
         console.log('[loader close] Error:', err);
       });
     }, 1);
+  }
+
+
+  public initNetworkSubscribtion() {
+    // watch network for a disconnect
+    let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      this.showToast('network was disconnected :-(');
+    });
+
+    // stop disconnect watch
+    // disconnectSubscription.unsubscribe();
+
+    // watch network for a connection
+    let connectSubscription = this.network.onConnect().subscribe(() => {
+      this.showToast('network connected!'); 
+      // We just got a connection but we need to wait briefly
+       // before we determine the connection type.  Might need to wait 
+      // prior to doing any api requests as well.
+      setTimeout(() => {
+        if (this.network.type === 'wifi') {
+          this.showToast('we got a wifi connection, woohoo!');
+        }
+      }, 3000);
+    });
+
+    // stop connect watch
+    // connectSubscription.unsubscribe();
   }
 
   public pushPage(page: any, params?: any, animate?: boolean) {
@@ -104,5 +133,4 @@ export class Tools {
     console.log(error);
     this.app.getActiveNav().setRoot(LogInPage);
   }
-
 }

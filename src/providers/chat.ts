@@ -75,7 +75,7 @@ export class Chat {
     public modalCtrl: ModalController,
     private networkPrvd: Network
   ) {
-    console.log('Hello Chat Provider');
+    // console.log('Hello Chat Provider');
     this.hostUrl = this.api.hostUrl;
   }
 
@@ -83,7 +83,7 @@ export class Chat {
     if (this.sounds[audioName]) {
       this.sounds[audioName].play();
     } else {
-      console.error('Error playing sound. audioName:', audioName);
+      // console.error('Error playing sound. audioName:', audioName);
     }
   }
 
@@ -133,20 +133,20 @@ export class Chat {
       if (data.images && data.images.length > 0) {
         this.tools.showLoader();
         this.sendMessageWithImage(params, data.images).then(res => {
-          console.log(res);
+          // console.log(res);
           this.tools.hideLoader();
           resolve(res);
         }).catch(err => {
-          console.log(err);
+          // console.log(err);
           reject(err);
         });
       } else {
-        console.log('params', params);
+        // console.log('params', params);
         this.sendMessageWithoutImage(params).subscribe(res => {
-          console.log('[SEND MESSAGE] res:', res);
+          // console.log('[SEND MESSAGE] res:', res);
           resolve(res);
         }, err => {
-          console.log(err);
+          // console.log(err);
           reject(err);
         });
       }
@@ -163,7 +163,8 @@ export class Chat {
   public getMessages(
     undercover: boolean,
     messagesArray?: Array<any>,
-    params?: any
+    params?: any,
+    doRefresh?: any
   ) {
     let offset: number = messagesArray && messagesArray.length
       ? messagesArray.length : 0;
@@ -181,8 +182,8 @@ export class Chat {
     for (let i in messagesArray) {
       messagesIds.push(messagesArray[i].id);
     }
-    console.log('messagesIds:', messagesIds);
-    if (data.undercover) {
+    // console.log('messagesIds:', messagesIds);
+    if (data.undercover && !doRefresh) {
       data.offset = 0;
       data.limit = offset == 0 ? 20 : offset;
       data.current_ids = messagesIds;
@@ -220,7 +221,7 @@ export class Chat {
   }
 
   public getLegendaryHistory(netId:number) {
-    console.log('[getLegendaryHistory] netId:', netId);
+    // console.log('[getLegendaryHistory] netId:', netId);
     let legendaryList = this.api.get('messages/legendary_list', { network_id: netId }).share();
     let legendaryMap = legendaryList.map(res => res.json());
     return legendaryMap;
@@ -242,10 +243,10 @@ export class Chat {
         images.push(i);
       }
 
-      console.log(images);
+      // console.log(images);
 
       var getFileBlob = function (url, cb) {
-        console.log(url, cb);
+        // console.log(url, cb);
         var xhr = new XMLHttpRequest();
         xhr.open("GET", url);
         xhr.responseType = "blob";
@@ -256,14 +257,14 @@ export class Chat {
       };
 
       var blobToFile = function (blob, name) {
-        console.log(blob, name);
+        // console.log(blob, name);
         blob.lastModifiedDate = new Date();
         blob.name = name;
         return blob;
       };
 
       var getFileObject = function(filePathOrUrl, cb) {
-        console.log(filePathOrUrl, cb);
+        // console.log(filePathOrUrl, cb);
          getFileBlob(filePathOrUrl, function (blob) {
             cb(blobToFile(blob, filePathOrUrl.split('/').pop()));
          });
@@ -274,10 +275,10 @@ export class Chat {
       let r = (i) => {
         getFileObject(images[i], function (fileObject) {
           files.push(fileObject);
-            console.log(fileObject);
+            // console.log(fileObject);
             i++;
             if (i == images.length) {
-              console.log('end', files);
+              // console.log('end', files);
               let xhr: XMLHttpRequest = new XMLHttpRequest();
 
               let formData: FormData = self.api.createFormData(params);
@@ -287,10 +288,10 @@ export class Chat {
               xhr.onreadystatechange = () => {
                 if (xhr.readyState === 4) {
                   if (xhr.status === 200) {
-                    console.log(JSON.parse(xhr.response));
+                    // console.log(JSON.parse(xhr.response));
                     resolve(JSON.parse(xhr.response));
                   } else {
-                    console.log(xhr.response);
+                    // console.log(xhr.response);
                     reject(xhr.response);
                   }
                 }
@@ -312,7 +313,7 @@ export class Chat {
 
   private sendMessageWithoutImage(data: any) {
     data.message.images = [];
-    console.log('data', data);
+    // console.log('data', data);
     let seq = this.api.post('messages', data).share();
     let seqMap = seq.map(res => res.json());
 
@@ -320,7 +321,7 @@ export class Chat {
   }
 
   public updateAppendContainer() {
-    console.log("[chatPrvd] updateAppendContainer()...");
+    // console.log("[chatPrvd] updateAppendContainer()...");
     let pictures = this.cameraPrvd.takenPictures;
     if (pictures && pictures.length > 0) {
       this.plusBtn.setState('default');
@@ -355,7 +356,9 @@ export class Chat {
           }
         }
         this.updateAppendContainer();
-      }, err => console.log('[imagePicker] err:', err));
+      }, err => {
+      //console.log('[imagePicker] err:', err);
+      });
     }
   }
 
@@ -366,12 +369,12 @@ export class Chat {
         message_id: messageData.id,
         user: this.authPrvd.getAuthData()
       };
-      console.log('message data:', messageData);
-      console.log('feedback data:', feedbackData);
+      // console.log('message data:', messageData);
+      // console.log('feedback data:', feedbackData);
       this.mainBtn.setState('minimised');
-      console.log('messageData.image_urls', messageData.image_urls);
+      // console.log('messageData.image_urls', messageData.image_urls);
       let image = messageData.image_urls.length > 0 ? messageData.image_urls[0] : null;
-      console.log('image', image);
+      // console.log('image', image);
       let params = {
         data: feedbackData,
         messageText: messageData.text,
@@ -388,7 +391,7 @@ export class Chat {
 
   public goToProfile(profileId?: number, profileTypePublic?: boolean): Promise<any> {
     return new Promise(res => {
-      console.log('[ChatProvider][goToProfile]', profileTypePublic);
+      // console.log('[ChatProvider][goToProfile]', profileTypePublic);
       if (!profileId) profileId = this.authPrvd.getAuthData().id;
       let params = {
         id: profileId,
@@ -421,7 +424,7 @@ export class Chat {
       clearTimeout(this.scrollTimer.timeout);
     }
     this.scrollTimer.interval = setInterval(() => {
-      console.log('[scrollToBottom] loaded:', this.loadedImages + '/' + this.imagesToLoad);
+      // console.log('[scrollToBottom] loaded:', this.loadedImages + '/' + this.imagesToLoad);
       if (this.imagesToLoad == this.loadedImages) {
         content.scrollTo(0, content.getContentDimensions().scrollHeight, 100);
         clearInterval(this.scrollTimer.interval);
@@ -453,13 +456,13 @@ export class Chat {
         arg = isUndercover;
       break;
     }
-    console.log('[ChatPage][showMessages] isUndercover:', isUndercover);
+    // console.log('[ChatPage][showMessages] isUndercover:', isUndercover);
     return new Promise(res => {
       loadMessages(arg).subscribe(data => {
-        console.log('[ChatPage][showMessages] data:', data);
+        // console.log('[ChatPage][showMessages] data:', data);
         // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
         if (!data) {
-          console.warn('[showMessages] NO DATA');
+          // console.warn('[showMessages] NO DATA');
           this.tools.hideLoader();
           this.isMainBtnDisabled = false;
           return;
@@ -468,7 +471,7 @@ export class Chat {
           res({
             messages: this.organizeMessages(data.messages.reverse()),
             callback: (mess) => {
-              console.log('[showMessages] messages:', mess);
+              // console.log('[showMessages] messages:', mess);
               this.calcTotalImages(mess);
               this.messageDateTimer.start(mess);
               setTimeout(() => {
@@ -480,7 +483,7 @@ export class Chat {
           res({
             messages: this.organizeMessages(data.messages.reverse()),
             callback: (mess) => {
-              console.log('[showMessages] messages:', mess);
+              // console.log('[showMessages] messages:', mess);
               this.calcTotalImages(mess);
               this.messageDateTimer.start(mess);
               setTimeout(() => {
@@ -492,7 +495,7 @@ export class Chat {
       }, err => {
         this.tools.hideLoader();
         this.isMainBtnDisabled = false;
-        console.log('[getMessage] Err:', err);
+        // console.log('[getMessage] Err:', err);
       });
     })
   }

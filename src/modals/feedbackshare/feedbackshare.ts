@@ -90,7 +90,12 @@ export class FeedbackShareModal {
   }
 
   closeModal() {
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss({
+      totalLikes: this.params.get('totalLikes'),
+      totalLegendary: this.params.get('totalLegendary'),
+      likedByUser: this.params.get('likedByUser'),
+      legendaryByUser: this.params.get('legendaryByUser')
+    });
   }
 
   ionViewDidEnter() {

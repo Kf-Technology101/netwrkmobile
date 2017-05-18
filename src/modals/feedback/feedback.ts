@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { NavParams, ViewController, ModalController, AlertController } from 'ionic-angular';
 
+import { Tools } from '../../providers/tools';
 import { Chat } from '../../providers/chat';
 import { toggleFade } from '../../includes/animations';
 
@@ -44,7 +45,8 @@ export class FeedbackModal {
     private viewCtrl: ViewController,
     public chatPrvd: Chat,
     public modalCtrl: ModalController,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public toolsPrvd: Tools
   ) {
     this.data = params.get('data');
     this.likeData = {
@@ -61,7 +63,18 @@ export class FeedbackModal {
   goShare() {
     let feedbackShareModal = this.modalCtrl.create(FeedbackShareModal, {
       message: this.params.get('messageText'),
-      image: this.params.get('messageImage')
+      image: this.params.get('messageImage'),
+      totalLikes: this.postInf.totalLikes,
+      likedByUser: this.postStatus.likedByUser,
+      totalLegendary: this.postInf.totalLegendary,
+      legendaryByUser: this.postStatus.legendaryByUser
+    });
+    feedbackShareModal.onDidDismiss(data => {
+      console.log('feedbackShareModal.onDidDismiss -> data:', data);
+      this.postInf.totalLikes = data.totalLikes;
+      this.postStatus.isLiked = data.likedByUser;
+      this.postInf.totalLegendary = data.totalLegendary;
+      this.postStatus.isLegendary = data.legendaryByUser;
     });
     feedbackShareModal.present();
   }
@@ -158,10 +171,14 @@ export class FeedbackModal {
   }
 
   ionViewDidEnter() {
+    this.toolsPrvd.hideLoader();
     this.postInf.totalLikes = this.params.get('totalLikes');
     this.postStatus.isLiked = this.params.get('likedByUser');
     this.postInf.totalLegendary = this.params.get('totalLegendary');
     this.postStatus.isLegendary = this.params.get('legendaryByUser');
+
+    console.log('postInf:', this.postInf);
+    console.log('postStatus:', this.postStatus);
     console.log('isLegendary:', this.postStatus.isLegendary);
     if (!this.postInf.totalLikes) {
       this.postInf.totalLikes = 0;

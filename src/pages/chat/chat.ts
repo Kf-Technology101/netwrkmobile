@@ -604,6 +604,7 @@ export class ChatPage {
   }
 
   openFeedbackModal(messageData: any, mIndex: number) {
+    this.toolsPrvd.showLoader();
     this.chatPrvd.sendFeedback(messageData, mIndex).then(res => {
       let feedbackModal = this.modalCtrl.create(FeedbackModal, res);
       feedbackModal.onDidDismiss(data => {
@@ -676,7 +677,7 @@ export class ChatPage {
       }
       this.content.resize();
       // this.startMessageUpdateTimer();
-      this.updateMessagesAndScrollDown();
+      this.updateMessagesAndScrollDown('scroll');
     }, 1);
   }
 
@@ -788,9 +789,9 @@ export class ChatPage {
         this.chatUsers.push(this.user);
       }
 
-      this.toolsPrvd.hideLoader();
 
       console.log(this.chatUsers, this.user, this.chatUsers[this.user.is]);
+      this.toolsPrvd.hideLoader();
     }, err => {
       console.log(err);
       this.toolsPrvd.hideLoader();
@@ -815,14 +816,43 @@ export class ChatPage {
     });
   }
 
+  sortById(messageA, messageB) {
+    return messageA.id - messageB.id;
+  }
+
+  private getAndUpdateUndercoverMessages() {
+    this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
+    .subscribe(res => {
+      console.log('[sendMessagesIds] res:', res);
+      if (res.ids_to_remove && res.ids_to_remove.length > 0) {
+        for (let i in this.postMessages) {
+          for (let j in res.ids_to_remove) {
+            if (this.postMessages[i].id == res.ids_to_remove[j]) {
+              this.postMessages.splice(i, 1);
+            }
+          }
+        }
+      }
+      if (res.messages && res.messages.length > 0) {
+        this.postMessages = this.postMessages.concat(res.messages);
+        this.postMessages.sort(this.sortById);
+        this.chatPrvd.messageDateTimer.start(this.postMessages);
+        console.log('messages after sort:', this.postMessages);
+      }
+    }, err => {
+      console.error('[sendMessagesIds] error:', err);
+    });
+  }
+
   private startMessageUpdateTimer() {
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
     if (this.chatPrvd.getState() != 'area') {
-      this.updateMessagesAndScrollDown('noscroll');
+      this.getAndUpdateUndercoverMessages();
       this.messagesInterval = setInterval(() => {
         console.log('[messageTimer] starting interval...');
-        this.updateMessagesAndScrollDown('noscroll');
+        // this.updateMessagesAndScrollDown();
+        this.getAndUpdateUndercoverMessages();
       }, 10000);
     }
   }
@@ -834,7 +864,7 @@ export class ChatPage {
     }
   }
 
-  private getMessagesIds(messageArray) {
+  private getMessagesIds(messageArray: any) {
     let idList = [];
     for (let m in messageArray) {
       idList.push(messageArray[m].id);
@@ -892,7 +922,7 @@ export class ChatPage {
     this.chatPrvd.updateAppendContainer();
 
     // this.startMessageUpdateTimer();
-    this.updateMessagesAndScrollDown();
+    // this.updateMessagesAndScrollDown();
 
     this.user = this.authPrvd.getAuthData();
     console.log('[current user]:', this.user);
@@ -907,6 +937,11 @@ export class ChatPage {
       this.chatPrvd.saveNetwork(res.network);
     });
 
+    if (this.isUndercover) {
+      this.startMessageUpdateTimer();
+    } else {
+      this.updateMessagesAndScrollDown();
+    }
   }
 
   goToProfile(profileId?: number, profileTypePublic?: boolean) {

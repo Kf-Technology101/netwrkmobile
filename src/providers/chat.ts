@@ -168,7 +168,7 @@ export class Chat {
     let offset: number = messagesArray && messagesArray.length
       ? messagesArray.length : 0;
 
-    let data = {
+    let data: any = {
       post_code: this.gps.zipCode,
       undercover: undercover,
       lat: this.gps.coords.lat,
@@ -176,6 +176,17 @@ export class Chat {
       offset: offset,
       limit: 20
     };
+
+    let messagesIds = [];
+    for (let i in messagesArray) {
+      messagesIds.push(messagesArray[i].id);
+    }
+    console.log('messagesIds:', messagesIds);
+    if (data.undercover) {
+      data.offset = 0;
+      data.limit = offset == 0 ? 20 : offset;
+      data.current_ids = messagesIds;
+    }
 
     if (params) Object.assign(data, params);
 
@@ -396,7 +407,7 @@ export class Chat {
     this.loadedImages = 0;
     this.imagesToLoad = 0;
     for (let i in messages) {
-      if (messages[i].image_urls.length > 0) {
+      if (messages[i].image_urls && messages[i].image_urls.length > 0) {
         this.imagesToLoad += messages[i].image_urls.length;
       }
     }
@@ -414,7 +425,10 @@ export class Chat {
       if (this.imagesToLoad == this.loadedImages) {
         content.scrollTo(0, content.getContentDimensions().scrollHeight, 100);
         clearInterval(this.scrollTimer.interval);
-        this.isMessagesVisible = true;
+        setTimeout(() => {
+          this.isMessagesVisible = true;
+          this.tools.hideLoader();
+        }, 150);
       }
     }, 300);
     this.scrollTimer.timeout = setTimeout(() => {
@@ -458,7 +472,6 @@ export class Chat {
               this.calcTotalImages(mess);
               this.messageDateTimer.start(mess);
               setTimeout(() => {
-                this.tools.hideLoader();
                 this.isMainBtnDisabled = false;
               }, 1);
             }
@@ -471,7 +484,6 @@ export class Chat {
               this.calcTotalImages(mess);
               this.messageDateTimer.start(mess);
               setTimeout(() => {
-                this.tools.hideLoader();
                 this.isMainBtnDisabled = false;
               }, 1);
             }

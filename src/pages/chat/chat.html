@@ -145,7 +145,7 @@
               [ngClass]="{ 'emoji' : message.is_emoji }">{{ message.text }}</span>
       </p>
       <button class="feedback-button" (click)="openFeedbackModal(message, i)"
-        *ngIf="!message.locked">
+        *ngIf="!message.locked" [disabled]="!isFeedbackClickable">
       </button>
       <button class="feedback-button lock"
         *ngIf="message.locked">

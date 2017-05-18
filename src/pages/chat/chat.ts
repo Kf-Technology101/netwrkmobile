@@ -144,6 +144,7 @@ export class ChatPage {
   private pageTag: string;
 
   private authData: any;
+  private isFeedbackClickable: boolean = true;
 
   constructor(
     public navCtrl: NavController,
@@ -229,6 +230,7 @@ export class ChatPage {
           footerEl.style.bottom = res.keyboardHeight + 'px';
 
           this.contentMargin = res.keyboardHeight + 70 + 'px';
+          this.isFeedbackClickable = false;
         } catch (e) {
           console.log(e);
         }
@@ -255,6 +257,7 @@ export class ChatPage {
           scrollEl.style.bottom = '0';
 
           this.contentMargin = null;
+          this.isFeedbackClickable = true;
         } catch (e) {
           console.log('on-keyboard-show error:', e);
         }

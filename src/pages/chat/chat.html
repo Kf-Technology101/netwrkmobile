@@ -145,7 +145,7 @@
               [ngClass]="{ 'emoji' : message.is_emoji }">{{ message.text }}</span>
       </p>
       <button class="feedback-button" (click)="openFeedbackModal(message, i)"
-        *ngIf="!message.locked" [disabled]="!isFeedbackClickable">
+        *ngIf="!message.locked" [ngStyle]="{ 'pointer-events: none' : !isFeedbackClickable }">
       </button>
       <button class="feedback-button lock"
         *ngIf="message.locked">
@@ -295,7 +295,7 @@
 
       <button ion-button item-right clear
         [ngClass]="{ 'post-button' : chatPrvd.postBtn.state }"
-        (tap)="postMessage()" class="post-message">
+        (click)="postMessage()" class="post-message">
         <img *ngIf="!chatPrvd.postBtn.state && !isUndercover"
           src="assets/icon/netwrk-chat.svg">
         <span *ngIf="chatPrvd.postBtn.state

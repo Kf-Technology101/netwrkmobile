@@ -953,6 +953,10 @@ export class ChatPage {
       this.updateMessagesAndScrollDown();
     else
       this.startMessageUpdateTimer();
+
+    this.zone.run(() => {
+      this.undercoverPrvd.profileType = this.undercoverPrvd.profileType;
+    });
   }
 
   goToProfile(profileId?: number, profileTypePublic?: boolean) {

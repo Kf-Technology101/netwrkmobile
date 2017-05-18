@@ -74,33 +74,11 @@ export class ProfileSettingPage {
     }
     // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
 
-    this.keyboard.onKeyboardHide().subscribe(keyboard => {
-      let params: any;
-      if (this.slideAvatarPrvd.sliderPosition == 'right') {
-        if (this.userName && this.userDescription)
-        params = {
-          user: {
-            role_name: this.userName,
-            role_description: this.userDescription,
-          }
-        }
-      } else {
-        if (this.userName)
-        params = { user: { name: this.userName } }
-      }
-
-      if (params)
-      this.userPrvd.update(this.user.id, params)
-      .map(res => res.json()).subscribe(res => {
-        console.log(res);
-        this.user = res;
-        // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
-      }, err => {
-        console.log(err);
-      });
-    }, err => {
-      console.log(err);
-    });
+    // this.keyboard.onKeyboardHide().subscribe(keyboard => {
+    //
+    // }, err => {
+    //   console.log(err);
+    // });
   }
 
   public uploadCallback(event: Event): void {
@@ -150,14 +128,43 @@ export class ProfileSettingPage {
         this.undercoverPrvd.profileType = 'undercover';
         this.profileTypePublic = false;
       }
+
       this.userName = this.slideAvatarPrvd.sliderPosition == 'left'
         ? this.user.name
         : this.user.role_name;
       this.userDescription = this.user.role_description;
+
+      this.saveChanges();
     });
   }
 
   goBack() { this.tools.popPage(); }
+
+  private saveChanges() {
+    let params: any;
+    if (this.slideAvatarPrvd.sliderPosition == 'right') {
+      if (this.userName && this.userDescription)
+      params = {
+        user: {
+          role_name: this.userName,
+          role_description: this.userDescription,
+        }
+      }
+    } else {
+      if (this.userName)
+      params = { user: { name: this.userName } }
+    }
+
+    if (params)
+    this.userPrvd.update(this.user.id, params)
+    .map(res => res.json()).subscribe(res => {
+      console.log(res);
+      this.user = res;
+      // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
+    }, err => {
+      console.log(err);
+    });
+  }
 
   ionViewDidLoad() {
     // this.slideAvatar.startSliderEvents();
@@ -166,6 +173,8 @@ export class ProfileSettingPage {
   ionViewWillLeave() {
     // this.slideAvatar.stopSliderEvents();
     this.slideAvatarPrvd.changeCallback = null;
+
+    this.saveChanges();
   }
 
   ionViewDidEnter() {

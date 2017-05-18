@@ -190,19 +190,20 @@ export class ProfilePage {
   }
 
   private showMessagesWithType() {
-    if (this.ownProfile) {
-      if (this.slideAvatarPrvd.sliderPosition == 'right') {
-        this.showMessages();
-      } else {
-        this.showMessages(false);
-      }
-    } else {
-      if (this.profileTypePublic) {
-        this.showMessages(false);
-      } else {
-        this.showMessages(true);
-      }
-    }
+    // if (this.ownProfile) {
+    //   if (this.slideAvatarPrvd.sliderPosition == 'right') {
+    //     this.showMessages();
+    //   } else {
+    //     this.showMessages(false);
+    //   }
+    // } else {
+    //   if (this.profileTypePublic) {
+    //     this.showMessages(false);
+    //   } else {
+    //     this.showMessages(true);
+    //   }
+    // }
+    this.showMessages(this.undercoverPrvd.isUndercover);
   }
 
   private showUserData(res: any) {
@@ -230,24 +231,34 @@ export class ProfilePage {
 
   changeCallback(positionLeft?: boolean) {
     console.log('changeCallback', positionLeft);
-    positionLeft ? this.showMessages(false) : this.showMessages();
+    // positionLeft ? this.showMessages(false) : this.showMessages();
     this.zone.run(() => {
       if (positionLeft) {
         this.undercoverPrvd.profileType = 'public';
       } else {
         this.undercoverPrvd.profileType = 'undercover';
       }
+      this.posts = [];
+      this.showMessages(this.undercoverPrvd.isUndercover);
     });
   }
 
   private showMessages(undercover?: any) {
-    console.log('showMessages')
     let params: any = {
       user_id: this.user.id,
       offset: this.posts.length,
       undercover: undercover,
       public: this.profileTypePublic,
     };
+
+    if (this.ownProfile) {
+      params.public = this.slideAvatarPrvd.sliderPosition == 'right'
+        ? false : true;
+    } else {
+      params.public = this.profileTypePublic;
+    }
+
+    console.log('showMessages');
 
     let mesReq = this.chatPrvd.getMessagesByUserId(params).subscribe(res => {
       console.log(res);

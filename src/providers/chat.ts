@@ -206,7 +206,7 @@ export class Chat {
 
     if (params) Object.assign(data, params);
 
-    let seq = this.api.get('messages', data).share();
+    let seq = this.api.get('messages/profile_messages', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }

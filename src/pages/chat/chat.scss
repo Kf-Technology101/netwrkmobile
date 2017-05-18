@@ -609,6 +609,9 @@ modal-legendaryhistory {
           background: url(../assets/icon/like.svg) no-repeat center;
           background-size: 75%;
           background-color: color($colors, bk);
+          &.disabled {
+            pointer-events: none!important;
+          }
           &.active {
             background-color: color($colors, bk-active-blue);
           }

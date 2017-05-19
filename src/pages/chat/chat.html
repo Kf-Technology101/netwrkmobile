@@ -112,8 +112,8 @@
       refreshingSpinner="ios">
     </ion-refresher-content>
   </ion-refresher>
-  <div class="chat-container" #chatContainer
-      [ngClass]="{'visible' : chatPrvd.isMessagesVisible}">
+  <div class="chat-container visible" #chatContainer>
+    <!-- [ngClass]="{'visible' : chatPrvd.isMessagesVisible}" -->
     <div class="message" *ngFor="let message of postMessages; let i = index"
          [@fadeState]="'fadeInVeryFast'">
       <img *ngIf="message.user"

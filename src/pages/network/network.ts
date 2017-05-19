@@ -9,7 +9,7 @@ import { NetworkContactListPage } from '../network-contact-list/network-contact-
 // Providers
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
-import { Network } from '../../providers/network';
+import { NetworkProvider } from '../../providers/network';
 import { Gps } from '../../providers/gps';
 import { Chat } from '../../providers/chat';
 import { Auth } from '../../providers/auth';
@@ -35,7 +35,7 @@ export class NetworkPage {
     public toolsPrvd: Tools,
     public undercoverPrvd: UndercoverProvider,
     public gpsPrvd: Gps,
-    public networkPrvd: Network,
+    public networkPrvd: NetworkProvider,
     public chatPrvd: Chat,
     public authPrvd: Auth
   ) {

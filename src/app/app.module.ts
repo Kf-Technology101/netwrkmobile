@@ -52,7 +52,7 @@ import { Gps } from '../providers/gps';
 import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
 import { Share } from '../providers/share';
-import { Network } from '../providers/network';
+import { NetworkProvider } from '../providers/network';
 import { Camera } from '../providers/camera';
 import { Chat } from '../providers/chat';
 
@@ -64,6 +64,7 @@ import { File } from '@ionic-native/file';
 import { Transfer } from '@ionic-native/transfer';
 import { Facebook } from '@ionic-native/facebook';
 import { Keyboard } from '@ionic-native/keyboard';
+import { Network } from '@ionic-native/network';
 
 // enableProdMode();
 
@@ -120,7 +121,7 @@ export function providers() {
     UndercoverProvider,
     SlideAvatar,
     Share,
-    Network,
+    NetworkProvider,
     Camera,
     Chat,
 
@@ -131,6 +132,7 @@ export function providers() {
     File,
     Transfer,
     Keyboard,
+    Network,
 
     SplashScreen,
     StatusBar,

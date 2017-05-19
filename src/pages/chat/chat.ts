@@ -33,7 +33,7 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 import { Auth } from '../../providers/auth';
 import { Camera } from '../../providers/camera';
 import { Chat } from '../../providers/chat';
-import { Network } from '../../providers/network';
+import { NetworkProvider } from '../../providers/network';
 import { Gps } from '../../providers/gps';
 import { Social } from '../../providers/social';
 
@@ -157,7 +157,7 @@ export class ChatPage {
     public authPrvd: Auth,
     public cameraPrvd: Camera,
     public chatPrvd: Chat,
-    public networkPrvd: Network,
+    public networkPrvd: NetworkProvider,
     public gpsPrvd: Gps,
     public plt: Platform,
     public socialPrvd: Social,
@@ -694,10 +694,11 @@ export class ChatPage {
       } else {
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
+        this.updateMessagesAndScrollDown('scroll');
       }
       this.content.resize();
       // this.startMessageUpdateTimer();
-      this.updateMessagesAndScrollDown('scroll');
+
     }, 1);
   }
 
@@ -843,6 +844,7 @@ export class ChatPage {
   }
 
   private getAndUpdateUndercoverMessages() {
+    this.chatPrvd.isMainBtnDisabled = false;
     this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
     .subscribe(res => {
       // console.log('[sendMessagesIds] res:', res);
@@ -855,6 +857,7 @@ export class ChatPage {
           }
         }
       }
+
       if (res.messages && res.messages.length > 0) {
         this.postMessages = this.postMessages.concat(res.messages);
         this.postMessages.sort(this.sortById);
@@ -949,9 +952,10 @@ export class ChatPage {
       this.chatPrvd.saveNetwork(res.network);
     });
 
-    if (this.chatPrvd.getState() == 'area')
-      this.updateMessagesAndScrollDown();
-    else
+    // if (this.chatPrvd.getState() == 'area')
+    //   this.updateMessagesAndScrollDown();
+    // else
+    if (this.chatPrvd.getState() == 'undercover')
       this.startMessageUpdateTimer();
 
     this.zone.run(() => {
@@ -966,7 +970,6 @@ export class ChatPage {
   }
 
   ionViewDidLoad() {
-    this.toolsPrvd.initNetworkSubscribtion();
     // console.log('[UNDERCOVER.ts] viewDidLoad');
     this.chatPrvd.messageDateTimer.enableLogMessages = true;
     this.generateEmoticons();

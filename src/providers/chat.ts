@@ -15,7 +15,7 @@ import { MainButton } from '../includes/mainButton';
 // Gallery
 import { ImagePicker } from 'ionic-native';
 import { Camera } from '../providers/camera';
-import { Network } from '../providers/network';
+import { NetworkProvider } from '../providers/network';
 import { chatAnim } from '../includes/animations';
 // File transfer
 import { File } from '@ionic-native/file';
@@ -73,7 +73,7 @@ export class Chat {
     public plt: Platform,
     public authPrvd: Auth,
     public modalCtrl: ModalController,
-    private networkPrvd: Network
+    private networkPrvd: NetworkProvider
   ) {
     // console.log('Hello Chat Provider');
     this.hostUrl = this.api.hostUrl;

@@ -13,7 +13,7 @@ import { Auth } from '../../providers/auth';
 import { User } from '../../providers/user';
 import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
-import { Network } from '../../providers/network';
+import { NetworkProvider } from '../../providers/network';
 import { Gps } from '../../providers/gps';
 
 // Pipes
@@ -42,7 +42,7 @@ export class NetworkContactListPage {
     public userPrvd: User,
     public contactsPrvd: ContactsProvider,
     public tools: Tools,
-    public networkPrvd: Network,
+    public networkPrvd: NetworkProvider,
     public gpsPrvd: Gps
   ) {
     this.listType = this.navParams.get('type');

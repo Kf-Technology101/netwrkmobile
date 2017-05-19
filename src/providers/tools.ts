@@ -68,27 +68,37 @@ export class Tools {
 
   public initNetworkSubscribtion() {
     // watch network for a disconnect
-    let disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+    let disconnectSubscription = this.network.onDisconnect().subscribe(res => {
       this.showToast('network was disconnected :-(');
+      console.log('network.onConnect', res, this.network.type);
+    }, err => {
+      console.log('network.onDisconnect', err);
     });
 
     // stop disconnect watch
     // disconnectSubscription.unsubscribe();
 
-    // watch network for a connection
-    let connectSubscription = this.network.onConnect().subscribe(() => {
+    this.network.onConnect().subscribe(res => {
       this.showToast('network connected!'); 
-      // We just got a connection but we need to wait briefly
-       // before we determine the connection type.  Might need to wait 
-      // prior to doing any api requests as well.
-      setTimeout(() => {
-        if (this.network.type === 'wifi') {
-          this.showToast('we got a wifi connection, woohoo!');
-        }
-      }, 3000);
-    });
+      console.log('network.onConnect', res, this.network.type);
+    }, err => {
+      console.log('network.onConnect', err);
+    })
 
-    // stop connect watch
+    // // watch network for a connection
+    // let connectSubscription = this.network.onConnect().subscribe(() => {
+    //   this.showToast('network connected!'); 
+    //   // We just got a connection but we need to wait briefly
+    //    // before we determine the connection type.  Might need to wait 
+    //   // prior to doing any api requests as well.
+    //   setTimeout(() => {
+    //     if (this.network.type === 'wifi') {
+    //       this.showToast('we got a wifi connection, woohoo!');
+    //     }
+    //   }, 3000);
+    // });
+    //
+    // // stop connect watch
     // connectSubscription.unsubscribe();
   }
 

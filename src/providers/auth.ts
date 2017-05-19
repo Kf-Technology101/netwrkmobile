@@ -6,7 +6,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { Api } from './api';
 import { LocalStorage } from './local-storage';
-import { Network } from './network';
+import { NetworkProvider } from './network';
 import { Social } from './social';
 
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
@@ -22,7 +22,7 @@ export class Auth {
   constructor(
     public api: Api,
     public storage: LocalStorage,
-    public network: Network,
+    public network: NetworkProvider,
     public social: Social,
     private facebook: Facebook
   ) {

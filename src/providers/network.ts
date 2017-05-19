@@ -6,7 +6,7 @@ import { LocalStorage } from './local-storage';
 import { Gps } from './gps';
 
 @Injectable()
-export class Network {
+export class NetworkProvider {
 
   constructor(
     public api: Api,

@@ -169,8 +169,6 @@ export class ChatPage {
     private keyboard: Keyboard,
     private renderer: Renderer
   ) {
-
-    this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
@@ -883,6 +881,7 @@ export class ChatPage {
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
     if (this.chatPrvd.getState() != 'area') {
       this.getAndUpdateUndercoverMessages();
+      this.chatPrvd.scrollToBottom(this.content);
       this.messagesInterval = setInterval(() => {
         // console.log('[messageTimer] starting interval...');
         // this.updateMessagesAndScrollDown();
@@ -934,6 +933,7 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+    this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;
     this.chatPrvd.imagesToLoad = 0;

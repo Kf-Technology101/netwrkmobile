@@ -941,6 +941,8 @@ export class ChatPage {
     // this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
 
+    this.toggleContainer(this.emojiContainer, 'hide');
+    this.toggleContainer(this.shareContainer, 'hide');
     this.chatPrvd.updateAppendContainer();
 
     this.user = this.authPrvd.getAuthData();

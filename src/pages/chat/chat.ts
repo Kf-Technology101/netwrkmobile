@@ -691,6 +691,7 @@ export class ChatPage {
         this.cameraPreview.show();
         this.slideAvatarPrvd.sliderInit(this.pageTag, this.isUndercover);
         this.startMessageUpdateTimer();
+        this.chatPrvd.scrollToBottom(this.content);
       } else {
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();

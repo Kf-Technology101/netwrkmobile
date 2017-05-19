@@ -174,6 +174,44 @@ export class Gps {
         }).share();
         seq.map(res => res.json()).subscribe(res => {
           let zipCode: number = this.parseGoogleAddress(res.results);
+          let nav = this.app.getActiveNav();
+          let activeNav = nav.getActive();
+          if (zipCode != this.localStorage.get('chat_zip_code')) {
+            this.localStorage.rm('current_network');
+            this.localStorage.set('chat_zip_code', zipCode);
+            if (this.localStorage.get('chat_state') == 'area') {
+              let alert = this.alertCtrl.create({
+                title: 'Warning',
+                message: 'You left the Netwrk area, please join to other netwrk or go to Undercover',
+                buttons: [
+                  {
+                    text: 'Go Undercover',
+                    handler: () => {
+                      let alertDismiss = alert.dismiss();
+                      alertDismiss.then(() => {
+                        if (this.changeZipCallback) this.changeZipCallback({
+                          undercover: true
+                        });
+                      });
+                      return false;
+                    }
+                  },
+                  {
+                    text: 'Join',
+                    handler: () => {
+                      let alertDismiss = alert.dismiss();
+                      alertDismiss.then(() => {
+                        nav.push(NetworkFindPage, null, { animate: false })
+                      });
+                      return false;
+                    }
+                  }
+                ]
+              });
+
+              alert.present();
+            }
+          }
           console.log('[Gps][getZipCode]', this.zipCode);
           resolve(zipCode);
         },

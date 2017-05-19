@@ -264,7 +264,7 @@
           <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
         </button>
         <button ion-button [@inputState]="chatPrvd.chatBtns.state[1]"
-          (click)="chatPrvd.openGallery()">
+          (click)="chatPrvd.openGallery(); toggleContainer(emojiContainer, 'hide'); toggleContainer(shareContainer, 'hide')">
            <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
         </button>
         <button ion-button [@inputState]="chatPrvd.chatBtns.state[2]"

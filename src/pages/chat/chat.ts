@@ -380,6 +380,8 @@ export class ChatPage {
   }
 
   openCamera() {
+    this.toggleContainer(this.emojiContainer, 'hide');
+    this.toggleContainer(this.shareContainer, 'hide');
     this.mainInput.setState('fadeOutfast');
     setTimeout(() => {
       this.mainInput.hide();
@@ -698,7 +700,7 @@ export class ChatPage {
       }
       this.content.resize();
       // this.startMessageUpdateTimer();
-
+      this.chatPrvd.scrollToBottom(this.content);
     }, 1);
   }
 
@@ -859,6 +861,13 @@ export class ChatPage {
       }
 
       if (res.messages && res.messages.length > 0) {
+        for (let i in this.postMessages) {
+          for (let j in res.messages) {
+            if (this.postMessages[i].id == res.messages[j].id) {
+              this.postMessages.splice(i, 1);
+            }
+          }
+        }
         this.postMessages = this.postMessages.concat(res.messages);
         this.postMessages.sort(this.sortById);
         this.chatPrvd.messageDateTimer.start(this.postMessages);
@@ -944,8 +953,6 @@ export class ChatPage {
     // this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
 
-    this.toggleContainer(this.emojiContainer, 'hide');
-    this.toggleContainer(this.shareContainer, 'hide');
     this.chatPrvd.updateAppendContainer();
 
     this.user = this.authPrvd.getAuthData();
@@ -979,6 +986,8 @@ export class ChatPage {
   }
 
   ionViewWillLeave() {
+    this.toggleContainer(this.emojiContainer, 'hide');
+    this.toggleContainer(this.shareContainer, 'hide');
     // console.log('[UNDERCOVER.ts] viewWillLeave');
     this.chatPrvd.messageDateTimer.stop();
     if (this.messagesInterval) clearInterval(this.messagesInterval);

@@ -1,7 +1,5 @@
 import { Injectable } from '@angular/core';
 
-import { Network } from '@ionic-native/network';
-
 import { LogInPage } from '../pages/log-in/log-in';
 
 import * as moment from 'moment';
@@ -26,8 +24,7 @@ export class Tools {
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
     public auth: Auth,
-    public app: App,
-    private network: Network
+    public app: App
   ) {}
 
   public doBackButton() {
@@ -64,42 +61,6 @@ export class Tools {
         console.log('[loader close] Error:', err);
       });
     }, 1);
-  }
-
-  public initNetworkSubscribtion() {
-    // watch network for a disconnect
-    let disconnectSubscription = this.network.onDisconnect().subscribe(res => {
-      this.showToast('network was disconnected :-(');
-      console.log('network.onConnect', res, this.network.type);
-    }, err => {
-      console.log('network.onDisconnect', err);
-    });
-
-    // stop disconnect watch
-    // disconnectSubscription.unsubscribe();
-
-    this.network.onConnect().subscribe(res => {
-      this.showToast('network connected!'); 
-      console.log('network.onConnect', res, this.network.type);
-    }, err => {
-      console.log('network.onConnect', err);
-    })
-
-    // // watch network for a connection
-    // let connectSubscription = this.network.onConnect().subscribe(() => {
-    //   this.showToast('network connected!'); 
-    //   // We just got a connection but we need to wait briefly
-    //    // before we determine the connection type.  Might need to wait 
-    //   // prior to doing any api requests as well.
-    //   setTimeout(() => {
-    //     if (this.network.type === 'wifi') {
-    //       this.showToast('we got a wifi connection, woohoo!');
-    //     }
-    //   }, 3000);
-    // });
-    //
-    // // stop connect watch
-    // connectSubscription.unsubscribe();
   }
 
   public pushPage(page: any, params?: any, animate?: boolean) {

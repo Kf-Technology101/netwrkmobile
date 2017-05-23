@@ -57,7 +57,7 @@ export class ProfilePage {
     public alertCtrl: AlertController,
     public api: Api,
     public chatPrvd: Chat,
-    elRef: ElementRef
+    elRef: ElementRef,
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.user.id = this.navParams.get('id');
@@ -95,7 +95,7 @@ export class ProfilePage {
     //   this.toolsPrvd.showToast('Facebook already connected');
     // });
     // this.social.getFbPermission();
-
+    //
     // let confirm = this.alertCtrl.create({
     //   title: 'Facebook authentication',
     //   message: 'You need to sign into Facebook to use this feature. Sign in now?',
@@ -123,14 +123,6 @@ export class ProfilePage {
       this.toolsPrvd.showToast('Instagram already connected');
     });
   }
-
-  connectToTwitter() {
-    this.socialPrvd.connectToTwitter().then(res => {
-      this.connect.twitter = this.socialPrvd.getTwitterData();
-      this.toolsPrvd.showToast('Twitter already connected');
-    });
-  }
-
   connectToLinkedIn() {
     this.toolsPrvd.showToast('LinkedIn isn\'t connected');
   }
@@ -279,18 +271,33 @@ export class ProfilePage {
     });
   }
 
-  showFirstTimeMessage() {
+  showFirstTimeMessage(alertType:string) {
+    let subTitle:string;
+    switch (alertType) {
+      case 'area':
+        subTitle = `We\'re glad you decided to connect to this area! You can now,
+                   once a month, call a post legendary either under cover or on the
+                   area shareboard. This is a big responsibility, legends
+                   eventually become timeless tradition, and tradition shapes
+                   areas over time.` + '<br>' + `Your connected accounts will now
+                    auto-share to the area shareboard, building awareness and
+                    boosting followers for you!
+                  Connected accounts can also be shared manually, click the + and
+                  then (share icon) to share under cover or with your area`;
+        this.authPrvd.storage.set('area_first_time', false);
+      break;
+      case 'profile':
+        subTitle = `We\'re glad you decided to join netwrk! All accounts that
+        you connect can be shared manually and seen on your profile, allowing
+        others to follow or add you! If you want to boost followers and awareness,
+        connect to this area on the shareboard to auto-share all public posts on
+        those connected accounts.`;
+        this.authPrvd.storage.set('profile_first_time', false);
+      break;
+    }
     let welcomeAlert = this.alertCtrl.create({
-      title: 'Welcome',
-      subTitle: `We\'re glad you decided to connect to this area! You can now,
-                 once a month, call a post legendary either under cover or on the
-                 area shareboard. This is a big responsibility, legends
-                 eventually become timeless tradition, and tradition shapes
-                 areas over time.` + '<br>' + `Your connected accounts will now
-                  auto-share to the area shareboard, building awareness and
-                  boosting followers for you!
-                Connected accounts can also be shared manually, click the + and
-                then (share icon) to share under cover or with your area`,
+      title: 'Welcome to ' + alertType,
+      subTitle: subTitle,
       buttons: ['OK']
     });
     welcomeAlert.present();
@@ -298,13 +305,16 @@ export class ProfilePage {
 
   ionViewDidEnter() {
     if (this.ownProfile) {
+      if (this.authPrvd.storage.get('profile_first_time') === null) {
+        this.showFirstTimeMessage('profile');
+      }
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(this.pageTag);
     }
 
-    // if (this.navParams.get('currentUser').log_in_count > 1) {
-    //   this.showFirstTimeMessage();
-    // }
+    if (this.authPrvd.storage.get('area_first_time') === null) {
+      this.showFirstTimeMessage('area')
+    }
 
     this.user = this.authPrvd.getAuthData();
     // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;

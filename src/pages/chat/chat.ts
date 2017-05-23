@@ -316,17 +316,17 @@ export class ChatPage {
 
     this.flipHover = this.isUndercover ? true : false;
 
-    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
-    this.cameraPreview.startCamera(cameraOptions).then(res => {
-      // console.log(res);
-      if (this.isUndercover) {
-        this.cameraPreview.show();
-      } else {
-        this.cameraPreview.hide();
-      }
-    }, err => {
-      // console.log(err);
-    });
+    // let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
+    // this.cameraPreview.startCamera(cameraOptions).then(res => {
+    //   // console.log(res);
+    //   if (this.isUndercover) {
+    //     this.cameraPreview.show();
+    //   } else {
+    //     this.cameraPreview.hide();
+    //   }
+    // }, err => {
+    //   // console.log(err);
+    // });
 
     this.changePlaceholderText();
 
@@ -943,8 +943,8 @@ export class ChatPage {
     this.chatPrvd.mainBtn.setState('normal');
     this.chatPrvd.mainBtn.show();
 
-    this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     if (this.isUndercover) {
+      this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       let position = this.slideAvatarPrvd.sliderPosition ? null : true;
       // console.log('[ChatPage][ionViewDidEnter]', position);
       this.slideAvatarPrvd.sliderInit(this.pageTag, position);
@@ -967,6 +967,9 @@ export class ChatPage {
     // else
     if (this.chatPrvd.getState() == 'undercover')
       this.startMessageUpdateTimer();
+    else if (this.authPrvd.storage.get('area_first_time') === null) {
+      this.goToProfile();
+    }
 
     this.zone.run(() => {
       this.undercoverPrvd.profileType = this.undercoverPrvd.profileType;

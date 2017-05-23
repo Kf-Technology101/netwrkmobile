@@ -61,10 +61,11 @@
       </ion-slides>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="ownProfile" class="connect" padding hidden>
+  <ion-row *ngIf="ownProfile" class="connect" padding>
     <ion-col>
+      <!-- <button ion-button (click)="logoutFromTwitter()">Logout from twitter</button> -->
       <ion-row>
-        <ion-col class="fb">
+        <ion-col class="fb" *ngIf="!connect.facebook">
           <button type="button" (click)="connectToFacebook()">
             <ion-icon name="logo-facebook"></ion-icon>
             Facebook
@@ -77,12 +78,12 @@
           </button>
         </ion-col>
         <ion-col class="tw" *ngIf="!connect.twitter">
-          <button type="button" (click)="connectToTwitter()">
+          <button type="button" (click)="socialPrvd.connectToTwitter()">
             <ion-icon name="logo-twitter"></ion-icon>
             Twitter
           </button>
         </ion-col>
-        <ion-col class="li" *ngIf="!connect.linkedin">
+        <ion-col class="li" *ngIf="!connect.linkedin" hidden>
           <button type="button" (click)="connectToLinkedIn()">
             <ion-icon name="logo-linkedin"></ion-icon>
             LinkedIn

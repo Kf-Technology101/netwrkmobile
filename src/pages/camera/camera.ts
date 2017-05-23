@@ -58,15 +58,7 @@ export class CameraPage {
     public cameraPrvd: Camera,
     public tools: Tools,
     private base64ToGallery: Base64ToGallery
-  ) {
-    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: true });
-    this.cameraPreview.startCamera(cameraOptions).then(res => {
-      console.log(res);
-      this.cameraPreview.show();
-    }, err => {
-      console.log(err);
-    });
-  }
+  ) {}
 
   takePhoto() {
     // picture options
@@ -129,12 +121,22 @@ export class CameraPage {
   }
 
   ionViewDidEnter() {
-    this.cameraPreview.show();
+    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: true });
+    this.cameraPreview.startCamera(cameraOptions).then(res => {
+      console.log(res);
+      this.cameraPreview.show();
+    }, err => {
+      console.log(err);
+    });
     this.cameraUI.button = 'photoButtonFadeIn';
     setTimeout(() => {
       this.cameraUI.tooltip = 'tooltipFadeIn';
     }, animSpeed.fadeIn/2);
     console.log('ionViewDidLoad CameraPage');
+  }
+
+  ionViewWillLeave() {
+    this.cameraPreview.hide();
   }
 
 }

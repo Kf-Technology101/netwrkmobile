@@ -65,6 +65,7 @@ import { Transfer } from '@ionic-native/transfer';
 import { Facebook } from '@ionic-native/facebook';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Network } from '@ionic-native/network';
+import { TwitterConnect } from '@ionic-native/twitter-connect';
 
 // enableProdMode();
 
@@ -124,7 +125,6 @@ export function providers() {
     NetworkProvider,
     Camera,
     Chat,
-
     Facebook,
     Geolocation,
     CameraPreview,
@@ -133,6 +133,7 @@ export function providers() {
     Transfer,
     Keyboard,
     Network,
+    TwitterConnect,
 
     SplashScreen,
     StatusBar,

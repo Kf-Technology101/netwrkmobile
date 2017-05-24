@@ -3,6 +3,7 @@ import { App } from 'ionic-angular';
 import { Tools } from '../providers/tools';
 
 import { UndercoverProvider } from '../providers/undercover';
+import { LocalStorage } from './local-storage';
 
 @Injectable()
 export class SlideAvatar {
@@ -30,7 +31,8 @@ export class SlideAvatar {
   constructor(
     public app: App,
     public undercoverPrvd: UndercoverProvider,
-    public toolsPrvd: Tools
+    public toolsPrvd: Tools,
+    public storage: LocalStorage
   ) {
     this.app.viewDidLoad.subscribe(view => {
       // console.log("<SLIDER.ts> viewDidLoad");
@@ -48,7 +50,7 @@ export class SlideAvatar {
     console.log('getActiveNav', this.app.getActiveNav());
   }
 
-  public sliderInit(pageTag: string, position?: boolean) {
+  public sliderInit(pageTag: string) {
     this.stopSliderEvents();
     let initInterval = setInterval(() => {
       let currentView = document.querySelector(pageTag);
@@ -62,18 +64,13 @@ export class SlideAvatar {
 
         if (this.selectedItem) {
           clearInterval(initInterval);
-          if (typeof position == 'boolean') {
-
-          } else {
-            position = this.sliderPosition == 'right' ? true : false;
-          }
-
-          if (!this.sliderPosition) {
+          if (this.storage.get('slider_position') === null) {
+            this.sliderPosition = 'right';
             this.setSliderDimentions();
-            this.setSliderPosition(position);
+            this.setSliderPosition(this.sliderPosition);
           } else {
-            position = this.sliderPosition == 'right' ? true : false;
-            this.setSliderPosition(position);
+            this.sliderPosition = this.storage.get('slider_position');
+            this.setSliderPosition(this.sliderPosition);
           }
           this.startSliderEvents();
         } else {
@@ -106,21 +103,19 @@ export class SlideAvatar {
     }, 100);
   }
 
-  public setSliderPosition(state?: boolean) {
+  public setSliderPosition(state?: string) {
     // if (!state) state = true;
     if (this.selectedItem) {
-      this.sliderState = state;
       this.arrowIcon = this.selectedItem.parentElement.children['1'];
       this.arrowIcon.style.opacity = '1';
-      if (state) {
+      if (state == 'right') {
         this.selectedItem.style.left = this.dEnd + 'px';
         this.arrowIcon.classList.add('right');
-        this.sliderPosition = 'right';
       } else {
         this.selectedItem.style.left = this.dStart + 'px';
         this.arrowIcon.classList.remove('right');
-        this.sliderPosition = 'left';
       }
+      this.storage.set('slider_position', state);
     }
   }
 
@@ -175,6 +170,7 @@ export class SlideAvatar {
         if (this.changeCallback) {
           if (this.sliderPosition != 'left') {
             this.sliderPosition = 'left';
+            this.storage.set('slider_position', this.sliderPosition);
             this.changeCallback(true);
           }
         }
@@ -185,6 +181,7 @@ export class SlideAvatar {
         if (this.changeCallback) {
           if (this.sliderPosition != 'right') {
             this.sliderPosition = 'right';
+            this.storage.set('slider_position', this.sliderPosition);
             this.changeCallback(false);
           }
         }

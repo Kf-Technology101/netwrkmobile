@@ -135,9 +135,10 @@ export class Gps {
           key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
         }).share();
         seq.map(res => res.json()).subscribe(res => {
-          // let zipCode: number = this.parseGoogleAddress(res.results);
-          let zipCode: number = this.localStorage.get('test_zip_code');
-          if (this.localStorage.get('chat_zip_code') == null) {
+          let zipCode: number = this.parseGoogleAddress(res.results);
+          // debug
+          // let zipCode: number = this.localStorage.get('test_zip_code');
+          if (this.localStorage.get('chat_zip_code') === null) {
             this.localStorage.set('chat_zip_code', zipCode);
           }
           let nav = this.app.getActiveNav();

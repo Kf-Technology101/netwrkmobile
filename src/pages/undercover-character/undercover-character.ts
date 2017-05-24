@@ -86,7 +86,7 @@ export class UndercoverCharacterPage {
   changeCallback(positionLeft?: boolean) {
     if (positionLeft) {
       setTimeout(() => {
-        this.slideAvatarPrvd.setSliderPosition(true);
+        this.slideAvatarPrvd.setSliderPosition('right');
       }, 300)
       this.toolsPrvd.showToast(this.changeError);
     }
@@ -106,7 +106,7 @@ export class UndercoverCharacterPage {
 
   ionViewDidEnter() {
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    this.slideAvatarPrvd.sliderInit(this.pageTag, false);
+    this.slideAvatarPrvd.sliderInit(this.pageTag);
   }
 
 }

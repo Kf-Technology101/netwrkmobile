@@ -702,7 +702,7 @@ export class ChatPage {
       if (this.isUndercover) {
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
-        this.runUndecoverSlider(this.pageTag, this.isUndercover);
+        this.runUndecoverSlider(this.pageTag);
         this.startMessageUpdateTimer();
         this.chatPrvd.scrollToBottom(this.content);
       } else {
@@ -947,13 +947,13 @@ export class ChatPage {
     this.flipHover = !this.flipHover;
   }
 
-  runUndecoverSlider(pageTag, isUndercover) {
+  runUndecoverSlider(pageTag) {
     console.log('(runUndecoverSlider) arguments:', arguments);
     if (this.chatPrvd.getState() == 'undercover') {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       // let position = this.slideAvatarPrvd.sliderPosition ? null : true;
       // console.log('[ChatPage][ionViewDidEnter]', position);
-      this.slideAvatarPrvd.sliderInit(pageTag, isUndercover);
+      this.slideAvatarPrvd.sliderInit(pageTag);
       this.content.resize();
     }
   }
@@ -968,7 +968,7 @@ export class ChatPage {
     this.chatPrvd.mainBtn.setState('normal');
     this.chatPrvd.mainBtn.show();
 
-    this.runUndecoverSlider(this.pageTag, this.isUndercover);
+    this.runUndecoverSlider(this.pageTag);
 
     // this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);

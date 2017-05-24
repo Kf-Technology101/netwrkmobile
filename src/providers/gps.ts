@@ -20,6 +20,7 @@ export class Gps {
   public changeZipCallback: (params?: any) => void;
   private watch: any;
   private maxDistance: number = 50;
+  private zipInterval: any;
 
   constructor(
     public app: App,
@@ -79,7 +80,7 @@ export class Gps {
             this.getZipCode().then(zip => {
               resolve({ zip_code: zip });
             }).catch(err => reject(err));
-            let zipInterval = setInterval(() => {
+            this.zipInterval = setInterval(() => {
               this.getZipCode();
             }, 60000);
           } else {
@@ -109,58 +110,19 @@ export class Gps {
   }
 
   private parseGoogleAddress(data: any): number {
+    // let zip: number;
     for (let i = 0; i < data.length; i++)
       for (let j = 0; j < data[i].address_components.length; j++)
         for (let z = 0; z < data[i].address_components[j].types.length; z++)
           if (data[i].address_components[j].types[z] == 'postal_code') {
             this.zipCode = data[i].address_components[j].long_name;
+            // zip = this.localStorage.get('test_zip_code');
+            // if (!zip) this.localStorage.set('test_zip_code',
+            //   data[i].address_components[j].long_name);
             break;
           }
-
     return this.zipCode;
-  }
-
-  private compareZip() {
-    let nav = this.app.getActiveNav();
-    let activeNav = nav.getActive();
-    if (nav && activeNav && activeNav.name == 'ChatPage' && !activeNav.instance.isUndercover) {
-      let network = this.localStorage.get('current_network');
-      let currentZip = network ? network.post_code : 0;
-      if (currentZip != this.zipCode) {
-        this.localStorage.rm('current_network');
-        let alert = this.alertCtrl.create({
-          title: 'Warning',
-          message: 'You left the Netwrk area, please join to other netwrk or go to Undercover',
-          buttons: [
-            {
-              text: 'Go Undercover',
-              handler: () => {
-                let alertDismiss = alert.dismiss();
-                alertDismiss.then(() => {
-                  if (this.changeZipCallback) this.changeZipCallback({
-                    undercover: true
-                  });
-                });
-                return false;
-              }
-            },
-            {
-              text: 'Join',
-              handler: () => {
-                let alertDismiss = alert.dismiss();
-                alertDismiss.then(() => {
-                  nav.push(NetworkFindPage, null, { animate: false })
-                });
-                return false;
-              }
-            }
-          ]
-        });
-
-        alert.present();
-        this.watch.unsubscribe();
-      }
-    }
+    // return zip;
   }
 
   private getZipCode(): Promise<any> {
@@ -173,22 +135,27 @@ export class Gps {
           key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
         }).share();
         seq.map(res => res.json()).subscribe(res => {
-          let zipCode: number = this.parseGoogleAddress(res.results);
+          // let zipCode: number = this.parseGoogleAddress(res.results);
+          let zipCode: number = this.localStorage.get('test_zip_code');
+          if (this.localStorage.get('chat_zip_code') == null) {
+            this.localStorage.set('chat_zip_code', zipCode);
+          }
           let nav = this.app.getActiveNav();
           let activeNav = nav.getActive();
-          if (zipCode != this.localStorage.get('chat_zip_code')) {
+          if (zipCode != this.localStorage.get('chat_zip_code') &&
+              this.localStorage.get('chat_zip_code') !== null) {
+            clearInterval(this.zipInterval);
             this.localStorage.rm('current_network');
             this.localStorage.set('chat_zip_code', zipCode);
             if (this.localStorage.get('chat_state') == 'area') {
               let alert = this.alertCtrl.create({
                 title: 'Warning',
-                message: 'You left the Netwrk area, please join to other netwrk or go to Undercover',
+                message: 'You left the Netwrk area, please join to other netwrk or go Undercover',
                 buttons: [
                   {
                     text: 'Go Undercover',
                     handler: () => {
-                      let alertDismiss = alert.dismiss();
-                      alertDismiss.then(() => {
+                      alert.dismiss().then(() => {
                         if (this.changeZipCallback) this.changeZipCallback({
                           undercover: true
                         });
@@ -199,8 +166,7 @@ export class Gps {
                   {
                     text: 'Join',
                     handler: () => {
-                      let alertDismiss = alert.dismiss();
-                      alertDismiss.then(() => {
+                      alert.dismiss().then(() => {
                         nav.push(NetworkFindPage, null, { animate: false })
                       });
                       return false;
@@ -212,7 +178,7 @@ export class Gps {
               alert.present();
             }
           }
-          console.log('[Gps][getZipCode]', this.zipCode);
+          console.log('[Gps][getZipCode] zipCode:', zipCode);
           resolve(zipCode);
         },
         err => {

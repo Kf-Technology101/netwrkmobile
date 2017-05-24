@@ -50,7 +50,7 @@ export class SlideAvatar {
 
   public sliderInit(pageTag: string, position?: boolean) {
     this.stopSliderEvents();
-    let interval = setInterval(() => {
+    let initInterval = setInterval(() => {
       let currentView = document.querySelector(pageTag);
 
       if (currentView) {
@@ -61,7 +61,7 @@ export class SlideAvatar {
         console.log('slider position ', this.sliderPosition);
 
         if (this.selectedItem) {
-          clearInterval(interval);
+          clearInterval(initInterval);
           if (typeof position == 'boolean') {
 
           } else {
@@ -81,6 +81,10 @@ export class SlideAvatar {
         }
       }
     }, 100);
+    setTimeout(() => {
+      console.info('Stoping slider\'s init infinite loop...');
+      clearInterval(initInterval);
+    }, 3000);
   }
 
   private setSliderDimentions() {

@@ -28,11 +28,11 @@ export class NetworkFindPage {
     public chatPrvd: Chat
     // public permission: Permission
   ) {
-    platform.resume.subscribe(() => {
-      if (this.platform.is('cordova')) {
-        this.getZipCode();
-      }
-    });
+    // platform.resume.subscribe(() => {
+    //   if (this.platform.is('cordova')) {
+    //     this.getZipCode();
+    //   }
+    // });
   }
 
   go() {
@@ -47,6 +47,7 @@ export class NetworkFindPage {
   ionViewDidEnter() {
     console.log('[NetworkFindPage][ionViewDidEnter]');
     this.hideSearch = false;
+    this.chatPrvd.localStorage.set('chat_zip_code', this.chatPrvd.localStorage.get('test_zip_code'));
     this.getZipCode();
   }
 

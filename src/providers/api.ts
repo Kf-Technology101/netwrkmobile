@@ -11,7 +11,7 @@ export class Api {
     local: '192.168.1.13:3000',
     remote: 'netwrk.com'
   };
-  public siteDomain: string = this.domain.remote;
+  public siteDomain: string = this.domain.local;
   public hostUrl = this.httpProtocol + this.siteDomain;
   public url: string = this.hostUrl + this.apiV;
 

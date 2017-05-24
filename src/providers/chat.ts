@@ -98,7 +98,8 @@ export class Chat {
   }
 
   public setZipCode(zipCode: number) {
-    this.localStorage.set('chat_zip_code', zipCode);
+    let zip = this.chatZipCode();
+    if (zip == 0) this.localStorage.set('chat_zip_code', zipCode);
   }
 
   public chatZipCode(): number {
@@ -170,7 +171,7 @@ export class Chat {
       ? messagesArray.length : 0;
 
     let data: any = {
-      post_code: this.gps.zipCode,
+      post_code: this.localStorage.get('chat_zip_code'),
       undercover: undercover,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
@@ -474,6 +475,12 @@ export class Chat {
     // console.log('[ChatPage][showMessages] isUndercover:', isUndercover);
     return new Promise(res => {
       loadMessages(arg).subscribe(data => {
+        let receivedMessages:any;
+        if (location == 'chat') {
+          receivedMessages = data.messages;
+        } else {
+          receivedMessages = data.messages.reverse();
+        }
         // console.log('[ChatPage][showMessages] data:', data);
         // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
         if (!data) {
@@ -481,10 +488,10 @@ export class Chat {
           this.tools.hideLoader();
           this.isMainBtnDisabled = false;
           return;
-        };
+        }
         if (messages.length > 0 && data.messages.length > 0) {
           res({
-            messages: this.organizeMessages(data.messages.reverse()),
+            messages: this.organizeMessages(receivedMessages),
             callback: (mess) => {
               // console.log('[showMessages] messages:', mess);
               this.calcTotalImages(mess);
@@ -496,7 +503,7 @@ export class Chat {
           });
         } else if (data.messages.length > 0) {
           res({
-            messages: this.organizeMessages(data.messages.reverse()),
+            messages: this.organizeMessages(receivedMessages),
             callback: (mess) => {
               // console.log('[showMessages] messages:', mess);
               this.calcTotalImages(mess);

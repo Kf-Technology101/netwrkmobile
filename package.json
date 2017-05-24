@@ -21,6 +21,7 @@
     "@angular/platform-browser": "4.0.0",
     "@angular/platform-browser-dynamic": "4.0.0",
     "@angular/platform-server": "4.0.0",
+    "@ionic-native/background-mode": "^3.10.3",
     "@ionic-native/base64-to-gallery": "^3.5.0",
     "@ionic-native/camera": "^3.5.0",
     "@ionic-native/camera-preview": "^3.5.0",

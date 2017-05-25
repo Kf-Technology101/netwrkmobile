@@ -65,7 +65,9 @@ import { Transfer } from '@ionic-native/transfer';
 import { Facebook } from '@ionic-native/facebook';
 import { Keyboard } from '@ionic-native/keyboard';
 import { Network } from '@ionic-native/network';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { TwitterConnect } from '@ionic-native/twitter-connect';
+import { BackgroundMode } from '@ionic-native/background-mode';
 
 // enableProdMode();
 
@@ -138,6 +140,8 @@ export function providers() {
     SplashScreen,
     StatusBar,
     Sim,
+    InAppBrowser,
+    BackgroundMode,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];

@@ -2,7 +2,7 @@
   [ngClass]="{'chat-header': !isUndercover}">
   <ion-toolbar *ngIf="isUndercover">
     <div class="drag-container">
-      <div class="dragline">
+      <div class="dragline" (click)="goToProfile()">
         <span class="info">
           <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
             {{ user.name }}
@@ -112,7 +112,8 @@
       refreshingSpinner="ios">
     </ion-refresher-content>
   </ion-refresher>
-  <div class="chat-container visible" #chatContainer>
+  <div class="chat-container visible" #chatContainer
+      [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover' }">
     <!-- [ngClass]="{'visible' : chatPrvd.isMessagesVisible}" -->
     <div class="message" *ngFor="let message of postMessages; let i = index"
          [@fadeState]="'fadeInVeryFast'">

@@ -61,7 +61,7 @@
       </ion-slides>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="ownProfile" class="connect" padding>
+  <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="connect" padding>
     <ion-col>
       <!-- <button ion-button (click)="logoutFromTwitter()">Logout from twitter</button> -->
       <ion-row>
@@ -71,7 +71,7 @@
             Facebook
           </button>
         </ion-col>
-        <ion-col class="in" *ngIf="!connect.instagram">
+        <ion-col class="in" *ngIf="!connect.instagram" hidden>
           <button type="button" (click)="connectToInstagram()">
             <ion-icon name="logo-instagram"></ion-icon>
             Instagram
@@ -114,15 +114,18 @@
           <ion-row class="post" [ngClass]="{'image-post': post.full_picture}">
             <ion-col>
               <ng-container *ngIf="post.image_urls.length > 0">
-                <img *ngFor="let j of post.image_urls" [src]="j"/>
+                <img class="feed-img" *ngFor="let j of post.image_urls" [src]="j"/>
               </ng-container>
-              <ion-card>
+              <ion-card [ngClass]="{ 'social-card' : post.image_urls.length > 0 }">
                 <ion-card-content>
                   <ion-card-title>
                     <ng-container *ngIf="post.social">
                       Shared via
                       <ng-container *ngIf="post.social == 'facebook'">
                         Facebook
+                      </ng-container>
+                      <ng-container *ngIf="post.social == 'twitter'">
+                        Twitter
                       </ng-container>
                       -
                     </ng-container>
@@ -132,14 +135,14 @@
                 </ion-card-content>
               </ion-card>
             </ion-col>
-            <ion-col class="likes" col-2
+            <ion-col class="likes" col-3
               [ngClass]="{'images': post.image_urls.length > 0}">
               <ion-badge item-right>
-                {{ post.legendary_count }}
+                <span>{{ post.legendary_count }}</span>
                 <img class="icon-img" src="assets/images/legendary.png">
               </ion-badge>
               <ion-badge item-right>
-                {{ post.likes_count }}
+                <span>{{ post.likes_count }}</span>
                 <img class="icon-img" src="assets/images/joy.png">
               </ion-badge>
             </ion-col>

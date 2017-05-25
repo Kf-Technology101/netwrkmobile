@@ -226,15 +226,24 @@ ion-app .ion-page .content {
     &.feed {
       border-top: 2px solid #b8b8b8;
       margin-top: 10px;
-
+      .feed-img {
+        display: block;
+        margin: auto;
+      }
       .row {
         position: relative;
-
+        margin-bottom: 6px;
+        .social-card {
+          position: absolute;
+          top: 0px;
+          max-width: 75%;
+        }
         &.image-post {
           .card {
             width: auto;
             position: absolute;
-            top: 6px;
+            top: 0px;
+            max-width: 75%;
           }
         }
 
@@ -244,11 +253,32 @@ ion-app .ion-page .content {
           &.likes {
             text-align: right;
             margin-right: 10px;
+            position: absolute;
+            top: 0px;
+            right: 5px;
+            width: auto;
+            height: auto;
+            padding: 0;
+            .badge {
+              margin-bottom: 0;
+              display: block;
+              span {
+                float: left;
+                margin: 0 3px;
+                display: inline-block;
+                line-height: 29px;
+                font-size: 10px;
+                text-shadow: 0px 2px 3px rgba(150, 150, 150, 0.5);
+              }
+              img {
+                float: left;
+              }
+            }
 
             &.images {
               position: absolute;
-              right: 0;
-              top: 10px;
+              right: 5px;
+              top: 0px;
             }
           }
         }
@@ -264,12 +294,15 @@ ion-app .ion-page .content {
         span {
           background-color: #302f2f;
           padding: 0 10px;
+          position: relative;
+          top: 3px;
         }
       }
 
       .card {
         margin-top: 0;
         border-radius: 16px;
+        max-width: 75%;
 
         .card-content {
           padding-top: 0;
@@ -293,6 +326,11 @@ ion-app .ion-page .content {
         margin-left: -3px;
         margin-bottom: 8px;
         padding: 0;
+        &:after {
+          content: '';
+          clear: both;
+          display: block;
+        }
 
         .icon-img {
           width: 26px;

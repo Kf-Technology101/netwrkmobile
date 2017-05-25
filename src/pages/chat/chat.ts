@@ -227,7 +227,7 @@ export class ChatPage {
           // scrollEl.style.margin = '0px 0px ' + res.keyboardHeight + 70 + 'px 0px';
           footerEl.style.bottom = res.keyboardHeight + 'px';
 
-          this.contentMargin = res.keyboardHeight + 70 + 'px';
+          // this.contentMargin = res.keyboardHeight + 70 + 'px';
           this.isFeedbackClickable = false;
         } catch (e) {
           console.log(e);
@@ -399,7 +399,8 @@ export class ChatPage {
       this.contentPadding = status
         ? document.documentElement.clientHeight / 2 + 76 + 'px'
         : '130px';
-      this.chatPrvd.scrollToBottom(this.content);
+      if (this.chatPrvd.getState() != 'area')
+        this.chatPrvd.scrollToBottom(this.content);
     } catch (e) {
       console.log(e);
     }
@@ -520,7 +521,8 @@ export class ChatPage {
     }
     this.canRefresh = false;
     // this.postMessages.push(data);
-    this.chatPrvd.scrollToBottom(this.content);
+    if (this.chatPrvd.getState() != 'area')
+      this.chatPrvd.scrollToBottom(this.content);
   }
 
   postMessage(emoji?: string, params?: any) {

@@ -61,22 +61,22 @@ modal-legendaryhistory {
     &.netwrk-content.content-md {
       .scroll-content {
         margin-top: 155px!important;
-        margin-bottom: 70px;
+        // margin-bottom: 70px;
       }
     }
 
     &.content-ios {
-      margin-bottom: 70px;
+      // margin-bottom: 70px;
 
       .scroll-content {
-        margin-top: 60px!important;
+        margin-top: 0px!important;
         margin-bottom: inherit;
       }
     }
 
     .scroll-content {
-      margin-top: 44px!important;
-      margin-bottom: 70px;
+      margin-top: 0px!important;
+      // margin-bottom: 70px;
       padding-bottom: inherit;
       border-top: none;
     }
@@ -529,6 +529,9 @@ modal-legendaryhistory {
     .chat-container {
       opacity: 0;
       transition: 0.5s;
+      &.undercover {
+        padding-top: 44px;
+      }
       &.visible {
         opacity: 1;
       }

@@ -5,7 +5,8 @@ import 'rxjs/add/operator/map';
 import { LocalStorage } from './local-storage';
 import { Api } from './api';
 
-import { InAppBrowser } from 'ionic-native';
+import { BackgroundMode } from '@ionic-native/background-mode';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { TwitterConnect } from '@ionic-native/twitter-connect';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
 
@@ -27,7 +28,9 @@ export class Social {
     public storage: LocalStorage,
     public api: Api,
     private facebook: Facebook,
-    private twitter: TwitterConnect
+    private twitter: TwitterConnect,
+    private iab: InAppBrowser,
+    private backgroundMode: BackgroundMode
   ) {}
 
   public connectToFacebook(): Promise<any> {
@@ -53,53 +56,66 @@ export class Social {
   }
 
   connectToTwitter() {
-    this.twitter.login().then(res => {
-      this.storage.set('twitter_fignya', res);
-      let seq = this.api.post('sessions/oauth_login', res).share();
+    this.backgroundMode.disable();
+    this.twitter.login().then(data => {
+      let seq = this.api.post('profiles/connect_social',
+      {
+        user:
+        {
+          token: data.token,
+          provide_name: 'twitter',
+          secret: data.secret
+        }
+      }).share();
       seq.map(res => res.json()).subscribe( res => {
         console.log('[oauth_login] twitter res:', res);
+        this.setSocialAuth(data, Social.TWITTER);
       }, err => {
         console.error('[oauth_login] twitter error:', err);
       });
-      console.log('[Twitter connect] res:', res);
+      console.log('[Twitter connect] res:', data);
     }, err => {
       console.error('[Twitter connect] err:', err);
-      this.storage.set('twitter_fignya_err', err);
     });
   }
 
-
+  parseInstagramData(res:any) {
+    let responseObj: any = {};
+    if (res.url.indexOf('access_token') !== -1) {
+      let splitUrl = res.url.split('#');
+      let access_token = splitUrl[splitUrl.length - 1].split('=')[1];
+      responseObj = { access_token: access_token };
+    }
+    return responseObj;
+  }
 
   connectToInstagram(): Promise<any> {
     return new Promise((resolve, reject) => {
       let clientId = '2d3db558942e4eaabfafc953263192a7';
+      let clientSecret = 'bcf35f1ba4e94d59ad9f2c6c1322c640';
       let redirectUrl = 'http://192.168.1.13:3000/';
-      let url = 'https://api.instagram.com/oauth/authorize/?client_id=' + clientId + '&redirect_uri=' + redirectUrl + '&response_type=token';
+      let token_link = `https://api.instagram.com/oauth/access_token?
+client_id=${clientId}
+&client_secret=${clientSecret}
+&grant_type=authorization_code
+&redirect_uri=${redirectUrl}
+&response_type=code`;
+
+      console.log('instagram url', token_link);
+
       let acc_token:any = '';
-      let browser = new InAppBrowser(url, '_blank');
+      let browser = this.iab.create(token_link, '_blank');
       browser.on('loadstop').subscribe(res => {
         console.log(res);
         if (res.url.indexOf(this.api.siteDomain) != -1) {
-          let responseObj: any = {};
-          if (res.url.indexOf('access_token')) {
-            let splitUrl = res.url.split('#');
-            let access_token = splitUrl[splitUrl.length - 1].split('=')[1];
-            responseObj = { access_token: access_token };
-            acc_token = responseObj.access_token;
-            acc_token = acc_token.slice(0, acc_token.indexOf('&'));
-          } else if (res.url.indexOf('code')) {
-            let splitUrl = res.url.split('?');
-            let code = splitUrl[splitUrl.length - 1].split('=')[1];
-            responseObj = { code: code };
-          }
-          this.setSocialAuth(responseObj, Social.INSTAGRAM);
 
-          console.log('[instagram] acc_token:', acc_token);
+          // this.setSocialAuth(responseObj, Social.INSTAGRAM);
+          //
           let instagramData = {
             provider_name: 'instagram',
-            token: acc_token
+            token: this.parseInstagramData(res)
           };
-          console.log('[instagram] obj:', instagramData);
+          console.log('[instagram] instagramData:', instagramData);
           let seq = this.api.post('sessions/oauth_login', { user: instagramData }).share();
           seq.map(res => res.json()).subscribe(res => {
             console.log('[instagram] res:', res);

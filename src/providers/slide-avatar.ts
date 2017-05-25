@@ -52,6 +52,9 @@ export class SlideAvatar {
 
   public sliderInit(pageTag: string) {
     this.stopSliderEvents();
+    if (this.storage.get('chat_state') == 'area') {
+      this.sliderPosition = 'left';
+    }
     let initInterval = setInterval(() => {
       let currentView = document.querySelector(pageTag);
 

@@ -119,6 +119,9 @@ export class ChatPage {
     linkedin: false
   };
 
+  private postLoaded:boolean = false;
+  private postLoading:boolean = false;
+
   public sendError: string;
   private networkParams: any = {};
   private textStrings: any = {};
@@ -711,6 +714,7 @@ export class ChatPage {
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
         this.updateMessagesAndScrollDown();
+        this.postLoaded = false;
       }
       this.content.resize();
       // this.startMessageUpdateTimer();
@@ -837,26 +841,45 @@ export class ChatPage {
     });
   }
 
-  refreshChat(refresher) {
+  ionScroll() {
+    if (!this.postLoaded) {
+      let dimensions = this.content.getContentDimensions();
+      if (!this.postLoading
+        && dimensions.scrollTop < (dimensions.scrollHeight - 50)) {
+        this.postLoading = true;
+        this.refreshChat();
+      }
+    }
+  }
+
+  refreshChat(refresher?:any) {
+    if (this.chatPrvd.getState() == 'area')
+      this.postLoading = true;
     // console.log('Begin async operation', refresher);
     this.chatPrvd.getMessages(this.isUndercover, this.postMessages, null, true)
     .subscribe(res => {
       // console.log('[REFRESHER] postMessages:', this.postMessages);
-      // console.log('[REFRESHER] res:', res);
+      console.log('[REFRESHER] res:', res);
       res = this.chatPrvd.organizeMessages(res.messages);
       if (this.chatPrvd.getState() != 'area') {
         for (let i in res) {
           this.postMessages.unshift(res[i]);
         }
       } else {
+        if (res.length == 0) {
+          this.postLoaded = true;
+        }
         for (let i in res) {
           this.postMessages.push(res[i]);
         }
+        this.postLoading = false;
       }
       this.chatPrvd.messageDateTimer.start(this.postMessages);
-      refresher.complete();
+      if (refresher)
+        refresher.complete();
     }, err => {
-      refresher.complete();
+      if (refresher)
+        refresher.complete();
       // console.error('[getMessages] Err:', err);
     });
   }
@@ -1002,8 +1025,6 @@ export class ChatPage {
     this.zone.run(() => {
       this.undercoverPrvd.profileType = this.undercoverPrvd.profileType;
     });
-
-
   }
 
   goToProfile(profileId?: number, profileTypePublic?: boolean) {

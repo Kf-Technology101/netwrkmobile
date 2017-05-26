@@ -145,7 +145,7 @@
           <ion-icon ios="ios-time-outline" md="ios-time-outline"></ion-icon>
           {{ message.temporaryFor }}
         </span>
-        <span *ngIf="message.text" class="text"
+        <span *ngIf="message.text_with_links" class="text"
               [ngClass]="{ 'emoji' : message.is_emoji }"
               [innerHTML]="message.text_with_links"
               (click)="toolsPrvd.handleLinkClick($event)"></span>

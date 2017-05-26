@@ -4,6 +4,7 @@ import { LogInPage } from '../pages/log-in/log-in';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { BackgroundMode } from '@ionic-native/background-mode';
+import { AlertController } from 'ionic-angular';
 import * as moment from 'moment';
 
 import {
@@ -28,11 +29,21 @@ export class Tools {
     public auth: Auth,
     public app: App,
     private iab: InAppBrowser,
-    private backgroundMode: BackgroundMode
+    private backgroundMode: BackgroundMode,
+    public alertCtrl: AlertController
   ) {}
 
   public doBackButton() {
     console.log(this.app.getActiveNav());
+  }
+
+  public notAvailableAlert() {
+    let alert = this.alertCtrl.create({
+      title: 'Not available',
+      subTitle: 'This feature is not available at the moment',
+      buttons: ['Ok']
+    });
+    alert.present();
   }
 
   public handleLinkClick(event) {

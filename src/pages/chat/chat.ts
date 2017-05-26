@@ -190,6 +190,7 @@ export class ChatPage {
           lat: <number> parseFloat(data.message.lat),
           lng: <number> parseFloat(data.message.lng)
         });
+        console.log('received data:', data.message);
         if (this.isUndercover) {
           if (data.message.undercover && insideUndercover) {
             this.postMessages.push(data.message);
@@ -542,6 +543,7 @@ export class ChatPage {
 
       messageParams = {
         text: emoji ?  emoji : this.txtIn.value,
+        text_with_links: emoji ?  emoji : this.txtIn.value,
         user_id: this.authData ? this.authData.id : 0,
         images: emoji ? [] : images,
         undercover: this.isUndercover,
@@ -619,11 +621,7 @@ export class ChatPage {
 
   updateMessagesAndScrollDown(scroll?:string) {
     this.chatPrvd.showMessages(this.postMessages, 'chat', this.isUndercover).then(res => {
-      if (this.chatPrvd.getState() != 'area') {
-        this.postMessages = res.messages;
-      } else {
-        this.postMessages = res.messages.reverse();
-      }
+      this.postMessages = res.messages;
       res.callback(this.postMessages);
       if (scroll) {
         this.chatPrvd.scrollToBottom(this.content);
@@ -701,13 +699,15 @@ export class ChatPage {
     this.toolsPrvd.hideLoader();
     this.toolsPrvd.showLoader();
     setTimeout(() => {
-      if (this.isUndercover) {
+      if (this.chatPrvd.getState() == 'area') {
         this.chatPrvd.setState('undercover');
         this.cameraPreview.show();
         this.runUndecoverSlider(this.pageTag);
         this.startMessageUpdateTimer();
         this.chatPrvd.scrollToBottom(this.content);
       } else {
+        if (this.messagesInterval) clearInterval(this.messagesInterval);
+        if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
         this.updateMessagesAndScrollDown();
@@ -844,8 +844,14 @@ export class ChatPage {
       // console.log('[REFRESHER] postMessages:', this.postMessages);
       // console.log('[REFRESHER] res:', res);
       res = this.chatPrvd.organizeMessages(res.messages);
-      for (let i in res) {
-        this.postMessages.unshift(res[i]);
+      if (this.chatPrvd.getState() != 'area') {
+        for (let i in res) {
+          this.postMessages.unshift(res[i]);
+        }
+      } else {
+        for (let i in res) {
+          this.postMessages.push(res[i]);
+        }
       }
       this.chatPrvd.messageDateTimer.start(this.postMessages);
       refresher.complete();
@@ -900,7 +906,7 @@ export class ChatPage {
       this.getAndUpdateUndercoverMessages();
       this.chatPrvd.scrollToBottom(this.content);
       this.messagesInterval = setInterval(() => {
-        // console.log('[messageTimer] starting interval...');
+        console.warn('[messageTimer] starting interval...');
         // this.updateMessagesAndScrollDown();
         this.getAndUpdateUndercoverMessages();
       }, 10000);
@@ -984,8 +990,8 @@ export class ChatPage {
       this.chatPrvd.saveNetwork(res.network);
     });
 
-    // if (this.chatPrvd.getState() == 'area')
-    //   this.updateMessagesAndScrollDown();
+    if (this.chatPrvd.getState() == 'area')
+      this.updateMessagesAndScrollDown();
     // else
     if (this.chatPrvd.getState() == 'undercover')
       this.startMessageUpdateTimer();
@@ -997,18 +1003,7 @@ export class ChatPage {
       this.undercoverPrvd.profileType = this.undercoverPrvd.profileType;
     });
 
-    this.chatPrvd.getMessages(this.isUndercover, this.postMessages, null, true)
-    .subscribe(res => {
-      // console.log('[REFRESHER] postMessages:', this.postMessages);
-      console.log('[REFRESHER] res:', res);
-      res = this.chatPrvd.organizeMessages(res.messages);
-      for (let i in res) {
-        this.postMessages.unshift(res[i]);
-      }
-      this.chatPrvd.messageDateTimer.start(this.postMessages);
-    }, err => {
-      console.error('[getMessages] Err:', err);
-    });
+
   }
 
   goToProfile(profileId?: number, profileTypePublic?: boolean) {

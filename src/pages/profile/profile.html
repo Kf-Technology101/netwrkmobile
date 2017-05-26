@@ -75,7 +75,8 @@
           </button>
         </ion-col>
         <ion-col class="in" *ngIf="!connect.instagram">
-          <button type="button" (click)="connectToInstagram()">
+          <!-- <button type="button" (click)="connectToInstagram()"> -->
+          <button type="button" (click)="toolsPrvd.notAvailableAlert()">
             <ion-icon name="logo-instagram"></ion-icon>
             Instagram
           </button>

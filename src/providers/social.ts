@@ -9,6 +9,7 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { TwitterConnect } from '@ionic-native/twitter-connect';
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
+import { AlertController } from 'ionic-angular';
 
 @Injectable()
 export class Social {
@@ -30,7 +31,8 @@ export class Social {
     private facebook: Facebook,
     private twitter: TwitterConnect,
     private iab: InAppBrowser,
-    private backgroundMode: BackgroundMode
+    private backgroundMode: BackgroundMode,
+    private alertCtrl: AlertController
   ) {}
 
   public connectToFacebook(): Promise<any> {
@@ -78,6 +80,12 @@ export class Social {
       console.log('[Twitter connect] res:', data);
     }, err => {
       console.error('[Twitter connect] err:', err);
+      let alert = this.alertCtrl.create({
+        title: err,
+        subTitle: 'You might need to install Twitter app to be able to login',
+        buttons: ['Ok']
+      });
+      alert.present();
     });
   }
 

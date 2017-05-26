@@ -118,9 +118,11 @@ export class ProfilePage {
   }
 
   connectToInstagram() {
-    this.socialPrvd.connectToInstagram().then(() => {
+    this.socialPrvd.connectToInstagram().then(res => {
       this.connect.instagram = this.socialPrvd.getInstagramData();
-      this.toolsPrvd.showToast('Instagram already connected');
+      this.toolsPrvd.showToast('Instagram connected');
+    }, err => {
+
     });
   }
   connectToLinkedIn() {

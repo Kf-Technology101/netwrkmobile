@@ -1,20 +1,6 @@
 <ion-header>
   <ion-toolbar>
     <div class="drag-container">
-      <div class="dragline">
-        <span class="info">
-          <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
-            {{ user.role_name }}
-          </span>
-          <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
-            {{ user.name }}
-          </span>
-        </span>
-        <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
-        <img class="draggable-element"
-          [src]="slideAvatarPrvd.sliderPosition == 'right' ?
-            user.hero_avatar_url : user.avatar_url">
-      </div>
     </div>
   </ion-toolbar>
 </ion-header>

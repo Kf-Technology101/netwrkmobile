@@ -3,7 +3,7 @@
   <ion-grid>
     <ion-row align-items-end>
       <ion-col>
-        <div *ngIf="!imgBg" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
+        <div *ngIf="!imgBg && chatPrvd.storage.get('first_time_camera') === null" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
           Tap for a picture
           <div></div>
         </div>

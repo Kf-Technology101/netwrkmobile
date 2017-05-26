@@ -178,8 +178,8 @@ export class ProfileSettingPage {
   }
 
   ionViewDidEnter() {
-    this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    this.slideAvatarPrvd.sliderInit(this.pageTag);
+    // this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+    // this.slideAvatarPrvd.sliderInit(this.pageTag);
     this.userName = this.slideAvatarPrvd.sliderPosition == 'left'
       ? this.user.name
       : this.user.role_name;

@@ -227,7 +227,7 @@ export class ChatPage {
           // scrollEl.style.margin = '0px 0px ' + res.keyboardHeight + 70 + 'px 0px';
           footerEl.style.bottom = res.keyboardHeight + 'px';
 
-          this.contentMargin = res.keyboardHeight + 70 + 'px';
+          // this.contentMargin = res.keyboardHeight + 70 + 'px';
           this.isFeedbackClickable = false;
         } catch (e) {
           console.log(e);
@@ -399,7 +399,8 @@ export class ChatPage {
       this.contentPadding = status
         ? document.documentElement.clientHeight / 2 + 76 + 'px'
         : '130px';
-      this.chatPrvd.scrollToBottom(this.content);
+      if (this.chatPrvd.getState() != 'area')
+        this.chatPrvd.scrollToBottom(this.content);
     } catch (e) {
       console.log(e);
     }
@@ -520,7 +521,8 @@ export class ChatPage {
     }
     this.canRefresh = false;
     // this.postMessages.push(data);
-    this.chatPrvd.scrollToBottom(this.content);
+    if (this.chatPrvd.getState() != 'area')
+      this.chatPrvd.scrollToBottom(this.content);
   }
 
   postMessage(emoji?: string, params?: any) {
@@ -968,7 +970,8 @@ export class ChatPage {
     this.chatPrvd.mainBtn.setState('normal');
     this.chatPrvd.mainBtn.show();
 
-    this.runUndecoverSlider(this.pageTag);
+    if (this.chatPrvd.getState() == 'undercover')
+      this.runUndecoverSlider(this.pageTag);
 
     // this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
@@ -992,6 +995,19 @@ export class ChatPage {
 
     this.zone.run(() => {
       this.undercoverPrvd.profileType = this.undercoverPrvd.profileType;
+    });
+
+    this.chatPrvd.getMessages(this.isUndercover, this.postMessages, null, true)
+    .subscribe(res => {
+      // console.log('[REFRESHER] postMessages:', this.postMessages);
+      console.log('[REFRESHER] res:', res);
+      res = this.chatPrvd.organizeMessages(res.messages);
+      for (let i in res) {
+        this.postMessages.unshift(res[i]);
+      }
+      this.chatPrvd.messageDateTimer.start(this.postMessages);
+    }, err => {
+      console.error('[getMessages] Err:', err);
     });
   }
 

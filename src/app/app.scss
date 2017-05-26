@@ -729,6 +729,22 @@ modal-sharelist {
   color: #0093ee;
 }
 
+.no-data-message {
+  text-align: center;
+  color: #fff;
+  font-size: 16px;
+  text-shadow: 0px 2px 3px rgba(150, 150, 150, 0.6);
+  &.abs {
+    position: absolute;
+    margin: auto;
+    height: 20px;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+
 .api-url {
   position: fixed;
   z-index: 20000;

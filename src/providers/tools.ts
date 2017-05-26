@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 
 import { LogInPage } from '../pages/log-in/log-in';
 
+import { InAppBrowser } from '@ionic-native/in-app-browser';
+import { BackgroundMode } from '@ionic-native/background-mode';
 import * as moment from 'moment';
 
 import {
@@ -24,11 +26,22 @@ export class Tools {
     public toastCtrl: ToastController,
     public loadingCtrl: LoadingController,
     public auth: Auth,
-    public app: App
+    public app: App,
+    private iab: InAppBrowser,
+    private backgroundMode: BackgroundMode
   ) {}
 
   public doBackButton() {
     console.log(this.app.getActiveNav());
+  }
+
+  public handleLinkClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.target.tagName == 'A') {
+      this.backgroundMode.disable();
+      let browser = this.iab.create(event.target.href, '_blank');
+    }
   }
 
   getLoginPage(DefaultPage: any, InvitationPage: any): Promise<any> {

@@ -50,9 +50,10 @@ export class MyApp {
     });
 
     platform.ready().then(() => {
+      this.apiPrvd.watchForConnect(); // watch for network connect
+      this.apiPrvd.watchForDisconnect(); // watch for network disconnect
       this.getLogin();
       this.getSimInfo();
-
       this.statusBar.styleDefault();
     });
   }

@@ -115,6 +115,9 @@
   <div class="chat-container visible" #chatContainer
       [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover' }">
     <!-- [ngClass]="{'visible' : chatPrvd.isMessagesVisible}" -->
+    <ng-container *ngIf="postMessages.length == 0">
+      <p class="no-data-message abs">There are no posts yet</p>
+    </ng-container>
     <div class="message" *ngFor="let message of postMessages; let i = index"
          [@fadeState]="'fadeInVeryFast'">
       <img *ngIf="message.user"
@@ -143,7 +146,9 @@
           {{ message.temporaryFor }}
         </span>
         <span *ngIf="message.text" class="text"
-              [ngClass]="{ 'emoji' : message.is_emoji }">{{ message.text }}</span>
+              [ngClass]="{ 'emoji' : message.is_emoji }"
+              [innerHTML]="message.text_with_links"
+              (click)="toolsPrvd.handleLinkClick($event)"></span>
       </p>
       <button class="feedback-button" (tap)="openFeedbackModal(message, i)"
         *ngIf="!message.locked" [ngClass]="{ 'disabled' : !isFeedbackClickable }">
@@ -203,9 +208,9 @@
           </div>
           <input type="checkbox" [checked]="shareCheckbox.linkedin">
         </div>
-      </div>
+      </div> -->
 
-      <div class="slide-container sl-twitter">
+      <!-- <div class="slide-container sl-twitter">
         <div #sltw [ngClass]="{'active': shareCheckbox.twitter}" class="toggle-el"
           (click)="toggleShareSlider('twitter')">
           <span class="toggle-state" *ngIf="shareCheckbox.twitter">on</span>
@@ -235,16 +240,6 @@
             class="message {{ post.type }}">{{ post.message }}</p>
         </ng-container>
       </ng-container>
-      <!-- <div class="img-container">
-        <span class="social-ico linkedin"></span>
-        <img src="http://travel.usnews.com/images/destinations/94/yosemite_mirror_lake_getty_michael_h_spiva.jpg">
-      </div>
-      <p class="message twitter">
-        The first rule of magic is simple. Don't waste your time waving your hands and hoping when a rock or a club will do.
-      </p>
-      <p class="message twitter">
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Facilis deleniti perspiciatis sit, obcaecati ut blanditiis aliquid alias rem impedit odit vitae maiores voluptate exercitationem. Perferendis modi eius distinctio illum labore.
-      </p> -->
     </div>
   </div>
 

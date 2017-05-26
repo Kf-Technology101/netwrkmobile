@@ -56,6 +56,8 @@ export class Social {
   }
 
   connectToTwitter() {
+    // regex for image links
+    // (http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))
     this.backgroundMode.disable();
     this.twitter.login().then(data => {
       let seq = this.api.post('profiles/connect_social',
@@ -63,15 +65,15 @@ export class Social {
         user:
         {
           token: data.token,
-          provide_name: 'twitter',
+          provider_name: 'twitter',
           secret: data.secret
         }
       }).share();
       seq.map(res => res.json()).subscribe( res => {
-        console.log('[oauth_login] twitter res:', res);
+        console.log('[Twitter connect] twitter res:', res);
         this.setSocialAuth(data, Social.TWITTER);
       }, err => {
-        console.error('[oauth_login] twitter error:', err);
+        console.error('[Twitter connect] twitter error:', err);
       });
       console.log('[Twitter connect] res:', data);
     }, err => {
@@ -84,7 +86,7 @@ export class Social {
     if (res.url.indexOf('access_token') !== -1) {
       let splitUrl = res.url.split('#');
       let access_token = splitUrl[splitUrl.length - 1].split('=')[1];
-      responseObj = { access_token: access_token };
+      responseObj = access_token ;
     }
     return responseObj;
   }
@@ -94,35 +96,32 @@ export class Social {
       let clientId = '2d3db558942e4eaabfafc953263192a7';
       let clientSecret = 'bcf35f1ba4e94d59ad9f2c6c1322c640';
       let redirectUrl = 'http://192.168.1.13:3000/';
-      let token_link = `https://api.instagram.com/oauth/access_token?
-client_id=${clientId}
-&client_secret=${clientSecret}
-&grant_type=authorization_code
-&redirect_uri=${redirectUrl}
-&response_type=code`;
-
-      console.log('instagram url', token_link);
-
-      let acc_token:any = '';
-      let browser = this.iab.create(token_link, '_blank');
+      let access_token:any;
+      let autorization_link = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=token`;
+      let browser = this.iab.create(autorization_link, '_blank');
       browser.on('loadstop').subscribe(res => {
-        console.log(res);
+        console.log('instagram first url data [res]:', res);
         if (res.url.indexOf(this.api.siteDomain) != -1) {
+          if (this.parseInstagramData(res)) {
+            access_token = this.parseInstagramData(res);
+            browser.close();
+          }
 
-          // this.setSocialAuth(responseObj, Social.INSTAGRAM);
-          //
           let instagramData = {
-            provider_name: 'instagram',
-            token: this.parseInstagramData(res)
+            token: access_token,
+            provider_name: 'instagram'
           };
           console.log('[instagram] instagramData:', instagramData);
-          let seq = this.api.post('sessions/oauth_login', { user: instagramData }).share();
+          let seq = this.api.post('profiles/connect_social', {
+            user: instagramData
+          }).share();
           seq.map(res => res.json()).subscribe(res => {
+            // this.setSocialAuth(responseObj, Social.INSTAGRAM);
             console.log('[instagram] res:', res);
           }, err => {
             console.error('[instagram] err:', err);
           });
-          browser.close();
+
           resolve();
         }
       }, (err) => {

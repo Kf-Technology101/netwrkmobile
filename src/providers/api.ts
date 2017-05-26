@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { LocalStorage } from './local-storage';
+import { Network } from '@ionic-native/network';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -15,11 +16,49 @@ export class Api {
   public hostUrl = this.httpProtocol + this.siteDomain;
   public url: string = this.hostUrl + this.apiV;
 
+  // Network connect/disconnect
+  private disconnectSubscription:any;
+  private connectSubscription:any;
+
   constructor(
     public http: Http,
-    public storage: LocalStorage
-  ) {
+    public storage: LocalStorage,
+    private network: Network
+  ) {}
 
+  public watchForConnect() {
+    // this.unsubscribeConnect();
+    this.connectSubscription = this.network.onConnect().subscribe(() => {
+      console.log('network connected!');
+      setTimeout(() => {
+        if (this.network.type === 'wifi') {
+          console.log('we got a wifi connection, woohoo!');
+        }
+      }, 3000);
+    }, err => {
+      console.error('connect subscribe err:', err);
+    });
+  }
+
+  public watchForDisconnect() {
+    // this.unsubscribeDisconnect();
+    this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
+      console.log('network was disconnected :-(');
+    }, err => {
+      console.error('disconnect subscribe err:', err);
+    });
+  }
+
+  public unsubscribeConnect() {
+    if (this.connectSubscription) {
+      this.connectSubscription.unsubscribe();
+    }
+  }
+
+  public unsubscribeDisconnect() {
+    if (this.disconnectSubscription) {
+      this.disconnectSubscription.unsubscribe();
+    }
   }
 
   public changeApiUrl(url: string) {

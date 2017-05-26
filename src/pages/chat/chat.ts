@@ -970,7 +970,8 @@ export class ChatPage {
     this.chatPrvd.mainBtn.setState('normal');
     this.chatPrvd.mainBtn.show();
 
-    this.runUndecoverSlider(this.pageTag);
+    if (this.chatPrvd.getState() == 'undercover')
+      this.runUndecoverSlider(this.pageTag);
 
     // this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
@@ -994,6 +995,19 @@ export class ChatPage {
 
     this.zone.run(() => {
       this.undercoverPrvd.profileType = this.undercoverPrvd.profileType;
+    });
+
+    this.chatPrvd.getMessages(this.isUndercover, this.postMessages, null, true)
+    .subscribe(res => {
+      // console.log('[REFRESHER] postMessages:', this.postMessages);
+      console.log('[REFRESHER] res:', res);
+      res = this.chatPrvd.organizeMessages(res.messages);
+      for (let i in res) {
+        this.postMessages.unshift(res[i]);
+      }
+      this.chatPrvd.messageDateTimer.start(this.postMessages);
+    }, err => {
+      console.error('[getMessages] Err:', err);
     });
   }
 

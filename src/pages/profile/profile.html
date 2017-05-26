@@ -47,6 +47,9 @@
       </p>
     </ion-col>
   </ion-row>
+  <ng-container *ngIf="fbFriends.length == 0 && profileTypePublic && !ownProfile">
+    <p class="no-data-message">No common connections yet</p>
+  </ng-container>
   <ion-row *ngIf="fbFriends.length > 0 && profileTypePublic && !ownProfile"
     class="facebook" padding>
     <ion-col>
@@ -61,7 +64,7 @@
       </ion-slides>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="connect" padding>
+  <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left' && ownProfile" class="connect" padding>
     <ion-col>
       <!-- <button ion-button (click)="logoutFromTwitter()">Logout from twitter</button> -->
       <ion-row>
@@ -71,7 +74,7 @@
             Facebook
           </button>
         </ion-col>
-        <ion-col class="in" *ngIf="!connect.instagram" hidden>
+        <ion-col class="in" *ngIf="!connect.instagram">
           <button type="button" (click)="connectToInstagram()">
             <ion-icon name="logo-instagram"></ion-icon>
             Instagram
@@ -105,11 +108,13 @@
       </ion-row>
     </ion-col>
   </ion-row>
+  <ng-container *ngIf="!posts || posts.length == 0">
+    <p class="no-data-message">There are no posts yet</p>
+  </ng-container>
   <ion-grid *ngIf="posts.length > 0" no-padding>
     <ion-row class="feed">
       <ion-col>
         <h3><span>Recent</span></h3>
-
         <ng-container *ngFor="let post of posts">
           <ion-row class="post" [ngClass]="{'image-post': post.full_picture}">
             <ion-col>
@@ -127,11 +132,16 @@
                       <ng-container *ngIf="post.social == 'twitter'">
                         Twitter
                       </ng-container>
+                      <ng-container *ngIf="post.social == 'instagram'">
+                        Instagram
+                      </ng-container>
                       -
                     </ng-container>
                     {{ post.date }}
                   </ion-card-title>
-                  <p>{{ post.text }}</p>
+                  <p (click)="toolsPrvd.handleLinkClick($event)"
+                     [innerHTML]="post.text_with_links">
+                  </p>
                 </ion-card-content>
               </ion-card>
             </ion-col>

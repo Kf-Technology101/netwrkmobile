@@ -5,7 +5,7 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 import { Tools } from '../../providers/tools';
 import { Camera } from '../../providers/camera';
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
-
+import { LocalStorage } from '../../providers/local-storage';
 // Animations
 import {
   animSpeed,
@@ -57,7 +57,8 @@ export class CameraPage {
     private cameraPreview: CameraPreview,
     public cameraPrvd: Camera,
     public tools: Tools,
-    private base64ToGallery: Base64ToGallery
+    private base64ToGallery: Base64ToGallery,
+    private storage: LocalStorage
   ) {}
 
   takePhoto() {
@@ -74,6 +75,9 @@ export class CameraPage {
       // this.cameraPrvd.takenPictures = data:image/jpeg;base64,' + imageData[0];
       this.cameraUI.button = 'photoButtonFadeOut';
       this.cameraUI.tooltip = 'tooltipFadeOut';
+      if (this.storage.get('first_time_camera') === null) {
+        this.storage.set('first_time_camera', true);
+      }
       setTimeout(() => {
         this.mainBtn.state = 'normal';
       }, animSpeed.fadeIn/2);
@@ -92,8 +96,6 @@ export class CameraPage {
     }, err => {
       console.log(err);
       this.mainBtn.state = 'normal';
-      this.imgBg = 'url(http://www.designboom.com/wp-content/uploads/2016/07/patricia-piccinini-graham-transport-accident-commission-designboom-01.jpg)';
-      this.imgUrl = 'http://www.designboom.com/wp-content/uploads/2016/07/patricia-piccinini-graham-transport-accident-commission-designboom-01.jpg';
       // this.goBack();
     });
   }

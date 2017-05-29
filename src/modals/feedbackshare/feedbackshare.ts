@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NavParams, ViewController, ModalController } from 'ionic-angular';
+import { NavParams, ViewController, ModalController, AlertController } from 'ionic-angular';
 
 import { NetworkContactListPage } from '../../pages/network-contact-list/network-contact-list';
 
@@ -30,7 +30,7 @@ export class FeedbackShareModal {
   private share: any = {
     message: null,
     image: null,
-    url: 'http://netwrk.com'
+    url: 'http://34.208.20.67' /*'http://netwrk.com'*/
   }
 
   constructor(
@@ -40,13 +40,14 @@ export class FeedbackShareModal {
     public chatPrvd: Chat,
     public toolsPrvd: Tools,
     private socialShare: SocialSharing,
-    private facebook: Facebook
+    private facebook: Facebook,
+    private alertCtrl: AlertController
   ) {
   }
 
   public sendSMS() {
     if (!this.share.message) {
-      this.toolsPrvd.showToast('The post doesn\'t has text message');
+      this.toolsPrvd.showToast('The post doesn\'t have text message');
       return;
     }
 
@@ -63,7 +64,7 @@ export class FeedbackShareModal {
     console.log('share:', this.share);
 
     if (!this.share.image)
-      this.share.image = 'http://netwrk.com/assets/logo-88088611a0d6230481f2a5e9aabf7dee19b26eb5b8a24d0576000c6c33ccc867.png';
+      this.share.image = this.share.url + '/assets/logo-88088611a0d6230481f2a5e9aabf7dee19b26eb5b8a24d0576000c6c33ccc867.png';
     if (!this.share.message)
       this.share.message = 'Shared from netwrk';
 
@@ -82,6 +83,26 @@ export class FeedbackShareModal {
     // }, err => {
     //   console.log(err);
     // });
+  }
+  shareViaTwitter() {
+    this.toolsPrvd.showLoader();
+    let self = this;
+    this.socialShare.shareViaTwitter(this.share.message, this.share.image)
+    .then(function(result) {
+      // Success!
+      self.toolsPrvd.hideLoader();
+      console.log('[Twitter share] success!:', result);
+    }, function(err) {
+      // An error occurred. Show a message to the user
+      self.toolsPrvd.hideLoader();
+      console.error('[Twitter share] error:', err);
+      let alert = this.alertCtrl.create({
+        title: 'Twitter share error',
+        subTitle: 'You might need to install Twitter app',
+        buttons: ['OK']
+      });
+      alert.present();
+    });
   }
 
   chooseToShare() {

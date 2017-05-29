@@ -10,7 +10,7 @@ export class Api {
   private apiV: string = '/api/v1';
   public domain: any = {
     local: '192.168.1.13:3000',
-    remote: 'netwrk.com'
+    remote: '34.208.20.67' /*'netwrk.com'*/
   };
   public siteDomain: string = this.domain.remote;
   public hostUrl = this.httpProtocol + this.siteDomain;
@@ -128,10 +128,12 @@ export class Api {
     const formData = form || new FormData();
     for (let property in object) {
       let value = object[property];
-      if (!object.hasOwnProperty(property) || !value) {
+      if (!object.hasOwnProperty(property) || value === null || value === undefined) {
+        console.warn('object.' + property + ':', value);
         continue;
       }
       const formKey = namespace ? `${namespace}[${property}]` : property;
+      console.log('[createFormData] formKey:', formKey, ' value:', value);
       if (value instanceof Date) {
         formData.append(formKey, value.toISOString());
       } else if (typeof value === 'object' && !(value instanceof File)) {

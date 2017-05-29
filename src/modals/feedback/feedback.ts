@@ -27,8 +27,8 @@ export class FeedbackModal {
   };
 
   private postStatus: any = {
-    isLiked: false,
-    isLegendary: false
+    isLiked: null,
+    isLegendary: null
   };
 
   private endResult:any = {

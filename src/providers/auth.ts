@@ -47,7 +47,7 @@ export class Auth {
     seq.map(res => res.json()).subscribe(
       res => {
         this.confirmCode = res.login_code;
-      }, err => console.error('ERROR', err)
+      }, err => console.error('verification ERROR', err)
     );
 
     return seq;
@@ -60,7 +60,7 @@ export class Auth {
     console.log('[login] user:', user);
     seq.map(res => res.json()).subscribe(
       res => this.saveAuthData(res, 'email'),
-      err => console.error('ERROR', err)
+      err => console.error('login ERROR', err)
     );
 
     return seq;

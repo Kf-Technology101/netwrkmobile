@@ -2,7 +2,7 @@
   [ngClass]="{'chat-header': !isUndercover}">
   <ion-toolbar *ngIf="isUndercover">
     <div class="drag-container">
-      <div class="dragline" (click)="goToProfile()">
+      <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic)">
         <span class="info">
           <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
             {{ user.name }}
@@ -12,7 +12,7 @@
           </span>
         </span>
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
-        <img class="draggable-element" (click)="goToProfile()"
+        <img class="draggable-element" (click)="goToProfile(user.id, user.profileTypePublic)"
           [src]="slideAvatarPrvd.sliderPosition == 'right'
             ? user.hero_avatar_url : user.avatar_url">
       </div>

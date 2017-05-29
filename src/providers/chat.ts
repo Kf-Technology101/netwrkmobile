@@ -131,10 +131,12 @@ export class Chat {
       params.message.lat = this.gps.coords.lat;
       params.message.lng = this.gps.coords.lng;
 
+      console.info('[sendMessage] params:', params);
+
       if (data.images && data.images.length > 0) {
         this.tools.showLoader();
         this.sendMessageWithImage(params, data.images).then(res => {
-          // console.log(res);
+          console.log('[sendMessageWithImage] res:', res);
           this.tools.hideLoader();
           resolve(res);
         }).catch(err => {
@@ -172,7 +174,7 @@ export class Chat {
 
     let data: any = {
       post_code: this.localStorage.get('chat_zip_code'),
-      undercover: undercover,
+      undercover: undercover ? undercover : false,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       offset: offset,
@@ -264,8 +266,8 @@ export class Chat {
       var getFileBlob = function (url, cb) {
         // console.log(url, cb);
         var xhr = new XMLHttpRequest();
-        xhr.open("GET", url);
-        xhr.responseType = "blob";
+        xhr.open('GET', url);
+        xhr.responseType = 'blob';
         xhr.addEventListener('load', function() {
           cb(xhr.response);
         });
@@ -296,6 +298,8 @@ export class Chat {
             if (i == images.length) {
               // console.log('end', files);
               let xhr: XMLHttpRequest = new XMLHttpRequest();
+
+              console.info('[getFileObject] params:', params.undercover + '');
 
               let formData: FormData = self.api.createFormData(params);
               for (let i in files)
@@ -337,7 +341,7 @@ export class Chat {
   }
 
   public updateAppendContainer() {
-    // console.log("[chatPrvd] updateAppendContainer()...");
+    // console.log('[chatPrvd] updateAppendContainer()...');
     let pictures = this.cameraPrvd.takenPictures;
     if (pictures && pictures.length > 0) {
       this.plusBtn.setState('default');
@@ -348,7 +352,7 @@ export class Chat {
       this.postBtn.setState(true);
       this.appendContainer.show();
       this.appendContainer.setState('on_append');
-      if (this.mainBtn.state != "moved-n-scaled")
+      if (this.mainBtn.state != 'moved-n-scaled')
         this.mainBtn.setState('above_append');
     }
   }
@@ -461,7 +465,7 @@ export class Chat {
     switch (location) {
       case 'chat':
         loadMessages = this.getMessages.bind(this);
-        arg = isUndercover;
+        arg = isUndercover ? isUndercover : false;
       break;
       case 'legendary':
         loadMessages = this.getLegendaryHistory.bind(this);
@@ -469,7 +473,7 @@ export class Chat {
       break;
       default:
         loadMessages = this.getMessages.bind(this);
-        arg = isUndercover;
+        arg = isUndercover ? isUndercover : false;
       break;
     }
     // console.log('[ChatPage][showMessages] isUndercover:', isUndercover);

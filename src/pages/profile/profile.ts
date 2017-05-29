@@ -120,7 +120,7 @@ export class ProfilePage {
   connectToInstagram() {
     this.socialPrvd.connectToInstagram().then(res => {
       this.connect.instagram = this.socialPrvd.getInstagramData();
-      this.toolsPrvd.showToast('Instagram connected');
+      this.toolsPrvd.showToast('Instagram successfully connected');
     }, err => {
 
     });
@@ -204,7 +204,7 @@ export class ProfilePage {
     // this.toolsPrvd.hideLoader();
     console.log(res);
 
-    this.ownProfile = res.id == this.authPrvd.getAuthData().id ? true : false;
+    this.ownProfile = (res.id == this.authPrvd.getAuthData().id) ? true : false;
     this.user = res;
 
     this.showMessagesWithType();
@@ -255,6 +255,7 @@ export class ProfilePage {
     console.log('showMessages');
 
     let mesReq = this.chatPrvd.getMessagesByUserId(params).subscribe(res => {
+      this.posts = [];
       console.log(res);
       if (res.messages && res.messages.length == 0) this.postLoaded = true;
       if (params.offset == 0) this.posts = [];

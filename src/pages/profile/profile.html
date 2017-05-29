@@ -19,7 +19,8 @@
     </div>
 
     <ion-buttons end>
-      <button ion-button icon-only clear class="setting" (tap)="openSettings()">
+      <button *ngIf="profileTypePublic" ion-button icon-only clear
+              class="setting" (tap)="openSettings()">
         <ion-icon name="settings" color="dark"></ion-icon>
       </button>
     </ion-buttons>
@@ -28,7 +29,7 @@
 </ion-header>
 
 <ion-content has-main-btn (ionScroll)="ionScroll()">
-  <ion-row *ngIf="!ownProfile || ownProfile && !undercoverPrvd.isUndercover"
+  <ion-row
     class="avatar-section">
     <ion-col>
       <div class="avatar">

@@ -176,24 +176,25 @@ export class ChatPage {
     this.authData = this.authPrvd.getAuthData();
 
     let channel = 'ChatChannel';
-    let lobby = 'messages' + this.gpsPrvd.zipCode + 'chat';
+    let zipCode = this.chatPrvd.localStorage.get('chat_zip_code');
+    console.log('[chat constructor] storage zip:', this.chatPrvd.localStorage.get('chat_zip_code'));
+    let lobby = 'messages' + zipCode + 'chat';
 
     // console.log('[SOCKET] lobby:', lobby);
 
     this.ng2cable.subscribe(this.chatPrvd.hostUrl + '/cable', {
       channel: <string> channel,
-      post_code: this.gpsPrvd.zipCode
+      post_code: <number> zipCode
     });
 
     this.broadcaster.on<any>(channel).subscribe(
       data => {
-        // console.log('[SOCKET] Message received:', data);
+        console.log('[SOCKET] Message received:', data);
         let insideUndercover = this.gpsPrvd
         .calculateDistance({
           lat: <number> parseFloat(data.message.lat),
           lng: <number> parseFloat(data.message.lng)
         });
-        console.log('received data:', data.message);
         if (this.isUndercover) {
           if (data.message.undercover && insideUndercover) {
             this.postMessages.push(data.message);
@@ -213,9 +214,9 @@ export class ChatPage {
 
     this.broadcaster.on<any>(lobby).subscribe(
       data => {
-        // console.log('[SOCKET] lobby:', data);
+        console.log('[SOCKET] lobby:', data);
       }, err => {
-        // console.error('[SOCKET] lobby error:', err);
+        console.error('[SOCKET] lobby error:', err);
       }
     );
 
@@ -549,10 +550,12 @@ export class ChatPage {
         text_with_links: emoji ?  emoji : this.txtIn.value,
         user_id: this.authData ? this.authData.id : 0,
         images: emoji ? [] : images,
-        undercover: this.isUndercover,
+        undercover: (this.chatPrvd.getState() == 'area') ? false : this.isUndercover,
         public: publicUser,
         is_emoji: emoji ? true : false
       };
+
+      console.info('[postMessage] params:', messageParams);
 
       if (params) Object.assign(messageParams, params);
 
@@ -623,6 +626,7 @@ export class ChatPage {
   }
 
   updateMessagesAndScrollDown(scroll?:string) {
+    console.log('(updateMessagesAndScrollDown) isUndercover:', this.isUndercover);
     this.chatPrvd.showMessages(this.postMessages, 'chat', this.isUndercover).then(res => {
       this.postMessages = res.messages;
       res.callback(this.postMessages);
@@ -634,7 +638,9 @@ export class ChatPage {
 
   openFeedbackModal(messageData: any, mIndex: number) {
     this.toolsPrvd.showLoader();
+    console.log('(openFeedbackModal) messageData:', messageData);
     this.chatPrvd.sendFeedback(messageData, mIndex).then(res => {
+      console.log('sendFeedback:', res);
       let feedbackModal = this.modalCtrl.create(FeedbackModal, res);
       feedbackModal.onDidDismiss(data => {
         if (data) {

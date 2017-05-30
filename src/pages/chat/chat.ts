@@ -1030,6 +1030,18 @@ export class ChatPage {
       this.goToProfile();
     }
 
+    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
+    this.cameraPreview.startCamera(cameraOptions).then(res => {
+      // console.log(res);
+      if (this.isUndercover) {
+        this.cameraPreview.show();
+      } else {
+        this.cameraPreview.hide();
+      }
+    }, err => {
+      // console.log(err);
+    });
+
     this.zone.run(() => {
       this.undercoverPrvd.profileType = this.undercoverPrvd.profileType;
     });

@@ -59,15 +59,7 @@ export class CameraPage {
     public tools: Tools,
     private base64ToGallery: Base64ToGallery,
     private storage: LocalStorage
-  ) {
-    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: true });
-    this.cameraPreview.startCamera(cameraOptions).then(res => {
-      console.log(res);
-      this.cameraPreview.show();
-    }, err => {
-      console.log(err);
-    });
-  }
+  ) {}
 
   takePhoto() {
     this.tools.showLoader();
@@ -117,7 +109,7 @@ export class CameraPage {
     this.cameraPreview.switchCamera();
   }
 
-  goBack(params?: any) {
+  goBack() {
     this.tools.popPage();
   }
 
@@ -151,7 +143,7 @@ export class CameraPage {
   }
 
   ionViewWillLeave() {
-    this.cameraPreview.hide();
+    // this.cameraPreview.hide();
   }
 
 }

@@ -1,4 +1,5 @@
-page-profile-setting {
+page-profile-setting,
+page-profile {
   .header {
     &.header::after {
       background: none;
@@ -97,6 +98,7 @@ page-profile-setting {
         border: 2px solid #fff;
         border-radius: 16px;
         font-size: 1.6rem;
+        text-align: center;
 
         input {
           color: #fff;
@@ -112,7 +114,7 @@ page-profile-setting {
 
         &.has-value {
           input {
-            text-align: left;
+            text-align: center;
           }
         }
       }

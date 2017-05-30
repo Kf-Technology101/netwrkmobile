@@ -26,20 +26,20 @@ page-camera {
 
       .tooltip {
         background-color: rgba(91, 135, 170, 0.8);
-        width: 267px;
-        height: 46px;
+        width: 200px;
+        height: 26px;
         position: absolute;
         left: 0;
         right: 0;
         bottom: 184px;
         text-align: center;
         margin: auto;
-        line-height: 46px;
-        font-size: 14px;
+        line-height: 26px;
+        font-size: 18px;
         color: #fff;
-        border-radius: 9px;
-
+        border-radius: 17px;
         opacity: 0;
+        -webkit-transform: scaleX(0.85);
         transform: scaleX(0.85);
 
         div {

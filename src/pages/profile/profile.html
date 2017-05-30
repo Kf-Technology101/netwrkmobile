@@ -19,8 +19,8 @@
     </div>
 
     <ion-buttons end>
-      <button *ngIf="profileTypePublic" ion-button icon-only clear
-              class="setting" (tap)="openSettings()">
+      <button *ngIf="ownProfile"
+              ion-button icon-only clear class="setting" (tap)="openSettings()">
         <ion-icon name="settings" color="dark"></ion-icon>
       </button>
     </ion-buttons>
@@ -29,25 +29,61 @@
 </ion-header>
 
 <ion-content has-main-btn (ionScroll)="ionScroll()">
-  <ion-row
-    class="avatar-section">
+  <ion-row class="avatar-section">
     <ion-col>
-      <div class="avatar">
-        <img [src]="profileTypePublic ? user.avatar_url : user.hero_avatar_url">
+      <div class="avatar" *ngIf="ownProfile">
+        <ion-spinner *ngIf="profile.imageLoading"></ion-spinner>
+        <img
+        [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.avatar_url : profile.user.hero_avatar_url">
+        <button color="bk" ion-button (click)="profile.uploadCallback($event)">
+          <ion-icon name="add"></ion-icon>
+        </button>
+        <input id="file-input" #input type="file" (change)="profile.filesAdded($event)"
+          style="display: none">
       </div>
-      <span class="username">
-        <ng-container *ngIf="!profileTypePublic">
-          {{ user.role_name }}
-        </ng-container>
-        <ng-container *ngIf="profileTypePublic">
-          {{ user.name }}
-        </ng-container>
+      <div class="avatar" *ngIf="!ownProfile && profileTypePublic">
+        <img [src]="user.avatar_url">
+      </div>
+      <div class="avatar" *ngIf="!ownProfile && !profileTypePublic">
+        <img [src]="user.hero_avatar_url">
+      </div>
+      <span class="username" *ngIf="!ownProfile && profileTypePublic">
+        {{ user.name }}
       </span>
-      <p class="description" *ngIf="!profileTypePublic">
+      <span class="username" *ngIf="!ownProfile && !profileTypePublic">
+        {{ user.role_name }}
+      </span>
+      <p class="description" *ngIf="!ownProfile && !profileTypePublic">
         {{ user.role_description }}
       </p>
     </ion-col>
   </ion-row>
+  <ion-row class="input-section" *ngIf="ownProfile">
+    <ion-col>
+      <ion-input
+        text-center type="text" placeholder="Choose a name"
+        [(ngModel)]="profile.userName"
+        [ngClass]="{'has-value' : profile.userName}" (blur)="profile.saveChanges()"></ion-input>
+    </ion-col>
+  </ion-row>
+  <div ion-content class="description-section"
+       *ngIf="ownProfile && slideAvatarPrvd.sliderPosition == 'right'">
+      <!-- <ion-card>
+        <h1 text-center>Will you be a super hero or a villain?</h1>
+        <p>
+          Points are given by bringing joy to netwrk, or becoming a legend. Being vulgar or blocked takes them away.
+        </p>
+        <p>
+          Beware: too much negativity and your powers will be recinded.
+        </p>
+      </ion-card> -->
+      <ng-container>
+        <textarea autosize [(ngModel)]="profile.userDescription" rows="7"
+                  (blur)="profile.saveChanges()">
+          {{ profile.userDescription }}
+        </textarea>
+      </ng-container>
+  </div>
   <ng-container *ngIf="fbFriends.length == 0 && profileTypePublic && !ownProfile">
     <p class="no-data-message">No common connections yet</p>
   </ng-container>
@@ -160,17 +196,6 @@
             </ion-col>
           </ion-row>
         </ng-container>
-
-        <!-- <ion-row class="image-post">
-          <ion-col>
-            <img src="assets/images/instagram.png">
-            <ion-card>
-              <ion-card-content>
-                <ion-card-title>Shared via Instagram - 6h</ion-card-title>
-              </ion-card-content>
-            </ion-card>
-          </ion-col>
-        </ion-row> -->
       </ion-col>
     </ion-row>
   </ion-grid>

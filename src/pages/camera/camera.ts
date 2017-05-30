@@ -39,8 +39,8 @@ export class CameraPage {
   @HostBinding('class') colorClass = 'transparent-background';
 
   cameraUI: any = {
-    tooltip: 'tooltipFadeOut',
-    button: 'photoButtonFadeOut'
+    tooltip: 'tooltipFadeIn',
+    button: 'photoButtonFadeIn'
   };
 
   imgBg: string;
@@ -59,9 +59,18 @@ export class CameraPage {
     public tools: Tools,
     private base64ToGallery: Base64ToGallery,
     private storage: LocalStorage
-  ) {}
+  ) {
+    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: true });
+    this.cameraPreview.startCamera(cameraOptions).then(res => {
+      console.log(res);
+      this.cameraPreview.show();
+    }, err => {
+      console.log(err);
+    });
+  }
 
   takePhoto() {
+    this.tools.showLoader();
     // picture options
     const pictureOpts = {
       width: 1280,
@@ -86,10 +95,14 @@ export class CameraPage {
 
       this.base64ToGallery.base64ToGallery(imageData[0], { prefix: 'netwrk_' }).then(
         res => {
+          this.tools.hideLoader();
           console.log('Saved image to gallery ', res);
           this.imgUrl = res;
         },
-        err => console.log('Error saving image to gallery ', err)
+        err => {
+          this.tools.hideLoader();
+          console.log('Error saving image to gallery ', err);
+        }
       );
 
       // this.goBack();
@@ -120,6 +133,7 @@ export class CameraPage {
 
   cancelSave() {
     this.imgBg = undefined;
+    this.cameraUI.button = 'photoButtonFadeIn';
   }
 
   ionViewDidEnter() {
@@ -130,7 +144,6 @@ export class CameraPage {
     }, err => {
       console.log(err);
     });
-    this.cameraUI.button = 'photoButtonFadeIn';
     setTimeout(() => {
       this.cameraUI.tooltip = 'tooltipFadeIn';
     }, animSpeed.fadeIn/2);

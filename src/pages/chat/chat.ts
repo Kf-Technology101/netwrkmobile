@@ -403,7 +403,7 @@ export class ChatPage {
     try {
       this.contentPadding = status
         ? document.documentElement.clientHeight / 2 + 76 + 'px'
-        : '130px';
+        : '180px';
       if (this.chatPrvd.getState() != 'area')
         this.chatPrvd.scrollToBottom(this.content);
     } catch (e) {
@@ -717,8 +717,10 @@ export class ChatPage {
       } else {
         if (this.messagesInterval) clearInterval(this.messagesInterval);
         if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
+        this.slideAvatarPrvd.sliderPosition = 'left';
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
+        this.getUsers();
         this.updateMessagesAndScrollDown();
         this.postLoaded = false;
       }
@@ -851,7 +853,7 @@ export class ChatPage {
     if (!this.postLoaded) {
       let dimensions = this.content.getContentDimensions();
       if (!this.postLoading
-        && dimensions.scrollTop < (dimensions.scrollHeight - 50)) {
+        && dimensions.scrollTop < (dimensions.scrollHeight - 400)) {
         this.postLoading = true;
         this.refreshChat();
       }

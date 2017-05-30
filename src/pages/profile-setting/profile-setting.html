@@ -1,11 +1,12 @@
-<ion-header>
+<!-- <ion-header>
   <ion-toolbar>
     <div class="drag-container">
     </div>
   </ion-toolbar>
 </ion-header>
-
+-->
 <ion-content has-main-btn>
+  <!--
   <ion-row class="avatar-section">
     <ion-col>
       <div class="avatar">
@@ -32,7 +33,7 @@
     </ion-col>
   </ion-row>
   <div ion-content class="description-section">
-      <!-- <ion-card>
+      <ion-card>
         <h1 text-center>Will you be a super hero or a villain?</h1>
         <p>
           Points are given by bringing joy to netwrk, or becoming a legend. Being vulgar or blocked takes them away.
@@ -40,7 +41,7 @@
         <p>
           Beware: too much negativity and your powers will be recinded.
         </p>
-      </ion-card> -->
+      </ion-card>
       <ng-container *ngIf="slideAvatarPrvd.sliderPosition == 'right'">
         <textarea autosize [(ngModel)]="userDescription" rows="7">
           {{ userDescription }}
@@ -91,6 +92,7 @@
       </ion-row>
     </ion-col>
   </ion-row>
+  -->
 </ion-content>
 
 <ion-footer>

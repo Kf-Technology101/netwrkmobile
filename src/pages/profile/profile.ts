@@ -5,6 +5,7 @@ import { NavController, NavParams, Slides, Content } from 'ionic-angular';
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
 
 // Providers
+import { Profile } from '../../providers/profile';
 import { Social } from '../../providers/social';
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
@@ -18,12 +19,16 @@ import { Api } from '../../providers/api';
 
 @Component({
   selector: 'page-profile',
-  templateUrl: 'profile.html'
+  templateUrl: 'profile.html',
+  providers: [
+    Profile
+  ]
 })
 export class ProfilePage {
   @ViewChild('fbSlider') fbSlider: Slides;
   @ViewChild('incognitoSlider') incoSlider;
   @ViewChild(Content) content: Content;
+  @ViewChild('input') nativeInputBtn: ElementRef
 
   greeting: string;
   testSlides: string[] = [];
@@ -58,6 +63,7 @@ export class ProfilePage {
     public api: Api,
     public chatPrvd: Chat,
     elRef: ElementRef,
+    public profile: Profile
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.user.id = this.navParams.get('id');
@@ -83,6 +89,7 @@ export class ProfilePage {
     this.userPrvd.getFacebookFriendProfile(userId)
     .subscribe(res => {
       console.log('[GetfbProfile] Res:', res);
+      this.posts = [];
       this.showUserData(res);
     }, err => {
       console.error('[GetfbProfile] Err:', err);
@@ -235,6 +242,7 @@ export class ProfilePage {
       this.posts = [];
       this.showMessages(this.undercoverPrvd.isUndercover);
     });
+    this.user = this.profile.changeCallback(positionLeft);
   }
 
   private showMessages(undercover?: any) {
@@ -255,7 +263,6 @@ export class ProfilePage {
     console.log('showMessages');
 
     let mesReq = this.chatPrvd.getMessagesByUserId(params).subscribe(res => {
-      this.posts = [];
       console.log(res);
       if (res.messages && res.messages.length == 0) this.postLoaded = true;
       if (params.offset == 0) this.posts = [];
@@ -265,13 +272,17 @@ export class ProfilePage {
       }
       this.postLoading = false;
       this.toolsPrvd.hideLoader();
-      mesReq.unsubscribe()
+      mesReq.unsubscribe();
     }, err => {
       console.log(err);
       this.postLoading = false;
       this.toolsPrvd.hideLoader();
-      mesReq.unsubscribe()
+      mesReq.unsubscribe();
     });
+
+    setTimeout(() => {
+      this.toolsPrvd.hideLoader();
+    }, 10000);
   }
 
   showFirstTimeMessage(alertType:string) {
@@ -306,6 +317,13 @@ export class ProfilePage {
     welcomeAlert.present();
   }
 
+  setProfileData() {
+    this.profile.userName = this.slideAvatarPrvd.sliderPosition == 'left'
+      ? this.user.name
+      : this.user.role_name;
+    this.profile.userDescription = this.user.role_description;
+  }
+
   ionViewDidEnter() {
     if (this.ownProfile) {
       if (this.authPrvd.storage.get('profile_first_time') === null) {
@@ -320,6 +338,7 @@ export class ProfilePage {
     }
 
     this.user = this.authPrvd.getAuthData();
+    this.setProfileData();
     // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
   }
 
@@ -328,7 +347,8 @@ export class ProfilePage {
   }
 
   ionViewWillLeave() {
-    this.slideAvatarPrvd.changeCallback = null;
+    this.profile.saveChangesOnLeave();
+    this.setProfileData();
   }
 
 }

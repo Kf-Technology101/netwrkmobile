@@ -48,6 +48,7 @@ import { Tools } from '../providers/tools';
 import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
 import { Gps } from '../providers/gps';
+import { Profile } from '../providers/profile';
 // import { Permission } from '../providers/permission';
 import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
@@ -142,6 +143,7 @@ export function providers() {
     Sim,
     InAppBrowser,
     BackgroundMode,
+    Profile,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];

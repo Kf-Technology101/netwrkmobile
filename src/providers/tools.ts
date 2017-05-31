@@ -39,7 +39,7 @@ export class Tools {
 
   public notAvailableAlert() {
     let alert = this.alertCtrl.create({
-      title: 'Not available',
+      title: '',
       subTitle: 'This feature is not available at the moment',
       buttons: ['Ok']
     });

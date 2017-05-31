@@ -97,7 +97,7 @@ export class FeedbackShareModal {
       self.toolsPrvd.hideLoader();
       console.error('[Twitter share] error:', err);
       let alert = this.alertCtrl.create({
-        title: 'Twitter share error',
+        title: '',
         subTitle: 'You might need to install Twitter app',
         buttons: ['OK']
       });

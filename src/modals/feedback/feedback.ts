@@ -125,7 +125,7 @@ export class FeedbackModal {
 
   blockMessage() {
     let confirmBlockAlert = this.alertCtrl.create({
-      title: 'Confirm block',
+      title: '',
       message: 'Are you sure you want to block this post?',
       buttons: [
         {
@@ -157,7 +157,7 @@ export class FeedbackModal {
             }, err => {
               console.log('[BLOCK MESSAGE] err:', err);
               let ErrAlert = this.alertCtrl.create({
-                title: 'Block error',
+                title: '',
                 subTitle: 'Error blocking post\n(' + err.status + ') ' + err.statusText,
                 buttons: ['OK']
               });

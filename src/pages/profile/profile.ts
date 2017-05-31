@@ -310,7 +310,7 @@ export class ProfilePage {
       break;
     }
     let welcomeAlert = this.alertCtrl.create({
-      title: 'Welcome to ' + alertType,
+      title: '',
       subTitle: subTitle,
       buttons: ['OK']
     });

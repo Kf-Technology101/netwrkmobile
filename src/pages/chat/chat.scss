@@ -768,7 +768,9 @@ modal-legendaryhistory {
   .flip-container {
     -webkit-perspective: 1000;
     perspective: 1000;
-
+    .text {
+      border: 1px solid color($colors, dark);
+    }
     &:not(.hover) {
       #textInput {
         input::-webkit-input-placeholder {

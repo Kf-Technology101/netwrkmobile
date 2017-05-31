@@ -10,7 +10,8 @@ import {
   NavParams,
   Content,
   Platform,
-  ModalController } from 'ionic-angular';
+  ModalController,
+  AlertController } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 // Pages
@@ -166,6 +167,7 @@ export class ChatPage {
     public socialPrvd: Social,
     public elRef: ElementRef,
     public modalCtrl: ModalController,
+    private alertCtrl: AlertController,
     private cameraPreview: CameraPreview,
     private ng2cable: Ng2Cable,
     private broadcaster: Broadcaster,
@@ -998,6 +1000,7 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;

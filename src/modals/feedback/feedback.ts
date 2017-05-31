@@ -115,8 +115,8 @@ export class FeedbackModal {
       console.log('[' + type + '] err:', err);
       let errorMessage = JSON.parse(err['_body']).error;
       let alert = this.alertCtrl.create({
-        title: 'Legendary',
-        subTitle: errorMessage,
+        title: '',
+        subTitle: 'Looks like you\'l have to wait until next month',
         buttons: ['Ok']
       });
       alert.present();

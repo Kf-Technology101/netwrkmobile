@@ -96,12 +96,16 @@ page-profile {
         width: 300px;
         margin: 10px auto 0;
         border: 2px solid #fff;
-        border-radius: 16px;
+        // border-radius: 16px;
+        border-radius: 21px;
         font-size: 1.6rem;
         text-align: center;
+        height: 42px;
 
         input {
           color: #fff;
+          margin: 0;
+          height: 100%;
 
           &::-webkit-input-placeholder {
             color: #fff;
@@ -132,7 +136,7 @@ page-profile {
     .description-section {
       background: transparent;
       box-shadow: none;
-
+      padding: 0 10px;
       h1 {
         color: #fff;
         font-size: 2rem;
@@ -148,15 +152,18 @@ page-profile {
 
       textarea {
         color: #fff;
-        margin-bottom: 10px;
         padding: 0;
         line-height: 1.2;
         background: transparent;
         width: 100%;
         text-align: center;
         border: none;
+        padding: 13px;
         margin: 10px 0;
-        padding: 0 13px;
+        // border-radius: 17px;
+        border-radius: 21px;
+        border: 2px solid;
+        box-sizing: border-box;
       }
     }
   }

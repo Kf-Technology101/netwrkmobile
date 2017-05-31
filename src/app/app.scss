@@ -14,6 +14,25 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+ion-app {
+  ion-alert.alert-ios,
+  ion-alert {
+    align-items: flex-start;
+    .alert-wrapper {
+      margin-top: 22px;
+      border: 1px solid color($colors, bk);
+    }
+    .alert-sub-title {
+      font-weight: bold;
+      font-size: 16px;
+      color: color($colors, bk);
+    }
+    .alert-button {
+      border-top: 1px solid color($colors, bk);
+      color: color($colors, bk);
+    }
+  }
+}
 
 ion-app .ion-page .content {
   &[has-main-btn] {
@@ -475,7 +494,7 @@ ion-header.incognito-header {
       background: #fff;
       border-radius: 20px;
       text-align: center;
-      border: 1px solid #fff;
+      border: 1px solid color($colors, bk);
       box-sizing: content-box;
     }
     .info{

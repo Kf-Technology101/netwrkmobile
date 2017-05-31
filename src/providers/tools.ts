@@ -73,7 +73,8 @@ export class Tools {
 
   showLoader() {
     this.loader = this.loadingCtrl.create({
-      content: "Please wait..."
+      spinner: 'hide',
+      content: '<div class="glowing-icon"></div><span class="loading-text">Please wait...</span>'
     });
 
     this.loader.present();

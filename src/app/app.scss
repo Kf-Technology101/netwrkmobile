@@ -32,6 +32,17 @@ ion-app {
       color: color($colors, bk);
     }
   }
+
+  .toast-ios {
+    .toast-wrapper {
+      background: #fff;
+      border: 1px solid color($colors, bk);
+    }
+    .toast-message {
+      color: color($colors, bk);
+      font-weight: 500;
+    }
+  }
 }
 
 ion-app .ion-page .content {
@@ -502,15 +513,21 @@ ion-header.incognito-header {
         position: absolute;
         left: 0;
         right: 0;
+        font-size: 12px;
       }
       .username{
         font-size: 12px;
-        overflow:hidden;
-        white-space:nowrap;
+        overflow: hidden;
+        white-space: nowrap;
         text-overflow: ellipsis;
         display: inline-block;
         max-width: 100px;
-        line-height: 13px;
+        line-height: 15px;
+        height: 100%;
+        display: block;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
       }
     }
     .icon{

@@ -87,10 +87,10 @@ export class MyApp {
           this.rootPage = LogInPage;
       }
     } else {
-      this.rootPage = LogInPage;
+      // this.rootPage = LogInPage;
       // this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
-      // this.rootPage = ChatPage;
+      this.rootPage = ChatPage;
       // this.rootPage = CameraPage;
       // this.rootPage = UndercoverCharacterPage;
       // this.rootPage = SignUpConfirmPage;
@@ -105,6 +105,6 @@ export class MyApp {
       console.log('Sim info: ', info);
       this.localStoragePrvd.set('country_code', info.countryCode);
     },
-    err => console.log('Unable to get sim info: ', err));
+    err => console.error('Unable to get sim info: ', err));
   }
 }

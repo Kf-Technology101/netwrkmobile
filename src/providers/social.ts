@@ -81,7 +81,7 @@ export class Social {
     }, err => {
       console.error('[Twitter connect] err:', err);
       let alert = this.alertCtrl.create({
-        title: err,
+        title: '',
         subTitle: 'You might need to install Twitter app to be able to login',
         buttons: ['Ok']
       });

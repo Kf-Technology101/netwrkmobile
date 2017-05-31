@@ -1000,7 +1000,6 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
-
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;

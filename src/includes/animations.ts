@@ -94,7 +94,8 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
     bottom: '178px'
   })),
 
-  transition('* => minimised', animate(chatAnim/2 + 'ms ease-in')),
+  transition('* => minimised', animate(30 + 'ms ease-in')),
+  transition('minimised => normal', animate(30 + 'ms ease-in')),
   transition('* => normal', animate(chatAnim/2 + 'ms ease-in')),
   transition('* => hidden', animate(chatAnim/3 + 'ms ease-out')),
   transition('* => moved-n-scaled', animate(chatAnim/2 + 'ms ease-in')),

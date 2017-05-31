@@ -170,7 +170,9 @@ modal-legendaryhistory {
     bottom: 0;
     transition: none;
     &.has-post-btn {
-      border-radius: 21px 13px 13px 21px;
+      .post-message {
+        border-radius: 13px 21px 21px 13px;
+      }
     }
     .item-inner {
       padding-right: 0;
@@ -244,7 +246,7 @@ modal-legendaryhistory {
         color: #fff;
         font-size: 14px;
         border-radius: 13px;
-        border: 1px solid white;
+        // border: 1px solid white;
       }
     }
   }

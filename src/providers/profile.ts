@@ -68,19 +68,6 @@ export class Profile {
       hero_avatar_url: null,
       updated_at: '2017-04-22T14:59:29.921Z',
     }
-
-    this.keyboard.onKeyboardShow().subscribe(res => {
-      document.addEventListener('click', (event) => {
-        console.log('click event:', event)
-        console.log('activeElement:', document.activeElement);
-        
-        if (event.target != document.activeElement) {
-          this.keyboard.close();
-        }
-      });
-    }, err => {
-
-    });
   }
 
   public uploadCallback(event: Event): void {

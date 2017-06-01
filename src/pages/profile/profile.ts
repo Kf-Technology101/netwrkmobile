@@ -1,5 +1,5 @@
 import { Component, ViewChild, NgZone, ElementRef } from '@angular/core';
-import { NavController, NavParams, Slides, Content } from 'ionic-angular';
+import { NavController, NavParams, Slides, Content, Platform } from 'ionic-angular';
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
@@ -16,6 +16,7 @@ import { Auth } from '../../providers/auth';
 
 import { AlertController } from 'ionic-angular';
 import { Api } from '../../providers/api';
+import { Keyboard } from '@ionic-native/keyboard';
 
 @Component({
   selector: 'page-profile',
@@ -63,7 +64,9 @@ export class ProfilePage {
     public api: Api,
     public chatPrvd: Chat,
     elRef: ElementRef,
-    public profile: Profile
+    public profile: Profile,
+    public platform: Platform,
+    public keyboard: Keyboard
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.user.id = this.navParams.get('id');
@@ -331,6 +334,22 @@ export class ProfilePage {
       }
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(this.pageTag);
+
+      if (this.platform.is('ios')) {
+        this.keyboard.onKeyboardShow().subscribe(res => {
+          document.addEventListener('click', (event) => {
+            console.log('click event:', event);
+            console.log('activeElement:', document.activeElement);
+
+            if (event.target != document.activeElement) {
+              this.keyboard.close();
+            }
+          });
+        }, err => {
+          console.error('[E] onKeyboardShow:', err);
+        });
+      }
+
     }
 
     if (this.authPrvd.storage.get('area_first_time') === null) {

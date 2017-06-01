@@ -78,7 +78,11 @@ export class Profile {
     // trigger click event of hidden input
     // let clickEvent: MouseEvent = new MouseEvent('click', { bubbles: true });
     // this.renderer.invokeElementMethod(event.target, 'dispatchEvent', [clickEvent]);
-    document.getElementById('file-input').click();
+    let fileInput = document.getElementById('file-input');
+    let clickEvent = document.createEvent('HTMLEvents');
+
+    clickEvent.initEvent('click', true, true);
+    fileInput.dispatchEvent(clickEvent);
   }
 
   public filesAdded(event: Event): void {

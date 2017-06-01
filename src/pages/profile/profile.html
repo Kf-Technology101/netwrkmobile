@@ -77,12 +77,10 @@
           Beware: too much negativity and your powers will be recinded.
         </p>
       </ion-card> -->
-      <ng-container>
-        <textarea autosize [(ngModel)]="profile.userDescription" rows="7"
-                  (blur)="profile.saveChanges()">
-          {{ profile.userDescription }}
-        </textarea>
-      </ng-container>
+      <ion-textarea autosize [(ngModel)]="profile.userDescription" rows="7"
+                (blur)="profile.saveChanges()">
+        {{ profile.userDescription }}
+      </ion-textarea>
   </div>
   <ng-container *ngIf="fbFriends.length == 0 && profileTypePublic && !ownProfile">
     <p class="no-data-message">No common connections yet</p>

@@ -52,7 +52,9 @@ modal-legendaryhistory {
 
   .content {
     background: transparent;
-
+    .no-legendary {
+      
+    }
     &.netwrk-content {
       background: color($colors, white);
     }

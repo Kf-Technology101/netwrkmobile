@@ -349,7 +349,6 @@ export class ProfilePage {
           console.error('[E] onKeyboardShow:', err);
         });
       }
-
     }
 
     if (this.authPrvd.storage.get('area_first_time') === null) {

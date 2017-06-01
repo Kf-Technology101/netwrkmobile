@@ -962,7 +962,7 @@ export class ChatPage {
   }
 
   private sendDeletedMessages() {
-    // this.idList
+    // this.idList = this.getMessagesIds(this.postMessages);
     this.chatPrvd.deleteMessages().subscribe( res => {
       // console.log('[sendDeletedMessages] Success:', res);
       // this.postMessages = res ? res : [];

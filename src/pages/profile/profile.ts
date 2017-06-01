@@ -340,8 +340,8 @@ export class ProfilePage {
           document.addEventListener('click', (event) => {
             console.log('click event:', event);
             console.log('activeElement:', document.activeElement);
-
-            if (event.target != document.activeElement) {
+            let element = event.target as HTMLElement;
+            if (element.tagName != 'TEXTAREA') {
               this.keyboard.close();
             }
           });

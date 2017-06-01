@@ -30,7 +30,9 @@ export class Gps {
     private localStorage: LocalStorage,
     private platform: Platform,
     private alertCtrl: AlertController
-  ) {}
+  ) {
+    console.log('GPS Provider')
+  }
 
   getNetwrk(zipCode: number): any {
     let seq = this.api.get('networks', { post_code: zipCode }).share();
@@ -111,6 +113,8 @@ export class Gps {
 
   private parseGoogleAddress(data: any): number {
     // let zip: number;
+    console.log('parseGoogleAddress', data);
+    console.log('Address = ', data[0].formatted_address);
     for (let i = 0; i < data.length; i++)
       for (let j = 0; j < data[i].address_components.length; j++)
         for (let z = 0; z < data[i].address_components[j].types.length; z++)
@@ -125,19 +129,27 @@ export class Gps {
     // return zip;
   }
 
+  public getGoogleAdress() {
+    let url = 'https://maps.googleapis.com/maps/api/geocode/json';
+    let seq = this.getAddressDetail(url, {
+      latlng: this.coords.lat + ',' + this.coords.lng,
+      sensor: true,
+      key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
+    }).share();
+    return seq;
+  }
+
   private getZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.coords.lat && this.coords.lng) {
-        let url = 'https://maps.googleapis.com/maps/api/geocode/json';
-        let seq = this.getAddressDetail(url, {
-          latlng: this.coords.lat + ',' + this.coords.lng,
-          sensor: true,
-          key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
-        }).share();
-        seq.map(res => res.json()).subscribe(res => {
+        this.getGoogleAdress().map(res => res.json()).subscribe(res => {
+          console.log('[google addres] res:', res);
+          // default:
           let zipCode: number = this.parseGoogleAddress(res.results);
-          // debug
+
+          // debug:
           // let zipCode: number = this.localStorage.get('test_zip_code');
+          console.log('zipCode:', zipCode);
           if (this.localStorage.get('chat_zip_code') === null) {
             this.localStorage.set('chat_zip_code', zipCode);
           }
@@ -150,7 +162,7 @@ export class Gps {
             this.localStorage.set('chat_zip_code', zipCode);
             if (this.localStorage.get('chat_state') == 'area') {
               let alert = this.alertCtrl.create({
-                title: 'Warning',
+                title: '',
                 message: 'You left the Netwrk area, please join to other netwrk or go Undercover',
                 buttons: [
                   {

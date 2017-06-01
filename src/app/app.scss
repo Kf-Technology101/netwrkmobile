@@ -14,12 +14,43 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+@-webkit-keyframes glow {
+  0%   {
+    box-shadow: 0 0 6px rgba(93, 165, 216, .5);
+  }
+  50% {
+    box-shadow: 0 0 20px 5px rgba(93, 165, 216, .8);
+  }
+  100% {
+    box-shadow: 0 0 6px rgba(93, 165, 216, .5);
+  }
+}
+
+@-webkit-keyframes textGlow {
+  0%   {
+    text-shadow: 0 0 3px rgba(93, 165, 216, .5);
+  }
+  50% {
+    text-shadow: 0 0 5px 3px rgba(93, 165, 216, .9);
+  }
+  100% {
+    text-shadow: 0 0 3px rgba(93, 165, 216, .5);
+  }
+}
+
 ion-app {
+  .anim-glow {
+    animation: glow 2s infinite;
+  }
+  .anim-text-glow {
+    animation: textGlow 2s infinite;
+  }
+
   ion-alert.alert-ios,
   ion-alert {
     align-items: flex-start;
     .alert-wrapper {
-      margin-top: 22px;
       border: 1px solid color($colors, bk);
     }
     .alert-sub-title {
@@ -119,6 +150,9 @@ ion-app .ion-page .content {
     button {
       width: 100%;
       height: 100%;
+    }
+    .custom-text-icon {
+      font-size: 26px;
     }
   }
 

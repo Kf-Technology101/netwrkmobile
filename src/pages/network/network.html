@@ -49,16 +49,10 @@
 
 <ion-footer>
   <button *ngIf="invitationSent || accessed" ion-button color="bk"
-    class="main-action-btn medium has-label"
-    (click)="doAction()" outline></button>
-  <span *ngIf="invitationSent || accessed" class="main-action-text" ion-text color="bk">
-    <ng-container *ngIf="!joined || (joined && !isUndercover)">
-      Tap to continue
-    </ng-container>
-    <ng-container *ngIf="(accessed && isUndercover) || (joined && isUndercover)">
-      Go Undercover
-    </ng-container>
-  </span>
+    class="main-action-btn medium has-label anim-glow"
+    (click)="doAction()" outline>
+    <ion-icon class="anim-text-glow custom-text-icon">&#8250;</ion-icon>
+  </button>
 
   <button ion-button class="footer-back-button" (click)="goBack()" clear hidden>
     <span color="bk" ion-text>Back</span>

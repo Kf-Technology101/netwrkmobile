@@ -999,6 +999,12 @@ export class ChatPage {
     }
   }
 
+  goToProfile(profileId?: number, profileTypePublic?: boolean) {
+    this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
+      this.toolsPrvd.pushPage(ProfilePage, res);
+    });
+  }
+
   ionViewDidEnter() {
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
     this.chatPrvd.isMessagesVisible = false;
@@ -1032,26 +1038,8 @@ export class ChatPage {
       this.goToProfile();
     }
 
-    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
-    this.cameraPreview.startCamera(cameraOptions).then(res => {
-      // console.log(res);
-      if (this.isUndercover) {
-        this.cameraPreview.show();
-      } else {
-        this.cameraPreview.hide();
-      }
-    }, err => {
-      // console.log(err);
-    });
-
     this.zone.run(() => {
       this.undercoverPrvd.profileType = this.undercoverPrvd.profileType;
-    });
-  }
-
-  goToProfile(profileId?: number, profileTypePublic?: boolean) {
-    this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
-      this.toolsPrvd.pushPage(ProfilePage, res);
     });
   }
 
@@ -1069,11 +1057,11 @@ export class ChatPage {
     this.chatPrvd.messageDateTimer.stop();
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
-    if (this.idList && this.idList.length > 0) {
-      this.canRefresh = false;
-      this.sendDeletedMessages();
-      // this.startMessageUpdateTimer();
-    }
+    // if (this.idList && this.idList.length > 0) {
+    //   this.canRefresh = false;
+    //   this.sendDeletedMessages();
+    //   // this.startMessageUpdateTimer();
+    // }
     this.slideAvatarPrvd.changeCallback = null;
   }
 }

@@ -1,10 +1,21 @@
 <ion-header>
-  <h4 text-center ion-text color="bk">
-    Select contacts you want to invite
+  <h4 text-center ion-text color="bk" class="send-messages-header">
+    <!-- Select contacts you want to invite -->
+    <ng-container *ngIf="listType == 'emails'">
+      It's awesome your connecting to your area! To finish, invite your email
+      contacts to help grow it. We'll just send them a story about netwrk, an
+      invitation to use the "insert" and see what's going on nearby.
+    </ng-container>
+    <ng-container *ngIf="listType == 'phones'">
+      Send the text: "I connected to my area on this cool app called netwrk,
+      where you can hang anything anywhere "insert". Check it out" to anyone by
+      tapping next to their name.
+    </ng-container>
   </h4>
   <div text-right>
-    <button ion-button color="bk" class="select-all" (click)="doSelectAll()"
-      [outline]="!selectAll">Select All</button>
+    <button *ngIf="listType != 'emails'" ion-button color="bk"
+            class="select-all" (click)="doSelectAll()"
+            [outline]="!selectAll">Select All</button>
   </div>
 </ion-header>
 
@@ -26,7 +37,9 @@
 
 <ion-footer>
   <button *ngIf="accessed" ion-button color="bk"
-          class="main-action-btn medium" outline (click)="goHome()"></button>
+          class="main-action-btn medium anim-glow" outline (click)="goHome()">
+    <ion-icon class="anim-text-glow custom-text-icon">&#8250;</ion-icon>
+  </button>
   <button ion-button class="footer-back-button" (click)="goBack()">
     <span ion-text color="bk">Back</span>
   </button>

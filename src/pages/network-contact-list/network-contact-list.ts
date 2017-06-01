@@ -116,11 +116,12 @@ export class NetworkContactListPage {
   }
 
   private checkContactsCount() {
-    if (this.listType == 'emails') {
-      let count = 0;
-      for (let c in this.contacts) if (this.contacts[c].checked) count++;
+    let count = 0;
+    for (let c in this.contacts) if (this.contacts[c].checked) count++;
+    if (this.listType == 'emails')
       this.accessed = count >= 20 ? true : false;
-    }
+    else if (count > 0)
+      this.accessed = true;
   }
 
   goHome() {
@@ -149,6 +150,10 @@ export class NetworkContactListPage {
         this.tools.hideLoader();
         this.tools.showToast(this.selectMinErrorString);
         return;
+      }
+
+      if (this.listType == 'phones' && !this.message) {
+        this.message = 'I connected to my area on this cool app called netwrk, where you can hang anything anywhere "insert". Check it out';
       }
 
       console.log('this.message', this.message);
@@ -187,5 +192,11 @@ export class NetworkContactListPage {
   }
 
   goBack() { this.tools.popPage(); }
+
+  ionViewDidEnter() {
+    if(this.listType == 'emails') {
+      this.doSelectAll();
+    }
+  }
 
 }

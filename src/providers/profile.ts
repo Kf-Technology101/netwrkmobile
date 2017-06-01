@@ -68,6 +68,19 @@ export class Profile {
       hero_avatar_url: null,
       updated_at: '2017-04-22T14:59:29.921Z',
     }
+
+    this.keyboard.onKeyboardShow().subscribe(res => {
+      document.addEventListener('click', (event) => {
+        console.log('click event:', event)
+        console.log('activeElement:', document.activeElement);
+        
+        if (event.target != document.activeElement) {
+          this.keyboard.close();
+        }
+      });
+    }, err => {
+
+    });
   }
 
   public uploadCallback(event: Event): void {
@@ -100,16 +113,21 @@ export class Profile {
       tempFiles.push(files.item(i));
     }
 
-    this.userPrvd.updateAvatar(userId, tempFiles, null, fieldName).then(res => {
-      console.log(res);
+    if (tempFiles.length > 0) {
+      this.userPrvd.updateAvatar(userId, tempFiles, null, fieldName).then(res => {
+        console.log(res);
+        this.imageLoading = false;
+        this.tools.hideLoader();
+        this.user = res;
+        this.saveChanges();
+        // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
+      }, err => {
+        console.error('ERROR', err);
+        this.imageLoading = false;
+      });
+    } else {
       this.imageLoading = false;
-      this.tools.hideLoader();
-      this.user = res;
-      // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
-    }, err => {
-      console.error('ERROR', err);
-      this.imageLoading = false;
-    });
+    }
   }
 
   public changeCallback(positionLeft: boolean) {

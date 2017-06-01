@@ -130,11 +130,12 @@ export class CameraPage {
 
   ionViewDidEnter() {
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: true });
+    this.cameraPreview.stopCamera();
     this.cameraPreview.startCamera(cameraOptions).then(res => {
-      console.log(res);
+      console.log('[startCamera] res:', res);
       this.cameraPreview.show();
     }, err => {
-      console.log(err);
+      console.error('[startCamera] error:', err);
     });
     setTimeout(() => {
       this.cameraUI.tooltip = 'tooltipFadeIn';

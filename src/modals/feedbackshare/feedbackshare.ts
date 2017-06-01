@@ -5,6 +5,7 @@ import { NetworkContactListPage } from '../../pages/network-contact-list/network
 
 import { Chat } from '../../providers/chat';
 import { Tools } from '../../providers/tools';
+import { Gps } from '../../providers/gps';
 
 import { toggleFade } from '../../includes/animations';
 
@@ -41,7 +42,8 @@ export class FeedbackShareModal {
     public toolsPrvd: Tools,
     private socialShare: SocialSharing,
     private facebook: Facebook,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private gpsPrvd: Gps
   ) {
   }
 
@@ -120,9 +122,19 @@ export class FeedbackShareModal {
   }
 
   ionViewDidEnter() {
-    this.share.message = this.params.get('message');
-    this.share.image = this.params.get('image');
-
+    console.log('chat state:', this.chatPrvd.getState() + ' ');
+    if (this.chatPrvd.getState() == 'undercover') {
+      this.gpsPrvd.getGoogleAdress().map(res => res.json())
+      .subscribe(res => {
+        console.log('[google address] res:', res);
+        this.share.message = res.results[0].formatted_address;
+      }, err => {
+        console.log('[google address] error:', err);
+      });
+    } else {
+      this.share.message = this.params.get('message');
+      this.share.image = this.params.get('image');
+    }
     this.mainBtn.state = 'fadeInfast';
   }
 }

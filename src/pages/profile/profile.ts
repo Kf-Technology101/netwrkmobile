@@ -334,21 +334,6 @@ export class ProfilePage {
       }
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(this.pageTag);
-
-      if (this.platform.is('ios')) {
-        this.keyboard.onKeyboardShow().subscribe(res => {
-          document.addEventListener('click', (event) => {
-            console.log('click event:', event);
-            console.log('activeElement:', document.activeElement);
-            let element = event.target as HTMLElement;
-            if (element.tagName != 'TEXTAREA') {
-              this.keyboard.close();
-            }
-          });
-        }, err => {
-          console.error('[E] onKeyboardShow:', err);
-        });
-      }
     }
 
     if (this.authPrvd.storage.get('area_first_time') === null) {

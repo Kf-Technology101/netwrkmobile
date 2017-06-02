@@ -65,9 +65,13 @@ export class FeedbackModal {
       message: this.params.get('messageText'),
       image: this.params.get('messageImage'),
       totalLikes: this.postInf.totalLikes,
-      likedByUser: this.postStatus.likedByUser,
+      likedByUser: this.postStatus.isLiked,
       totalLegendary: this.postInf.totalLegendary,
-      legendaryByUser: this.postStatus.legendaryByUser
+      legendaryByUser: this.postStatus.isLegendary,
+      coords: {
+        lat: this.data.lat,
+        lng: this.data.lng
+      }
     });
     feedbackShareModal.onDidDismiss(data => {
       console.log('feedbackShareModal.onDidDismiss -> data:', data);
@@ -138,12 +142,11 @@ export class FeedbackModal {
         {
           text: 'Block',
           handler: () => {
-            let messageId = [];
-            messageId.push(this.likeData.message_id);
-            this.chatPrvd.deleteMessages().subscribe(res => {
+            let messageId: number = this.likeData.message_id;
+            this.chatPrvd.blockPost(messageId).subscribe(res => {
               console.log('[BLOCK MESSAGE] res:', res);
               let OkAlert = this.alertCtrl.create({
-                title: 'Block info',
+                title: '',
                 subTitle: 'Post successfully blocked',
                 buttons: [{
                   text: 'OK',
@@ -172,6 +175,12 @@ export class FeedbackModal {
 
   ionViewDidEnter() {
     this.toolsPrvd.hideLoader();
+    /*
+    totalLikes
+    totalLegendary
+    likedByUser
+    legendaryByUser
+    */
     this.postInf.totalLikes = this.params.get('totalLikes');
     this.postStatus.isLiked = this.params.get('likedByUser');
     this.postInf.totalLegendary = this.params.get('totalLegendary');

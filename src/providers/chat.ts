@@ -87,6 +87,14 @@ export class Chat {
     }
   }
 
+  public blockPost(messageID:number) {
+    let mess = this.api.get('messages/block', {
+      message_id: messageID
+    }).share();
+    let messMap = mess.map(res => res.json());
+    return messMap;
+  }
+
   public setState(state: string) {
     this.localStorage.set('chat_state', state);
   }
@@ -387,7 +395,11 @@ export class Chat {
       let feedbackData = {
         message_index: mIndex,
         message_id: messageData.id,
-        user: this.authPrvd.getAuthData()
+        user: this.authPrvd.getAuthData(),
+        message_coords: {
+          lat: messageData.lat,
+          lng: messageData.lng
+        }
       };
       // console.log('message data:', messageData);
       // console.log('feedback data:', feedbackData);

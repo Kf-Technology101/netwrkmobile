@@ -33,6 +33,14 @@ export class Tools {
     public alertCtrl: AlertController
   ) {}
 
+  public parseObjectForPopup(object) {
+    let alert = this.alertCtrl.create({
+      title: 'Log',
+      subTitle: JSON.stringify(object),
+      buttons: ['Ok']
+    });
+  }
+
   public doBackButton() {
     console.log(this.app.getActiveNav());
   }

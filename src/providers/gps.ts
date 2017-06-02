@@ -129,10 +129,16 @@ export class Gps {
     // return zip;
   }
 
-  public getGoogleAdress() {
+  public getGoogleAdress(lat?:number, lng?:number) {
+    let coords;
+    if (lat && lng) {
+      coords = lat + ',' + lng;
+    } else {
+      coords = this.coords.lat + ',' + this.coords.lng;
+    }
     let url = 'https://maps.googleapis.com/maps/api/geocode/json';
     let seq = this.getAddressDetail(url, {
-      latlng: this.coords.lat + ',' + this.coords.lng,
+      latlng: coords,
       sensor: true,
       key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
     }).share();

@@ -76,13 +76,9 @@ export class Profile {
     console.log('upload-button callback executed');
 
     // trigger click event of hidden input
-    // let clickEvent: MouseEvent = new MouseEvent('click', { bubbles: true });
-    // this.renderer.invokeElementMethod(event.target, 'dispatchEvent', [clickEvent]);
     let fileInput = document.getElementById('file-input');
-    let clickEvent = document.createEvent('HTMLEvents');
-
-    clickEvent.initEvent('click', true, true);
-    fileInput.dispatchEvent(clickEvent);
+    let clickEvent: MouseEvent = new MouseEvent('click', { bubbles: true });
+    this.renderer.invokeElementMethod(fileInput, 'dispatchEvent', [clickEvent]);
   }
 
   public filesAdded(event: Event): void {

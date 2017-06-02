@@ -29,6 +29,7 @@ export class FeedbackShareModal {
   }
 
   private share: any = {
+    coords: null,
     message: null,
     image: null,
     url: 'http://34.208.20.67' /*'http://netwrk.com'*/
@@ -124,8 +125,9 @@ export class FeedbackShareModal {
   ionViewDidEnter() {
     console.log('chat state:', this.chatPrvd.getState() + ' ');
     if (this.chatPrvd.getState() == 'undercover') {
-      this.gpsPrvd.getGoogleAdress().map(res => res.json())
-      .subscribe(res => {
+      this.share.coords = this.params.get('coords');
+      this.gpsPrvd.getGoogleAdress(this.share.coords.lat, this.share.coords.lng)
+      .map(res => res.json()).subscribe(res => {
         console.log('[google address] res:', res);
         this.share.message = res.results[0].formatted_address;
       }, err => {

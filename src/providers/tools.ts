@@ -81,7 +81,7 @@ export class Tools {
 
   showLoader() {
     if (this.loader) {
-      this.hideLoader();
+      this.loader.dismiss();
     }
     this.loader = this.loadingCtrl.create({
       spinner: 'hide',

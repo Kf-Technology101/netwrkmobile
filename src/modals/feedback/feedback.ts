@@ -128,59 +128,58 @@ export class FeedbackModal {
   }
 
   blockMessage() {
-    let confirmBlockAlert = this.alertCtrl.create({
-      title: '',
-      message: 'Are you sure you want to block this post?',
-      buttons: [
-        {
-          text: 'Cancel',
-          role: 'cancel',
-          handler: () => {
-            console.log('Cancel clicked');
-          }
-        },
-        {
-          text: 'Block',
-          handler: () => {
-            let messageId: number = this.likeData.message_id;
-            this.chatPrvd.blockPost(messageId).subscribe(res => {
-              console.log('[BLOCK MESSAGE] res:', res);
-              let OkAlert = this.alertCtrl.create({
-                title: '',
-                subTitle: 'Post successfully blocked',
-                buttons: [{
-                  text: 'OK',
-                  handler: () => {
-                    this.endResult.isBlocked = true;
-                    this.closeModal();
-                  }
-                }]
+    // if (this.chatPrvd.getState() != 'area') {
+      let confirmBlockAlert = this.alertCtrl.create({
+        title: '',
+        message: 'Are you sure you want to block this post?',
+        buttons: [
+          {
+            text: 'Cancel',
+            role: 'cancel',
+            handler: () => {
+              console.log('Cancel clicked');
+            }
+          },
+          {
+            text: 'Block',
+            handler: () => {
+              let messageId: number = this.likeData.message_id;
+              this.chatPrvd.blockPost(messageId).subscribe(res => {
+                console.log('[BLOCK MESSAGE] res:', res);
+                let OkAlert = this.alertCtrl.create({
+                  title: '',
+                  subTitle: 'Post successfully blocked',
+                  buttons: [{
+                    text: 'OK',
+                    handler: () => {
+                      this.endResult.isBlocked = true;
+                      this.closeModal();
+                      this.closeModal();
+                    }
+                  }]
+                });
+                OkAlert.present();
+              }, err => {
+                console.log('[BLOCK MESSAGE] err:', err);
+                let ErrAlert = this.alertCtrl.create({
+                  title: '',
+                  subTitle: 'Error blocking post\n(' + err.status + ') ' + err.statusText,
+                  buttons: ['OK']
+                });
+                ErrAlert.present();
               });
-              OkAlert.present();
-            }, err => {
-              console.log('[BLOCK MESSAGE] err:', err);
-              let ErrAlert = this.alertCtrl.create({
-                title: '',
-                subTitle: 'Error blocking post\n(' + err.status + ') ' + err.statusText,
-                buttons: ['OK']
-              });
-              ErrAlert.present();
-            });
+            }
           }
-        }
-      ]
-    });
-    confirmBlockAlert.present();
+        ]
+      });
+      confirmBlockAlert.present();
+    // } else {
+    //   this.toolsPrvd.notAvailableAlert();
+    // }
   }
 
   ionViewDidEnter() {
     this.toolsPrvd.hideLoader();
-    /*
-    totalLikes
-    totalLegendary
-    likedByUser
-    legendaryByUser
-    */
     this.postInf.totalLikes = this.params.get('totalLikes');
     this.postStatus.isLiked = this.params.get('likedByUser');
     this.postInf.totalLegendary = this.params.get('totalLegendary');

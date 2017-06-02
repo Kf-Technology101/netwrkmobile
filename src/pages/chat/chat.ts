@@ -654,8 +654,11 @@ export class ChatPage {
             this.postMessages[mIndex].legendary_count = data.legendary.total;
             this.postMessages[mIndex].legendary_by_user = data.legendary.isActive;
           }
-          if (data.isBlocked && this.chatPrvd.getState() != 'area') {
-            this.updateMessagesAndScrollDown();
+          if (data.isBlocked) {
+            if (this.chatPrvd.getState() != 'area')
+              this.updateMessagesAndScrollDown();
+            else
+              this.updateMessagesAndScrollDown('noscroll');
           }
         } else {
           // console.warn('[likeClose] Error, no data returned');

@@ -80,22 +80,22 @@ export class Profile {
 
     console.log('[ProfileSettingPage][filesAdded]', this.slideAvatarPrvd.sliderPosition);
     if (this.slideAvatarPrvd.sliderPosition == 'right') {
-      fieldName = 'hero_avatar';
+      fieldName = 'hero_avatar_url';
     } else {
-      fieldName = 'avatar';
+      fieldName = 'avatar_url';
     }
 
     for (let i = 0; i < files.length; i++) {
       tempFiles.push(files.item(i));
     }
-    
+
     if (tempFiles.length > 0) {
       this.userPrvd.updateAvatar(userId, tempFiles, null, fieldName).then(res => {
-        console.log(res);
+        console.log('[updateAvatar] res:', res);
         this.imageLoading = false;
         // this.tools.hideLoader();
         this.user = res;
-        this.saveChanges();
+        this.saveChanges('noloader');
         // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
       }, err => {
         this.tools.hideLoader();
@@ -103,6 +103,8 @@ export class Profile {
         this.imageLoading = false;
       });
     } else {
+      console.warn('tempFiles length is:', tempFiles.length);
+      console.warn('tempFiles:', tempFiles);
       this.tools.hideLoader();
       this.imageLoading = false;
     }
@@ -128,8 +130,16 @@ export class Profile {
     return this.user;
   }
 
-  public saveChanges() {
-    this.tools.showLoader();
+  public saveChanges(command?:string) {
+    let showLoader: boolean = true;
+    switch (command) {
+      case 'noloader':
+        showLoader = false;
+        break;
+    }
+    if (showLoader)
+      this.tools.showLoader();
+
     let params: any;
     if (this.slideAvatarPrvd.sliderPosition == 'right') {
       if (this.userName && this.userDescription)

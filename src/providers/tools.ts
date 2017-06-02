@@ -80,6 +80,9 @@ export class Tools {
   }
 
   showLoader() {
+    if (this.loader) {
+      this.hideLoader();
+    }
     this.loader = this.loadingCtrl.create({
       spinner: 'hide',
       content: '<div class="glowing-icon"></div><span class="loading-text">Please wait...</span>'

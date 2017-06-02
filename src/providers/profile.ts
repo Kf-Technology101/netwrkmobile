@@ -84,11 +84,12 @@ export class Profile {
     } else {
       fieldName = 'avatar';
     }
+
+    for (let i = 0; i < files.length; i++) {
+      tempFiles.push(files.item(i));
+    }
     
     if (tempFiles.length > 0) {
-      for (let i = 0; i < files.length; i++) {
-        tempFiles.push(files.item(i));
-      }
       this.userPrvd.updateAvatar(userId, tempFiles, null, fieldName).then(res => {
         console.log(res);
         this.imageLoading = false;

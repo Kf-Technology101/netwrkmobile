@@ -106,7 +106,7 @@ export class ProfilePage {
     // let fileInput = document.getElementById('file-input');
 
     // trigger click event of hidden input
-    let clickEvent: MouseEvent = new MouseEvent('click', {bubbles: true});
+    let clickEvent = new Event('click', {bubbles: true});
     this.profile.renderer.invokeElementMethod(
       this.nativeInputBtn.nativeElement, 'dispatchEvent', [clickEvent]);
   }

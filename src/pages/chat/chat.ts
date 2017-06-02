@@ -1029,6 +1029,7 @@ export class ChatPage {
     this.chatPrvd.updateAppendContainer();
 
     this.user = this.authPrvd.getAuthData();
+    this.getUsers();
 
     this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
       this.chatPrvd.saveNetwork(res.network);
@@ -1052,7 +1053,6 @@ export class ChatPage {
     // console.log('[UNDERCOVER.ts] viewDidLoad');
     this.chatPrvd.messageDateTimer.enableLogMessages = true;
     this.generateEmoticons();
-    this.getUsers();
   }
 
   ionViewWillLeave() {

@@ -7,7 +7,7 @@ import { ProfilePage } from '../../pages/profile/profile';
 // Providers
 import { Chat } from '../../providers/chat';
 import { Tools } from '../../providers/tools';
-
+import { Auth } from '../../providers/auth';
 // Modals
 import { FeedbackModal } from '../feedback/feedback';
 
@@ -32,6 +32,7 @@ export class LegendaryModal {
   private areSomeLegendary: boolean = false;
   public lgMessages: any = [];
   public netwrkId: number;
+  public userId: number;
   private mainBtn: any = {
     state: 'fadeOut',
     hidden: false
@@ -42,14 +43,15 @@ export class LegendaryModal {
     public viewCtrl: ViewController,
     public chatPrvd: Chat,
     public toolsPrvd: Tools,
-    public modalCtrl: ModalController
+    public modalCtrl: ModalController,
+    public authPrvd: Auth
   ) {
-    console.log('LegendaryModal constructor');
+    this.userId = this.params.get('user_id');
   }
 
-  closeModal() {
+  closeModal(params?:any) {
     this.chatPrvd.mainBtn.setPrevState();
-    this.viewCtrl.dismiss();
+    this.viewCtrl.dismiss(params);
   }
 
   goToProfile(profileId?: number, profileTypePublic?: boolean) {
@@ -114,6 +116,12 @@ export class LegendaryModal {
       }
     }, err => {
       console.error('[showLegendaryMessages] Error:', err);
+    });
+  }
+
+  private joinNetwork() {
+    this.closeModal({
+      joinNetwork: true
     });
   }
 

@@ -671,9 +671,16 @@ export class ChatPage {
     // console.log('goToLegendaryList()');
     let netwrkId = this.networkPrvd.getNetworkId();
     // console.log('netwrkId:', netwrkId);
+    console.log('this.user:', this.user);
     let legModal = this.modalCtrl.create(LegendaryModal,
     {
-      netwrk_id: netwrkId
+      netwrk_id: netwrkId,
+      user_id: this.user.id
+    });
+    legModal.onDidDismiss(data => {
+      if (data && data.joinNetwork) {
+        this.joinToNetwork();
+      }
     });
     // console.log('goToLegendaryList() -> present()...');
     legModal.present();
@@ -841,8 +848,6 @@ export class ChatPage {
       } else {
         this.chatUsers.push(this.user);
       }
-
-
       // console.log(this.chatUsers, this.user, this.chatUsers[this.user.is]);
       this.toolsPrvd.hideLoader();
     }, err => {

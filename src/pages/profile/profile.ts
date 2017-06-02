@@ -99,6 +99,18 @@ export class ProfilePage {
     });
   }
 
+  public uploadCallback(event: Event): void {
+    console.log('event:', event);
+    this.profile.imageLoading = true;
+    console.log('upload-button callback executed');
+    // let fileInput = document.getElementById('file-input');
+
+    // trigger click event of hidden input
+    // let clickEvent: MouseEvent = new MouseEvent('click', { bubbles: true });
+    // this.profile.renderer.invokeElementMethod(fileInput, 'dispatchEvent', [clickEvent]);
+    this.nativeInputBtn.nativeElement.click();
+  }
+
   connectToFacebook() {
     // this.social.connectToFacebook().then(res => {
     //   this.connect.facebook = this.social.getFacebookData();

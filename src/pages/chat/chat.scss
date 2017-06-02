@@ -53,8 +53,29 @@ modal-legendaryhistory {
   .content {
     background: transparent;
     .no-legendary {
-      // color:
-      // font-size:
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      text-align: center;
+      margin: auto;
+      .text {
+        color: color($colors, bk);
+        font-size: 18px;
+        font-weight: 500;
+        &.left {
+          float: left;
+          line-height: 68px;
+        }
+      }
+      .join-network {
+        float: left;
+        display: block;
+        height: 68px;
+        width: 68px;
+        margin-right: 10px;
+      }
     }
     &.netwrk-content {
       background: color($colors, white);

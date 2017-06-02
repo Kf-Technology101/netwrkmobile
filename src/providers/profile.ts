@@ -29,12 +29,12 @@ export class Profile {
   public userDescription: string;
   public user: any;
   public profileTypePublic: boolean;
-  private imageLoading: boolean = false;
+  public imageLoading: boolean = false;
   private pageTag: string;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private renderer: Renderer,
+    public renderer: Renderer,
     private keyboard: Keyboard,
     public tools: Tools,
     public slideAvatarPrvd: SlideAvatar,
@@ -70,17 +70,6 @@ export class Profile {
     }
   }
 
-  public uploadCallback(event: Event): void {
-    console.log('event:', event);
-    this.imageLoading = true;
-    console.log('upload-button callback executed');
-
-    // trigger click event of hidden input
-    let fileInput = document.getElementById('file-input');
-    let clickEvent: MouseEvent = new MouseEvent('click', { bubbles: true });
-    this.renderer.invokeElementMethod(fileInput, 'dispatchEvent', [clickEvent]);
-  }
-
   public filesAdded(event: Event): void {
     this.tools.showLoader();
     let files: FileList = (<HTMLInputElement>event.target).files;
@@ -95,24 +84,25 @@ export class Profile {
     } else {
       fieldName = 'avatar';
     }
-
-    for (let i = 0; i < files.length; i++) {
-      tempFiles.push(files.item(i));
-    }
-
+    
     if (tempFiles.length > 0) {
+      for (let i = 0; i < files.length; i++) {
+        tempFiles.push(files.item(i));
+      }
       this.userPrvd.updateAvatar(userId, tempFiles, null, fieldName).then(res => {
         console.log(res);
         this.imageLoading = false;
-        this.tools.hideLoader();
+        // this.tools.hideLoader();
         this.user = res;
         this.saveChanges();
         // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
       }, err => {
+        this.tools.hideLoader();
         console.error('ERROR', err);
         this.imageLoading = false;
       });
     } else {
+      this.tools.hideLoader();
       this.imageLoading = false;
     }
   }

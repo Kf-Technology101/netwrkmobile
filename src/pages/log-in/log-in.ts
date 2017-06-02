@@ -128,22 +128,27 @@ export class LogInPage {
   }
 
   doFbLogin() {
+    this.tools.showLoader();
     this.authPrvd.signUpFacebook().then((data: any) => {
       console.log(data);
-      this.tools.showLoader();
+      // this.tools.showLoader();
       this.user.update(data.result.id, data.update, 'facebook')
       .map(res => res.json()).subscribe(res => {
         console.log(res);
-        this.tools.hideLoader();
+        // this.tools.hideLoader();
         if (res.date_of_birthday) {
           let date = new Date(res.date_of_birthday);
           if (typeof date == 'object') {
             this.authPrvd.setFbConnected();
+            this.tools.hideLoader();
             let page = this.undercoverPrvd.getCharacterPerson(
               UndercoverCharacterPage, NetworkFindPage);
             this.tools.pushPage(page);
           }
-        } else this.tools.pushPage(SignUpAfterFbPage);
+        } else  {
+          this.tools.hideLoader();
+          this.tools.pushPage(SignUpAfterFbPage);
+        }
       }, err => {
         console.log(err);
         this.tools.hideLoader();
@@ -151,6 +156,7 @@ export class LogInPage {
       });
     }, err => {
       console.log(err);
+      this.tools.hideLoader();
       this.tools.showToast(this.textStrings.fb);
     });
   }

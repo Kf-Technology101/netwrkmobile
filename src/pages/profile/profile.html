@@ -34,11 +34,11 @@
       <div class="avatar" *ngIf="ownProfile">
         <ion-spinner *ngIf="profile.imageLoading"></ion-spinner>
         <img [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.avatar_url : profile.user.hero_avatar_url">
-        <button color="bk" ion-button (click)="uploadCallback($event)">
+        <button color="bk" ion-button class="upload-avatar-btn">
           <ion-icon name="add"></ion-icon>
+          <input #input type="file" (change)="profile.filesAdded($event)"
+                class="avatar-upload">
         </button>
-        <input #input type="file" (change)="profile.filesAdded($event)"
-          style="display: none">
       </div>
       <div class="avatar" *ngIf="!ownProfile && profileTypePublic">
         <img [src]="user.avatar_url">

@@ -40,7 +40,6 @@
         <button color="bk" ion-button (click)="uploadCallback($event)">
           <ion-icon name="add"></ion-icon>
         </button>
-        <input type="file" (change)="profile.filesAdded($event)">
       </div>
       <div class="avatar" *ngIf="!ownProfile && profileTypePublic">
         <img [src]="user.avatar_url">

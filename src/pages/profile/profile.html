@@ -37,16 +37,19 @@
     <ion-col>
       <div class="avatar" *ngIf="ownProfile">
         <ion-spinner *ngIf="profile.imageLoading"></ion-spinner>
-        <img [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.avatar_url : profile.user.hero_avatar_url">
+        <img [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.avatar_url : profile.user.hero_avatar_url"
+        (error)="chatPrvd.updateAvatarUrl($event)">
         <button color="bk" ion-button (click)="uploadCallback($event)">
           <ion-icon name="add"></ion-icon>
         </button>
       </div>
       <div class="avatar" *ngIf="!ownProfile && profileTypePublic">
-        <img [src]="user.avatar_url">
+        <img [src]="user.avatar_url"
+        (error)="chatPrvd.updateAvatarUrl($event)">
       </div>
       <div class="avatar" *ngIf="!ownProfile && !profileTypePublic">
-        <img [src]="user.hero_avatar_url">
+        <img [src]="user.hero_avatar_url"
+        (error)="chatPrvd.updateAvatarUrl($event)">
       </div>
       <span class="username" *ngIf="!ownProfile && profileTypePublic">
         {{ user.name }}
@@ -93,7 +96,8 @@
       <ion-slides #fbSlider slidesPerView="5" pager="true">
         <ion-slide *ngFor="let friend of fbFriends">
           <div class="avatar" (click)="getFbProfile(friend.id)">
-            <img [src]="friend.picture.data.url">
+            <img [src]="friend.picture.data.url"
+            (error)="chatPrvd.updateAvatarUrl($event)">
           </div>
           <span class="name">{{ friend.name }}</span>
         </ion-slide>

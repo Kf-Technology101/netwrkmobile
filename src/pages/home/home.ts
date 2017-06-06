@@ -27,7 +27,11 @@ export class HomePage {
 
   logOut() {
     this.auth.logout();
-    this.navCtrl.push(LogInPage);
+    this.navCtrl.push(LogInPage, {
+      animate: true,
+      direction: 'up',
+      duration: 3500
+    });
   }
 
 }

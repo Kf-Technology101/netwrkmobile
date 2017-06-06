@@ -88,6 +88,13 @@ export class MyApp {
       }
     } else {
       this.rootPage = LogInPage;
+      // this.app.getActiveNav().setRoot(LogInPage, {}, {
+      //   animate: true,
+      //   animation: 'ios-transition',
+      //   direction: 'forward',
+      //   duration: 3500
+      // });
+
       // this.rootPage = NetworkFindPage;
       // this.rootPage = ProfilePage;
       // this.rootPage = ChatPage;

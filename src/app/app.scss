@@ -17,34 +17,46 @@
 
 @-webkit-keyframes glow {
   0%   {
-    box-shadow: 0 0 6px rgba(93, 165, 216, .5);
+    box-shadow: 0 0 15px 5px rgba(91, 135, 170, .7);
+  }
+  25% {
+    box-shadow: 0 0 15px 5px rgba(93, 165, 216, .7);
   }
   50% {
-    box-shadow: 0 0 20px 5px rgba(93, 165, 216, .8);
+    box-shadow: 0 0 15px 5px rgba(249, 94, 101, .8);
+  }
+  75% {
+    box-shadow: 0 0 15px 5px rgba(93, 165, 216, .7);
   }
   100% {
-    box-shadow: 0 0 6px rgba(93, 165, 216, .5);
+    box-shadow: 0 0 15px 5px rgba(91, 135, 170, .7);
   }
 }
 
 @-webkit-keyframes textGlow {
   0%   {
-    text-shadow: 0 0 3px rgba(93, 165, 216, .5);
+    box-shadow: 0 0 5px 3px rgba(91, 135, 170, .7);
+  }
+  25% {
+    box-shadow: 0 0 5px 3px rgba(93, 165, 216, .7);
   }
   50% {
-    text-shadow: 0 0 5px 3px rgba(93, 165, 216, .9);
+    box-shadow: 0 0 5px 3px rgba(249, 94, 101, .8);
+  }
+  75% {
+    box-shadow: 0 0 5px 3px rgba(93, 165, 216, .7);
   }
   100% {
-    text-shadow: 0 0 3px rgba(93, 165, 216, .5);
+    box-shadow: 0 0 5px 3px rgba(91, 135, 170, .7);
   }
 }
 
 ion-app {
   .anim-glow {
-    animation: glow 2s infinite;
+    animation: glow 10s ease-out infinite;
   }
   .anim-text-glow {
-    animation: textGlow 2s infinite;
+    animation: textGlow 10s infinite;
   }
 
   ion-alert.alert-ios,

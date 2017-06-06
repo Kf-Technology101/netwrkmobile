@@ -154,7 +154,6 @@ export class FeedbackModal {
                     handler: () => {
                       this.endResult.isBlocked = true;
                       this.closeModal();
-                      this.closeModal();
                     }
                   }]
                 });

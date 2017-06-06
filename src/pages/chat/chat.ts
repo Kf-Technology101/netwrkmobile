@@ -619,6 +619,7 @@ export class ChatPage {
         });
         if (!emoji) {
           this.chatPrvd.appendContainer.setState('off');
+          this.chatPrvd.mainBtn.setState('hidden');
           setTimeout(() => {
             this.chatPrvd.appendContainer.hide();
           }, chatAnim/2);
@@ -667,10 +668,14 @@ export class ChatPage {
             this.postMessages[mIndex].legendary_by_user = data.legendary.isActive;
           }
           if (data.isBlocked) {
-            if (this.chatPrvd.getState() != 'area')
-              this.updateMessagesAndScrollDown();
-            else
-              this.updateMessagesAndScrollDown('noscroll');
+            switch(this.chatPrvd.getState()) {
+              case 'undercover':
+                this.startMessageUpdateTimer();
+                break;
+              case 'area':
+                this.updateMessagesAndScrollDown('noscroll');
+                break;
+            }
           }
         } else {
           // console.warn('[likeClose] Error, no data returned');

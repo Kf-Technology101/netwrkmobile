@@ -140,7 +140,11 @@ export class Tools {
 
   public errorHandler(error) {
     console.log(error);
-    this.app.getActiveNav().setRoot(LogInPage);
+    this.app.getActiveNav().setRoot(LogInPage, {}, {
+      animate: true,
+      direction: 'up',
+      duration: 3500
+    });
   }
 
 }

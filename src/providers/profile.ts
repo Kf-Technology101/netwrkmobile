@@ -74,21 +74,21 @@ export class Profile {
     this.tools.showLoader();
     let files: FileList = (<HTMLInputElement>event.target).files;
     console.log('files:', files);
-    let userId = this.auth.getAuthData().id;
+    let userId = this.user.id;
     let fieldName: string;
     let tempFiles = [];
 
     console.log('[ProfileSettingPage][filesAdded]', this.slideAvatarPrvd.sliderPosition);
     if (this.slideAvatarPrvd.sliderPosition == 'right') {
-      fieldName = 'hero_avatar_url';
+      fieldName = 'hero_avatar';
     } else {
-      fieldName = 'avatar_url';
+      fieldName = 'avatar';
     }
 
     for (let i = 0; i < files.length; i++) {
       tempFiles.push(files.item(i));
     }
-
+    console.log('tempFiles:', tempFiles);
     if (tempFiles.length > 0) {
       this.userPrvd.updateAvatar(userId, tempFiles, null, fieldName).then(res => {
         console.log('[updateAvatar] res:', res);
@@ -99,7 +99,7 @@ export class Profile {
         // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
       }, err => {
         this.tools.hideLoader();
-        console.error('ERROR', err);
+        console.error('updateAvatar ERROR', err);
         this.imageLoading = false;
       });
     } else {
@@ -141,6 +141,7 @@ export class Profile {
       this.tools.showLoader();
 
     let params: any;
+    console.log('slider position: ' + this.slideAvatarPrvd.sliderPosition);
     if (this.slideAvatarPrvd.sliderPosition == 'right') {
       if (this.userName && this.userDescription)
       params = {
@@ -157,7 +158,7 @@ export class Profile {
     if (params)
       this.userPrvd.update(this.user.id, params)
       .map(res => res.json()).subscribe(res => {
-        console.log(res);
+        console.log('[user provider] (Update) res:', res);
         this.user = res;
         this.tools.hideLoader();
         // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;

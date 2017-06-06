@@ -120,7 +120,7 @@ export class FeedbackModal {
       let errorMessage = JSON.parse(err['_body']).error;
       let alert = this.alertCtrl.create({
         title: '',
-        subTitle: 'Looks like you\'l have to wait until next month',
+        subTitle: 'Looks like you\'ll have to wait until next month',
         buttons: ['Ok']
       });
       alert.present();

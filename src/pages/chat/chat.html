@@ -14,7 +14,8 @@
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
         <img class="draggable-element"
           [src]="slideAvatarPrvd.sliderPosition == 'right'
-            ? user.hero_avatar_url : user.avatar_url">
+          ? user.hero_avatar_url : user.avatar_url"
+          (error)="chatPrvd.updateAvatarUrl($event)">
       </div>
     </div>
 
@@ -87,7 +88,8 @@
         </ion-slide>
         <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
           <div class="avatar" (click)="goToProfile(user.id)">
-            <img [src]="chatPrvd.users[user.id].avatar_url">
+            <img [src]="chatPrvd.users[user.id].avatar_url"
+            (error)="chatPrvd.updateAvatarUrl($event)">
           </div>
           <span *ngIf="user.name" class="username">
             {{ user.name }}
@@ -127,11 +129,13 @@
         [src]="message.public
           ? message.user.avatar_url
           : message.user.hero_avatar_url"
-        class="chat-avatar">
+        class="chat-avatar"
+        (error)="chatPrvd.updateAvatarUrl($event)">
       <img *ngIf="!message.user"
         (click)="goToProfile(message.user_id, message.public)"
         [src]="toolsPrvd.defaultAvatar"
-        class="chat-avatar">
+        class="chat-avatar"
+        (error)="chatPrvd.updateAvatarUrl($event)">
       <p class="message-container">
         <span class="username" *ngIf="message.user">
           <ng-container *ngIf="message.public">

@@ -88,13 +88,15 @@ export class Tools {
       content: '<div class="glowing-icon"></div><span class="loading-text">Please wait...</span>'
     });
 
-    this.loader.present();
+    this.loader.present().catch(err => {
+      console.error('loader Error:', err);
+    });
   }
 
   hideLoader() {
     setTimeout(() => {
       this.loader.dismiss().catch( err => {
-        console.log('[loader close] Error:', err);
+        console.error('[loader close] Error:', err);
       });
     }, 1);
   }

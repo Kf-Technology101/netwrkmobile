@@ -11,7 +11,9 @@ import {
   Content,
   Platform,
   ModalController,
-  AlertController } from 'ionic-angular';
+  AlertController,
+  Config,
+   } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 // Pages
@@ -57,6 +59,9 @@ import {
   toggleFade,
   slideToggle
 } from '../../includes/animations';
+
+import { ModalRTLEnterAnimation } from '../../includes/rtl-enter.transition';
+import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 
 @Component({
   selector: 'page-chat',
@@ -172,7 +177,8 @@ export class ChatPage {
     private ng2cable: Ng2Cable,
     private broadcaster: Broadcaster,
     private keyboard: Keyboard,
-    private renderer: Renderer
+    private renderer: Renderer,
+    public config: Config
   ) {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
@@ -188,6 +194,8 @@ export class ChatPage {
       channel: <string> channel,
       post_code: <number> zipCode
     });
+
+    this.setCustomTransitions();
 
     this.broadcaster.on<any>(channel).subscribe(
       data => {
@@ -351,6 +359,10 @@ export class ChatPage {
     })
   }
 
+  private setCustomTransitions() {
+    this.config.setTransition('modal-slide-left', ModalRTLEnterAnimation);
+    this.config.setTransition('modal-slide-right', ModalRTLLeaveAnimation);
+  }
 
   public toggleChatOptions() {
     this.chatPrvd.plusBtn.setState((this.chatPrvd.plusBtn.getState() == 'spined') ? 'default' : 'spined');
@@ -679,7 +691,13 @@ export class ChatPage {
     {
       netwrk_id: netwrkId,
       user_id: this.user.id
+    }, {
+      showBackdrop: false,
+      enableBackdropDismiss: false,
+      enterAnimation: 'modal-slide-left',
+      leaveAnimation: 'modal-slide-right'
     });
+
     legModal.onDidDismiss(data => {
       if (data && data.joinNetwork) {
         this.joinToNetwork();

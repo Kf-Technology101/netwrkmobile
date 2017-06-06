@@ -84,7 +84,7 @@ modal-legendaryhistory {
     &.netwrk-content.content-ios,
     &.netwrk-content.content-md {
       .scroll-content {
-        margin-top: 155px!important;
+        margin-top: 140px!important;
         // margin-bottom: 70px;
       }
     }
@@ -736,6 +736,7 @@ modal-legendaryhistory {
               bottom: 0;
               line-height: 43px;
               pointer-events: none;
+              color: color($colors, bk-unactive-blue);
             }
           }
           .ic {
@@ -784,6 +785,7 @@ modal-legendaryhistory {
             text-overflow: ellipsis;
             overflow: hidden;
             white-space: nowrap;
+            color: color($colors, bk-unactive-blue);
           }
         }
       }

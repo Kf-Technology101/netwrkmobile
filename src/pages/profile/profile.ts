@@ -102,6 +102,7 @@ export class ProfilePage {
   public uploadCallback(event: Event): void {
     console.log('event:', event);
     this.profile.imageLoading = true;
+    this.nativeInputBtn.nativeElement.value = null;
     console.log('upload-button callback executed');
     // let fileInput = document.getElementById('file-input');
 

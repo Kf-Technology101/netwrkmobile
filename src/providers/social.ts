@@ -190,7 +190,7 @@ export class Social {
       this.facebook.api(requestPath, this.fbPermissions).then(res => {
         resolve(res);
       }).catch(err => {
-        reject(err)
+        reject(err);
       })
     });
   }

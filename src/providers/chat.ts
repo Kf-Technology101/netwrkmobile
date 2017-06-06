@@ -79,6 +79,10 @@ export class Chat {
     this.hostUrl = this.api.hostUrl;
   }
 
+  public updateAvatarUrl(event: any) {
+    event.target.src = 'assets/icon/netwrk-chat.svg';
+  }
+
   public playSound(audioName) {
     if (this.sounds[audioName]) {
       this.sounds[audioName].play();

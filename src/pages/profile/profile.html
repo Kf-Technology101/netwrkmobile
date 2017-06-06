@@ -5,16 +5,17 @@
       <div class="dragline">
         <span class="info">
           <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
-            {{ user.role_name }}
+            {{ profile.user.role_name }}
           </span>
           <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
-            {{ user.name }}
+            {{ profile.user.name }}
           </span>
         </span>
         <ion-icon ios="ios-log-out" md="ios-log-out"></ion-icon>
         <img class="draggable-element"
           [src]="slideAvatarPrvd.sliderPosition == 'right' ?
-            user.hero_avatar_url : user.avatar_url">
+            profile.user.hero_avatar_url : profile.user.avatar_url"
+          (error)="chatPrvd.updateAvatarUrl($event)">
       </div>
     </div>
 
@@ -78,7 +79,7 @@
         </p>
       </ion-card> -->
       <ion-textarea autosize [(ngModel)]="profile.userDescription" rows="7"
-                (blur)="profile.saveChanges()">
+                    (blur)="profile.saveChanges()">
         {{ profile.userDescription }}
       </ion-textarea>
   </div>

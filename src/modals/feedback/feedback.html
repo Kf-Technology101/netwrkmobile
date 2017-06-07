@@ -16,7 +16,10 @@
     </button>
     <!-- <button class="secondary vulgar-btn">Vulgar</button> -->
     <button class="secondary block-btn" (click)="blockMessage()">Block</button>
-    <button class="secondary share" (click)="goShare()">Share</button>
+    <button *ngIf="chatPrvd.getState() == 'undercover'" class="secondary share"
+    (click)="goShare()">Share my location</button>
+    <button *ngIf="chatPrvd.getState() == 'area'" class="secondary share"
+    (click)="goShare()">Share</button>
   </ion-list>
 </ion-content>
 

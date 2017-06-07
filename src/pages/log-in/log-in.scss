@@ -1,8 +1,34 @@
+@-webkit-keyframes bgTransition {
+  from {
+    top: 100%;
+  }
+  to {
+    top: 50%;
+  }
+}
+
 page-log-in {
   ion-grid.login-grid{
     opacity: 0;
   }
   .item-block {
     padding-left: 0;
+  }
+  .animation-container {
+    position: absolute;
+    left: 0;
+    top: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+    .animated-bg {
+      position: absolute;
+      animation: bgTransition 3.5s ease-out;
+      background: url('../assets/images/city_bg.png') no-repeat;
+      background-size: contain;
+      -webkit-animation-fill-mode: forwards;
+      width: 100%;
+      height: 100%;
+    }
   }
 }

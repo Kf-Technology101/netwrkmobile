@@ -139,7 +139,6 @@ export class ChatPage {
     postHangTime: 0,
   };
   private postLockData: any = {
-    id: null,
     password: null,
     hint: null,
   };
@@ -208,6 +207,7 @@ export class ChatPage {
         if (this.isUndercover) {
           if (data.message.undercover && insideUndercover) {
             this.postMessages.push(data.message);
+            console.info('message data:', data.message);
             // this.chatPrvd.playSound('message');
             this.chatPrvd.messageDateTimer.start(this.postMessages);
             // this.txtIn.value = '';
@@ -501,11 +501,18 @@ export class ChatPage {
     return String.fromCodePoint(unicode);
   }
 
-  sendLockInfo (form: any) {
+  sendLockInfo (event:any, form: any) {
+    event.stopPropagation();
+    event.preventDefault();
+
     if (form.invalid) {
       this.toolsPrvd.showToast(this.textStrings.require);
     } else {
       this.hideTopSlider('lock');
+      this.postLockData = {
+        hint: form.value.hint,
+        password: form.value.password
+      }
       this.postMessage();
     }
   }
@@ -593,17 +600,16 @@ export class ChatPage {
           // console.log('[sendMessage] res:', res);
 
           if (this.postLockData.hint && this.postLockData.password) {
-            let lockObj:any = {
+            let lockData:any = {
               id: res.id,
               hint: this.postLockData.hint,
               password: this.postLockData.password
             }
 
-            this.chatPrvd.lockMessage(lockObj).subscribe(lockRes => {
+            this.chatPrvd.lockMessage(lockData).subscribe(lockRes => {
               // console.log('[lock] res:', lockRes);
               this.updatePost(lockRes, message, emoji);
               this.postLockData = {
-                id: null,
                 hint: null,
                 password: null
               }
@@ -765,9 +771,29 @@ export class ChatPage {
     }, 1);
   }
 
-  toggleShareSlider(mess){
-    this.shareCheckbox[mess] = !this.shareCheckbox[mess];
+  toggleShareSlider(social_network){
+    this.shareCheckbox[social_network] = !this.shareCheckbox[social_network];
     this.getSocialPosts();
+  }
+
+  public getSocialPosts() {
+    this.socialPosts = [];
+    let socials = [];
+    console.log('this.shareCheckbox:', this.shareCheckbox);
+    for (let i in this.shareCheckbox) {
+      if (this.shareCheckbox[i]) {
+        socials.push(i);
+      }
+    }
+    console.log('socials:', socials);
+    if (socials.length > 0) {
+      this.socialPrvd.getSocialPosts(socials).subscribe(res => {
+        console.log('[getSocialPosts] res:', res);
+        this.socialPosts = res.messages;
+      }, err => {
+        console.error('[getSocialPosts] err:', err);
+      });
+    }
   }
 
   changeCallback(positionLeft?: boolean) {
@@ -790,16 +816,7 @@ export class ChatPage {
   }
 
   getTopSlider(container) {
-    let cont;
-    switch (container) {
-      case 'timer':
-        cont = this.postTimer;
-      break;
-      case 'lock':
-        cont = this.postLock;
-      break;
-    }
-    return cont;
+    return container == 'timer' ? this.postTimer : this.postLock;
   }
 
   hideTopSlider(container) {
@@ -845,22 +862,6 @@ export class ChatPage {
       // console.log(err);
       // this.toolsPrvd.hideLoader();
     });
-  }
-
-  private getSocialPosts() {
-    this.socialPosts = [];
-    if (this.shareCheckbox.facebook) {
-      this.socialPrvd.getFbUserPosts(this.user.provider_id).then(posts => {
-        // console.log('[ChatPage][getSocialPosts]', posts.data);
-        for (let post of posts.data) {
-          let fbPost = post;
-          fbPost.type = 'facebook';
-          this.socialPosts.push(fbPost);
-        }
-      }).catch(err => {
-      //console.log(err);
-    });
-    }
   }
 
   private getUsers() {

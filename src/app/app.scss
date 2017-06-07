@@ -17,19 +17,24 @@
 
 @-webkit-keyframes glow {
   0%   {
-    box-shadow: 0 0 15px 5px rgba(91, 135, 170, .7);
+    box-shadow: 0 0 15px 5px rgba(91, 135, 170, .7),
+    0 0 10px 5px rgba(91, 135, 170, .7) inset;
   }
   25% {
-    box-shadow: 0 0 15px 5px rgba(93, 165, 216, .7);
+    box-shadow: 0 0 15px 5px rgba(93, 165, 216, .7),
+    0 0 10px 5px rgba(93, 165, 216, .7) inset;
   }
   50% {
-    box-shadow: 0 0 15px 5px rgba(249, 94, 101, .8);
+    box-shadow: 0 0 15px 5px rgba(249, 94, 101, .8),
+    0 0 10px 5px rgba(249, 94, 101, .8) inset;
   }
   75% {
-    box-shadow: 0 0 15px 5px rgba(93, 165, 216, .7);
+    box-shadow: 0 0 15px 5px rgba(93, 165, 216, .7),
+    0 0 10px 5px rgba(93, 165, 216, .7) inset;
   }
   100% {
-    box-shadow: 0 0 15px 5px rgba(91, 135, 170, .7);
+    box-shadow: 0 0 15px 5px rgba(91, 135, 170, .7),
+    0 0 10px 5px rgba(91, 135, 170, .7) inset;
   }
 }
 
@@ -156,6 +161,9 @@ ion-app .ion-page .content {
       height: 42px;
       border-width: 3px;
       border-radius: 4px;
+    }
+    &.anim-glow {
+      background: transparent;
     }
 
     button {

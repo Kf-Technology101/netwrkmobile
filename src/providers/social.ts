@@ -195,6 +195,14 @@ export class Social {
     });
   }
 
+  public getSocialPosts(social_names:any) {
+    let seq = this.api.post('messages/social_feed', {
+      social: social_names
+    }).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+
   public getFbPermission() {
 
   }

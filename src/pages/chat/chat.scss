@@ -455,15 +455,14 @@ modal-legendaryhistory {
       }
     }
     .share-content {
-      & {
-        position: absolute;
-        top: 42px;
-        height: 100%;
-        padding: 0;
-        overflow-y: scroll;
-        padding-bottom: 110px;
-      }
-
+      position: absolute;
+      top: 42px;
+      height: 100%;
+      padding: 0;
+      overflow-y: scroll;
+      padding-bottom: 110px;
+      width: 100%;
+      box-sizing: border-box;
       p.message{
         & {
           font-size: 12px;
@@ -471,8 +470,9 @@ modal-legendaryhistory {
           border-radius: 13px;
           background: color($colors, white);
           padding: 15px 10px 15px 40px;
-          position: relative;
-          margin: 10px 5px;
+          position: relative!important;
+          margin: 0;
+          width: 100%;
         }
       }
 
@@ -508,7 +508,7 @@ modal-legendaryhistory {
       }
       .img-container {
         position: relative;
-
+        padding: 10px 5px;
         img {
           width: 100%;
           // max-height: 250px;
@@ -517,10 +517,6 @@ modal-legendaryhistory {
 
         .social-ico {
           left: 15px;
-        }
-
-        .message {
-          position: absolute;
         }
       }
     }
@@ -652,7 +648,7 @@ modal-legendaryhistory {
             bottom: 25px;
           }
           &.lock {
-            background: color($colors, bk-active-blue);
+            background-color: color($colors, bk);
             .icon {
               font-size: 30px;
               color: #fff;

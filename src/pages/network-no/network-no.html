@@ -1,8 +1,8 @@
-<ion-content has-main-btn no-bounce city-bg-static>
+<ion-content has-main-btn no-bounce city-bg-animated>
   <div class="city-container">
     <div class="city-bg"></div>
   </div>
-  <div class="heading">
+  <div class="heading" [hidden]="controls.hidden" [@fadeState]="controls.state">
     <p class="head">
       A netwrk areacast has not been created here! Once founded, anyone can
       broadcast to their area.
@@ -19,7 +19,8 @@
       ideal media system.
     </p>
   </div>
-  <ion-row align-items-center [hidden]="hideSearch">
+  <ion-row align-items-center [hidden]="hideSearch || controls.hidden"
+           [@fadeState]="controls.state">
     <ion-col text-center>
       <button class="be-founder" ion-button clear (click)="doFounder()" color="bk">
         <!-- <ion-icon class="sun-icon"></ion-icon> -->
@@ -36,9 +37,10 @@
 </ion-content>
 
 <ion-footer>
-  <button ion-button color="bk"
+  <button ion-button color="bk" [@mainBtnState]="chatPrvd.mainBtn.getState()"
     class="main-action-btn medium has-label anim-glow" outline
-    (click)="goUndercover()">
+    (click)="goUndercover()" [hidden]="controls.hidden"
+    [@fadeState]="controls.state">
     <ion-icon class="anim-text-glow custom-text-icon">&#8250;</ion-icon>
   </button>
   <!-- <span class="main-action-text" ion-text color="bk">

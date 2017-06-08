@@ -13,11 +13,23 @@ import { UndercoverProvider } from '../../providers/undercover';
 import { Chat } from '../../providers/chat';
 import { Gps } from '../../providers/gps';
 
+import { toggleFade, scaleMainBtn } from '../../includes/animations';
+
 @Component({
   selector: 'page-network-no',
-  templateUrl: 'network-no.html'
+  templateUrl: 'network-no.html',
+  animations: [
+    toggleFade,
+    scaleMainBtn
+  ]
 })
 export class NetworkNoPage {
+
+  private controls: any = {
+    state: 'fadeOut',
+    hidden: true
+  };
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -32,7 +44,7 @@ export class NetworkNoPage {
   doFounder() {
     let params: any = {
       action: this.navParams.get('action'),
-      zipCode: this.navParams.get('zipCode'),
+      zipCode:  this.chatPrvd.localStorage.get('chat_zip_code')
     };
 
     this.tools.pushPage(NetworkPage, params);
@@ -41,16 +53,26 @@ export class NetworkNoPage {
   goUndercover() {
     let params: any = {
       action: 'undercover',
-      zipCode: this.navParams.get('zipCode'),
+      zipCode: this.chatPrvd.localStorage.get('chat_zip_code')
     };
 
-    this.chatPrvd.setZipCode(this.gps.zipCode);
+    this.chatPrvd.setZipCode(params.zipCode);
     this.chatPrvd.setState(params.action);
     this.tools.pushPage(ChatPage, params);
   }
 
   goFaq() {
     this.tools.pushPage(NetworkFaqPage);
+  }
+
+  ionViewDidEnter() {
+    this.controls.hidden = true;
+    this.controls.state = 'fadeOut';
+    setTimeout(() => {
+      this.controls.hidden = false;
+      this.chatPrvd.mainBtn.setState('normal');
+      this.controls.state = 'fadeIn';
+    }, 3500);
   }
 
 }

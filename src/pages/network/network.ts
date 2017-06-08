@@ -41,7 +41,7 @@ export class NetworkPage {
   ) {
     this.action = this.navParams.get('action');
     this.accessed = this.navParams.get('accessed');
-    this.networkParams = { post_code: this.gpsPrvd.zipCode };
+    this.networkParams = { post_code: this.chatPrvd.localStorage.get('chat_zip_code') };
     this.user = this.authPrvd.getAuthData();
 
     this.textStrings.actionError = 'Something went wrong, please reload app and try again';

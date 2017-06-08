@@ -137,7 +137,7 @@ export class Chat {
     return new Promise((resolve, reject) => {
       let params = {
         message: data,
-        post_code: this.gps.zipCode
+        post_code: this.localStorage.get('chat_zip_code')
       };
       params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
       params.message.lat = this.gps.coords.lat;

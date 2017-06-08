@@ -78,7 +78,7 @@ export class NetworkPage {
       this.chatPrvd.setState(state);
 
       let params: any = {
-        zipCode: this.gpsPrvd.zipCode,
+        zipCode: this.chatPrvd.localStorage.get('chat_zip_code'),
         action: this.chatPrvd.getState()
       };
 
@@ -144,7 +144,7 @@ export class NetworkPage {
         zipCode: this.navParams.get('zipCode'),
       };
 
-      this.chatPrvd.setZipCode(this.gpsPrvd.zipCode);
+      this.chatPrvd.setZipCode(this.chatPrvd.localStorage.get('chat_zip_code'));
       this.chatPrvd.setState(params.action);
       this.toolsPrvd.pushPage(ChatPage, params);
     } else {
@@ -172,7 +172,7 @@ export class NetworkPage {
     this.getUsers();
 
     let invitation = this.networkPrvd.getInviteZipAccess();
-    let zipCode = this.gpsPrvd.zipCode;
+    let zipCode = this.chatPrvd.localStorage.get('chat_zip_code')
     if (invitation.indexOf(zipCode) !== -1) {
       this.invitationSent = true;
     }

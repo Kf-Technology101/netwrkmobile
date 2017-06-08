@@ -333,18 +333,6 @@ export class ChatPage {
 
     this.flipHover = this.isUndercover ? true : false;
 
-    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
-    this.cameraPreview.startCamera(cameraOptions).then(res => {
-      // console.log(res);
-      if (this.isUndercover) {
-        this.cameraPreview.show();
-      } else {
-        this.cameraPreview.hide();
-      }
-    }, err => {
-      // console.log(err);
-    });
-
     this.changePlaceholderText();
 
     this.networkParams = { post_code: this.chatPrvd.localStorage.get('chat_zip_code') };
@@ -1038,6 +1026,18 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
+    this.cameraPreview.startCamera(cameraOptions).then(res => {
+      // console.log(res);
+      if (this.chatPrvd.getState() == 'undercover') {
+        this.cameraPreview.show();
+      } else {
+        this.cameraPreview.hide();
+      }
+    }, err => {
+      // console.log(err);
+    });
+
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
 
     this.chatPrvd.isMessagesVisible = false;

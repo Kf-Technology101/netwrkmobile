@@ -15,6 +15,7 @@ import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
 import { NetworkProvider } from '../../providers/network';
 import { Gps } from '../../providers/gps';
+import { Chat } from '../../providers/chat';
 
 // Pipes
 // import { ContactListPipe } from '../../pipes/contact-list';
@@ -43,7 +44,8 @@ export class NetworkContactListPage {
     public contactsPrvd: ContactsProvider,
     public tools: Tools,
     public networkPrvd: NetworkProvider,
-    public gpsPrvd: Gps
+    public gpsPrvd: Gps,
+    public chatPrvd: Chat
   ) {
     this.listType = this.navParams.get('type');
     this.accessed = this.navParams.get('accessed');
@@ -171,7 +173,7 @@ export class NetworkContactListPage {
                 () => {}, () => {}
               );
 
-            let inviteCode = this.gpsPrvd.zipCode;
+            let inviteCode = this.chatPrvd.localStorage.get('chat_zip_code');
             let inviteCodes = this.networkPrvd.getInviteZipAccess();
             this.tools.hideLoader();
             if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode)

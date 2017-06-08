@@ -1,4 +1,17 @@
 page-network-no {
+  .heading {
+    padding: 0 22px;
+    p {
+      color: color($colors, bk);
+      &.head {
+        font-size: 16px;
+        line-height: 18px;
+      }
+      &.sub-head {
+        font-size: 10px;
+      }
+    }
+  }
   .row {
     height: 33%;
     font-size: 20px;
@@ -16,6 +29,12 @@ page-network-no {
     .be-founder {
       font-size: 20px;
       font-weight: normal;
+      height: auto!important;
+      img.connect {
+        display: inline-block;
+        height: 44px;
+        margin-right: 15px;
+      }
     }
   }
 

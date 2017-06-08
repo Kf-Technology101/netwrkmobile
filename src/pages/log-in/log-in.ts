@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import {
   NavController,
   NavParams,
@@ -18,6 +18,7 @@ import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { User } from '../../providers/user';
+import { Chat } from '../../providers/chat';
 
 // import { Keyboard } from '@ionic-native/keyboard';
 
@@ -41,16 +42,23 @@ import { Toggleable } from '../../includes/toggleable';
 })
 
 export class LogInPage {
+  @ViewChild('loginForm') logForm: ElementRef;
+  private showLoginForm: boolean = false;
   public account: { login: string, password: string } = {
     login: '',
     password: ''
   };
-  public contentState: string = 'fadeOut';
+  // public contentState: string = 'fadeOut';
   // public mainBtn: any = { state: 'normal' };
+  public controls: any = {
+    state: 'fadeOut',
+    hidden: true
+  };
   private textStrings: any = {};
 
-  public mainBtn = new Toggleable('normal', false);
+  // public mainBtn = new Toggleable('centered', false);
   public postBtn = new Toggleable(false);
+  public form = new Toggleable('fadeOut', true);
 
   constructor(
     public navCtrl: NavController,
@@ -60,7 +68,8 @@ export class LogInPage {
     public contactsPrvd: ContactsProvider,
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider,
-    public user: User
+    public user: User,
+    public chatPrvd: Chat
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
@@ -102,6 +111,15 @@ export class LogInPage {
     // }, err => {
     //   console.log(err);
     // });
+  }
+
+  submitLoginForm() {
+    if (!this.form.isVisible()) {
+      this.form.show();
+      this.form.setState('fadeInfast');
+    } else {
+      this.doLogin(this.logForm);
+    }
   }
 
   doLogin(form: any) {
@@ -163,7 +181,17 @@ export class LogInPage {
 
   goToSignUp() { this.tools.pushPage(SignUpPage); }
 
+  ionViewDidEnter() {
+    this.controls.hidden = true;
+    this.controls.state = 'fadeOut';
+    setTimeout(() => {
+      this.controls.hidden = false;
+      this.chatPrvd.mainBtn.setState('centered');
+      this.controls.state = 'fadeIn';
+    }, 3500);
+  }
+
   ngOnInit(){
-    this.contentState = 'fadeIn';
+    // this.contentState = 'fadeIn';
   }
 }

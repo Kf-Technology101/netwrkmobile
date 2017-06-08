@@ -78,6 +78,10 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
     transform: 'scale(0)',
     bottom: '30px'
   })),
+  state('centered', style({
+    bottom: 0,
+    top: 0
+  })),
 
   state('moved-n-scaled', style({
     transform: 'scale(0.381)',

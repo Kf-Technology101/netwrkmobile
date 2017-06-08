@@ -4,11 +4,10 @@ import {
   ViewChild,
   Renderer,
   NgZone } from '@angular/core';
-import { NavController, NavParams, IonicPage } from 'ionic-angular';
+import { NavController, NavParams, IonicPage, App } from 'ionic-angular';
 
 // Pages
 import { LogInPage } from '../log-in/log-in';
-
 // Providers
 import { Auth } from '../../providers/auth';
 import { Tools } from '../../providers/tools';
@@ -46,7 +45,8 @@ export class ProfileSettingPage {
     public userPrvd: User,
     public undercoverPrvd: UndercoverProvider,
     public zone: NgZone,
-    elRef: ElementRef
+    elRef: ElementRef,
+    private app: App
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.profileTypePublic = this.navParams.get('public');
@@ -188,7 +188,8 @@ export class ProfileSettingPage {
 
   logOut() {
     this.auth.logout();
-    this.tools.pushPage(LogInPage);
+    this.app.getRootNav().setRoot(LogInPage);
+    // this.tools.pushPage(LogInPage);
   }
 
 }

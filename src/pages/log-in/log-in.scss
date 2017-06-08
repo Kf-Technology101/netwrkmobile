@@ -31,4 +31,41 @@ page-log-in {
       height: 100%;
     }
   }
+  .item {
+    &.item-ios {
+      &.has-border {
+        .item-inner {
+          border-bottom: 1px solid #dedede;
+        }
+      }
+    }
+  //   &.item-md {
+  //     .item-inner {
+  //       margin-bottom: 0;
+  //     }
+  //   }
+  }
+  .footer {
+    .login-btns-container {
+      padding: 0 20px;
+      height: 80px;
+      [item-left], [item-right] {
+        margin: 0;
+      }
+      .item-inner {
+        padding-right: 0;
+        border: none;
+      }
+      button {
+        width: 111px;
+        -webkit-box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.2);
+        -moz-box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.2);
+        box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.2);
+      }
+    }
+  }
+  .transparent {
+    background: transparent;
+    background-color: transparent;
+  }
 }

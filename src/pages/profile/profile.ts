@@ -17,6 +17,7 @@ import { Auth } from '../../providers/auth';
 import { AlertController } from 'ionic-angular';
 import { Api } from '../../providers/api';
 import { Keyboard } from '@ionic-native/keyboard';
+import { CameraPreview } from '@ionic-native/camera-preview';
 
 @Component({
   selector: 'page-profile',
@@ -66,7 +67,8 @@ export class ProfilePage {
     elRef: ElementRef,
     public profile: Profile,
     public platform: Platform,
-    public keyboard: Keyboard
+    public keyboard: Keyboard,
+    public cameraPrev: CameraPreview
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.user.id = this.navParams.get('id');
@@ -341,6 +343,7 @@ export class ProfilePage {
   }
 
   ionViewDidEnter() {
+    this.cameraPrev.stopCamera();
     if (this.ownProfile) {
       if (this.authPrvd.storage.get('profile_first_time') === null) {
         this.showFirstTimeMessage('profile');

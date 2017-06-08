@@ -151,10 +151,10 @@ export class Gps {
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
           console.log('[google addres] res:', res);
           // default:
-          let zipCode: number = this.parseGoogleAddress(res.results);
+          // let zipCode: number = this.parseGoogleAddress(res.results);
 
           // debug:
-          // let zipCode: number = this.localStorage.get('test_zip_code');
+          let zipCode: number = this.localStorage.get('test_zip_code');
           console.log('zipCode:', zipCode);
           if (this.localStorage.get('chat_zip_code') === null) {
             this.localStorage.set('chat_zip_code', zipCode);

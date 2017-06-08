@@ -1039,16 +1039,16 @@ export class ChatPage {
 
   ionViewDidEnter() {
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
+
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;
     this.chatPrvd.imagesToLoad = 0;
+
     this.mainInput.setState('fadeIn');
     this.mainInput.show();
+
     this.chatPrvd.mainBtn.setState('normal');
     this.chatPrvd.mainBtn.show();
-
-    if (this.chatPrvd.getState() == 'undercover')
-      this.runUndecoverSlider(this.pageTag);
 
     // this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
@@ -1065,8 +1065,10 @@ export class ChatPage {
     if (this.chatPrvd.getState() == 'area')
       this.updateMessagesAndScrollDown();
     // else
-    if (this.chatPrvd.getState() == 'undercover')
+    if (this.chatPrvd.getState() == 'undercover') {
+      this.runUndecoverSlider(this.pageTag);
       this.startMessageUpdateTimer();
+    }
     else if (this.authPrvd.storage.get('area_first_time') === null) {
       this.goToProfile();
     }

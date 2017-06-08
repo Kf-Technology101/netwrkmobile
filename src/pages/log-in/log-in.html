@@ -2,30 +2,38 @@
   <div class="animation-container">
     <div class="animated-bg"></div>
   </div>
-  <ion-grid [@fadeState]="contentState" class="login-grid">
+  <ion-grid [@fadeState]="controls.state" [hidden]="controls.hidden"
+            class="login-grid">
     <ion-row>
       <ion-col text-center>
-        <img src="assets/icon/logo.png">
+        <!-- <img src="assets/icon/logo.png"> -->
+        <p ion-text color="bk">
+          To see the "insert" or your area's broadcast, share your location
+          (don't worry, you are invisible to everyone else).
+        </p>
       </ion-col>
     </ion-row>
     <ion-row>
       <ion-col>
-        <form (submit)="doLogin(loginForm)" #loginForm="ngForm" novalidate>
+        <form (submit)="doLogin()" #loginForm="ngForm" novalidate
+              [@fadeState]="form.getState()" [hidden]="!form.isVisible()">
           <ion-list>
 
             <ion-item>
-              <ion-input #focusInput (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+              <ion-input #focusInput (focus)="chatPrvd.mainBtn.setState('minimised')"
+                (blur)="chatPrvd.mainBtn.setState('centered')"
                 type="text" placeholder="Email/Phone number..."
                 [(ngModel)]="account.login" name="login" required></ion-input>
             </ion-item>
 
-            <ion-item>
-              <ion-input (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+            <ion-item class="has-border">
+              <ion-input (focus)="chatPrvd.mainBtn.setState('minimised')"
+                (blur)="chatPrvd.mainBtn.setState('centered')"
                 type="password" placeholder="Password..."
                 [(ngModel)]="account.password" name="password" required></ion-input>
             </ion-item>
 
-            <ion-item class="item-right">
+            <!-- <ion-item class="item-right">
               <button type="button" ion-button icon-left clear color="bk"
                 (click)="doFbLogin()">
                 <ion-icon name="logo-facebook"></ion-icon>
@@ -33,13 +41,13 @@
               </button>
               <button type="submit" ion-button default round item-right
                 color="bk">Login</button>
-            </ion-item>
+            </ion-item> -->
           </ion-list>
 
         </form>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <!-- <ion-row>
       <ion-col>
         <ion-list>
 
@@ -51,13 +59,24 @@
 
         </ion-list>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
   </ion-grid>
+
+  <button isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()"
+    [@fadeState]="controls.state" ion-button [hidden]="controls.hidden"
+    color="bk" class="main-action-btn medium has-label anim-glow"
+    (click)="goToSignUp()" outline></button>
 
 </ion-content>
 
 <ion-footer>
-    <button isScrolling="false" [@mainBtnState]="mainBtn.state" ion-button
-      color="bk" class="main-action-btn medium has-label anim-glow" (click)="goToSignUp()" outline></button>
-  <span class="main-action-text" ion-text color="bk">New? Tap to get started</span>
+  <!-- <span class="main-action-text" ion-text color="bk">New? Tap to get started</span> -->
+  <ion-item class="transparent login-btns-container">
+    <button type="submit" (click)="submitLoginForm()" ion-button default
+            round item-left color="bk" [@fadeState]="controls.state"
+            [hidden]="controls.hidden">Login</button>
+    <button type="submit" (click)="doFbLogin()" ion-button default round item-right
+            color="bk" [@fadeState]="controls.state"
+            [hidden]="controls.hidden">FB login</button>
+  </ion-item>
 </ion-footer>

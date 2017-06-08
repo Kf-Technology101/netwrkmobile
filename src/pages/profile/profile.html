@@ -64,10 +64,13 @@
   </ion-row>
   <ion-row class="input-section" *ngIf="ownProfile">
     <ion-col>
-      <ion-input
-        text-center type="text" placeholder="Choose a name"
-        [(ngModel)]="profile.userName"
-        [ngClass]="{'has-value' : profile.userName}" (blur)="profile.saveChanges()"></ion-input>
+      <ion-item class="no-style">
+        <ion-input
+          text-center type="text" placeholder="Choose a name"
+          [(ngModel)]="profile.userName"
+          [ngClass]="{'has-value' : profile.userName}"
+          (blur)="profile.saveChanges()"></ion-input>
+      </ion-item>
     </ion-col>
   </ion-row>
   <div ion-content class="description-section"
@@ -81,10 +84,12 @@
           Beware: too much negativity and your powers will be recinded.
         </p>
       </ion-card> -->
-      <ion-textarea autosize [(ngModel)]="profile.userDescription" rows="7"
-                    (blur)="profile.saveChanges()">
-        {{ profile.userDescription }}
-      </ion-textarea>
+      <ion-item class="no-style">
+        <ion-textarea autosize [(ngModel)]="profile.userDescription" rows="7"
+                      (blur)="profile.saveChanges()">
+          {{ profile.userDescription }}
+        </ion-textarea>
+      </ion-item>
   </div>
   <ng-container *ngIf="fbFriends.length == 0 && profileTypePublic && !ownProfile">
     <p class="no-data-message">No common connections yet</p>

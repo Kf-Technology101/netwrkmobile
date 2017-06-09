@@ -13,6 +13,7 @@ import {
   ModalController,
   AlertController,
   Config,
+  Events
    } from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
@@ -44,7 +45,6 @@ import { Keyboard } from '@ionic-native/keyboard';
 
 import * as moment from 'moment';
 // Sockets
-import { Ng2Cable, Broadcaster } from 'ng2-cable/js/index';
 import 'rxjs';
 
 // Animations
@@ -74,10 +74,6 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
     toggleGallery,
     toggleFade,
     slideToggle
-  ],
-  providers: [
-    Ng2Cable,
-    Broadcaster
   ]
 })
 
@@ -110,8 +106,6 @@ export class ChatPage {
   emojis = [];
 
   caretPos: number = 0;
-
-  public postMessages: any = [];
 
   contentBlock: any = undefined;
 
@@ -173,62 +167,15 @@ export class ChatPage {
     public modalCtrl: ModalController,
     private alertCtrl: AlertController,
     private cameraPreview: CameraPreview,
-    private ng2cable: Ng2Cable,
-    private broadcaster: Broadcaster,
     private keyboard: Keyboard,
     private renderer: Renderer,
-    public config: Config
+    public config: Config,
+    public events: Events
   ) {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
-    let channel = 'ChatChannel';
-    let zipCode = this.chatPrvd.localStorage.get('chat_zip_code');
-    console.log('[chat constructor] storage zip:', this.chatPrvd.localStorage.get('chat_zip_code'));
-    let lobby = 'messages' + zipCode + 'chat';
-
-    // console.log('[SOCKET] lobby:', lobby);
-
-    this.ng2cable.subscribe(this.chatPrvd.hostUrl + '/cable', {
-      channel: <string> channel,
-      post_code: <number> zipCode
-    });
-
     this.setCustomTransitions();
-
-    this.broadcaster.on<any>(channel).subscribe(
-      data => {
-        console.log('[SOCKET] Message received:', data);
-        let insideUndercover = this.gpsPrvd
-        .calculateDistance({
-          lat: <number> parseFloat(data.message.lat),
-          lng: <number> parseFloat(data.message.lng)
-        });
-        if (this.isUndercover) {
-          if (data.message.undercover && insideUndercover) {
-            this.postMessages.push(data.message);
-            console.info('message data:', data.message);
-            // this.chatPrvd.playSound('message');
-            this.chatPrvd.messageDateTimer.start(this.postMessages);
-            // this.txtIn.value = '';
-          }
-        } else if (!this.isUndercover && !data.message.undercover) {
-          this.postMessages.unshift(data.message);
-          // this.chatPrvd.playSound('message');
-          this.chatPrvd.messageDateTimer.start(this.postMessages);
-          // this.txtIn.value = '';
-        }
-    }, err => {
-      console.error('[SOCKET] Message error:', err);
-    });
-
-    this.broadcaster.on<any>(lobby).subscribe(
-      data => {
-        console.log('[SOCKET] lobby:', data);
-      }, err => {
-        console.error('[SOCKET] lobby error:', err);
-      }
-    );
 
     this.keyboard.onKeyboardShow().subscribe(res => {
       // console.log('[onKeyboardShow]');
@@ -534,7 +481,7 @@ export class ChatPage {
       }
     }
     this.canRefresh = false;
-    // this.postMessages.push(data);
+    // this.chatPrvd.postMessages.push(data);
     if (this.chatPrvd.getState() != 'area')
       this.chatPrvd.scrollToBottom(this.content);
   }
@@ -636,9 +583,9 @@ export class ChatPage {
 
   updateMessagesAndScrollDown(scroll?:string) {
     console.log('(updateMessagesAndScrollDown) isUndercover:', this.isUndercover);
-    this.chatPrvd.showMessages(this.postMessages, 'chat', this.isUndercover).then(res => {
-      this.postMessages = res.messages;
-      res.callback(this.postMessages);
+    this.chatPrvd.showMessages(this.chatPrvd.postMessages, 'chat', this.isUndercover).then(res => {
+      this.chatPrvd.postMessages = res.messages;
+      res.callback(this.chatPrvd.postMessages);
       if (scroll) {
         this.chatPrvd.scrollToBottom(this.content);
       }
@@ -654,12 +601,12 @@ export class ChatPage {
       feedbackModal.onDidDismiss(data => {
         if (data) {
           if (data.like) {
-            this.postMessages[mIndex].likes_count = data.like.total;
-            this.postMessages[mIndex].like_by_user = data.like.isActive;
+            this.chatPrvd.postMessages[mIndex].likes_count = data.like.total;
+            this.chatPrvd.postMessages[mIndex].like_by_user = data.like.isActive;
           }
           if (data.legendary) {
-            this.postMessages[mIndex].legendary_count = data.legendary.total;
-            this.postMessages[mIndex].legendary_by_user = data.legendary.isActive;
+            this.chatPrvd.postMessages[mIndex].legendary_count = data.legendary.total;
+            this.chatPrvd.postMessages[mIndex].legendary_by_user = data.legendary.isActive;
           }
           if (data.isBlocked) {
             switch(this.chatPrvd.getState()) {
@@ -710,7 +657,7 @@ export class ChatPage {
     if (event) {
       event.stopPropagation();
       this.chatPrvd.isMessagesVisible = false;
-      this.postMessages = [];
+      this.chatPrvd.postMessages = [];
     }
     // Disable main button on view load
     this.chatPrvd.isMainBtnDisabled = true;
@@ -886,25 +833,25 @@ export class ChatPage {
     if (this.chatPrvd.getState() == 'area')
       this.postLoading = true;
     // console.log('Begin async operation', refresher);
-    this.chatPrvd.getMessages(this.isUndercover, this.postMessages, null, true)
+    this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
     .subscribe(res => {
-      // console.log('[REFRESHER] postMessages:', this.postMessages);
+      // console.log('[REFRESHER] postMessages:', this.chatPrvd.postMessages);
       console.log('[REFRESHER] res:', res);
       res = this.chatPrvd.organizeMessages(res.messages);
       if (this.chatPrvd.getState() != 'area') {
         for (let i in res) {
-          this.postMessages.unshift(res[i]);
+          this.chatPrvd.postMessages.unshift(res[i]);
         }
       } else {
         if (res.length == 0) {
           this.postLoaded = true;
         }
         for (let i in res) {
-          this.postMessages.push(res[i]);
+          this.chatPrvd.postMessages.push(res[i]);
         }
         this.postLoading = false;
       }
-      this.chatPrvd.messageDateTimer.start(this.postMessages);
+      this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
       if (refresher)
         refresher.complete();
     }, err => {
@@ -920,32 +867,32 @@ export class ChatPage {
 
   private getAndUpdateUndercoverMessages() {
     this.chatPrvd.isMainBtnDisabled = false;
-    this.chatPrvd.getMessages(this.isUndercover, this.postMessages)
+    this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages)
     .subscribe(res => {
       if (!res) return;
       // console.log('[sendMessagesIds] res:', res);
       if (res.ids_to_remove && res.ids_to_remove.length > 0) {
-        for (let i in this.postMessages) {
+        for (let i in this.chatPrvd.postMessages) {
           for (let j in res.ids_to_remove) {
-            if (this.postMessages[i].id == res.ids_to_remove[j]) {
-              this.postMessages.splice(i, 1);
+            if (this.chatPrvd.postMessages[i].id == res.ids_to_remove[j]) {
+              this.chatPrvd.postMessages.splice(i, 1);
             }
           }
         }
       }
 
       if (res.messages && res.messages.length > 0) {
-        for (let i in this.postMessages) {
+        for (let i in this.chatPrvd.postMessages) {
           for (let j in res.messages) {
-            if (this.postMessages[i].id == res.messages[j].id) {
-              this.postMessages.splice(i, 1);
+            if (this.chatPrvd.postMessages[i].id == res.messages[j].id) {
+              this.chatPrvd.postMessages.splice(i, 1);
             }
           }
         }
-        this.postMessages = this.postMessages.concat(res.messages);
-        this.postMessages.sort(this.sortById);
-        this.chatPrvd.messageDateTimer.start(this.postMessages);
-        // console.log('messages after sort:', this.postMessages);
+        this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
+        this.chatPrvd.postMessages.sort(this.sortById);
+        this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
+        // console.log('messages after sort:', this.chatPrvd.postMessages);
       }
     }, err => {
       // console.error('[sendMessagesIds] error:', err);
@@ -982,10 +929,10 @@ export class ChatPage {
   }
 
   private sendDeletedMessages() {
-    // this.idList = this.getMessagesIds(this.postMessages);
+    // this.idList = this.getMessagesIds(this.chatPrvd.postMessages);
     this.chatPrvd.deleteMessages().subscribe( res => {
       // console.log('[sendDeletedMessages] Success:', res);
-      // this.postMessages = res ? res : [];
+      // this.chatPrvd.postMessages = res ? res : [];
     }, err => {
       // console.log('[sendDeletedMessages] Error:', err);
     });
@@ -995,8 +942,8 @@ export class ChatPage {
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
     this.canRefresh = true;
-    this.idList = this.getMessagesIds(this.postMessages);
-    this.postMessages = [];
+    this.idList = this.getMessagesIds(this.chatPrvd.postMessages);
+    this.chatPrvd.postMessages = [];
     this.messageRefreshInterval = setTimeout(() => {
       this.canRefresh = false;
       this.sendDeletedMessages();
@@ -1026,6 +973,20 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+    // init sockets
+    this.chatPrvd.socketsInit();
+
+    this.events.subscribe('page:undercover', res => {
+      console.log('[EVENTS] res:', res);
+      this.toolsPrvd.showToast('socket OK', 10000);
+      if (res.undercover) {
+        this.chatPrvd.socketsInit();
+      }
+    }, err => {
+      this.toolsPrvd.showToast('socket not OK :(', 10000);
+      console.error('[EVENTS] error:', err);
+    });
+
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
     this.cameraPreview.startCamera(cameraOptions).then(res => {
       // console.log(res);

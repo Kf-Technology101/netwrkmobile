@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 
-import { App, AlertController, Platform } from 'ionic-angular';
+import { App, AlertController, Platform, Events } from 'ionic-angular';
 import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
 
 import { Api } from './api';
@@ -29,9 +29,10 @@ export class Gps {
     private api: Api,
     private localStorage: LocalStorage,
     private platform: Platform,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    public events: Events
   ) {
-    console.log('GPS Provider')
+    console.log('GPS Provider');
   }
 
   getNetwrk(zipCode: number): any {
@@ -180,6 +181,7 @@ export class Gps {
                         if (this.changeZipCallback) this.changeZipCallback({
                           undercover: true
                         });
+                        this.events.publish('page:undercover', {undercover: true});
                       });
                       return false;
                     }

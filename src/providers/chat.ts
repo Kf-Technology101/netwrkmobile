@@ -25,6 +25,9 @@ import {
   TransferObject
 } from '@ionic-native/transfer';
 
+// sockets
+import { Ng2Cable, Broadcaster } from 'ng2-cable/js/index';
+
 // Custom libs
 import { MessageDateTimer } from '../includes/messagedatetimer';
 
@@ -32,6 +35,8 @@ import { MessageDateTimer } from '../includes/messagedatetimer';
 export class Chat {
   public users: any = {};
   private message: any = null;
+
+  public postMessages: any = [];
 
   public appendContainer = new Toggleable('off', true);
   public mainBtn = new Toggleable('normal', false);
@@ -73,7 +78,9 @@ export class Chat {
     public plt: Platform,
     public authPrvd: Auth,
     public modalCtrl: ModalController,
-    private networkPrvd: NetworkProvider
+    private networkPrvd: NetworkProvider,
+    public ng2cable: Ng2Cable,
+    public broadcaster: Broadcaster
   ) {
     // console.log('Hello Chat Provider');
     this.hostUrl = this.api.hostUrl;
@@ -131,6 +138,56 @@ export class Chat {
     let feed = this.api.post(link, data).share();
     let feedMap = feed.map(res => res.json());
     return feedMap;
+  }
+
+  public socketsInit() {
+    console.info('socketsInit()');
+    let channel = 'ChatChannel';
+    let zipCode = this.localStorage.get('chat_zip_code');
+    console.log('[chat constructor] storage zip:', this.localStorage.get('chat_zip_code'));
+    let lobby = 'messages' + zipCode + 'chat';
+
+    if (this.ng2cable.subscription) {
+      this.ng2cable.unsubscribe();
+    }
+    this.ng2cable.subscribe(this.hostUrl + '/cable', {
+      channel: <string> channel,
+      post_code: <number> zipCode
+    });
+    console.log('broadcaster:', this.broadcaster);
+    this.broadcaster['_eventBus'].observers = [];
+    this.broadcaster.on<any>(channel).subscribe(
+      data => {
+        console.log('[SOCKET] Message received:', data);
+        let insideUndercover = this.gps
+        .calculateDistance({
+          lat: <number> parseFloat(data.message.lat),
+          lng: <number> parseFloat(data.message.lng)
+        });
+        if (this.getState() == 'undercover') {
+          if (data.message.undercover && insideUndercover) {
+            this.postMessages.push(data.message);
+            console.info('message data:', data.message);
+            // this.playSound('message');
+            this.messageDateTimer.start(this.postMessages);
+            // this.txtIn.value = '';
+          }
+        } else if (this.getState() != 'undercover' && !data.message.undercover) {
+          this.postMessages.unshift(data.message);
+          // this.playSound('message');
+          this.messageDateTimer.start(this.postMessages);
+        }
+    }, err => {
+      console.error('[SOCKET] Message error:', err);
+    });
+
+    this.broadcaster.on<any>(lobby).subscribe(
+      data => {
+        console.log('[SOCKET] lobby:', data);
+      }, err => {
+        console.error('[SOCKET] lobby error:', err);
+      }
+    );
   }
 
   public sendMessage(data: any): any {

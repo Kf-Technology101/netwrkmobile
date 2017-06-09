@@ -70,6 +70,9 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { TwitterConnect } from '@ionic-native/twitter-connect';
 import { BackgroundMode } from '@ionic-native/background-mode';
 
+// sockets
+import { Ng2Cable, Broadcaster } from 'ng2-cable/js/index';
+
 // enableProdMode();
 
 let pages = [
@@ -144,6 +147,8 @@ export function providers() {
     InAppBrowser,
     BackgroundMode,
     Profile,
+    Ng2Cable,
+    Broadcaster,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];

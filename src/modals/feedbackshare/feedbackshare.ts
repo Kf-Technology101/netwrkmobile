@@ -24,7 +24,7 @@ import { Facebook } from '@ionic-native/facebook';
 export class FeedbackShareModal {
 
   private mainBtn: any = {
-    state: 'fadeOut',
+    state: 'fadeInfast',
     hidden: false
   }
 
@@ -137,6 +137,6 @@ export class FeedbackShareModal {
       this.share.message = this.params.get('message');
       this.share.image = this.params.get('image');
     }
-    this.mainBtn.state = 'fadeInfast';
+    // this.mainBtn.state = 'fadeInfast';
   }
 }

@@ -9,6 +9,7 @@ import { Api } from './api';
 import { LocalStorage } from './local-storage';
 
 import { NetworkFindPage } from '../pages/network-find/network-find';
+import { ChatPage } from '../pages/chat/chat';
 
 @Injectable()
 export class Gps {
@@ -20,7 +21,7 @@ export class Gps {
   public changeZipCallback: (params?: any) => void;
   private watch: any;
   private maxDistance: number = 50;
-  private zipInterval: any;
+  public zipInterval: any;
 
   constructor(
     public app: App,
@@ -181,9 +182,10 @@ export class Gps {
                         if (this.changeZipCallback) this.changeZipCallback({
                           undercover: true
                         });
-                        this.events.publish('page:undercover', {undercover: true});
+                        // this.events.publish('page:undercover', {undercover: true});
+                        nav.setRoot(ChatPage, {undercover: true});
                       });
-                      return false;
+                      // return false;
                     }
                   },
                   {
@@ -192,7 +194,7 @@ export class Gps {
                       alert.dismiss().then(() => {
                         nav.push(NetworkFindPage, null, { animate: false })
                       });
-                      return false;
+                      // return false;
                     }
                   }
                 ]

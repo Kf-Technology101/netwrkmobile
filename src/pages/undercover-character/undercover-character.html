@@ -23,7 +23,8 @@
         initialSlide="1"
         spaceBetween="10">
         <ion-slide></ion-slide>
-        <ion-slide [ngClass]="{'transition': sliderLoaded}" *ngFor="let p of persons">
+        <ion-slide [ngClass]="{'transition': sliderLoaded}" *ngFor="let p of persons"
+        (click)="choosePerson()">
           <h4 class="title" ion-text color="bk">{{ p.name }}</h4>
           <div class="avatar">
             <img class="sun-icon" src="{{ p.imageUrl }}">
@@ -38,7 +39,7 @@
   </ion-row>
 </ion-content>
 
-<ion-footer>
+<!-- <ion-footer>
   <button ion-button color="bk" class="main-action-btn medium transparent" outline
     (click)="choosePerson()"></button>
-</ion-footer>
+</ion-footer> -->

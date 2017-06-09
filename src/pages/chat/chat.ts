@@ -973,6 +973,11 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+    let changeZipCallback = this.navParams.get('undercover');
+    if (changeZipCallback) {
+      this.isUndercover = true;
+      this.chatPrvd.setState('undercover');
+    }
     // init sockets
     this.chatPrvd.socketsInit();
 

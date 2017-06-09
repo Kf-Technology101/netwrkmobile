@@ -282,15 +282,17 @@ export class ProfilePage {
 
     let mesReq = this.chatPrvd.getMessagesByUserId(params).subscribe(res => {
       console.log(res);
-      if (res.messages && res.messages.length == 0) this.postLoaded = true;
-      if (params.offset == 0) this.posts = [];
-      for (let m of res.messages) {
-        m.date = this.toolsPrvd.getTime(m.created_at)
-        this.posts.push(m);
+      if (res) {
+        if (res.messages && res.messages.length == 0) this.postLoaded = true;
+        if (params.offset == 0) this.posts = [];
+        for (let m of res.messages) {
+          m.date = this.toolsPrvd.getTime(m.created_at)
+          this.posts.push(m);
+        }
+        this.postLoading = false;
+        this.toolsPrvd.hideLoader();
+        mesReq.unsubscribe();
       }
-      this.postLoading = false;
-      this.toolsPrvd.hideLoader();
-      mesReq.unsubscribe();
     }, err => {
       console.log(err);
       this.postLoading = false;

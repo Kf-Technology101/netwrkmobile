@@ -183,7 +183,10 @@ export class Gps {
                           undercover: true
                         });
                         // this.events.publish('page:undercover', {undercover: true});
-                        nav.setRoot(ChatPage, {undercover: true});
+                        nav.setRoot(ChatPage, {
+                          action: 'undercover',
+                          zipCode: zipCode
+                        });
                       });
                       // return false;
                     }
@@ -192,7 +195,10 @@ export class Gps {
                     text: 'Join',
                     handler: () => {
                       alert.dismiss().then(() => {
-                        nav.push(NetworkFindPage, null, { animate: false })
+                        // nav.push(NetworkFindPage, null, { animate: false })
+                        nav.setRoot(NetworkFindPage, {
+                          animate: false
+                        })
                       });
                       // return false;
                     }

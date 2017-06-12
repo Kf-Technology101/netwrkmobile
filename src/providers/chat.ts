@@ -269,7 +269,7 @@ export class Chat {
 
     if (params) Object.assign(data, params);
 
-    console.log('[getMessages] params:');
+    console.log('[getMessages] params:', params);
     console.log('[getMessages] data (if undecover & can\'t refresh):', data);
 
     let seq = this.api.get('messages', data).share();

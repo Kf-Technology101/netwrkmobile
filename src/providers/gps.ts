@@ -192,6 +192,8 @@ export class Gps {
                           action: 'undercover',
                           zipCode: zipCode
                         });
+
+                        this.localStorage.set('fake_coords', null);
                       });
                       // return false;
                     }

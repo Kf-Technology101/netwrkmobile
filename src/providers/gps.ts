@@ -184,9 +184,9 @@ export class Gps {
                     text: 'Go Undercover',
                     handler: () => {
                       alert.dismiss().then(() => {
-                        if (this.changeZipCallback) this.changeZipCallback({
-                          undercover: true
-                        });
+                        // if (this.changeZipCallback) this.changeZipCallback({
+                        //   undercover: true
+                        // });
                         // this.events.publish('page:undercover', {undercover: true});
                         nav.setRoot(ChatPage, {
                           action: 'undercover',

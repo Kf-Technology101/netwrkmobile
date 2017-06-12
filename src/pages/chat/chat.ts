@@ -988,16 +988,16 @@ export class ChatPage {
     // init sockets
     this.chatPrvd.socketsInit();
 
-    this.events.subscribe('page:undercover', res => {
-      console.log('[EVENTS] res:', res);
-      this.toolsPrvd.showToast('socket OK', 10000);
-      if (res.undercover) {
-        this.chatPrvd.socketsInit();
-      }
-    }, err => {
-      this.toolsPrvd.showToast('socket not OK :(', 10000);
-      console.error('[EVENTS] error:', err);
-    });
+    // this.events.subscribe('page:undercover', res => {
+    //   console.log('[EVENTS] res:', res);
+    //   this.toolsPrvd.showToast('socket OK', 10000);
+    //   if (res.undercover) {
+    //     this.chatPrvd.socketsInit();
+    //   }
+    // }, err => {
+    //   this.toolsPrvd.showToast('socket not OK :(', 10000);
+    //   console.error('[EVENTS] error:', err);
+    // });
 
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
     this.cameraPreview.startCamera(cameraOptions).then(res => {

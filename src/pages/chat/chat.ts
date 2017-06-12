@@ -980,10 +980,10 @@ export class ChatPage {
 
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
 
-    let changeZipCallback = this.navParams.get('undercover');
-    if (changeZipCallback) {
+    let providedStateFromGps = this.navParams.get('action');
+    if (providedStateFromGps == 'undercover') {
       this.isUndercover = true;
-      this.chatPrvd.setState('undercover');
+      this.chatPrvd.setState(providedStateFromGps);
     }
     // init sockets
     this.chatPrvd.socketsInit();

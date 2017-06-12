@@ -78,6 +78,8 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 })
 
 export class ChatPage {
+  private componentLoaded:boolean = false;
+
   @HostBinding('class') colorClass = 'transparent-background';
 
   public isUndercover: boolean;
@@ -98,7 +100,6 @@ export class ChatPage {
     this.emojiContainer,
     this.shareContainer
   ];
-
   private messagesInterval:any;
 
   emoticX = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C'];
@@ -171,7 +172,9 @@ export class ChatPage {
     private renderer: Renderer,
     public config: Config,
     public events: Events
-  ) {}
+  ) {
+    console.warn('[CHAT] Constructor');
+  }
 
   private setCustomTransitions() {
     this.config.setTransition('modal-slide-left', ModalRTLEnterAnimation);
@@ -851,7 +854,7 @@ export class ChatPage {
     });
   }
 
-  private constructorLoad(){
+  constructorLoad(){
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
@@ -974,8 +977,15 @@ export class ChatPage {
     })
   }
 
-  ionViewDidEnter() {
+  ngOnInit() {
     this.constructorLoad();
+    this.componentLoaded = true;
+  }
+
+  ionViewDidEnter() {
+    console.warn('[CHAT] Did enter');
+    if (!this.componentLoaded)
+      this.constructorLoad();
 
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
 

@@ -171,128 +171,7 @@ export class ChatPage {
     private renderer: Renderer,
     public config: Config,
     public events: Events
-  ) {
-    this.keyboard.disableScroll(true);
-    this.authData = this.authPrvd.getAuthData();
-
-    this.setCustomTransitions();
-
-    this.keyboard.onKeyboardShow().subscribe(res => {
-      // console.log('[onKeyboardShow]');
-      // console.log(res);
-      this.chatPrvd.postBtn.setState(true);
-      if (this.plt.is('ios')) {
-        try {
-          let footerEl = document.getElementsByClassName('chatFooter')['0'];
-          let scrollEl = document.getElementsByClassName('scroll-content')['0'];
-          scrollEl.style.bottom = res.keyboardHeight + 'px';
-          // scrollEl.style.margin = '0px 0px ' + res.keyboardHeight + 70 + 'px 0px';
-          footerEl.style.bottom = res.keyboardHeight + 'px';
-
-          // this.contentMargin = res.keyboardHeight + 70 + 'px';
-          this.isFeedbackClickable = false;
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      this.chatPrvd.mainBtn.setState('minimised');
-      if (!this.chatPrvd.appendContainer.hidden) {
-        this.chatPrvd.mainBtn.setState('above_append');
-      }
-      if (this.chatPrvd.getState() != 'area') {
-        this.chatPrvd.scrollToBottom(this.content);
-      }
-      // setTimeout(() => {
-      // }, chatAnim / 2 + 1);
-    }, err => {
-      // console.log(err);
-    });
-
-    this.keyboard.onKeyboardHide().subscribe(res => {
-      // console.log(res);
-      if (this.plt.is('ios')) {
-        try {
-          let footerEl = document.getElementsByClassName('chatFooter')['0'];
-          let scrollEl = document.getElementsByClassName('scroll-content')['0'];
-          footerEl.style.bottom = '0';
-          // scrollEl.style.margin = '0px 0px 70px 0px';
-          scrollEl.style.bottom = '0';
-
-          this.contentMargin = null;
-          this.isFeedbackClickable = true;
-        } catch (e) {
-          console.log('on-keyboard-show error:', e);
-        }
-      }
-      // setTimeout(() => {
-      if (!this.chatPrvd.appendContainer.hidden) {
-        this.chatPrvd.mainBtn.setState('above_append');
-      }
-      if (this.chatPrvd.appendContainer.hidden) {
-        this.chatPrvd.mainBtn.setState('normal');
-      }
-      if (this.txtIn.value.trim() == '' &&
-          !this.chatPrvd.appendContainer.isVisible()) {
-        this.chatPrvd.postBtn.setState(false);
-      }
-      // }, chatAnim/2 + 1);
-
-    }, err => {
-      // console.log(err);
-    });
-
-    this.user = this.authPrvd.getAuthData();
-    if (!this.user)
-      this.user = {
-        avatar_content_type: null,
-        avatar_file_name: null,
-        avatar_file_size: null,
-        avatar_updated_at: null,
-        avatar_url: null,
-        created_at: '2017-04-22T14:59:29.921Z',
-        date_of_birthday: '2004-01-01',
-        email: 'olbachinskiy2@gmail.com',
-        name: 'Oleksandr Bachynskyi',
-        id: 55,
-        invitation_sent: false,
-        phone: '1492873128682',
-        provider_id: null,
-        provider_name: null,
-        role_description: null,
-        role_image_url: null,
-        role_name: null,
-        hero_avatar_url: null,
-        updated_at: '2017-04-22T14:59:29.921Z',
-      }
-
-    if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
-    this.textStrings.sendError = 'Error sending message';
-    this.textStrings.noNetwork = 'Netwrk not found';
-    this.textStrings.require = 'Please fill all fields';
-
-    let action = this.navParams.get('action');
-    if (action) {
-      this.chatPrvd.setState(action);
-      this.isUndercover = this.undercoverPrvd.setUndercover(action == 'undercover');
-    } else {
-      this.isUndercover = this.undercoverPrvd.setUndercover(this.chatPrvd.getState() == 'undercover');
-    }
-
-    this.flipHover = this.isUndercover ? true : false;
-
-    this.changePlaceholderText();
-
-    this.networkParams = { post_code: this.chatPrvd.localStorage.get('chat_zip_code') };
-    this.hostUrl = this.chatPrvd.hostUrl;
-
-    this.gpsPrvd.changeZipCallback = this.changeZipCallback.bind(this);
-
-    this.gpsPrvd.getMyZipCode().then(zipRes => {
-      // console.log('[ChatPage][zipRes] - ', zipRes);
-    }).catch(err => {
-      // console.log('[ChatPage][zipRes] err - ', err);
-    })
-  }
+  ) {}
 
   private setCustomTransitions() {
     this.config.setTransition('modal-slide-left', ModalRTLEnterAnimation);
@@ -972,7 +851,134 @@ export class ChatPage {
     });
   }
 
+  private constructorLoad(){
+    this.keyboard.disableScroll(true);
+    this.authData = this.authPrvd.getAuthData();
+
+    this.setCustomTransitions();
+
+    this.keyboard.onKeyboardShow().subscribe(res => {
+      // console.log('[onKeyboardShow]');
+      // console.log(res);
+      this.chatPrvd.postBtn.setState(true);
+      if (this.plt.is('ios')) {
+        try {
+          let footerEl = document.getElementsByClassName('chatFooter')['0'];
+          let scrollEl = document.getElementsByClassName('scroll-content')['0'];
+          scrollEl.style.bottom = res.keyboardHeight + 'px';
+          // scrollEl.style.margin = '0px 0px ' + res.keyboardHeight + 70 + 'px 0px';
+          footerEl.style.bottom = res.keyboardHeight + 'px';
+
+          // this.contentMargin = res.keyboardHeight + 70 + 'px';
+          this.isFeedbackClickable = false;
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      this.chatPrvd.mainBtn.setState('minimised');
+      if (!this.chatPrvd.appendContainer.hidden) {
+        this.chatPrvd.mainBtn.setState('above_append');
+      }
+      if (this.chatPrvd.getState() != 'area') {
+        this.chatPrvd.scrollToBottom(this.content);
+      }
+      // setTimeout(() => {
+      // }, chatAnim / 2 + 1);
+    }, err => {
+      // console.log(err);
+    });
+
+    this.keyboard.onKeyboardHide().subscribe(res => {
+      // console.log(res);
+      if (this.plt.is('ios')) {
+        try {
+          let footerEl = document.getElementsByClassName('chatFooter')['0'];
+          let scrollEl = document.getElementsByClassName('scroll-content')['0'];
+          footerEl.style.bottom = '0';
+          // scrollEl.style.margin = '0px 0px 70px 0px';
+          scrollEl.style.bottom = '0';
+
+          this.contentMargin = null;
+          this.isFeedbackClickable = true;
+        } catch (e) {
+          console.log('on-keyboard-show error:', e);
+        }
+      }
+      // setTimeout(() => {
+      if (!this.chatPrvd.appendContainer.hidden) {
+        this.chatPrvd.mainBtn.setState('above_append');
+      }
+      if (this.chatPrvd.appendContainer.hidden) {
+        this.chatPrvd.mainBtn.setState('normal');
+      }
+      if (this.txtIn.value.trim() == '' &&
+          !this.chatPrvd.appendContainer.isVisible()) {
+        this.chatPrvd.postBtn.setState(false);
+      }
+      // }, chatAnim/2 + 1);
+
+    }, err => {
+      // console.log(err);
+    });
+
+    this.user = this.authPrvd.getAuthData();
+    if (!this.user)
+      this.user = {
+        avatar_content_type: null,
+        avatar_file_name: null,
+        avatar_file_size: null,
+        avatar_updated_at: null,
+        avatar_url: null,
+        created_at: '2017-04-22T14:59:29.921Z',
+        date_of_birthday: '2004-01-01',
+        email: 'olbachinskiy2@gmail.com',
+        name: 'Oleksandr Bachynskyi',
+        id: 55,
+        invitation_sent: false,
+        phone: '1492873128682',
+        provider_id: null,
+        provider_name: null,
+        role_description: null,
+        role_image_url: null,
+        role_name: null,
+        hero_avatar_url: null,
+        updated_at: '2017-04-22T14:59:29.921Z',
+      }
+
+    if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
+    this.textStrings.sendError = 'Error sending message';
+    this.textStrings.noNetwork = 'Netwrk not found';
+    this.textStrings.require = 'Please fill all fields';
+
+    let action = this.navParams.get('action');
+    if (action) {
+      this.chatPrvd.setState(action);
+      this.isUndercover = this.undercoverPrvd.setUndercover(action == 'undercover');
+    } else {
+      this.isUndercover = this.undercoverPrvd.setUndercover(this.chatPrvd.getState() == 'undercover');
+    }
+
+    this.flipHover = this.isUndercover ? true : false;
+
+    this.changePlaceholderText();
+
+    this.networkParams = { post_code: this.chatPrvd.localStorage.get('chat_zip_code') };
+    this.hostUrl = this.chatPrvd.hostUrl;
+
+    this.gpsPrvd.changeZipCallback = this.changeZipCallback.bind(this);
+
+    this.gpsPrvd.getMyZipCode().then(zipRes => {
+      // console.log('[ChatPage][zipRes] - ', zipRes);
+    }).catch(err => {
+      // console.log('[ChatPage][zipRes] err - ', err);
+    })
+  }
+
   ionViewDidEnter() {
+    this.constructorLoad();
+
+    this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
+
     let changeZipCallback = this.navParams.get('undercover');
     if (changeZipCallback) {
       this.isUndercover = true;
@@ -1004,8 +1010,6 @@ export class ChatPage {
       // console.log(err);
     });
 
-    this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
-
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;
     this.chatPrvd.imagesToLoad = 0;
@@ -1024,7 +1028,8 @@ export class ChatPage {
     this.user = this.authPrvd.getAuthData();
     this.getUsers();
 
-    this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
+    this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code'))
+    .subscribe(res => {
       this.chatPrvd.saveNetwork(res.network);
     });
 

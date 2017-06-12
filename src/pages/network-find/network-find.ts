@@ -47,7 +47,7 @@ export class NetworkFindPage {
   ionViewDidEnter() {
     console.log('[NetworkFindPage][ionViewDidEnter]');
     this.hideSearch = false;
-    this.chatPrvd.localStorage.set('chat_zip_code', this.chatPrvd.localStorage.get('test_zip_code'));
+    // this.chatPrvd.localStorage.set('chat_zip_code', this.chatPrvd.localStorage.get('test_zip_code'));
     this.getZipCode();
   }
 

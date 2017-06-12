@@ -301,17 +301,8 @@ export class ChatPage {
   }
 
   insertEmoji(emoji) {
-    // console.log(this.txtIn);
-    // this.txtIn.nativeElement.focus();
     let emojiDecoded = String.fromCodePoint(emoji);
     this.postMessage(emojiDecoded);
-    // let inputVal = this.txtIn.nativeElement.value;
-    // inputVal = inputVal.split('');
-    // this.getCaretPos(this.txtIn.nativeElement);
-    // inputVal.splice(this.caretPos, 0, emojiDecoded);
-    // this.txtIn.nativeElement.value = inputVal.join('');
-    // this.txtIn.nativeElement.selectionStart = this.caretPos + emojiDecoded.length;
-    // this.txtIn.nativeElement.selectionEnd = this.caretPos + emojiDecoded.length;
   }
 
   convertEmoji(unicode) {

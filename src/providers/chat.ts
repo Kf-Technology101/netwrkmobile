@@ -238,6 +238,8 @@ export class Chat {
     params?: any,
     doRefresh?: any
   ) {
+    console.log('===================================');
+    console.log('[getMessages] arguments:', arguments);
     let offset: number = messagesArray && messagesArray.length
       ? messagesArray.length : 0;
 
@@ -254,6 +256,10 @@ export class Chat {
     for (let i in messagesArray) {
       messagesIds.push(messagesArray[i].id);
     }
+
+    console.log('[getMessages] data:', data);
+    console.log('[getMessages] messagesIds:', messagesIds);
+
     // console.log('messagesIds:', messagesIds);
     if (data.undercover && !doRefresh) {
       data.offset = 0;
@@ -263,8 +269,14 @@ export class Chat {
 
     if (params) Object.assign(data, params);
 
+    console.log('[getMessages] params:');
+    console.log('[getMessages] data (if undecover & can\'t refresh):', data);
+
     let seq = this.api.get('messages', data).share();
     let seqMap = seq.map(res => res.json());
+
+    console.log('===================================');
+
     return seqMap;
   }
 

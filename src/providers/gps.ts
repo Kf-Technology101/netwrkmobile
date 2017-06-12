@@ -138,6 +138,11 @@ export class Gps {
     } else {
       coords = this.coords.lat + ',' + this.coords.lng;
     }
+
+    if (this.localStorage.get('fake_coords')) {
+      coords = this.localStorage.get('fake_coords')
+    }
+
     let url = 'https://maps.googleapis.com/maps/api/geocode/json';
     let seq = this.getAddressDetail(url, {
       latlng: coords,
@@ -154,10 +159,10 @@ export class Gps {
           console.log('[google addres] res:', res);
 
           // default:
-          // let zipCode: number = this.parseGoogleAddress(res.results);
+          let zipCode: number = this.parseGoogleAddress(res.results);
 
           // debug:
-          let zipCode: number = this.localStorage.get('test_zip_code');
+          // let zipCode: number = this.localStorage.get('test_zip_code');
 
           console.log('zipCode:', zipCode);
           if (this.localStorage.get('chat_zip_code') === null) {

@@ -72,7 +72,7 @@ export class NetworkNoPage {
       this.controls.hidden = false;
       this.chatPrvd.mainBtn.setState('normal');
       this.controls.state = 'fadeIn';
-    }, 3500);
+    }, 2000);
   }
 
 }

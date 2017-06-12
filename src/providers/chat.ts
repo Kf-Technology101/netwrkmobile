@@ -147,13 +147,16 @@ export class Chat {
     console.log('[chat constructor] storage zip:', this.localStorage.get('chat_zip_code'));
     let lobby = 'messages' + zipCode + 'chat';
 
+    console.log('ng2cable link:', this.hostUrl + '/cable');
     if (this.ng2cable.subscription) {
       this.ng2cable.unsubscribe();
     }
+
     this.ng2cable.subscribe(this.hostUrl + '/cable', {
       channel: <string> channel,
       post_code: <number> zipCode
     });
+
     console.log('broadcaster:', this.broadcaster);
     this.broadcaster['_eventBus'].observers = [];
     this.broadcaster.on<any>(channel).subscribe(
@@ -238,8 +241,8 @@ export class Chat {
     params?: any,
     doRefresh?: any
   ) {
-    console.log('===================================');
-    console.log('[getMessages] arguments:', arguments);
+    // console.log('===================================');
+    // console.log('[getMessages] arguments:', arguments);
     let offset: number = messagesArray && messagesArray.length
       ? messagesArray.length : 0;
 
@@ -257,8 +260,8 @@ export class Chat {
       messagesIds.push(messagesArray[i].id);
     }
 
-    console.log('[getMessages] data:', data);
-    console.log('[getMessages] messagesIds:', messagesIds);
+    // console.log('[getMessages] data:', data);
+    // console.log('[getMessages] messagesIds:', messagesIds);
 
     // console.log('messagesIds:', messagesIds);
     if (data.undercover && !doRefresh) {
@@ -269,13 +272,13 @@ export class Chat {
 
     if (params) Object.assign(data, params);
 
-    console.log('[getMessages] params:', params);
-    console.log('[getMessages] data (if undecover & can\'t refresh):', data);
+    // console.log('[getMessages] params:', params);
+    // console.log('[getMessages] data (if undecover & can\'t refresh):', data);
 
     let seq = this.api.get('messages', data).share();
     let seqMap = seq.map(res => res.json());
 
-    console.log('===================================');
+    // console.log('===================================');
 
     return seqMap;
   }

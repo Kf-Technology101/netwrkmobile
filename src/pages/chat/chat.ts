@@ -974,6 +974,7 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+    this.chatPrvd.postMessages = [];
     console.warn('[CHAT] Did enter');
     if (!this.componentLoaded)
       this.constructorLoad();
@@ -1000,6 +1001,7 @@ export class ChatPage {
     // });
 
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
+    this.cameraPreview.stopCamera();
     this.cameraPreview.startCamera(cameraOptions).then(res => {
       // console.log(res);
       if (this.chatPrvd.getState() == 'undercover') {

@@ -79,8 +79,17 @@ export class Gps {
         // console.log('[Gps][getMyZipCode]', resp);
         if (resp.coords) {
           if (!this.coords.lat && !this.coords.lng) {
-            this.coords.lat = resp.coords.latitude;
-            this.coords.lng = resp.coords.longitude;
+            // if (this.localStorage.get('fake_coords') !== null) {
+            //   let fake_coords = this.localStorage.get('fake_coords').split(',');
+            //   this.coords.lat = parseFloat(fake_coords[0]);
+            //   this.coords.lng = parseFloat(fake_coords[1]);
+            //   console.info('custom fake coordinates:',
+            //   this.coords.lat, ',', this.coords.lng);
+            // }
+            // else {
+              this.coords.lat = resp.coords.latitude;
+              this.coords.lng = resp.coords.longitude;
+            // }
             this.getZipCode().then(zip => {
               resolve({ zip_code: zip });
             }).catch(err => reject(err));
@@ -88,8 +97,17 @@ export class Gps {
               this.getZipCode();
             }, 60000);
           } else {
-            this.coords.lat = resp.coords.latitude;
-            this.coords.lng = resp.coords.longitude;
+            // if (this.localStorage.get('fake_coords') !== null) {
+            //   let fake_coords = this.localStorage.get('fake_coords').split(',');
+            //   this.coords.lat = parseFloat(fake_coords[0]);
+            //   this.coords.lng = parseFloat(fake_coords[1]);
+            //   console.info('[else] custom fake coordinates:',
+            //   this.coords.lat, ',', this.coords.lng);
+            // }
+            // else {
+              this.coords.lat = resp.coords.latitude;
+              this.coords.lng = resp.coords.longitude;
+            // }
           }
         }
       }, err => {
@@ -139,9 +157,9 @@ export class Gps {
       coords = this.coords.lat + ',' + this.coords.lng;
     }
 
-    if (this.localStorage.get('fake_coords')) {
-      coords = this.localStorage.get('fake_coords')
-    }
+    // if (this.localStorage.get('fake_coords')) {
+    //   coords = this.localStorage.get('fake_coords')
+    // }
 
     let url = 'https://maps.googleapis.com/maps/api/geocode/json';
     let seq = this.getAddressDetail(url, {
@@ -175,7 +193,8 @@ export class Gps {
             clearInterval(this.zipInterval);
             this.localStorage.rm('current_network');
             this.localStorage.set('chat_zip_code', zipCode);
-            if (this.localStorage.get('chat_state') == 'area') {
+            if (this.localStorage.get('chat_state') == 'area' ||
+                this.localStorage.get('chat_state') == 'undercover') {
               let alert = this.alertCtrl.create({
                 title: '',
                 message: 'You left the Netwrk area, please join to other netwrk or go Undercover',
@@ -193,7 +212,6 @@ export class Gps {
                           zipCode: zipCode
                         });
 
-                        this.localStorage.set('fake_coords', null);
                       });
                       // return false;
                     }

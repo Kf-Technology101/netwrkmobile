@@ -76,8 +76,8 @@ ion-app {
       height: 100%;
       .city-bg {
         position: absolute;
-        animation: bgTransition 3.5s ease-out;
-        background: url('../assets/images/city_bg.png') no-repeat;
+        animation: bgTransition 2s ease-out;
+        background: url('../assets/images/city_bg.png') no-repeat left;
         background-size: contain;
         -webkit-animation-fill-mode: forwards;
         width: 100%;

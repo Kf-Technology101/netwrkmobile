@@ -188,7 +188,7 @@ export class LogInPage {
       this.controls.hidden = false;
       this.chatPrvd.mainBtn.setState('centered');
       this.controls.state = 'fadeIn';
-    }, 3500);
+    }, 2000);
   }
 
   ngOnInit(){

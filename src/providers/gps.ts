@@ -208,7 +208,7 @@ export class Gps {
                         // });
                         // this.events.publish('page:undercover', {undercover: true});
                         nav.setRoot(ChatPage, {
-                          action: 'undercover',
+                          action_from_gps: 'undercover',
                           zipCode: zipCode
                         });
 

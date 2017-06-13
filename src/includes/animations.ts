@@ -155,7 +155,7 @@ export const cameraUIanimation: any = trigger('cameraUIstate', [
   state('photoButtonFadeOut', style({
     opacity: '0',
     bottom: '158px',
-    transform: 'scale(.9)'
+    transform: 'scale(0.9)'
   })),
 
   state('tooltipFadeOut', style({

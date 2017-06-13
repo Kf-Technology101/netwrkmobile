@@ -974,6 +974,7 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+
     this.chatPrvd.postMessages = [];
     console.warn('[CHAT] Did enter');
     if (!this.componentLoaded)
@@ -981,7 +982,7 @@ export class ChatPage {
 
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
 
-    let providedStateFromGps = this.navParams.get('action');
+    let providedStateFromGps = this.navParams.get('action_from_gps');
     if (providedStateFromGps == 'undercover') {
       this.isUndercover = true;
       this.chatPrvd.setState(providedStateFromGps);
@@ -989,29 +990,19 @@ export class ChatPage {
     // init sockets
     this.chatPrvd.socketsInit();
 
-    // this.events.subscribe('page:undercover', res => {
-    //   console.log('[EVENTS] res:', res);
-    //   this.toolsPrvd.showToast('socket OK', 10000);
-    //   if (res.undercover) {
-    //     this.chatPrvd.socketsInit();
-    //   }
-    // }, err => {
-    //   this.toolsPrvd.showToast('socket not OK :(', 10000);
-    //   console.error('[EVENTS] error:', err);
-    // });
-
-    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: false });
-    this.cameraPreview.stopCamera();
-    this.cameraPreview.startCamera(cameraOptions).then(res => {
-      // console.log(res);
-      if (this.chatPrvd.getState() == 'undercover') {
-        this.cameraPreview.show();
-      } else {
-        this.cameraPreview.hide();
-      }
-    }, err => {
-      // console.log(err);
+    let cameraOptions = this.cameraPrvd.getCameraOpt();
+    this.cameraPreview.stopCamera().then(()=>{}).catch(err => {
+      console.error('error stopping camera:', err);
     });
+
+    if (this.chatPrvd.getState() == 'undercover') {
+      this.cameraPreview.startCamera(cameraOptions).then(res => {
+      // console.log(res);
+        this.cameraPreview.show();
+      }, err => {
+        // console.log(err);
+      });
+    }
 
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;

@@ -18,6 +18,7 @@ import { Chat } from '../../providers/chat';
 })
 export class NetworkFindPage {
   public hideSearch: boolean = true;
+  private skipNetworkFind: boolean = true;
 
   constructor(
     public navCtrl: NavController,
@@ -48,7 +49,8 @@ export class NetworkFindPage {
     console.log('[NetworkFindPage][ionViewDidEnter]');
     this.hideSearch = false;
     // this.chatPrvd.localStorage.set('chat_zip_code', this.chatPrvd.localStorage.get('test_zip_code'));
-    this.getZipCode();
+    if (!this.skipNetworkFind)
+      this.getZipCode();
   }
 
   private getZipCode() {
@@ -92,6 +94,16 @@ export class NetworkFindPage {
         // this.permission.geolocationPermission();
       }
     });
+  }
+
+  ngOnInit():void {
+    if (this.navParams.get('action') == 'undercover') {
+      this.tools.pushPage(ChatPage, {
+        action: 'undercover'
+      });
+    } else {
+      this.skipNetworkFind = false;
+    }
   }
 
 }

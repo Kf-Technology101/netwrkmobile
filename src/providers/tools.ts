@@ -20,7 +20,7 @@ import { Auth } from './auth';
 export class Tools {
   public defaultAvatar: string = 'assets/images/incognito.png';
   private toast: any;
-  private loader: any;
+  private loader: any = null;
 
   constructor(
     public events: Events,
@@ -31,7 +31,8 @@ export class Tools {
     private iab: InAppBrowser,
     private backgroundMode: BackgroundMode,
     public alertCtrl: AlertController
-  ) {}
+  ) {
+  }
 
   public parseObjectForPopup(object) {
     let alert = this.alertCtrl.create({
@@ -80,24 +81,27 @@ export class Tools {
   }
 
   showLoader() {
-    if (this.loader) {
-      this.loader.dismiss();
-    }
-    this.loader = this.loadingCtrl.create({
-      spinner: 'hide',
-      content: '<div class="glowing-icon"></div><span class="loading-text">Please wait...</span>'
-    });
-
-    this.loader.present().catch(err => {
-      console.error('loader Error:', err);
-    });
+    try {
+      if (!this.loader || this.loader === null) {
+        this.loader = this.loadingCtrl.create({
+          spinner: 'hide',
+          content: '<div class="glowing-icon"></div><span class="loading-text">Please wait...</span>'
+        });
+        this.loader.present();
+      }
+    } catch (err) {
+      console.warn('[loader open] Error:', err);
+    };
   }
 
   hideLoader() {
     setTimeout(() => {
-      this.loader.dismiss().catch( err => {
-        console.error('[loader close] Error:', err);
-      });
+      try {
+        this.loader.dismiss();
+        this.loader = null;
+      } catch (err) {
+        console.warn('[loader close] Error:', err);
+      }
     }, 1);
   }
 

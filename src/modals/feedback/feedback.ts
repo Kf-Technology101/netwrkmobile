@@ -131,7 +131,7 @@ export class FeedbackModal {
     // if (this.chatPrvd.getState() != 'area') {
       let confirmBlockAlert = this.alertCtrl.create({
         title: '',
-        message: 'Are you sure you want to block this post?',
+        subTitle: 'Are you sure you want to block this post?',
         buttons: [
           {
             text: 'Cancel',

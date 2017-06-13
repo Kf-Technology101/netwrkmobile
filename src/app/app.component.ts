@@ -50,8 +50,8 @@ export class MyApp {
     });
 
     platform.ready().then(() => {
-      this.apiPrvd.watchForConnect(); // watch for network connect
-      this.apiPrvd.watchForDisconnect(); // watch for network disconnect
+      // this.apiPrvd.watchForConnect(); // watch for network connect
+      // this.apiPrvd.watchForDisconnect(); // watch for network disconnect
       this.getLogin();
       this.getSimInfo();
       this.statusBar.styleDefault();
@@ -66,20 +66,39 @@ export class MyApp {
       switch (authType) {
         case 'facebook':
           this.authPrvd.getFbLoginStatus().then(data => {
-            this.rootPage = data.status && data.status == 'connected' ?
+            let rootPage:any;
+            if (data.status && data.status == 'connected') {
               this.undercoverPrvd.getCharacterPerson(
-                UndercoverCharacterPage, NetworkFindPage, ChatPage) :
-              LogInPage;
-
+                UndercoverCharacterPage, NetworkFindPage, ChatPage)
+              } else {
+                rootPage = LogInPage;
+              }
+              if (rootPage == NetworkFindPage) {
+                this.app.getRootNav().setRoot(ChatPage, {
+                  action: 'undercover'
+                });
+              } else {
+                this.rootPage = rootPage;
+              }
             this.splashScreen.hide();
           });
           break;
         case 'email':
           let fbConnected = this.authPrvd.getFbConnected();
-          this.rootPage = fbConnected ?
-            this.undercoverPrvd.getCharacterPerson(
-              UndercoverCharacterPage, NetworkFindPage, ChatPage) :
-            LogInPage;
+          let rootPage:any;
+          if (fbConnected) {
+            rootPage = this.undercoverPrvd.getCharacterPerson(
+            UndercoverCharacterPage, NetworkFindPage, ChatPage)
+          } else {
+            rootPage = LogInPage;
+          };
+          if (rootPage == NetworkFindPage) {
+            this.app.getRootNav().setRoot(ChatPage, {
+              action: 'undercover'
+            });
+          } else {
+            this.rootPage = rootPage;
+          }
 
           this.splashScreen.hide();
           break;

@@ -116,9 +116,9 @@ export function providers() {
   return [
     Storage,
 
-    Api,
-    Auth,
     User,
+    Auth,
+    Api,
     LocalStorage,
     Tools,
     ContactsProvider,

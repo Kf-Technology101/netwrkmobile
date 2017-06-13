@@ -106,7 +106,10 @@ export class CameraPage {
   }
 
   switchCamera() {
-    this.cameraPreview.switchCamera();
+    this.cameraPreview.switchCamera().then(()=>{})
+    .catch(err => {
+      console.warn('switch camera error:', err);
+    });
   }
 
   goBack() {
@@ -129,22 +132,18 @@ export class CameraPage {
   }
 
   ionViewDidEnter() {
+
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: true });
-    this.cameraPreview.stopCamera();
     this.cameraPreview.startCamera(cameraOptions).then(res => {
-      console.log('[startCamera] res:', res);
+      console.log(res);
       this.cameraPreview.show();
     }, err => {
-      console.error('[startCamera] error:', err);
+      console.log(err);
     });
+
     setTimeout(() => {
       this.cameraUI.tooltip = 'tooltipFadeIn';
     }, animSpeed.fadeIn/2);
     console.log('ionViewDidLoad CameraPage');
   }
-
-  ionViewWillLeave() {
-    // this.cameraPreview.hide();
-  }
-
 }

@@ -2,10 +2,10 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
 
 import { Slides } from 'ionic-angular';
-
+import { LocalStorage } from '../../providers/local-storage';
 // Pages
 import { NetworkFindPage } from '../network-find/network-find';
-
+import { ChatPage } from '../chat/chat';
 // Providers
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
@@ -33,6 +33,7 @@ export class UndercoverCharacterPage {
   public textError: string;
   private user: any = {};
   private pageTag: string;
+  private firstTimeHero: boolean = true;
 
   constructor(
     public platform: Platform,
@@ -42,7 +43,8 @@ export class UndercoverCharacterPage {
     public toolsPrvd: Tools,
     public slideAvatarPrvd: SlideAvatar,
     public authPrvd: Auth,
-    elRef: ElementRef
+    elRef: ElementRef,
+    private storage: LocalStorage
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.changeError = 'You can\'t leave this page right now';
@@ -54,7 +56,13 @@ export class UndercoverCharacterPage {
 
   choosePerson() {
     this.undercoverPrvd.setPerson(this.activePerson).then(data => {
-      this.toolsPrvd.pushPage(NetworkFindPage);
+      if (this.storage.get('first_time_hero') === null) {
+        this.firstTimeHero = false;
+        this.storage.set('first_time_hero', this.firstTimeHero);
+      }
+      this.toolsPrvd.pushPage(NetworkFindPage, {
+        action: 'undercover'
+      });
     }, err => {
       this.toolsPrvd.showToast(this.textError);
     });
@@ -105,6 +113,8 @@ export class UndercoverCharacterPage {
   }
 
   ionViewDidEnter() {
+    if (this.storage.get('first_time_hero') === null)
+      this.firstTimeHero = true;
     this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     this.slideAvatarPrvd.sliderInit(this.pageTag);
   }

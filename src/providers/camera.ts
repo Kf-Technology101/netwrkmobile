@@ -23,7 +23,7 @@ export class Camera {
     }
   }
 
-  public getCameraOpt(options: any): CameraPreviewOptions {
+  public getCameraOpt(options?: any): CameraPreviewOptions {
     for (let o in options) this.cameraPreviewOpts[o] = options[o];
     return this.cameraPreviewOpts;
   }

@@ -108,6 +108,7 @@ ion-app {
   ion-alert {
     .alert-wrapper {
       border: 1px solid color($colors, bk);
+      border-radius: 17px!important;
     }
     .alert-sub-title {
       font-weight: bold;
@@ -118,9 +119,37 @@ ion-app {
       border-top: 1px solid color($colors, bk);
       color: color($colors, bk);
     }
+    &.alert-md {
+      .alert-head {
+        border-bottom: 1px solid color($colors, bk);
+      }
+      .alert-wrapper {
+        .alert-button-group {
+          flex-wrap: nowrap;
+          justify-content: center;
+          padding: 0;
+        }
+      }
+      .alert-button {
+        border-top: none;
+        border-radius: 0;
+        border-right: 1px solid color($colors, bk);
+        margin: 0;
+        width: 100%;
+        color: color($colors, bk);
+        .button-inner {
+          justify-content: center;
+        }
+        &:last-child {
+          border-right: none;
+        }
+      }
+    }
   }
 
-  .toast-ios {
+  .toast-ios,
+  .toast-md {
+    width: 90%;
     .toast-wrapper {
       background: #fff;
       border: 1px solid color($colors, bk);
@@ -191,7 +220,7 @@ ion-app .ion-page .content {
   &.small {
     width: 26px;
     height: 42px;
-    border-width: 3px;
+    border-width: 3px!important;
     border-radius: 4px;
   }
   &.anim-glow {

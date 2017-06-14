@@ -169,12 +169,17 @@ export class Gps {
       if (this.coords.lat && this.coords.lng) {
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
           console.log('[google addres] res:', res);
-
           // default:
-          let zipCode: number = this.parseGoogleAddress(res.results);
-
+          let zipCode: any = this.parseGoogleAddress(res.results);
           // debug:
           // let zipCode: number = this.localStorage.get('test_zip_code');
+
+          this.debug.saveCurrentLocation({
+            name:<string> res.results[0].formatted_address,
+            lat:<number> this.coords.lat,
+            lng:<number> this.coords.lng,
+            zip:<any> zipCode
+          });
 
           console.log('zipCode:', zipCode);
           if (this.localStorage.get('chat_zip_code') === null) {

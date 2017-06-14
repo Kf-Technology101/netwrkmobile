@@ -17,49 +17,42 @@ export class Debug {
 
   public showLocationSelect():void {
     let locationSelectAlert = this.alertCtrl.create({
-      subTitle: 'Choose location',
-      inputs: [
-        {
-          type: 'radio',
-          label: '325 Elm St, Elk Creek, CA 95939',
-          value: '39.605070,-122.538187',
-          checked: true
-        },
-        {
-          type: 'radio',
-          label: '3722 Landa, Ln Houston, TX 77023',
-          value: '29.704706,-95.316038'
-        },
-        {
-          type: 'radio',
-          label: '799 3rd Ave S, Minneapolis, MN 55402',
-          value: '44.974593,-93.268610'
-        },
-        {
-          type: 'radio',
-          label: '400 E M.L.K. Jr Blvd, Charlotte, NC 28202',
-          value: '35.221287,-80.843427'
-        }
-      ],
+      subTitle: 'Location history',
       buttons: [
         {
           text: 'Cancel',
           role: 'cancel'
         },
         {
-          text: 'Set custom',
+          text: 'Enter custom data',
           handler: () => {
             this.showManualLocationAlert();
           }
         },
         {
-          text: 'Confirm',
+          text: 'Submit',
           handler: data => {
             this.setCustomLocation(data);
           }
         }
       ]
     });
+
+    let history = this.storage.get('location_history');
+    if (history) {
+      for (let i = 0; i < history.length; i++) {
+        let coords:string = history[i].lat + ', ' + history[i].lng;
+        locationSelectAlert.addInput(
+          {
+            type: 'radio',
+            label: history[i].name,
+            value: coords,
+            checked: coords == this.getCoordString()
+          }
+        );
+      }
+    }
+
     locationSelectAlert.present();
   }
 
@@ -111,8 +104,8 @@ export class Debug {
       }
     } else if (typeof coords === 'string') {
       return {
-        lat: parseFloat(coords.split(',')[0]),
-        lng: parseFloat(coords.split(',')[1])
+        lat: parseFloat(coords.split(', ')[0]),
+        lng: parseFloat(coords.split(', ')[1])
       }
     }
   }
@@ -135,7 +128,26 @@ export class Debug {
 
   public getCoordString():string {
     if (this.isCustomCoordAvaliable())
-      return this.getCoordObject().lat + ',' + this.getCoordObject().lng;
+      return this.getCoordObject().lat + ', ' + this.getCoordObject().lng;
+  }
+
+  public saveCurrentLocation(newLocation:any):void {
+    let locations:any = [];
+    if (this.storage.get('location_history') !== null) {
+      locations = this.storage.get('location_history');
+      for (let i = 0; i < locations.length; i++) {
+        if (newLocation.zip == locations[i].zip) {
+          break;
+        } else if (i == locations.length - 1) {
+          if (locations.length == 5)
+            locations.shift();
+          locations.push(newLocation);
+        }
+      }
+    } else {
+      locations.push(newLocation);
+    }
+    this.storage.set('location_history', locations);
   }
 
   private setCustomLocation(data):void {

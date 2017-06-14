@@ -75,6 +75,9 @@ export class NetworkContactListPage {
       console.log(data);
       this.contacts = data;
       this.setErrorMessages(this.contacts);
+      if(this.listType == 'emails') {
+        this.doSelectAll();
+      }
     }, err => {
       console.log(err);
     });
@@ -169,9 +172,10 @@ export class NetworkContactListPage {
         this.contactsPrvd.sendInvitations(checkedContacts)
           .map(res => res.json()).subscribe(res => {
             if (this.listType == 'emails')
-              this.contactsPrvd.sendContacts(this.contacts).subscribe(
-                () => {}, () => {}
-              );
+              this.contactsPrvd.sendContacts(this.contacts)
+              // .subscribe(
+              //   () => {}, () => {}
+              // );
 
             let inviteCode = this.chatPrvd.localStorage.get('chat_zip_code');
             let inviteCodes = this.networkPrvd.getInviteZipAccess();
@@ -195,10 +199,8 @@ export class NetworkContactListPage {
 
   goBack() { this.tools.popPage(); }
 
-  ionViewDidEnter() {
-    if(this.listType == 'emails') {
-      this.doSelectAll();
-    }
-  }
+  // ionViewDidEnter() {
+  //
+  // }
 
 }

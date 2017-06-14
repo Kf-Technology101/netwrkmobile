@@ -14,6 +14,7 @@ import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { User } from '../../providers/user';
 import { UndercoverProvider } from '../../providers/undercover';
+import { Debug } from '../../providers/debug';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
@@ -46,7 +47,8 @@ export class ProfileSettingPage {
     public undercoverPrvd: UndercoverProvider,
     public zone: NgZone,
     elRef: ElementRef,
-    private app: App
+    private app: App,
+    public debug: Debug
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.profileTypePublic = this.navParams.get('public');

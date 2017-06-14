@@ -63,9 +63,8 @@
   </ion-grid>
 
   <button isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()"
-    [@fadeState]="controls.state" ion-button [hidden]="controls.hidden"
-    color="bk" class="main-action-btn medium has-label anim-glow"
-    (click)="goToSignUp()" outline></button>
+    ion-button color="bk" class="main-action-btn medium has-label"
+    (click)="goToSignUp()" outline id="main-btn"></button>
 
 </ion-content>
 
@@ -75,6 +74,9 @@
     <button type="submit" (click)="submitLoginForm()" ion-button default
             round item-left color="bk" [@fadeState]="controls.state"
             [hidden]="controls.hidden">Login</button>
+    <button ion-button default round item-left
+            (click)="debugPrvd.showLocationSelect()"
+            class="debug-btn">Change location</button>
     <button type="submit" (click)="doFbLogin()" ion-button default round item-right
             color="bk" [@fadeState]="controls.state"
             [hidden]="controls.hidden">FB login</button>

@@ -40,6 +40,7 @@ import { Chat } from '../../providers/chat';
 import { NetworkProvider } from '../../providers/network';
 import { Gps } from '../../providers/gps';
 import { Social } from '../../providers/social';
+import { Debug } from '../../providers/debug';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
@@ -171,7 +172,8 @@ export class ChatPage {
     private keyboard: Keyboard,
     private renderer: Renderer,
     public config: Config,
-    public events: Events
+    public events: Events,
+    public debugPrvd: Debug 
   ) {
     console.warn('[CHAT] Constructor');
   }

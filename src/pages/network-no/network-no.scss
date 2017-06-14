@@ -15,7 +15,14 @@ page-network-no {
   .row {
     height: 33%;
     font-size: 20px;
-
+    &.center-absolute {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+    }
     .icon {
       &.sun-icon {
         background-image: url('../assets/images/sun_icon.png');

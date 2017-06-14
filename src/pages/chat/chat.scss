@@ -55,11 +55,14 @@ modal-legendaryhistory {
     .no-legendary {
       position: absolute;
       top: 0;
-      right: 0;
       bottom: 0;
+      right: 0;
       left: 0;
       text-align: center;
       margin: auto;
+      height: 70px;
+      display: flex;
+      justify-content: center;
       .text {
         color: color($colors, bk);
         font-size: 18px;

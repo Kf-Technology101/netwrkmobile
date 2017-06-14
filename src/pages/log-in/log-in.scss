@@ -35,6 +35,13 @@ page-log-in {
         -webkit-box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.2);
         -moz-box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.2);
         box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.2);
+        &.debug-btn{
+          width: 150px;
+          position: absolute;
+          left: 0;
+          right: 0;
+          margin: auto;
+        }
       }
     }
   }

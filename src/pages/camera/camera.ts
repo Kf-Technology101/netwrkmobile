@@ -134,11 +134,15 @@ export class CameraPage {
   ionViewDidEnter() {
 
     let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: true });
-    this.cameraPreview.startCamera(cameraOptions).then(res => {
-      console.log(res);
-      this.cameraPreview.show();
-    }, err => {
-      console.log(err);
+    this.cameraPreview.stopCamera().then(()=>{}).catch( err => {
+      console.warn(err);
+    }).then(() => {
+      this.cameraPreview.startCamera(cameraOptions).then(res => {
+        console.log(res);
+        this.cameraPreview.show();
+      }, err => {
+        console.log(err);
+      });
     });
 
     setTimeout(() => {

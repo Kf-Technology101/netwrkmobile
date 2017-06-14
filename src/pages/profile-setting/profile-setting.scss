@@ -54,7 +54,19 @@ page-profile {
 
   .content {
     background: #302f2f;
-
+    ion-item-group{
+      .icon {
+        float: left;
+        font-size: 26px;
+        margin-right: 13px;
+      }
+      span {
+        float: left;
+        display: inline-block;
+        height: 26px;
+        line-height: 26px;
+      }
+    }
     .avatar-section {
       .avatar {
         text-align: center;

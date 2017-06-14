@@ -19,7 +19,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { User } from '../../providers/user';
 import { Chat } from '../../providers/chat';
-
+import { Debug } from '../../providers/debug';
 // import { Keyboard } from '@ionic-native/keyboard';
 
 // Animations
@@ -69,7 +69,8 @@ export class LogInPage {
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider,
     public user: User,
-    public chatPrvd: Chat
+    public chatPrvd: Chat,
+    public debugPrvd: Debug
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
@@ -184,10 +185,12 @@ export class LogInPage {
   ionViewDidEnter() {
     this.controls.hidden = true;
     this.controls.state = 'fadeOut';
+    let mainBtn = document.getElementById('main-btn');
+    this.chatPrvd.mainBtn.setState('centered');
     setTimeout(() => {
       this.controls.hidden = false;
-      this.chatPrvd.mainBtn.setState('centered');
       this.controls.state = 'fadeIn';
+      mainBtn.classList.add('anim-glow');
     }, 2000);
   }
 

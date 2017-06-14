@@ -56,6 +56,7 @@ import { Share } from '../providers/share';
 import { NetworkProvider } from '../providers/network';
 import { Camera } from '../providers/camera';
 import { Chat } from '../providers/chat';
+import { Debug } from '../providers/debug';
 
 // Native services
 import { Geolocation } from '@ionic-native/geolocation';
@@ -149,6 +150,7 @@ export function providers() {
     Profile,
     Ng2Cable,
     Broadcaster,
+    Debug,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];

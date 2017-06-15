@@ -198,7 +198,7 @@ modal-legendaryhistory {
     transition: none;
     &.has-post-btn {
       .post-message {
-        border-radius: 13px 21px 21px 13px;
+        border-radius: 23px;
       }
     }
     .item-inner {
@@ -237,20 +237,16 @@ modal-legendaryhistory {
       color: color($colors, chat-icon);
     }
     #textInput {
-      & {
-        // margin-left: 47px;
-        padding-left: 47px;
-        box-sizing: border-box;
-        border: none;
-        -webkit-border-radius:0;
-        -webkit-appearance: none;
-        border-radius:0;
-        box-shadow: none;
-        width: 100%;
-        height: 42px;
-        background: transparent;
-      }
-
+      padding-left: 47px;
+      box-sizing: border-box;
+      border: none;
+      -webkit-border-radius:0;
+      -webkit-appearance: none;
+      border-radius:0;
+      box-shadow: none;
+      width: 100%;
+      height: 42px;
+      background: transparent;
       input {
         height: 42px;
         margin: 0;
@@ -259,12 +255,12 @@ modal-legendaryhistory {
     }
     button.post-message{
       width: 50px;
-      height: 42px;
+      height: 44px;
       margin: 0;
       padding: 0;
       background: color($colors, white);
-      border-radius: 21px;
-      & img {
+      border-radius: 23px;
+      img {
         width: 19px;
         height: 19px;
       }
@@ -272,7 +268,7 @@ modal-legendaryhistory {
         background-color: #5b87aa;
         color: #fff;
         font-size: 14px;
-        border-radius: 13px;
+        // border-radius: 13px;
         // border: 1px solid white;
       }
     }

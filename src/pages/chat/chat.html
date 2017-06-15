@@ -120,7 +120,7 @@
   <div class="chat-container visible" #chatContainer
       [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover' }">
     <!-- [ngClass]="{'visible' : chatPrvd.isMessagesVisible}" -->
-    <ng-container *ngIf="chatPrvd.postMessages.length == 0">
+    <ng-container *ngIf="chatPrvd.postMessages.length == 0 && !isUndercover">
       <p class="no-data-message abs">There are no posts yet</p>
     </ng-container>
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index"
@@ -156,6 +156,9 @@
               [ngClass]="{ 'emoji' : message.is_emoji }"
               [innerHTML]="message.text_with_links"
               (click)="toolsPrvd.handleLinkClick($event)"></span>
+        <ng-container *ngIf="message.post_permalink">
+          <a href="{{ message.post_permalink }}">view post</a>
+        </ng-container>
         <!-- <span *ngIf="user.id != message.user_id "
               class="text"></span> -->
       </p>

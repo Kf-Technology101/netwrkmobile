@@ -305,30 +305,13 @@ export class ProfilePage {
     }, 10000);
   }
 
-  showFirstTimeMessage(alertType:string) {
-    let subTitle:string;
-    switch (alertType) {
-      case 'area':
-        subTitle = `We\'re glad you decided to connect to this area! You can now,
-                   once a month, call a post legendary either under cover or on the
-                   area shareboard. This is a big responsibility, legends
-                   eventually become timeless tradition, and tradition shapes
-                   areas over time.` + '<br>' + `Your connected accounts will now
-                    auto-share to the area shareboard, building awareness and
-                    boosting followers for you!
-                  Connected accounts can also be shared manually, click the + and
-                  then (share icon) to share under cover or with your area`;
-        this.authPrvd.storage.set('area_first_time', false);
-      break;
-      case 'profile':
-        subTitle = `We\'re glad you decided to join netwrk! All accounts that
+  showFirstTimeMessage() {
+    let subTitle = `We\'re glad you decided to join netwrk! All accounts that
         you connect can be shared manually and seen on your profile, allowing
         others to follow or add you! If you want to boost followers and awareness,
         connect to this area on the shareboard to auto-share all public posts on
         those connected accounts.`;
         this.authPrvd.storage.set('profile_first_time', false);
-      break;
-    }
     let welcomeAlert = this.alertCtrl.create({
       title: '',
       subTitle: subTitle,
@@ -348,14 +331,10 @@ export class ProfilePage {
     this.cameraPrev.stopCamera();
     if (this.ownProfile) {
       if (this.authPrvd.storage.get('profile_first_time') === null) {
-        this.showFirstTimeMessage('profile');
+        this.showFirstTimeMessage();
       }
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(this.pageTag);
-    }
-
-    if (this.authPrvd.storage.get('area_first_time') === null) {
-      this.showFirstTimeMessage('area')
     }
 
     this.user = this.authPrvd.getAuthData();

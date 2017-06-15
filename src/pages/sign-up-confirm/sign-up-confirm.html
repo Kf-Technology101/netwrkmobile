@@ -10,8 +10,11 @@
         <ion-list>
 
           <ion-item>
-            <ion-input text-center type="number" (focus)="mainBtn.state = 'minimised'"
-              (blur)="mainBtn.state = 'normal'" placeholder="Type code in here..."
+            <ion-input text-center type="number"
+              placeholder="Type code in here..."
+              (focus)="checkCode($event, 'focus')"
+              (blur)="checkCode($event, 'blur')"
+              (input)="checkCode($event, 'focus')"
               [(ngModel)]="confirmCode" name="confirmCode"></ion-input>
           </ion-item>
 

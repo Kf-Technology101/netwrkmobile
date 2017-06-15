@@ -13,7 +13,7 @@
 
             <ion-item [hidden]="!states.date_of_birthday.bool" [@inputState]="states.date_of_birthday.str">
               <ion-datetime
-                (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                (focus)="inputOnFocus($event)" (blur)="inputOnBlur($event)"
                 #focusBirthday placeholder="Birthday..."
                 displayFormat="MMMM D, YYYY"
                 pickerFormat="MMMM D YYYY"
@@ -21,41 +21,43 @@
                 name="date_of_birthday"
                 [formControl]="signUpForm.controls['date_of_birthday']"
                 [ngClass]="{'error-border':!signUpForm.controls['date_of_birthday'].valid}"
-                (ionChange)="doSignUp(signUpForm)"
+                (ionChange)="doSignUp(signUpForm)" (input)="fieldChange($event)"
                 required></ion-datetime>
             </ion-item>
 
             <ion-item [hidden]="!states.login.bool" [@inputState]="states.login.str">
               <ion-input
-                (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                (focus)="inputOnFocus($event)" (blur)="inputOnBlur($event)"
                 type="text"
                 placeholder="Email/Phone number..."
                 [formControl]="signUpForm.controls['login']"
                 [ngClass]="{'error-border':!signUpForm.controls['login'].valid}"
                 name="login"
-                required></ion-input>
+                required (input)="fieldChange($event)"></ion-input>
             </ion-item>
 
             <ion-item [hidden]="!states.password.bool" [@inputState]="states.password.str">
               <ion-input
-                (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                (focus)="inputOnFocus($event)" (blur)="inputOnBlur($event)"
                 type="password"
                 placeholder="Password..."
                 name="password"
                 [formControl]="signUpForm.controls['password']"
                 [ngClass]="{'error-border':!signUpForm.controls['password'].valid}"
-                required></ion-input>
+                required [(ngModel)]="passInput1"
+                (input)="fieldChange($event)"></ion-input>
             </ion-item>
 
             <ion-item [hidden]="!states.password.bool" [@inputState]="states.password.str">
               <ion-input
-                (focus)="mainBtn.state = 'minimised'" (blur)="mainBtn.state = 'normal'"
+                (focus)="inputOnFocus($event)" (blur)="inputOnBlur($event)"
                 type="password"
                 placeholder="Confirm password..."
                 name="confirm_password"
                 [formControl]="signUpForm.controls['confirm_password']"
                 [ngClass]="{'error-border':!signUpForm.controls['confirm_password'].valid}"
-                required></ion-input>
+                required [(ngModel)]="passInput2"
+                (input)="fieldChange($event)"></ion-input>
             </ion-item>
 
             <ion-item></ion-item>

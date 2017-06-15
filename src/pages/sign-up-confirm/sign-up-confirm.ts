@@ -30,7 +30,7 @@ export class SignUpConfirmPage {
   confirmCode: number;
   contentState: string = 'fadeOut';
   mainBtn: any = {
-    state: 'normal'
+    state: 'hidden'
   };
 
   private signUpErrorString: string;
@@ -91,6 +91,23 @@ export class SignUpConfirmPage {
         this.tools.pushPage(SignUpFacebookPage);
       }
     });
+  }
+
+  private checkCode(event:any, eventName?:string):void {
+    if (event.target.value.trim() != '') {
+      let state:string;
+      switch(eventName){
+        case 'focus':
+          state = 'minimised';
+          break;
+        case 'blur':
+          state = 'normal';
+          break;
+      }
+      this.mainBtn.state = state;
+    } else {
+      this.mainBtn.state = 'hidden';
+    }
   }
 
   goBack() { this.tools.popPage(); }

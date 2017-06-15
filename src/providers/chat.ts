@@ -170,12 +170,13 @@ export class Chat {
         if (this.getState() == 'undercover') {
           if (data.message.undercover && insideUndercover) {
             this.postMessages.push(data.message);
-            console.info('message data:', data.message);
+            // console.info('message data:', data.message);
             // this.playSound('message');
             this.messageDateTimer.start(this.postMessages);
             // this.txtIn.value = '';
           }
         } else if (this.getState() != 'undercover' && !data.message.undercover) {
+          console.log('[area message] data:', data.message);
           this.postMessages.unshift(data.message);
           // this.playSound('message');
           this.messageDateTimer.start(this.postMessages);

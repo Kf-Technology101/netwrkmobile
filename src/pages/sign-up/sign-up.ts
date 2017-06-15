@@ -1,6 +1,7 @@
 import {
   Component,
-  ViewChild
+  ViewChild,
+  ElementRef
 } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 
@@ -40,7 +41,8 @@ import {
 
 export class SignUpPage {
   @ViewChild('focusBirthday') birthdayInput;
-
+  public passInput1:any = '';
+  public passInput2:any = '';
   public account: any;
 
   // object for toggling input elements relative to registration steps
@@ -66,7 +68,7 @@ export class SignUpPage {
   activeStateId: number = -1;
 
   mainBtn: any = {
-    state: 'normal'
+    state: 'hidden'
   }
 
   public maxBirthday: string;
@@ -129,6 +131,8 @@ export class SignUpPage {
       if (this.activeStateId == 1) this.openDatePicker();
 
       this.activeStateId++;
+      console.log('current state id:', this.activeStateId);
+      this.mainBtn.state = 'hidden';
 
       this.updateActiveStates();
 
@@ -283,6 +287,32 @@ export class SignUpPage {
       type: type
     }
     return result;
+  }
+
+  private checkInputLength(inputValue:any):boolean {
+    if (this.activeStateId == 1)
+      return (this.passInput1.trim().length > 0 &&
+          this.passInput2.trim().length > 0 &&
+          (this.passInput1.trim().length ==
+          this.passInput2.trim().length))
+    else return inputValue.trim().length > 0;
+  }
+
+  private fieldChange(event:any) {
+    if (this.checkInputLength(event.target.value))
+      this.mainBtn.state = 'minimised';
+    else
+      this.mainBtn.state = 'hidden';
+  }
+
+  private inputOnBlur(event:any):void {
+    if (this.checkInputLength(event.target.value))
+      this.mainBtn.state = 'normal';
+  }
+
+  private inputOnFocus(event:any):void {
+    if (this.checkInputLength(event.target.value))
+      this.mainBtn.state = 'minimised';
   }
 
   ionViewDidLoad() {

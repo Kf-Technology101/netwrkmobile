@@ -173,7 +173,7 @@ export class ChatPage {
     private renderer: Renderer,
     public config: Config,
     public events: Events,
-    public debugPrvd: Debug 
+    public debugPrvd: Debug
   ) {
     console.warn('[CHAT] Constructor');
   }
@@ -666,7 +666,26 @@ export class ChatPage {
     // this.toolsPrvd.showLoader();
     this.networkPrvd.join(this.networkParams).subscribe(res => {
       // console.log(res);
+
       this.getUsers();
+      if (this.authPrvd.storage.get('area_first_time') === null) {
+        let subTitle = `We\'re glad you decided to connect to this area! You can now,
+          once a month, call a post legendary either under cover or on the
+          area shareboard. This is a big responsibility, legends
+          eventually become timeless tradition, and tradition shapes
+          areas over time.` + '<br>' + `Your connected accounts will now
+          auto-share to the area shareboard, building awareness and
+          boosting followers for you!
+          Connected accounts can also be shared manually, click the + and
+          then (share icon) to share under cover or with your area`;
+        this.authPrvd.storage.set('area_first_time', false);
+        let welcomeAlert = this.alertCtrl.create({
+          title: '',
+          subTitle: subTitle,
+          buttons: ['OK']
+        });
+        welcomeAlert.present();
+      }
       // this.toolsPrvd.hideLoader();
     }, err => {
       // console.log(err);
@@ -1035,9 +1054,6 @@ export class ChatPage {
     if (this.chatPrvd.getState() == 'undercover') {
       this.runUndecoverSlider(this.pageTag);
       this.startMessageUpdateTimer();
-    }
-    else if (this.authPrvd.storage.get('area_first_time') === null) {
-      this.goToProfile();
     }
 
     this.zone.run(() => {

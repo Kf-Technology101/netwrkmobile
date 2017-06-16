@@ -70,6 +70,7 @@ import { Network } from '@ionic-native/network';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { TwitterConnect } from '@ionic-native/twitter-connect';
 import { BackgroundMode } from '@ionic-native/background-mode';
+import { Crop } from '@ionic-native/crop';
 
 // sockets
 import { Ng2Cable, Broadcaster } from 'ng2-cable/js/index';
@@ -151,6 +152,7 @@ export function providers() {
     Ng2Cable,
     Broadcaster,
     Debug,
+    Crop,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];

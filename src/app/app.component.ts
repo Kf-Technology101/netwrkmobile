@@ -73,13 +73,13 @@ export class MyApp {
               } else {
                 rootPage = LogInPage;
               }
-              if (rootPage == NetworkFindPage) {
-                this.app.getRootNav().setRoot(ChatPage, {
-                  action: 'undercover'
-                });
-              } else {
-                this.rootPage = rootPage;
-              }
+              // if (rootPage == NetworkFindPage) {
+              //   this.app.getRootNav().setRoot(ChatPage, {
+              //     action: 'undercover'
+              //   });
+              // } else {
+              //   this.rootPage = rootPage;
+              // }
             this.splashScreen.hide();
           });
           break;
@@ -92,13 +92,13 @@ export class MyApp {
           } else {
             rootPage = LogInPage;
           };
-          if (rootPage == NetworkFindPage) {
-            this.app.getRootNav().setRoot(ChatPage, {
-              action: 'undercover'
-            });
-          } else {
-            this.rootPage = rootPage;
-          }
+          // if (rootPage == NetworkFindPage) {
+          //   this.app.getRootNav().setRoot(ChatPage, {
+          //     action: 'undercover'
+          //   });
+          // } else {
+          //   this.rootPage = rootPage;
+          // }
 
           this.splashScreen.hide();
           break;

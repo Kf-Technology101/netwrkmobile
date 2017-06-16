@@ -58,8 +58,6 @@ export class Social {
   }
 
   connectToTwitter() {
-    // regex for image links
-    // (http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))
     this.backgroundMode.disable();
     this.twitter.login().then(data => {
       let seq = this.api.post('profiles/connect_social',

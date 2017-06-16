@@ -147,7 +147,12 @@
           </ng-container>
         </span>
         <span class="message-date">{{ message.dateStr }}</span>
-        <span *ngIf="message.social" class="shared-status">Shared via {{ message.social }}</span>
+        <span *ngIf="message.social" class="shared-status">Shared via {{ message.social }}
+          <a *ngIf="message.post_url" href="{{ message.post_url }}"
+              class="open-post">
+            <ion-icon ios="ios-open-outline" md="ios-open-outline"></ion-icon>
+          </a>
+        </span>
         <span *ngIf="message.isTemporary" class="visible-for">
           <ion-icon ios="ios-time-outline" md="ios-time-outline"></ion-icon>
           {{ message.temporaryFor }}
@@ -156,9 +161,6 @@
               [ngClass]="{ 'emoji' : message.is_emoji }"
               [innerHTML]="message.text_with_links"
               (click)="toolsPrvd.handleLinkClick($event)"></span>
-        <ng-container *ngIf="message.post_permalink">
-          <a href="{{ message.post_permalink }}">view post</a>
-        </ng-container>
         <!-- <span *ngIf="user.id != message.user_id "
               class="text"></span> -->
       </p>

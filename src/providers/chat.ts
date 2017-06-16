@@ -208,7 +208,7 @@ export class Chat {
 
       if (data.images && data.images.length > 0) {
         this.tools.showLoader();
-        this.sendMessageWithImage(params, data.images).then(res => {
+        this.sendMessageWithImage(params, data.images.full).then(res => {
           console.log('[sendMessageWithImage] res:', res);
           this.tools.hideLoader();
           resolve(res);

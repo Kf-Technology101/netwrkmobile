@@ -374,7 +374,9 @@ export class ChatPage {
         publicUser = this.slideAvatarPrvd.sliderPosition == 'left' ? true : false;
       }
 
-      if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
+      if (this.cameraPrvd.takenPictures) {
+        images = this.cameraPrvd.takenPictures;
+      }
 
       messageParams = {
         text: emoji ?  emoji : this.txtIn.value,
@@ -561,6 +563,7 @@ export class ChatPage {
     setTimeout(() => {
       if (this.chatPrvd.getState() == 'area') {
         this.chatPrvd.setState('undercover');
+        this.startCameraBg();
         this.cameraPreview.show();
         this.runUndecoverSlider(this.pageTag);
         this.startMessageUpdateTimer();
@@ -989,6 +992,22 @@ export class ChatPage {
     })
   }
 
+  private startCameraBg() {
+    let cameraOptions = this.cameraPrvd.getCameraOpt();
+    this.cameraPreview.stopCamera().then(()=>{}).catch(err => {
+      console.error('error stopping camera:', err);
+    });
+
+    if (this.chatPrvd.getState() == 'undercover') {
+      this.cameraPreview.startCamera(cameraOptions).then(res => {
+      // console.log(res);
+        this.cameraPreview.show();
+      }, err => {
+        // console.log(err);
+      });
+    }
+  }
+
   ngOnInit() {
     this.constructorLoad();
     this.componentLoaded = true;
@@ -1011,19 +1030,7 @@ export class ChatPage {
     // init sockets
     this.chatPrvd.socketsInit();
 
-    let cameraOptions = this.cameraPrvd.getCameraOpt();
-    this.cameraPreview.stopCamera().then(()=>{}).catch(err => {
-      console.error('error stopping camera:', err);
-    });
-
-    if (this.chatPrvd.getState() == 'undercover') {
-      this.cameraPreview.startCamera(cameraOptions).then(res => {
-      // console.log(res);
-        this.cameraPreview.show();
-      }, err => {
-        // console.log(err);
-      });
-    }
+    this.startCameraBg();
 
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;

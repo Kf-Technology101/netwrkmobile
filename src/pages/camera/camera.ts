@@ -1,14 +1,11 @@
 import { Component, HostBinding } from '@angular/core';
-import { NavController, NavParams, Platform } from 'ionic-angular';
+import { NavController, NavParams } from 'ionic-angular';
 import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { Tools } from '../../providers/tools';
 import { Camera } from '../../providers/camera';
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
 import { LocalStorage } from '../../providers/local-storage';
-
-import { Crop } from '@ionic-native/crop';
-
 // Animations
 import {
   animSpeed,
@@ -47,7 +44,7 @@ export class CameraPage {
   };
 
   imgBg: string;
-  image:string;
+  imgUrl: string;
 
   mainBtn = {
     state: 'minimisedForCamera',
@@ -61,9 +58,7 @@ export class CameraPage {
     public cameraPrvd: Camera,
     public tools: Tools,
     private base64ToGallery: Base64ToGallery,
-    private storage: LocalStorage,
-    private crop: Crop,
-    private platform: Platform
+    private storage: LocalStorage
   ) {}
 
   takePhoto() {
@@ -72,7 +67,7 @@ export class CameraPage {
     const pictureOpts = {
       width: 1280,
       height: 1280,
-      quality: 80
+      quality: 100
     }
 
     // take a picture
@@ -94,8 +89,10 @@ export class CameraPage {
         res => {
           this.tools.hideLoader();
           console.log('Saved image to gallery ', res);
-          this.image = res;
-        }, err => {
+          this.imgUrl = res;
+        },
+        err => {
+          this.tools.hideLoader();
           console.log('Error saving image to gallery ', err);
         }
       );
@@ -122,7 +119,7 @@ export class CameraPage {
   saveImage() {
     // console.log("Saving image:", this.imgUrl);
     if (this.cameraPrvd.takenPictures.length < 3) {
-      this.cameraPrvd.takenPictures.push(this.image);
+      this.cameraPrvd.takenPictures.push(this.imgUrl);
       this.goBack();
     } else {
       this.tools.showToast('You can\'t append more pictures');

@@ -66,12 +66,11 @@ export class MyApp {
       switch (authType) {
         case 'facebook':
           this.authPrvd.getFbLoginStatus().then(data => {
-            let rootPage:any;
             if (data.status && data.status == 'connected') {
-              this.undercoverPrvd.getCharacterPerson(
+              this.rootPage = this.undercoverPrvd.getCharacterPerson(
                 UndercoverCharacterPage, NetworkFindPage, ChatPage)
               } else {
-                rootPage = LogInPage;
+                this.rootPage = LogInPage;
               }
               // if (rootPage == NetworkFindPage) {
               //   this.app.getRootNav().setRoot(ChatPage, {
@@ -87,10 +86,10 @@ export class MyApp {
           let fbConnected = this.authPrvd.getFbConnected();
           let rootPage:any;
           if (fbConnected) {
-            rootPage = this.undercoverPrvd.getCharacterPerson(
+            this.rootPage = this.undercoverPrvd.getCharacterPerson(
             UndercoverCharacterPage, NetworkFindPage, ChatPage)
           } else {
-            rootPage = LogInPage;
+            this.rootPage = LogInPage;
           };
           // if (rootPage == NetworkFindPage) {
           //   this.app.getRootNav().setRoot(ChatPage, {

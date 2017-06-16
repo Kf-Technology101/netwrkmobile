@@ -36,7 +36,7 @@
   <ion-row class="avatar-section">
     <ion-col>
       <div class="avatar" *ngIf="ownProfile">
-        <ion-spinner *ngIf="profile.imageLoading"></ion-spinner>
+        <!-- <ion-spinner *ngIf="profile.imageLoading"></ion-spinner> -->
         <img [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.avatar_url : profile.user.hero_avatar_url"
         (error)="chatPrvd.updateAvatarUrl($event)">
         <button color="bk" ion-button (click)="uploadCallback($event)">

@@ -113,25 +113,59 @@
     <ion-col>
       <!-- <button ion-button (click)="logoutFromTwitter()">Logout from twitter</button> -->
       <ion-row>
-        <ion-col class="fb" *ngIf="!connect.facebook">
+        <!-- <ion-col class="fb" *ngIf="!connect.facebook">
           <button type="button" (click)="connectToFacebook()">
             <ion-icon name="logo-facebook"></ion-icon>
             Facebook
           </button>
-        </ion-col>
-        <ion-col class="in" *ngIf="!connect.instagram">
-          <!-- <button type="button" (click)="connectToInstagram()"> -->
+        </ion-col> -->
+
+        <!-- <ion-col class="in" *ngIf="!connect.instagram">
+          <button type="button" (click)="connectToInstagram()">
           <button type="button" (click)="toolsPrvd.notAvailableAlert()">
             <ion-icon name="logo-instagram"></ion-icon>
             Instagram
           </button>
-        </ion-col>
-        <ion-col class="tw" *ngIf="!connect.twitter">
-          <button type="button" (click)="socialPrvd.connectToTwitter()">
-            <ion-icon name="logo-twitter"></ion-icon>
-            Twitter
-          </button>
-        </ion-col>
+        </ion-col> -->
+
+        <div class="slide-container sl-facebook">
+          <div [ngClass]="{'active': connect.facebook}" class="toggle-el"
+            (click)="connectToFacebook()">
+            <span class="toggle-state" *ngIf="connect.facebook">Facebook</span>
+            <span class="toggle-state" *ngIf="!connect.facebook">Connect</span>
+            <div [ngClass]="{'right': connect.facebook}" class="toggleable">
+              <ion-icon ios="logo-facebook" md="logo-facebook"></ion-icon>
+            </div>
+            <input type="checkbox" [checked]="connect.facebook">
+          </div>
+        </div>
+
+        <div class="slide-container sl-instagram">
+          <!-- <div [ngClass]="{'active': connect.twitter}" class="toggle-el"
+            (click)="connectToInstagram(connect.twitter)"> -->
+          <div [ngClass]="{'active': connect.instagram}" class="toggle-el"
+              (click)="connectToInstagram()">
+            <span class="toggle-state" *ngIf="connect.instagram">Instagram</span>
+            <span class="toggle-state" *ngIf="!connect.instagram">Connect</span>
+            <div [ngClass]="{'right': connect.instagram}" class="toggleable">
+              <ion-icon ios="logo-instagram" md="logo-instagram"></ion-icon>
+            </div>
+            <input type="checkbox" [checked]="connect.instagram">
+          </div>
+        </div>
+
+        <div class="slide-container sl-twitter">
+          <div [ngClass]="{'active': connect.twitter}" class="toggle-el"
+            (click)="socialPrvd.connectToTwitter(connect.twitter)">
+            <span class="toggle-state" *ngIf="connect.twitter">Twitter</span>
+            <span class="toggle-state" *ngIf="!connect.twitter">Connect</span>
+            <div [ngClass]="{'right': connect.twitter}" class="toggleable">
+              <ion-icon ios="logo-twitter" md="logo-twitter"></ion-icon>
+            </div>
+            <input type="checkbox" [checked]="connect.twitter">
+          </div>
+        </div>
+
         <ion-col class="li" *ngIf="!connect.linkedin" hidden>
           <button type="button" (click)="connectToLinkedIn()">
             <ion-icon name="logo-linkedin"></ion-icon>
@@ -144,6 +178,7 @@
             Snapchat
           </button>
         </ion-col>
+
       </ion-row>
       <ion-row>
         <ion-col>

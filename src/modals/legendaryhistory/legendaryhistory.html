@@ -8,7 +8,8 @@
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label>
-  <ion-refresher (ionRefresh)="refreshLegendaryList($event)">
+  <ion-refresher (ionRefresh)="refreshLegendaryList($event)"
+                  *ngIf="areSomeLegendary">
     <ion-refresher-content
       pullingIcon="arrow-dropdown"
       refreshingSpinner="ios">

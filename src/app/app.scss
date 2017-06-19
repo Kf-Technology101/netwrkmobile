@@ -177,6 +177,89 @@ ion-app .ion-page .content {
   padding-top: 16px;
 }
 
+.slide-container {
+  width: 33.3%;
+  height: 26px;
+  position: relative;
+  float: left;
+  input[type="checkbox"]{
+    width: 0;
+    height: 0;
+    opacity: 0;
+  }
+  .toggle-el {
+    position: relative;
+    width: 110px;
+    margin: 0 auto;
+    border-radius: 13px;
+    height: 26px;
+    background: color($colors, white);
+    transition: all 0.3s ease-out;
+    text-align: center;
+    &.active{
+      .toggle-state{
+        color: color($colors, white);
+      }
+    }
+    .toggle-state {
+      line-height: 28px;
+      color: #000;
+      font-size: 9px;
+      text-transform: uppercase;
+      transition: all 0.3s ease-out;
+    }
+    .toggleable {
+      width: 26px;
+      height: 26px;
+      position: absolute;
+      left: 0px;
+      top: 0;
+      border-radius: 50%;
+      background: color($colors, white);
+      box-shadow: 0px 5px 9px -4px rgba(0, 0, 0, .3);
+      transition: all 0.3s ease-out;
+      &.right{
+        left: 85px;
+      }
+      .icon {
+        line-height: 28px;
+      }
+    }
+  }
+  &.sl-facebook {
+    .toggle-el.active {
+      background: #195e99;
+    }
+    .icon {
+      color: #195e99;
+    }
+  }
+  &.sl-twitter {
+    .toggle-el.active {
+      background: #0093ee;
+    }
+    .icon {
+      color: #0093ee;
+    }
+  }
+  &.sl-linkedin {
+    .toggle-el.active {
+      background: #0077b5;
+    }
+    .icon {
+      color: #0077b5;
+    }
+  }
+  &.sl-instagram {
+    .toggle-el.active {
+      background: #c13584;
+    }
+    .icon {
+      color: #c13584;
+    }
+  }
+}
+
 .main-action-btn {
   position: absolute;
   bottom: 68px;

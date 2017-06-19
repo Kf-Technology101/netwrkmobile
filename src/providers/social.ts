@@ -57,34 +57,35 @@ export class Social {
     })
   }
 
-  connectToTwitter() {
+  connectToTwitter(isConnected?:boolean) {
     this.backgroundMode.disable();
-    this.twitter.login().then(data => {
-      let seq = this.api.post('profiles/connect_social',
-      {
-        user:
+    if (!isConnected)
+      this.twitter.login().then(data => {
+        let seq = this.api.post('profiles/connect_social',
         {
-          token: data.token,
-          provider_name: 'twitter',
-          secret: data.secret
-        }
-      }).share();
-      seq.map(res => res.json()).subscribe( res => {
-        console.log('[Twitter connect] twitter res:', res);
-        this.setSocialAuth(data, Social.TWITTER);
+          user:
+          {
+            token: data.token,
+            provider_name: 'twitter',
+            secret: data.secret
+          }
+        }).share();
+        seq.map(res => res.json()).subscribe( res => {
+          console.log('[Twitter connect] twitter res:', res);
+          this.setSocialAuth(data, Social.TWITTER);
+        }, err => {
+          console.error('[Twitter connect] twitter error:', err);
+        });
+        console.log('[Twitter connect] res:', data);
       }, err => {
-        console.error('[Twitter connect] twitter error:', err);
+        console.error('[Twitter connect] err:', err);
+        let alert = this.alertCtrl.create({
+          title: '',
+          subTitle: 'You might need to install Twitter app to be able to login',
+          buttons: ['Ok']
+        });
+        alert.present();
       });
-      console.log('[Twitter connect] res:', data);
-    }, err => {
-      console.error('[Twitter connect] err:', err);
-      let alert = this.alertCtrl.create({
-        title: '',
-        subTitle: 'You might need to install Twitter app to be able to login',
-        buttons: ['Ok']
-      });
-      alert.present();
-    });
   }
 
   parseInstagramData(res:any) {

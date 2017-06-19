@@ -103,6 +103,8 @@ export class ChatPage {
   ];
   private messagesInterval:any;
 
+  public isSocialPostsLoaded:boolean = false;
+
   emoticX = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C'];
   emoticY = ['1F60', '1F61', '1F62', '1F63', '1F64'];
   emojis = [];
@@ -585,6 +587,7 @@ export class ChatPage {
   }
 
   toggleShareSlider(social_network){
+    this.isSocialPostsLoaded = false;
     this.shareCheckbox[social_network] = !this.shareCheckbox[social_network];
     this.getSocialPosts();
   }
@@ -603,10 +606,13 @@ export class ChatPage {
       this.socialPrvd.getSocialPosts(socials).subscribe(res => {
         console.log('[getSocialPosts] res:', res);
         this.socialPosts = res.messages;
+        this.isSocialPostsLoaded = true;
       }, err => {
         console.error('[getSocialPosts] err:', err);
+        this.isSocialPostsLoaded = true
       });
     }
+    this.isSocialPostsLoaded = true;
   }
 
   changeCallback(positionLeft?: boolean) {

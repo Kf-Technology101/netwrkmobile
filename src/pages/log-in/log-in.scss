@@ -1,4 +1,9 @@
 page-log-in {
+  .content {
+    .scroll-content {
+      bottom: 0!important;
+    }
+  }
   ion-grid.login-grid{
     opacity: 0;
   }

@@ -199,6 +199,9 @@ export class SignUpPage {
       this.activeStateId--;
       this.updateActiveStates();
     }
+    setTimeout(() => {
+      
+    }, 100);
   }
 
   private updateStates(){

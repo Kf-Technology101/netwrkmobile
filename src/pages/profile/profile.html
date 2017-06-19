@@ -207,14 +207,12 @@
                   <ion-card-title>
                     <ng-container *ngIf="post.social">
                       Shared via
-                      <ng-container *ngIf="post.social == 'facebook'">
-                        Facebook
-                      </ng-container>
-                      <ng-container *ngIf="post.social == 'twitter'">
-                        Twitter
-                      </ng-container>
-                      <ng-container *ngIf="post.social == 'instagram'">
-                        Instagram
+                      <ng-container *ngIf="post.social">
+                        {{ post.social }}
+                        <a *ngIf="post.post_url" [href]="post.post_url"
+                            class="open-post">
+                          <ion-icon ios="ios-open-outline" md="ios-open-outline"></ion-icon>
+                        </a>
                       </ng-container>
                       -
                     </ng-container>

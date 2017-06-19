@@ -461,6 +461,10 @@ ion-app .ion-page .content {
     &.feed {
       border-top: 2px solid #b8b8b8;
       margin-top: 10px;
+      a.open-post {
+        text-decoration: none;
+        margin-left: 5px;
+      }
       .feed-img {
         display: block;
         margin: auto;

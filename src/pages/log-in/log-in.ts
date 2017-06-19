@@ -183,10 +183,16 @@ export class LogInPage {
   goToSignUp() { this.tools.pushPage(SignUpPage); }
 
   ionViewDidEnter() {
-    this.controls.hidden = true;
-    this.controls.state = 'fadeOut';
-    let mainBtn = document.getElementById('main-btn');
-    this.chatPrvd.mainBtn.setState('centered');
+    let mainBtn:any;
+    setTimeout(() => {
+      console.log('[log-in] did enter');
+      mainBtn = <HTMLElement>document.getElementById('main-btn');
+      this.controls.hidden = true;
+      this.controls.state = 'fadeOut';
+      this.chatPrvd.mainBtn.setState('centered');
+      let scrollContent = <HTMLElement>document.getElementById('login-content').childNodes[1];
+      scrollContent.style.marginBottom = '0px!important';
+    }, 1);
     setTimeout(() => {
       this.controls.hidden = false;
       this.controls.state = 'fadeIn';

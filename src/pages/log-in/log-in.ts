@@ -191,7 +191,7 @@ export class LogInPage {
       this.controls.state = 'fadeOut';
       this.chatPrvd.mainBtn.setState('centered');
       let scrollContent = <HTMLElement>document.getElementById('login-content').childNodes[1];
-      scrollContent.style.marginBottom = '0px!important';
+      scrollContent.style.bottom = '0px!important';
     }, 1);
     setTimeout(() => {
       this.controls.hidden = false;

@@ -40,7 +40,6 @@ import { Chat } from '../../providers/chat';
 import { NetworkProvider } from '../../providers/network';
 import { Gps } from '../../providers/gps';
 import { Social } from '../../providers/social';
-import { Debug } from '../../providers/debug';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
@@ -174,8 +173,7 @@ export class ChatPage {
     private keyboard: Keyboard,
     private renderer: Renderer,
     public config: Config,
-    public events: Events,
-    public debugPrvd: Debug
+    public events: Events
   ) {
     console.warn('[CHAT] Constructor');
   }
@@ -313,7 +311,7 @@ export class ChatPage {
     return String.fromCodePoint(unicode);
   }
 
-  sendLockInfo (event:any, form: any) {
+  sendLockInfo (event:any, form: any):void {
     event.stopPropagation();
     event.preventDefault();
 
@@ -387,7 +385,10 @@ export class ChatPage {
         images: emoji ? [] : images,
         undercover: (this.chatPrvd.getState() == 'area') ? false : this.isUndercover,
         public: publicUser,
-        is_emoji: emoji ? true : false
+        is_emoji: emoji ? true : false,
+        locked: this.postLockData ? true : false,
+        password: this.postLockData.password ? this.postLockData.password : null,
+        hint: this.postLockData.hint ? this.postLockData.hint : null
       };
 
       console.info('[postMessage] params:', messageParams);
@@ -411,30 +412,32 @@ export class ChatPage {
         // console.log(messageParams);
 
         this.chatPrvd.sendMessage(messageParams).then(res => {
-          // console.log('[sendMessage] res:', res);
-
-          if (this.postLockData.hint && this.postLockData.password) {
-            let lockData:any = {
-              id: res.id,
-              hint: this.postLockData.hint,
-              password: this.postLockData.password
-            }
-
-            this.chatPrvd.lockMessage(lockData).subscribe(lockRes => {
-              // console.log('[lock] res:', lockRes);
-              this.updatePost(lockRes, message, emoji);
-              this.postLockData = {
-                hint: null,
-                password: null
-              }
-            }, lockErr => {
-              // console.log('[lock] err:', lockErr);
-            });
-          } else {
-            this.updatePost(res, message, emoji);
-          }
+          console.log('[sendMessage] res:', res);
+          this.postLockData = {
+            hint: null,
+            password: null
+          };
+          // if (this.postLockData.hint && this.postLockData.password) {
+          //   let lockData:any = {
+          //     id: res.id,
+          //
+          //   }
+          //
+          //   this.chatPrvd.lockMessage(lockData).subscribe(lockRes => {
+          //     console.log('[lock] res:', lockRes);
+          //     this.updatePost(lockRes, message, emoji);
+          //     this.postLockData = {
+          //       hint: null,
+          //       password: null
+          //     }
+          //   }, lockErr => {
+          //     console.error('[lock] err:', lockErr);
+          //   });
+          // } else {
+          this.updatePost(res, message, emoji);
+          // }
         }).catch(err => {
-          // console.log(err);
+          console.log(err);
           this.updatePost(err, message);
         });
         if (!emoji) {
@@ -447,7 +450,7 @@ export class ChatPage {
         }
       }
     } catch (e) {
-      // console.error('Error in postMessage', e);
+      console.error('Error in postMessage:', e);
     }
   }
 
@@ -621,7 +624,7 @@ export class ChatPage {
     });
   }
 
-  removeAppendedImage(ind) {
+  removeAppendedImage(ind:number) {
     this.cameraPrvd.takenPictures.splice(ind, 1);
     if (this.cameraPrvd.takenPictures.length == 0) {
       this.chatPrvd.mainBtn.setState('normal');
@@ -634,11 +637,11 @@ export class ChatPage {
     }
   }
 
-  getTopSlider(container) {
+  getTopSlider(container:string):any {
     return container == 'timer' ? this.postTimer : this.postLock;
   }
 
-  hideTopSlider(container) {
+  hideTopSlider(container:string):void {
     let cont = this.getTopSlider(container);
     if (cont.isVisible()) {
       cont.setState('slideUp');
@@ -649,7 +652,7 @@ export class ChatPage {
     }
   }
 
-  toggleTopSlider(container) {
+  toggleTopSlider(container:string):void {
     let cont = this.getTopSlider(container);
     if (cont.isVisible()) {
       setTimeout(() => {
@@ -662,7 +665,7 @@ export class ChatPage {
     }
   }
 
-  setPostTimer(total:number, time?:string) {
+  setPostTimer(total:number, time?:string):void {
     if (time) {
       this.debug.postHangTime = total + time;
     } else {
@@ -1036,7 +1039,10 @@ export class ChatPage {
     // init sockets
     this.chatPrvd.socketsInit();
 
-    this.startCameraBg();
+    if (this.chatPrvd.localStorage.get('enable_uc_camera') ||
+        this.chatPrvd.localStorage.get('enable_uc_camera') === null) {
+      this.startCameraBg();
+    }
 
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;

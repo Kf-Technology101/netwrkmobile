@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import {
   NavController,
   NavParams,
-  Platform
+  Platform,
+  Events
 } from 'ionic-angular';
 
 // Pages
@@ -41,7 +42,8 @@ export class SignUpConfirmPage {
     public auth: Auth,
     public navParams: NavParams,
     public platform: Platform,
-    public tools: Tools
+    public tools: Tools,
+    public events: Events
   ) {
     this.signUpErrorString = 'Unable to Sign Up. Please check your account information and try again.';
     this.codeErrorString = 'We wish it was right... But its not.';
@@ -110,6 +112,9 @@ export class SignUpConfirmPage {
     }
   }
 
-  goBack() { this.tools.popPage(); }
+  goBack() {
+    this.events.publish('signup:return', true);
+    this.tools.popPage();
+  }
 
 }

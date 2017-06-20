@@ -7,7 +7,7 @@ import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
 
 import { Api } from './api';
 import { LocalStorage } from './local-storage';
-import { Debug } from './debug';
+import { LocationChange } from './locationchange';
 
 import { NetworkFindPage } from '../pages/network-find/network-find';
 import { ChatPage } from '../pages/chat/chat';
@@ -33,9 +33,9 @@ export class Gps {
     private platform: Platform,
     private alertCtrl: AlertController,
     public events: Events,
-    private debug: Debug
+    private loc: LocationChange
   ) {
-    console.log('GPS Provider');
+    // console.log('GPS Provider');
   }
 
   getNetwrk(zipCode: number): any {
@@ -46,8 +46,8 @@ export class Gps {
 
   public calculateDistance(firstCoords: any, secondCoords?: any): boolean {
     if (!secondCoords) secondCoords = this.coords;
-    console.log('calculateDistance() firstCoords:', firstCoords);
-    console.log('calculateDistance() secondCoords:', secondCoords);
+    // console.log('calculateDistance() firstCoords:', firstCoords);
+    // console.log('calculateDistance() secondCoords:', secondCoords);
     let p: number = 0.017453292519943295; // Math.PI / 180
     let cos: any = Math.cos;
     let a = 0.5 - cos((secondCoords.lat - firstCoords.lat) * p) / 2 +
@@ -81,8 +81,8 @@ export class Gps {
         // console.log('[Gps][getMyZipCode]', resp);
         if (resp.coords) {
           if (!this.coords.lat && !this.coords.lng) {
-            if (this.debug.isCustomCoordAvaliable()) {
-              this.coords = this.debug.getCoordObject();
+            if (this.loc.isCustomCoordAvaliable()) {
+              this.coords = this.loc.getCoordObject();
             }
             else {
               this.coords.lat = resp.coords.latitude;
@@ -95,8 +95,8 @@ export class Gps {
               this.getZipCode();
             }, 60000);
           } else {
-            if (this.debug.isCustomCoordAvaliable()) {
-              this.coords = this.debug.getCoordObject();
+            if (this.loc.isCustomCoordAvaliable()) {
+              this.coords = this.loc.getCoordObject();
             }
             else {
               this.coords.lat = resp.coords.latitude;
@@ -105,7 +105,7 @@ export class Gps {
           }
         }
       }, err => {
-        console.log('[Gps][getMyZipCode]', err);
+        // console.log('[Gps][getMyZipCode]', err);
         reject(err);
       });
     });
@@ -127,8 +127,8 @@ export class Gps {
 
   private parseGoogleAddress(data: any): number {
     // let zip: number;
-    console.log('parseGoogleAddress', data);
-    console.log('Address = ', data[0].formatted_address);
+    // console.log('parseGoogleAddress', data);
+    // console.log('Address = ', data[0].formatted_address);
     for (let i = 0; i < data.length; i++)
       for (let j = 0; j < data[i].address_components.length; j++)
         for (let z = 0; z < data[i].address_components[j].types.length; z++)
@@ -151,8 +151,8 @@ export class Gps {
       coords = this.coords.lat + ',' + this.coords.lng;
     }
 
-    if (this.debug.isCustomCoordAvaliable()) {
-      coords = this.debug.getCoordString();
+    if (this.loc.isCustomCoordAvaliable()) {
+      coords = this.loc.getCoordString();
     }
 
     let url = 'https://maps.googleapis.com/maps/api/geocode/json';
@@ -168,20 +168,20 @@ export class Gps {
     return new Promise((resolve, reject) => {
       if (this.coords.lat && this.coords.lng) {
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
-          console.log('[google addres] res:', res);
+          // console.log('[google addres] res:', res);
           // default:
           let zipCode: any = this.parseGoogleAddress(res.results);
           // debug:
           // let zipCode: number = this.localStorage.get('test_zip_code');
 
-          this.debug.saveCurrentLocation({
+          this.loc.saveCurrentLocation({
             name:<string> res.results[0].formatted_address,
             lat:<number> this.coords.lat,
             lng:<number> this.coords.lng,
             zip:<any> zipCode
           });
 
-          console.log('zipCode:', zipCode);
+          // console.log('zipCode:', zipCode);
           if (this.localStorage.get('chat_zip_code') === null) {
             this.localStorage.set('chat_zip_code', zipCode);
           }
@@ -234,11 +234,11 @@ export class Gps {
               alert.present();
             }
           }
-          console.log('[Gps][getZipCode] zipCode:', zipCode);
+          // console.log('[Gps][getZipCode] zipCode:', zipCode);
           resolve(zipCode);
         },
         err => {
-          console.log('[Gps][getZipCode]', err);
+          // console.log('[Gps][getZipCode]', err);
           reject(err);
         });
       }

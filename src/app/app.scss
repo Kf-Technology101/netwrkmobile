@@ -61,7 +61,8 @@
     top: 100%;
   }
   to {
-    top: 50%;
+    top: auto;
+    bottom: 0;
   }
 }
 
@@ -77,7 +78,7 @@ ion-app {
       .city-bg {
         position: absolute;
         animation: bgTransition 2s ease-out;
-        background: url('../assets/images/city_bg.png') no-repeat left;
+        background: url('../assets/images/city_bg_c.png') no-repeat left;
         background-size: contain;
         -webkit-animation-fill-mode: forwards;
         width: 100%;
@@ -271,7 +272,10 @@ ion-app .ion-page .content {
   box-shadow: 0 0 10px rgba(255,255,255,0.8);
   padding: 0;
   box-sizing: content-box;
-
+  .forward-arrow {
+    font-size: 40px;
+    color: color($colors, bk);
+  }
   &.transparent {
     background: transparent;
     box-shadow: none;

@@ -112,10 +112,21 @@ export class Auth {
     });
   }
 
-  public logout() {
-    this.storage.rm('auth_type');
-    this.storage.rm('auth_data');
-    this.facebook.logout().then(() => {}).catch(() => {});
+  public logout(): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      let authType = this.storage.get('auth_type');
+      this.storage.rm('auth_type');
+      this.storage.rm('auth_data');
+      if (authType == 'facebook') {
+        this.facebook.logout().then(() => {
+          resolve();
+        }).catch(() => {
+          reject(false);
+        });
+      } else {
+        resolve();
+      }
+    });
   }
 
   public getAuthType():any { return this.storage.get('auth_type'); }

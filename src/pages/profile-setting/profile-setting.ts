@@ -14,7 +14,8 @@ import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { User } from '../../providers/user';
 import { UndercoverProvider } from '../../providers/undercover';
-import { Debug } from '../../providers/debug';
+import { Settings } from '../../providers/settings';
+import { LocationChange } from '../../providers/locationchange';
 
 import { Keyboard } from '@ionic-native/keyboard';
 
@@ -48,7 +49,8 @@ export class ProfileSettingPage {
     public zone: NgZone,
     elRef: ElementRef,
     private app: App,
-    public debug: Debug
+    public settings: Settings,
+    public locationchange: LocationChange
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.profileTypePublic = this.navParams.get('public');
@@ -186,11 +188,13 @@ export class ProfileSettingPage {
       ? this.user.name
       : this.user.role_name;
     this.userDescription = this.user.role_description;
+    this.settings.ucCameraState =  this.settings.getUCCameraState();
   }
 
   logOut() {
-    this.auth.logout();
-    this.app.getRootNav().setRoot(LogInPage);
+    this.auth.logout().then(() => {
+      this.app.getRootNav().setRoot(LogInPage);
+    }).catch(err => console.error('logout error: ', err));
     // this.tools.pushPage(LogInPage);
   }
 

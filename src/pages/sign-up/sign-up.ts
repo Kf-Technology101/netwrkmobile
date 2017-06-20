@@ -8,7 +8,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import {
   NavController,
   NavParams,
-  Platform
+  Platform,
+  Events
 } from 'ionic-angular';
 
 // Pages
@@ -83,7 +84,8 @@ export class SignUpPage {
     public navParams: NavParams,
     public platform: Platform,
     public tools: Tools,
-    public formBuilder: FormBuilder
+    public formBuilder: FormBuilder,
+    public events: Events
   ) {
     this.maxBirthday = this.tools.getToday(13);
 
@@ -200,7 +202,7 @@ export class SignUpPage {
       this.updateActiveStates();
     }
     setTimeout(() => {
-      
+
     }, 100);
   }
 
@@ -331,6 +333,9 @@ export class SignUpPage {
       this.activeStateId--;
       this.updateActiveStates();
     }
+    this.events.subscribe('signup:return', data => {
+      if (data) this.mainBtn.state = 'normal';
+    });
   }
 
   ionViewWillLeave() {

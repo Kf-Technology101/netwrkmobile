@@ -109,7 +109,7 @@ export class Tools {
     this.app.getActiveNav().push(page, params, { animate: animate ? animate : false });
   }
 
-  public popPage(animate?: boolean) {
+  public popPage(animate?: boolean, params?: any) {
     this.app.getActiveNav().pop({ animate: animate ? animate : false });
   }
 

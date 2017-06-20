@@ -513,6 +513,20 @@ modal-legendaryhistory {
           z-index: 2;
           border: 1px solid #f9f9f9;
           // box-shadow: 0px 2px 6px 0px rgba(0,0,0,.1);
+          .locked-by-you {
+            border-radius: 50%;
+            background: color($colors, bk);
+            color: #fff;
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            display: block;
+            width: 15px;
+            height: 15px;
+            line-height: 16px;
+            font-size: 10px;
+            text-align: center;
+          }
           .username {
             font-size: 16px;
             display: inline-block;
@@ -580,7 +594,7 @@ modal-legendaryhistory {
             bottom: 25px;
           }
           &.lock {
-            background-color: color($colors, bk);
+            background: color($colors, bk);
             .icon {
               font-size: 30px;
               color: #fff;

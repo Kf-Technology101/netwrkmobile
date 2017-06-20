@@ -3,7 +3,7 @@ import { AlertController, ToastController } from 'ionic-angular';
 import { LocalStorage } from './local-storage';
 
 @Injectable()
-export class Debug {
+export class LocationChange {
     public coords:any = {
       lat: null,
       lng: null

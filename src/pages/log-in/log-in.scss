@@ -10,6 +10,17 @@ page-log-in {
   .item-block {
     padding-left: 0;
   }
+
+  .login-caption {
+    margin: 0;
+    font-weight: 500;
+    font-size: 1.2em;
+  }
+  .login-subcaption {
+    margin-top: 3px;
+    font-size: 0.75em;
+  }
+
   .item {
     &.item-ios {
       &.has-border {
@@ -36,10 +47,11 @@ page-log-in {
         border: none;
       }
       button {
-        width: 111px;
-        -webkit-box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.2);
-        -moz-box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.2);
-        box-shadow: 0px 3px 12px 0px rgba(0,0,0,0.2);
+        opacity: 1;
+        height: 42px;
+        width: 86px;
+        border-radius: 17px;
+        box-shadow: none;
         &.debug-btn{
           width: 150px;
           position: absolute;

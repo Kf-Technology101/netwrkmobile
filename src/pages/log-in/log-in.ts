@@ -19,7 +19,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { User } from '../../providers/user';
 import { Chat } from '../../providers/chat';
-import { Debug } from '../../providers/debug';
+import { LocationChange } from '../../providers/locationchange';
 // import { Keyboard } from '@ionic-native/keyboard';
 
 // Animations
@@ -70,7 +70,7 @@ export class LogInPage {
     public undercoverPrvd: UndercoverProvider,
     public user: User,
     public chatPrvd: Chat,
-    public debugPrvd: Debug
+    public locationchange: LocationChange
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';

@@ -11,15 +11,30 @@
       Settings
     </ion-list-header>
     <ion-item-group>
-      <button ion-item (click)="debug.showLocationSelect()">
+
+      <ion-item-divider>
+        Location
+      </ion-item-divider>
+      <button ion-item (tap)="locationchange.showLocationSelect()">
         <ion-icon ios="ios-globe" md="ios-globe" color="primary"></ion-icon>
         <span>Select custom location</span>
       </button>
-      <button *ngIf="debug.isCustomCoordAvaliable()"
-        ion-item (click)="debug.disableCustomLocation()">
+      <button *ngIf="locationchange.isCustomCoordAvaliable()"
+        ion-item (tap)="locationchange.disableCustomLocation()">
         <ion-icon ios="ios-close-circle" md="ios-close-circle" color="danger"></ion-icon>
         <span>Set current location as default</span>
       </button>
+
+      <ion-item-divider>
+        Camera
+      </ion-item-divider>
+      <button ion-item (tap)="settings.toggleCameraOnUC()">
+        <ion-icon ios="ios-camera" md="ios-camera" color="secondary"></ion-icon>
+        <span>Undecover camera background</span>
+        <ion-note item-end [innerHTML]="ucCameraState">
+        </ion-note>
+      </button>
+
     </ion-item-group>
   </ion-list>
   <!--

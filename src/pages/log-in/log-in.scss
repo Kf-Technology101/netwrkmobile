@@ -21,20 +21,35 @@ page-log-in {
     font-size: 0.75em;
   }
 
-  .item {
-    &.item-ios {
-      &.has-border {
+  form {
+    .item {
+      &.item-md {
+        background-color: transparent;
         .item-inner {
-          border-bottom: 1px solid #dedede;
+          background: #fff;
+          &:last-child {
+            border-bottom-color: transparent;
+          }
+        }
+        &.has-border {
+          border-bottom: none;
+        }
+        &.ng-invalid.ng-touched:not(.input-has-focus):last-child,
+        &.input-has-focus:last-child {
+          box-shadow: none;
+        }
+      }
+
+      &.item-ios {
+        &.has-border {
+          .item-inner {
+            border-bottom: 1px solid #dedede;
+          }
         }
       }
     }
-  //   &.item-md {
-  //     .item-inner {
-  //       margin-bottom: 0;
-  //     }
-  //   }
   }
+
   .footer {
     .login-btns-container {
       padding: 0 20px;
@@ -53,7 +68,7 @@ page-log-in {
         border-radius: 17px;
         box-shadow: none;
         &.debug-btn{
-          width: 150px;
+          width: 120px;
           position: absolute;
           left: 0;
           right: 0;

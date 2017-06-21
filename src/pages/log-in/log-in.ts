@@ -20,7 +20,7 @@ import { UndercoverProvider } from '../../providers/undercover';
 import { User } from '../../providers/user';
 import { Chat } from '../../providers/chat';
 import { LocationChange } from '../../providers/locationchange';
-// import { Keyboard } from '@ionic-native/keyboard';
+import { Keyboard } from '@ionic-native/keyboard';
 
 // Animations
 import {
@@ -70,48 +70,18 @@ export class LogInPage {
     public undercoverPrvd: UndercoverProvider,
     public user: User,
     public chatPrvd: Chat,
-    public locationchange: LocationChange
+    public locationchange: LocationChange,
+    public keyboard: Keyboard
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
     this.textStrings.require = 'Please fill all fields';
 
-    // this.repeat(1000, () => Promise.all([this.myfunction()]))
-    // .then(data => {
-    //   console.log('repeat start')
-    // });
-
-    // this.keyboard.onKeyboardShow().subscribe(res => {
-    //   // console.log(res);
-    //   this.postBtn.setState(true);
-    //   setTimeout(() => {
-    //     this.mainBtn.setState('minimised');
-    //     if (!this.chatPrvd.appendContainer.hidden) {
-    //       this.mainBtn.setState('above_append');
-    //     }
-    //   }, chatAnim / 2 + 1);
-    // }, err => {
-    //   console.log(err);
-    // });
-    //
-    // this.keyboard.onKeyboardHide().subscribe(res => {
-    //   // console.log(res);
-    //   setTimeout(() => {
-    //     if (!this.chatPrvd.appendContainer.hidden) {
-    //       this.mainBtn.setState('above_append');
-    //     }
-    //     if (this.chatPrvd.appendContainer.hidden) {
-    //       this.mainBtn.setState('normal');
-    //     }
-    //     if (this.txtIn.value.trim() == '' &&
-    //         !this.chatPrvd.appendContainer.isVisible()) {
-    //       this.chatPrvd.postBtn.setState(false);
-    //     }
-    //   }, chatAnim/2 + 1);
-    //
-    // }, err => {
-    //   console.log(err);
-    // });
+    this.keyboard.onKeyboardHide().subscribe(res => {
+      this.chatPrvd.mainBtn.setState('centered');
+    }, err => {
+      console.log(err);
+    });
   }
 
   submitLoginForm() {
@@ -180,6 +150,10 @@ export class LogInPage {
     });
   }
 
+  inputBlured(event:any):void {
+    this.chatPrvd.mainBtn.setState('centered');
+  }
+
   goToSignUp() { this.tools.pushPage(SignUpPage); }
 
   ionViewDidEnter() {
@@ -196,9 +170,5 @@ export class LogInPage {
       this.controls.state = 'fadeIn';
       mainBtn.classList.add('anim-glow');
     }, 2000);
-  }
-
-  ngOnInit(){
-    // this.contentState = 'fadeIn';
   }
 }

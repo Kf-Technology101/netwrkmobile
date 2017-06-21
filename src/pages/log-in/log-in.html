@@ -23,17 +23,17 @@
           <ion-list>
 
             <ion-item>
-              <ion-input #focusInput (focus)="chatPrvd.mainBtn.setState('minimised')"
-                (blur)="chatPrvd.mainBtn.setState('centered')"
-                type="text" placeholder="Email/Phone number..."
-                [(ngModel)]="account.login" name="login" required></ion-input>
+              <ion-input (focus)="chatPrvd.mainBtn.setState('minimised')"
+                (blur)="inputBlured($event)" type="text"
+                placeholder="Email/Phone number..." [(ngModel)]="account.login"
+                name="login" required></ion-input>
             </ion-item>
 
             <ion-item class="has-border">
               <ion-input (focus)="chatPrvd.mainBtn.setState('minimised')"
-                (blur)="chatPrvd.mainBtn.setState('centered')"
-                type="password" placeholder="Password..."
-                [(ngModel)]="account.password" name="password" required></ion-input>
+                (blur)="inputBlured($event)" type="password"
+                placeholder="Password..." [(ngModel)]="account.password"
+                name="password" required></ion-input>
             </ion-item>
 
             <!-- <ion-item class="item-right">

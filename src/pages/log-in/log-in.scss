@@ -25,6 +25,7 @@ page-log-in {
     .item {
       &.item-md {
         background-color: transparent;
+        z-index: 2;
         .item-inner {
           background: #fff;
           &:last-child {
@@ -41,6 +42,11 @@ page-log-in {
       }
 
       &.item-ios {
+        background: transparent;
+        z-index: 2;
+        .item-inner {
+          background: #fff;
+        }
         &.has-border {
           .item-inner {
             border-bottom: 1px solid #dedede;

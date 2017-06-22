@@ -180,3 +180,13 @@ export const slideToggle: any = trigger('slideState', [
 
   transition('* => *', animate(chatAnim/2 + 'ms ease-out'))
 ]);
+
+export const toggleUcSlider: any = trigger('sliderState', [
+  state('slideUp', style({
+    top: '-40px'
+  })),
+  state('slideDown', style({
+    top: '0px'
+  })),
+  transition('* => *', animate(chatAnim/2 + 'ms ease-out'))
+]);

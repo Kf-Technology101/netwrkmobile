@@ -349,6 +349,10 @@ export class ProfilePage {
   ionViewWillLeave() {
     this.profile.saveChangesOnLeave();
     this.setProfileData();
+    this.profile.user.hero_avatar_url = null;
+    this.profile.user.avatar_url = null;
+    this.profile.user.name = null;
+    this.profile.user.role_name = null;
   }
 
 }

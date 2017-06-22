@@ -508,25 +508,32 @@ modal-legendaryhistory {
           margin-left: 32px;
           padding: 6px;
           padding-left: 32px;
+          padding-right: 25px;
           margin-right: 50px;
           position: relative;
           z-index: 2;
           border: 1px solid #f9f9f9;
           // box-shadow: 0px 2px 6px 0px rgba(0,0,0,.1);
-          .locked-by-you {
+          .info-icon {
             border-radius: 50%;
             background: color($colors, bk);
             color: #fff;
             position: absolute;
             right: 5px;
-            top: 5px;
             display: block;
             width: 15px;
             height: 15px;
             line-height: 16px;
             font-size: 10px;
             text-align: center;
+            &.locked-by-you {
+              top: 5px;
+            }
+            &.will-expire {
+              top: 25px;
+            }
           }
+
           .username {
             font-size: 16px;
             display: inline-block;
@@ -549,11 +556,8 @@ modal-legendaryhistory {
           }
           .visible-for {
             color: color($colors, bk-red);
-            float: right;
-            .icon {
-              color: color($colors, bk-stone);
-              font-weight: 600;
-            }
+            display: block;
+            font-size: 12px;
           }
           .text {
             display: block;
@@ -635,8 +639,12 @@ modal-legendaryhistory {
         border-radius: 50%;
         padding: 0;
         background-color: transparent;
+        background: color($colors, bk);
+        border: 1px solid #fff;
+        box-sizing: content-box;
         & ion-icon {
-          font-size: 32px;
+          // font-size: 32px;
+          font-size: 20px;
           color: color($colors, white);
         }
       }
@@ -650,11 +658,11 @@ modal-legendaryhistory {
         border-radius: 13px;
         background: color($colors, bk-red);
       }
-      &.active {
-        .icon {
-          color: color($colors, bk);
-        }
-      }
+      // &.active {
+      //   .icon {
+      //     color: color($colors, bk);
+      //   }
+      // }
     }
   }
   .chat-header {

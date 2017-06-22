@@ -36,6 +36,7 @@ export class ProfileSettingPage {
   public profileTypePublic: boolean;
   private imageLoading: boolean = false;
   private pageTag: string;
+  
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,

@@ -31,7 +31,8 @@
       <button ion-item (tap)="settings.toggleCameraOnUC()">
         <ion-icon ios="ios-camera" md="ios-camera" color="secondary"></ion-icon>
         <span>Undecover camera background</span>
-        <ion-note item-end [innerHTML]="ucCameraState">
+        <ion-note item-end>
+          {{ settings.ucCameraState }}
         </ion-note>
       </button>
 

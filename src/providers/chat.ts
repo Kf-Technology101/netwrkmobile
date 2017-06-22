@@ -64,6 +64,7 @@ export class Chat {
     timeout: null,
     interval: null
   };
+  public user:any;
 
   public isMessagesVisible: boolean = false;
 
@@ -84,17 +85,19 @@ export class Chat {
   ) {
     // console.log('Hello Chat Provider');
     this.hostUrl = this.api.hostUrl;
+    this.user = this.authPrvd.getAuthData();
   }
 
   public updateAvatarUrl(event: any) {
     event.target.src = 'assets/icon/netwrk-chat.svg';
   }
 
-  public playSound(audioName) {
-    if (this.sounds[audioName]) {
-      this.sounds[audioName].play();
+  public playSound() {
+    let audioName = new Audio('assets/sound/m' + Math.floor(Math.random() * 8) + '.mp3');
+    if (audioName) {
+      audioName.play();
     } else {
-      // console.error('Error playing sound. audioName:', audioName);
+      console.error('Error playing sound. audioName:', audioName);
     }
   }
 
@@ -170,15 +173,15 @@ export class Chat {
         if (this.getState() == 'undercover') {
           if (data.message.undercover && insideUndercover) {
             this.postMessages.push(data.message);
-            // console.info('message data:', data.message);
-            // this.playSound('message');
+            if (data.message.user_id != this.user.id)
+              this.playSound();
             this.messageDateTimer.start(this.postMessages);
-            // this.txtIn.value = '';
           }
         } else if (this.getState() != 'undercover' && !data.message.undercover) {
           console.log('[area message] data:', data.message);
           this.postMessages.unshift(data.message);
-          // this.playSound('message');
+          if (data.message.user_id != this.user.id)
+            this.playSound();
           this.messageDateTimer.start(this.postMessages);
         }
     }, err => {

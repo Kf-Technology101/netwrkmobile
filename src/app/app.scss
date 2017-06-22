@@ -78,7 +78,7 @@ ion-app {
         position: absolute;
         animation: bgTransition 2s ease-out;
         background: url('../assets/images/city-bg_c_tw.png') no-repeat left,
-                    url('../assets/images/waves.gif');
+                    url('../assets/images/waves_test.gif');
         background-size: cover, auto;
         -webkit-animation-fill-mode: forwards;
         background-position-y: 0px;
@@ -282,10 +282,6 @@ ion-app .ion-page .content {
     box-shadow: none;
   }
   &.big {
-    // width: 68px;
-    // height: 110px;
-    // border-width: 5px;
-    // border-radius: 11px;
     width: 54px;
     height: 90px;
     border-width: 5px;
@@ -293,10 +289,6 @@ ion-app .ion-page .content {
   }
 
   &.medium {
-    // width: 42px;
-    // height: 68px;
-    // border-width: 3px;
-    // border-radius: 7px;
     width: 54px;
     height: 90px;
     border-width: 5px;
@@ -465,6 +457,11 @@ ion-app .ion-page .content {
     &.feed {
       border-top: 2px solid #b8b8b8;
       margin-top: 10px;
+      .expire-in {
+        display: block;
+        font-size: 12px;
+        color: color($colors, bk-red);
+      }
       a.open-post {
         text-decoration: none;
         margin-left: 5px;

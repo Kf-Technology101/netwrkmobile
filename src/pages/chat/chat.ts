@@ -57,7 +57,8 @@ import {
   scaleMainBtn,
   toggleGallery,
   toggleFade,
-  slideToggle
+  slideToggle,
+  toggleUcSlider
 } from '../../includes/animations';
 
 import { ModalRTLEnterAnimation } from '../../includes/rtl-enter.transition';
@@ -73,7 +74,8 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
     scaleMainBtn,
     toggleGallery,
     toggleFade,
-    slideToggle
+    slideToggle,
+    toggleUcSlider
   ]
 })
 
@@ -93,6 +95,7 @@ export class ChatPage {
   mainInput = new Toggleable('fadeIn', false);
   postTimer = new Toggleable('slideUp', true);
   postLock = new Toggleable('slideUp', true);
+  topSlider = new Toggleable('slideDown', false);
 
   flipHover: boolean;
 
@@ -150,6 +153,11 @@ export class ChatPage {
 
   private authData: any;
   private isFeedbackClickable: boolean = true;
+
+  private postTimerObj:any = {
+    expireDate: null,
+    time: null
+  };
 
   constructor(
     public navCtrl: NavController,
@@ -329,9 +337,10 @@ export class ChatPage {
 
   postMessageFromSocial(post) {
     let params: any = {
-      text: post.message || '',
+      text: post.text_with_links || '',
+      text_with_links: post.text_with_links || '',
       social_urls: post.full_picture ? [post.full_picture] : [],
-      social: post.type,
+      social: post.social,
     }
 
     this.postMessage(null, params);
@@ -386,9 +395,10 @@ export class ChatPage {
         undercover: (this.chatPrvd.getState() == 'area') ? false : this.isUndercover,
         public: publicUser,
         is_emoji: emoji ? true : false,
-        locked: this.postLockData ? true : false,
+        locked: (this.postLockData.hint && this.postLockData.password)  ? true : false,
         password: this.postLockData.password ? this.postLockData.password : null,
-        hint: this.postLockData.hint ? this.postLockData.hint : null
+        hint: this.postLockData.hint ? this.postLockData.hint : null,
+        expire_date: this.postTimerObj.expireDate ? this.postTimerObj.expireDate : null
       };
 
       console.info('[postMessage] params:', messageParams);
@@ -413,10 +423,10 @@ export class ChatPage {
 
         this.chatPrvd.sendMessage(messageParams).then(res => {
           console.log('[sendMessage] res:', res);
-          this.postLockData = {
-            hint: null,
-            password: null
-          };
+          this.postLockData.hint = null;
+          this.postLockData.password = null;
+          this.postTimerObj.expireDate = null;
+          this.postTimerObj.time = null;
           // if (this.postLockData.hint && this.postLockData.password) {
           //   let lockData:any = {
           //     id: res.id,
@@ -568,14 +578,25 @@ export class ChatPage {
     setTimeout(() => {
       if (this.chatPrvd.getState() == 'area') {
         this.chatPrvd.setState('undercover');
-        this.startCameraBg();
-        this.cameraPreview.show();
+        if (this.chatPrvd.localStorage.get('enable_uc_camera')) {
+          this.startCameraBg();
+          this.cameraPreview.show();
+        }
         this.runUndecoverSlider(this.pageTag);
         this.startMessageUpdateTimer();
         this.chatPrvd.scrollToBottom(this.content);
       } else {
         if (this.messagesInterval) clearInterval(this.messagesInterval);
         if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
+
+        this.postLockData.hint = null;
+        this.postLockData.password = null;
+        this.postTimerObj.expireDate = null;
+        this.postTimerObj.time = null;
+
+        this.hideTopSlider('lock');
+        this.hideTopSlider('timer');
+
         this.slideAvatarPrvd.sliderPosition = 'left';
         this.chatPrvd.setState('area');
         this.cameraPreview.hide();
@@ -590,7 +611,6 @@ export class ChatPage {
   }
 
   toggleShareSlider(social_network){
-    this.isSocialPostsLoaded = false;
     this.shareCheckbox[social_network] = !this.shareCheckbox[social_network];
     this.getSocialPosts();
   }
@@ -609,13 +629,10 @@ export class ChatPage {
       this.socialPrvd.getSocialPosts(socials).subscribe(res => {
         console.log('[getSocialPosts] res:', res);
         this.socialPosts = res.messages;
-        this.isSocialPostsLoaded = true;
       }, err => {
         console.error('[getSocialPosts] err:', err);
-        this.isSocialPostsLoaded = true
       });
     }
-    this.isSocialPostsLoaded = true;
   }
 
   changeCallback(positionLeft?: boolean) {
@@ -654,6 +671,8 @@ export class ChatPage {
 
   toggleTopSlider(container:string):void {
     let cont = this.getTopSlider(container);
+    this.getTopSlider('timer').hide();
+    this.getTopSlider('lock').hide();
     if (cont.isVisible()) {
       setTimeout(() => {
         cont.hide();
@@ -665,11 +684,32 @@ export class ChatPage {
     }
   }
 
-  setPostTimer(total:number, time?:string):void {
-    if (time) {
-      this.debug.postHangTime = total + time;
-    } else {
-      this.debug.postHangTime = total;
+  setPostTimer(timeId:number) {
+    let currentDate = moment(new Date());
+    switch (timeId) {
+      case 1:
+        // 10 hours
+        this.postTimerObj.expireDate = currentDate.add(10, 'hours');
+        this.postTimerObj.time = '10h';
+        break;
+      case 2:
+        // 1 day
+        this.postTimerObj.expireDate = currentDate.add(24, 'hours');
+        this.postTimerObj.time = '1d';
+        break;
+      case 3:
+        // 1 week (168h)
+        this.postTimerObj.expireDate = currentDate.add(168, 'hours');
+        this.postTimerObj.time = '1w';
+        break;
+      case 4:
+        // 1 month
+        this.postTimerObj.expireDate = currentDate.add(1, 'months');
+        this.postTimerObj.time = '1m';
+        break;
+      default:
+        this.postTimerObj.time = null;
+        return false;
     }
     this.hideTopSlider('timer');
   }
@@ -839,22 +879,19 @@ export class ChatPage {
     this.chatPrvd.deleteMessages().subscribe( res => {
       // console.log('[sendDeletedMessages] Success:', res);
       // this.chatPrvd.postMessages = res ? res : [];
+      this.canRefresh = true;
     }, err => {
       // console.log('[sendDeletedMessages] Error:', err);
     });
   }
 
   clearMessages() {
+    this.canRefresh = false;
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
-    this.canRefresh = true;
     this.idList = this.getMessagesIds(this.chatPrvd.postMessages);
     this.chatPrvd.postMessages = [];
-    this.messageRefreshInterval = setTimeout(() => {
-      this.canRefresh = false;
-      this.sendDeletedMessages();
-      // this.startMessageUpdateTimer();
-    }, 10000);
+    this.sendDeletedMessages();
   }
 
   flipInput() {
@@ -887,6 +924,7 @@ export class ChatPage {
     this.keyboard.onKeyboardShow().subscribe(res => {
       // console.log('[onKeyboardShow]');
       // console.log(res);
+      this.topSlider.setState('slideUp');
       this.chatPrvd.postBtn.setState(true);
       if (this.plt.is('ios')) {
         try {
@@ -917,6 +955,7 @@ export class ChatPage {
 
     this.keyboard.onKeyboardHide().subscribe(res => {
       // console.log(res);
+      this.topSlider.setState('slideDown');
       if (this.plt.is('ios')) {
         try {
           let footerEl = document.getElementsByClassName('chatFooter')['0'];

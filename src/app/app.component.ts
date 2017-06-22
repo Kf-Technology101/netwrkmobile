@@ -68,10 +68,10 @@ export class MyApp {
           this.authPrvd.getFbLoginStatus().then(data => {
             if (data.status && data.status == 'connected') {
               this.rootPage = this.undercoverPrvd.getCharacterPerson(
-                UndercoverCharacterPage, NetworkFindPage, ChatPage)
-              } else {
-                this.rootPage = LogInPage;
-              }
+              UndercoverCharacterPage, NetworkFindPage, ChatPage)
+            } else {
+              this.rootPage = LogInPage;
+            }
               // if (rootPage == NetworkFindPage) {
               //   this.app.getRootNav().setRoot(ChatPage, {
               //     action: 'undercover'
@@ -84,7 +84,7 @@ export class MyApp {
           break;
         case 'email':
           let fbConnected = this.authPrvd.getFbConnected();
-          let rootPage:any;
+          // let rootPage:any;
           if (fbConnected) {
             this.rootPage = this.undercoverPrvd.getCharacterPerson(
             UndercoverCharacterPage, NetworkFindPage, ChatPage)

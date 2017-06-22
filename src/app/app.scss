@@ -74,12 +74,57 @@ ion-app {
       overflow: hidden;
       width: 100%;
       height: 100%;
+      .faces {
+        position: absolute;
+        width: 70px;
+        height: 70px;
+        z-index: 1;
+        &.f-1 {
+          background: url('../assets/images/group_1.svg') no-repeat center;
+          background-size: contain;
+          top: 20%;
+          left: 10%;
+        }
+        &.f-2 {
+          background: url('../assets/images/group_2.svg') no-repeat center;
+          background-size: contain;
+          top: 28%;
+          left: 40%;
+        }
+        &.f-3 {
+          background: url('../assets/images/group_3.svg') no-repeat center;
+          background-size: contain;
+          top: 20%;
+          right: 10%;
+        }
+        &.f-4 {
+          background: url('../assets/images/group_1.svg') no-repeat center;
+          background-size: contain;
+          top: 50%;
+          right: 10%;
+          width: 60px;
+        }
+        &.f-5 {
+          background: url('../assets/images/group_3.svg') no-repeat center;
+          background-size: contain;
+          bottom: 20%;
+          left: 40%;
+          width: 60px;
+        }
+        &.f-6 {
+          background: url('../assets/images/group_2.svg') no-repeat center;
+          background-size: contain;
+          bottom: 30%;
+          left: 15%;
+          width: 60px;
+        }
+      }
       .city-bg {
         position: absolute;
         animation: bgTransition 2s ease-out;
         background: url('../assets/images/city-bg_c_tw.png') no-repeat left,
                     url('../assets/images/waves_test.gif');
-        background-size: cover, auto;
+        background-size: cover, 70px;
         -webkit-animation-fill-mode: forwards;
         background-position-y: 0px;
         width: 100%;

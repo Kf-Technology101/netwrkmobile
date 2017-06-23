@@ -1,6 +1,8 @@
 page-network-no {
   .heading {
     padding: 0 22px;
+    position: relative;
+    z-index: 3;
     p {
       color: color($colors, bk);
       &.head {

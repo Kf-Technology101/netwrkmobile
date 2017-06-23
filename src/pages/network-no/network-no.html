@@ -1,6 +1,13 @@
 <ion-content has-main-btn no-bounce city-bg-animated>
   <div class="city-container">
-    <div class="city-bg"></div>
+    <div class="faces f-1" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+    <div class="faces f-2" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+    <div class="faces f-3" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+    <div class="faces f-4" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+    <div class="faces f-5" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+    <div class="faces f-6" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+    <div class="faces f-7" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+    <div class="city-bg half"></div>
   </div>
   <div class="heading" [hidden]="controls.hidden" [@fadeState]="controls.state">
     <p class="head">

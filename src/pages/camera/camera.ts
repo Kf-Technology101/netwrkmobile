@@ -67,7 +67,7 @@ export class CameraPage {
     const pictureOpts = {
       width: 1280,
       height: 1280,
-      quality: 100
+      quality: 95
     }
 
     // take a picture
@@ -132,16 +132,8 @@ export class CameraPage {
   }
 
   ionViewDidEnter() {
-    let cameraOptions = this.cameraPrvd.getCameraOpt({ tapPhoto: true });
-    this.cameraPreview.stopCamera().then(()=>{}).catch( err => {
-      console.warn(err);
-    }).then(() => {
-      this.cameraPreview.startCamera(cameraOptions).then(res => {
-        console.log(res);
-        this.cameraPreview.show();
-      }, err => {
-        console.log(err);
-      });
+    this.cameraPrvd.toggleCameraBg({
+      isCamera: true
     });
 
     setTimeout(() => {

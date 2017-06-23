@@ -548,6 +548,10 @@ export class ChatPage {
   goUndercover(event?:any) {
     if (event) {
       event.stopPropagation();
+      if (this.chatPrvd.mainBtn.getState() == 'minimised') {
+        this.keyboard.close();
+        return;
+      }
       this.chatPrvd.isMessagesVisible = false;
       this.chatPrvd.postMessages = [];
     }
@@ -555,11 +559,6 @@ export class ChatPage {
     this.chatPrvd.isMainBtnDisabled = true;
 
     let network = this.chatPrvd.getNetwork();
-    // console.log('[goUndercover if] isUndercover:', this.isUndercover);
-    // console.log('[goUndercover if] network + users:', (!network || network.users_count < 10));
-    // console.log('[goUndercover if] network:', network);
-    // console.log('[goUndercover if] !network:', !network);
-    // console.log('[goUndercover if] network.users_count < 10:', network.users_count < 10);
     if (this.isUndercover &&
        (network == 'undefined' || network == null ||
        (network && network.users_count < 10))) {
@@ -578,10 +577,7 @@ export class ChatPage {
     setTimeout(() => {
       if (this.chatPrvd.getState() == 'area') {
         this.chatPrvd.setState('undercover');
-        if (this.chatPrvd.localStorage.get('enable_uc_camera')) {
-          this.startCameraBg();
-          this.cameraPreview.show();
-        }
+        this.cameraPrvd.toggleCameraBg();
         this.runUndecoverSlider(this.pageTag);
         this.startMessageUpdateTimer();
         this.chatPrvd.scrollToBottom(this.content);
@@ -593,6 +589,10 @@ export class ChatPage {
         this.postLockData.password = null;
         this.postTimerObj.expireDate = null;
         this.postTimerObj.time = null;
+
+        this.cameraPrvd.toggleCameraBg({
+          isArea: true
+        });
 
         this.hideTopSlider('lock');
         this.hideTopSlider('timer');
@@ -720,24 +720,24 @@ export class ChatPage {
       // console.log(res);
 
       this.getUsers();
-      if (this.authPrvd.storage.get('area_first_time') === null) {
-        let subTitle = `We\'re glad you decided to connect to this area! You can now,
-          once a month, call a post legendary either under cover or on the
-          area shareboard. This is a big responsibility, legends
-          eventually become timeless tradition, and tradition shapes
-          areas over time.` + '<br>' + `Your connected accounts will now
-          auto-share to the area shareboard, building awareness and
-          boosting followers for you!
-          Connected accounts can also be shared manually, click the + and
-          then (share icon) to share under cover or with your area`;
-        this.authPrvd.storage.set('area_first_time', false);
-        let welcomeAlert = this.alertCtrl.create({
-          title: '',
-          subTitle: subTitle,
-          buttons: ['OK']
-        });
-        welcomeAlert.present();
-      }
+      // if (this.authPrvd.storage.get('area_first_time') === null) {
+      //   let subTitle = `We\'re glad you decided to connect to this area! You can now,
+      //     once a month, call a post legendary either under cover or on the
+      //     area shareboard. This is a big responsibility, legends
+      //     eventually become timeless tradition, and tradition shapes
+      //     areas over time.` + '<br>' + `Your connected accounts will now
+      //     auto-share to the area shareboard, building awareness and
+      //     boosting followers for you!
+      //     Connected accounts can also be shared manually, click the + and
+      //     then (share icon) to share under cover or with your area`;
+      //   this.authPrvd.storage.set('area_first_time', false);
+      //   let welcomeAlert = this.alertCtrl.create({
+      //     title: '',
+      //     subTitle: subTitle,
+      //     buttons: ['OK']
+      //   });
+      //   welcomeAlert.present();
+      // }
       // this.toolsPrvd.hideLoader();
     }, err => {
       // console.log(err);
@@ -915,7 +915,12 @@ export class ChatPage {
     });
   }
 
-  constructorLoad(){
+  private updateIconBgRelativeToCamera():boolean {
+    let camOpt = this.chatPrvd.localStorage.get('enable_uc_camera');
+    return (camOpt === null || !camOpt);
+  }
+
+  constructorLoad() {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();
 
@@ -1040,28 +1045,19 @@ export class ChatPage {
     })
   }
 
-  private startCameraBg() {
-    let cameraOptions = this.cameraPrvd.getCameraOpt();
-    this.cameraPreview.stopCamera().then(()=>{}).catch(err => {
-      console.error('error stopping camera:', err);
-    });
-
-    if (this.chatPrvd.getState() == 'undercover') {
-      this.cameraPreview.startCamera(cameraOptions).then(res => {
-      // console.log(res);
-        this.cameraPreview.show();
-      }, err => {
-        // console.log(err);
-      });
-    }
-  }
-
   ngOnInit() {
     this.constructorLoad();
     this.componentLoaded = true;
   }
 
   ionViewDidEnter() {
+    if (this.chatPrvd.localStorage.get('area_first_time') === null) {
+      let global = this.renderer.listen('document', 'click', (evt) => {
+        console.log('Clicking the document', evt);
+        this.chatPrvd.localStorage.set('area_first_time', false);
+        global();
+      });
+    }
 
     this.chatPrvd.postMessages = [];
     console.warn('[CHAT] Did enter');
@@ -1077,11 +1073,7 @@ export class ChatPage {
     }
     // init sockets
     this.chatPrvd.socketsInit();
-
-    if (this.chatPrvd.localStorage.get('enable_uc_camera') ||
-        this.chatPrvd.localStorage.get('enable_uc_camera') === null) {
-      this.startCameraBg();
-    }
+    this.cameraPrvd.toggleCameraBg();
 
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;

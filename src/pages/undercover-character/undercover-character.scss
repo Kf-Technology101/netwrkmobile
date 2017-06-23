@@ -34,33 +34,6 @@ page-undercover-character {
     margin-top: 70px;
   }
 
-  .tip {
-    color: #fff;
-    font-size: 18px;
-    border-radius: 13px;
-    background: color($colors, bk);
-    padding: 2px;
-    width: 128px;
-    margin: auto;
-    text-align: center;
-    margin-top: 5px;
-    position: relative;
-    &:before {
-      content: '';
-      position: absolute;
-      display: block;
-      width: 40px;
-      background: color($colors, bk);
-      top: -4px;
-      height: 15px;
-      left: 0;
-      right: 0;
-      margin: auto;
-      border-radius: 50%;
-      z-index: -1;
-    }
-  }
-
   .cusrom-center-block {
     margin-top: 10px;
   }

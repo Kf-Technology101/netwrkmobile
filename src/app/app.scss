@@ -65,6 +65,15 @@
   }
 }
 
+@-webkit-keyframes bgTransitionHalf {
+  from {
+    top: 100vh;
+  }
+  to {
+    top: 20vh;
+  }
+}
+
 ion-app {
   .content[city-bg-animated] {
     .city-container {
@@ -74,6 +83,23 @@ ion-app {
       overflow: hidden;
       width: 100%;
       height: 100%;
+      .city-bg {
+        position: absolute;
+        background: url('../assets/images/city-bg_c_tw.png') no-repeat left,
+                    url('../assets/images/waves_test.gif');
+        background-size: cover, 70px;
+        background-position-y: 0px;
+        width: 100%;
+        height: 100%;
+        &.half {
+          animation: bgTransitionHalf 2s ease-out;
+          -webkit-animation-fill-mode: forwards;
+        }
+        &.top {
+          animation: bgTransition 2s ease-out;
+          -webkit-animation-fill-mode: forwards;
+        }
+      }
       .faces {
         position: absolute;
         width: 70px;
@@ -100,35 +126,31 @@ ion-app {
         &.f-4 {
           background: url('../assets/images/group_1.svg') no-repeat center;
           background-size: contain;
-          top: 50%;
+          top: 44%;
           right: 10%;
           width: 60px;
         }
         &.f-5 {
           background: url('../assets/images/group_3.svg') no-repeat center;
           background-size: contain;
-          bottom: 20%;
-          left: 40%;
+          bottom: 18%;
+          right: 20%;
           width: 60px;
         }
         &.f-6 {
           background: url('../assets/images/group_2.svg') no-repeat center;
           background-size: contain;
-          bottom: 30%;
+          left: 15%;
+          top: 65%;
+          width: 60px;
+        }
+        &.f-7 {
+          background: url('../assets/images/group_1.svg') no-repeat center;
+          background-size: contain;
+          top: 50%;
           left: 15%;
           width: 60px;
         }
-      }
-      .city-bg {
-        position: absolute;
-        animation: bgTransition 2s ease-out;
-        background: url('../assets/images/city-bg_c_tw.png') no-repeat left,
-                    url('../assets/images/waves_test.gif');
-        background-size: cover, 70px;
-        -webkit-animation-fill-mode: forwards;
-        background-position-y: 0px;
-        width: 100%;
-        height: 100%;
       }
     }
   }
@@ -203,6 +225,33 @@ ion-app {
     .toast-message {
       color: color($colors, bk);
       font-weight: 500;
+    }
+  }
+
+  .tip {
+    color: #fff;
+    font-size: 18px;
+    border-radius: 13px;
+    background: color($colors, bk);
+    padding: 2px;
+    width: 128px;
+    margin: auto;
+    text-align: center;
+    margin-top: 5px;
+    position: relative;
+    &:before {
+      content: '';
+      position: absolute;
+      display: block;
+      width: 40px;
+      background: color($colors, bk);
+      top: -4px;
+      height: 15px;
+      left: 0;
+      right: 0;
+      margin: auto;
+      border-radius: 50%;
+      z-index: -1;
     }
   }
 }
@@ -357,6 +406,12 @@ ion-app .ion-page .content {
   .custom-text-icon {
     font-size: 32px;
     margin-bottom: 4px;
+  }
+  .icon{
+    &.small {
+      font-size: 40px;
+      color: color($colors, bk);
+    }
   }
 }
 

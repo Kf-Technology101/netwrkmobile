@@ -80,7 +80,8 @@ modal-legendaryhistory {
         margin-right: 10px;
       }
     }
-    &.netwrk-content {
+    &.netwrk-content,
+    &.white-undercover {
       background: color($colors, white);
     }
 
@@ -114,6 +115,18 @@ modal-legendaryhistory {
     .main-action-btn {
       bottom: 68px;
       border: 5px solid #5b87aa;
+    }
+    .tip {
+      color: #fff;
+      font-size: 14px;
+      padding: 3px 2px;
+      bottom: 190px;
+      width: 160px;
+      z-index: 2;
+      &.tail-bottom:before {
+        width: 60px;
+        top: 13px;
+      }
     }
 
     .item {
@@ -642,6 +655,11 @@ modal-legendaryhistory {
         background: color($colors, bk);
         border: 1px solid #fff;
         box-sizing: content-box;
+        &.white {
+          background: transparent;
+          border: none;
+          border-radius: 0;
+        }
         & ion-icon {
           // font-size: 32px;
           font-size: 20px;

@@ -3,7 +3,6 @@ import { NavController, NavParams, Slides, Content, Platform } from 'ionic-angul
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
-
 // Providers
 import { Profile } from '../../providers/profile';
 import { Social } from '../../providers/social';
@@ -13,6 +12,7 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 import { User } from '../../providers/user';
 import { Chat } from '../../providers/chat';
 import { Auth } from '../../providers/auth';
+import { Camera } from '../../providers/camera';
 
 import { AlertController } from 'ionic-angular';
 import { Api } from '../../providers/api';
@@ -68,7 +68,8 @@ export class ProfilePage {
     public profile: Profile,
     public platform: Platform,
     public keyboard: Keyboard,
-    public cameraPrev: CameraPreview
+    public cameraPrev: CameraPreview,
+    public cameraPrvd: Camera
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.user.id = this.navParams.get('id');
@@ -328,7 +329,7 @@ export class ProfilePage {
   }
 
   ionViewDidEnter() {
-    this.cameraPrev.stopCamera();
+    this.cameraPrvd.toggleCameraBg();
     if (this.ownProfile) {
       if (this.authPrvd.storage.get('profile_first_time') === null) {
         this.showFirstTimeMessage();

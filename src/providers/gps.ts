@@ -192,8 +192,7 @@ export class Gps {
             clearInterval(this.zipInterval);
             this.localStorage.rm('current_network');
             this.localStorage.set('chat_zip_code', zipCode);
-            if (this.localStorage.get('chat_state') == 'area' ||
-                this.localStorage.get('chat_state') == 'undercover') {
+            if (nav.getActive().name == 'ChatPage') {
               let alert = this.alertCtrl.create({
                 enableBackdropDismiss: false,
                 title: '',

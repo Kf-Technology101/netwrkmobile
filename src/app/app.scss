@@ -74,6 +74,67 @@
   }
 }
 
+// iPad fixes
+ion-app {
+  .platform-ipad {
+    page-network-no {
+      .row {
+        .be-founder {
+          font-size: 0.6em;
+          line-height: normal;
+        }
+      }
+      .heading {
+        p {
+          &.head {
+            font-size: 0.8em;
+          }
+          &.sub-head {
+            font-size: 0.6em;
+          }
+        }
+      }
+    }
+    page-network-contact-list {
+      .header {
+        .send-messages-header {
+          font-size: 0.8em;
+        }
+      }
+      .list {
+        .item-ios {
+          .text-ios-bk {
+            font-size: 1em;
+          }
+        }
+      }
+    }
+    modal-feedback {
+      ion-content {
+        &.content {
+          ion-list {
+            height: 45%;
+          }
+        }
+      }
+      .toolbar {
+        margin-top: 20px;
+      }
+    }
+    page-chat {
+      .footer {
+        .item {
+          .item-inner {
+            .text-input {
+              font-size: 0.6em;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 ion-app {
   .content[city-bg-animated] {
     .city-container {

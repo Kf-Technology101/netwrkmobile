@@ -545,6 +545,13 @@ export class ChatPage {
     legModal.present();
   }
 
+  public checkForNetwork() {
+    let network = this.chatPrvd.getNetwork();
+    return (this.isUndercover &&
+       (network == 'undefined' || network == null ||
+       (network && network.users_count < 10)))
+  }
+
   goUndercover(event?:any) {
     if (event) {
       event.stopPropagation();
@@ -558,10 +565,7 @@ export class ChatPage {
     // Disable main button on view load
     this.chatPrvd.isMainBtnDisabled = true;
 
-    let network = this.chatPrvd.getNetwork();
-    if (this.isUndercover &&
-       (network == 'undefined' || network == null ||
-       (network && network.users_count < 10))) {
+    if (this.checkForNetwork()) {
       this.toolsPrvd.pushPage(NetworkFindPage);
       // Enable main button after view loaded
       this.chatPrvd.isMainBtnDisabled = false;
@@ -938,7 +942,6 @@ export class ChatPage {
           scrollEl.style.bottom = res.keyboardHeight + 'px';
           // scrollEl.style.margin = '0px 0px ' + res.keyboardHeight + 70 + 'px 0px';
           footerEl.style.bottom = res.keyboardHeight + 'px';
-
           // this.contentMargin = res.keyboardHeight + 70 + 'px';
           this.isFeedbackClickable = false;
         } catch (e) {
@@ -987,7 +990,6 @@ export class ChatPage {
         this.chatPrvd.postBtn.setState(false);
       }
       // }, chatAnim/2 + 1);
-
     }, err => {
       // console.log(err);
     });

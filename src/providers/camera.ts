@@ -40,7 +40,7 @@ export class Camera {
       this.cameraPreview.startCamera(this.cameraPreviewOpts).then(res => {
         if ((params && params.isCamera && !params.isArea) || cOpt == true) {
           this.cameraPreview.show();
-        } else if ((params && params.isArea) || cOpt == false || cOpt === null){
+        } else if ((params && params.isArea) || cOpt == false || cOpt === null) {
           this.cameraPreview.hide();
         }
       }, err => {

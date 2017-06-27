@@ -290,7 +290,12 @@
   </div>
 
   <div class="tip tail-bottom"
-  *ngIf="chatPrvd.localStorage.get('area_first_time') === null">Your in a new area</div>
+  *ngIf="chatPrvd.localStorage.get('area_first_time') === null &&
+         checkForNetwork()">Your in a new area</div>
+  <div class="tip tail-bottom"
+  *ngIf="chatPrvd.localStorage.get('area_first_time') === null &&
+         !checkForNetwork()">There's no one here yet</div>
+
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
     class="main-action-btn big has-footer transparent chatMainBtn"

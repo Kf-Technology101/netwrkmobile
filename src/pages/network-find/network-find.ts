@@ -27,14 +27,7 @@ export class NetworkFindPage {
     public tools: Tools,
     private platform: Platform,
     public chatPrvd: Chat
-    // public permission: Permission
-  ) {
-    // platform.resume.subscribe(() => {
-    //   if (this.platform.is('cordova')) {
-    //     this.getZipCode();
-    //   }
-    // });
-  }
+  ) {}
 
   go() {
     if (this.platform.is('cordova')) {
@@ -46,20 +39,14 @@ export class NetworkFindPage {
   }
 
   ionViewDidEnter() {
-    console.log('[NetworkFindPage][ionViewDidEnter]');
     this.hideSearch = false;
-    // this.chatPrvd.localStorage.set('chat_zip_code', this.chatPrvd.localStorage.get('test_zip_code'));
     if (!this.skipNetworkFind)
       this.getZipCode();
   }
 
   private getZipCode() {
     this.gps.getMyZipCode().then(zipRes => {
-      // alert(JSON.stringify(zipRes));
-      console.log('[NetworkFindPage][getZipCode] zipRes ', zipRes);
-      this.gps.getNetwrk(zipRes.zip_code).subscribe(res => {
-        // alert(JSON.stringify(res));
-        console.log('[NetworkFindPage][getZipCode] res ', res);
+      let getNet = this.gps.getNetwrk(zipRes.zip_code).subscribe(res => {
         let post_code: number = res.network ? res.network.post_code : null;
         let params: any = {
           zipCode: post_code,
@@ -71,14 +58,11 @@ export class NetworkFindPage {
           params.action = 'create';
           this.tools.pushPage(NetworkNoPage, params);
         } else {
-          console.log(this.chatPrvd.chatZipCode(), post_code)
-          if ((this.chatPrvd.chatZipCode() == post_code &&
-            res.network.users_count && res.network.users_count >= 10)
-            || res.network.users_count && res.network.users_count >= 10
-          ) {
+          if (res.network.users_count && res.network.users_count >= 10) {
             params.action = this.chatPrvd.getState();
-            console.log(params.action);
-            this.tools.pushPage(ChatPage, params);
+            // params.action = 'area';
+            // this.tools.pushPage(ChatPage, params);
+            this.navCtrl.setRoot(ChatPage, params);
           } else {
             params.action = 'join';
             this.tools.pushPage(NetworkPage, params);
@@ -88,17 +72,16 @@ export class NetworkFindPage {
         }
       }, err => this.tools.errorHandler(err));
     }, err => {
-      console.log('[getZipCode] err:', err);
+      console.error('[getZipCode] err:', err);
       if (err.code && err.code == 1) {
         this.tools.showToast(err.message, null, 'bottom');
-        // this.permission.geolocationPermission();
       }
     });
   }
 
   ngOnInit():void {
     if (this.navParams.get('action') == 'undercover') {
-      this.tools.pushPage(ChatPage, {
+      this.navCtrl.setRoot(ChatPage, {
         action: 'undercover'
       });
     } else {

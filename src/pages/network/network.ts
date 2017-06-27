@@ -82,7 +82,7 @@ export class NetworkPage {
         action: this.chatPrvd.getState()
       };
 
-      this.toolsPrvd.pushPage(ChatPage, params);
+      this.navCtrl.setRoot(ChatPage, params);
     } else {
       switch(this.action) {
         case 'create':
@@ -146,7 +146,7 @@ export class NetworkPage {
 
       this.chatPrvd.setZipCode(this.chatPrvd.localStorage.get('chat_zip_code'));
       this.chatPrvd.setState(params.action);
-      this.toolsPrvd.pushPage(ChatPage, params);
+      this.navCtrl.setRoot(ChatPage, params);
     } else {
       this.toolsPrvd.showToast(this.textStrings.joined);
       this.accessed = true;

@@ -1,12 +1,14 @@
 <ion-header class="incognito-header">
   <ion-toolbar>
-    <div class="drag-container">
+    <div class="drag-container" style="pointer-events: none">
       <div class="dragline">
         <span class="info">
           <span class="username" ion-text color="bk">Choose a character</span>
         </span>
-        <ion-icon></ion-icon>
-        <img class="draggable-element" [src]="user.avatar_url">
+        <!-- <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon"> -->
+        <img class="draggable-element"
+          [src]="slideAvatarPrvd.sliderPosition == 'right' ?
+            activePerson.imageUrl : user.avatar_url">
       </div>
     </div>
   </ion-toolbar>

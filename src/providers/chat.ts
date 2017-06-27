@@ -12,6 +12,10 @@ import * as moment from 'moment';
 import { Toggleable } from '../includes/toggleable';
 import { MainButton } from '../includes/mainButton';
 
+// Pages
+import { NetworkNoPage } from '../pages/network-no/network-no';
+import { NetworkPage } from '../pages/network/network';
+
 // Gallery
 import { ImagePicker } from 'ionic-native';
 import { Camera } from '../providers/camera';
@@ -93,12 +97,7 @@ export class Chat {
   }
 
   public playSound() {
-    let audioName = new Audio('assets/sound/m' + Math.floor(Math.random() * 8) + '.mp3');
-    if (audioName) {
-      audioName.play();
-    } else {
-      console.error('Error playing sound. audioName:', audioName);
-    }
+    this.sounds.message.play();
   }
 
   public blockPost(messageID:number) {
@@ -141,6 +140,14 @@ export class Chat {
     let feed = this.api.post(link, data).share();
     let feedMap = feed.map(res => res.json());
     return feedMap;
+  }
+
+  public closeSockets() {
+    try {
+      this.ng2cable.unsubscribe();
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   public socketsInit() {

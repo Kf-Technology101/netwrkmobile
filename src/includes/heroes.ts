@@ -1,4 +1,9 @@
 export const heroes: any = {
+  default: {
+    name: 'Undercover',
+    description: 'Go undercover',
+    imageUrl: 'assets/images/persons/incognito.png'
+  },
   male: {
     13: [
       {

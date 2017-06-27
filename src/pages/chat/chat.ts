@@ -214,7 +214,7 @@ export class ChatPage {
   }
 
   private changePlaceholderText() {
-    this.placeholderText = this.isUndercover ? 'On your location...' : 'Share with your area';
+    this.placeholderText = this.isUndercover ? 'Tap to hang anything on this spot' : 'Tap to broadcast to this area';
   }
 
   generateEmoticons() {
@@ -1016,24 +1016,31 @@ export class ChatPage {
         updated_at: '2017-04-22T14:59:29.921Z',
       }
 
-    if (!this.user.role_image_url) this.user.role_image_url = this.toolsPrvd.defaultAvatar;
+    if (!this.user.role_image_url)
+      this.user.role_image_url = this.toolsPrvd.defaultAvatar;
+
     this.textStrings.sendError = 'Error sending message';
     this.textStrings.noNetwork = 'Netwrk not found';
     this.textStrings.require = 'Please fill all fields';
 
     let action = this.navParams.get('action');
+    console.log('chat action:', action);
     if (action) {
       this.chatPrvd.setState(action);
-      this.isUndercover = this.undercoverPrvd.setUndercover(action == 'undercover');
+      this.isUndercover = this.undercoverPrvd
+      .setUndercover(action == 'undercover');
     } else {
-      this.isUndercover = this.undercoverPrvd.setUndercover(this.chatPrvd.getState() == 'undercover');
+      this.isUndercover = this.undercoverPrvd
+      .setUndercover(this.chatPrvd.getState() == 'undercover');
     }
 
     this.flipHover = this.isUndercover ? true : false;
 
     this.changePlaceholderText();
 
-    this.networkParams = { post_code: this.chatPrvd.localStorage.get('chat_zip_code') };
+    this.networkParams = {
+      post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+    };
     this.hostUrl = this.chatPrvd.hostUrl;
 
     this.gpsPrvd.changeZipCallback = this.changeZipCallback.bind(this);
@@ -1051,7 +1058,13 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+    this.chatPrvd.postMessages = [];
+    console.warn('[CHAT] Did enter');
+    if (!this.componentLoaded)
+      this.constructorLoad();
+
     if (this.chatPrvd.localStorage.get('area_first_time') === null) {
+      this.goUndercover();
       let global = this.renderer.listen('document', 'click', (evt) => {
         console.log('Clicking the document', evt);
         this.chatPrvd.localStorage.set('area_first_time', false);
@@ -1059,17 +1072,12 @@ export class ChatPage {
       });
     }
 
-    this.chatPrvd.postMessages = [];
-    console.warn('[CHAT] Did enter');
-    if (!this.componentLoaded)
-      this.constructorLoad();
-
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
 
     let providedStateFromGps = this.navParams.get('action_from_gps');
     if (providedStateFromGps == 'undercover') {
       this.isUndercover = true;
-      this.chatPrvd.setState(providedStateFromGps);
+      this.chatPrvd.setState('undercover');
     }
     // init sockets
     this.chatPrvd.socketsInit();
@@ -1100,8 +1108,7 @@ export class ChatPage {
 
     if (this.chatPrvd.getState() == 'area')
       this.updateMessagesAndScrollDown();
-    // else
-    if (this.chatPrvd.getState() == 'undercover') {
+    else if (this.chatPrvd.getState() == 'undercover') {
       this.runUndecoverSlider(this.pageTag);
       this.startMessageUpdateTimer();
     }
@@ -1118,6 +1125,7 @@ export class ChatPage {
   }
 
   ionViewWillLeave() {
+    this.chatPrvd.closeSockets();
     this.toggleContainer(this.emojiContainer, 'hide');
     this.toggleContainer(this.shareContainer, 'hide');
     // console.log('[UNDERCOVER.ts] viewWillLeave');

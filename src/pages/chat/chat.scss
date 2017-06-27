@@ -123,7 +123,7 @@ modal-legendaryhistory {
       bottom: 190px;
       width: 160px;
       z-index: 2;
-      &.tail-bottom:before {
+    &.tail-bottom:before {
         width: 60px;
         top: 13px;
       }
@@ -212,6 +212,7 @@ modal-legendaryhistory {
     &.has-post-btn {
       .post-message {
         border-radius: 23px;
+        margin-right: -1px;
       }
     }
     .item-inner {
@@ -522,7 +523,7 @@ modal-legendaryhistory {
           padding: 6px;
           padding-left: 32px;
           padding-right: 25px;
-          margin-right: 50px;
+          margin-right: 58px;
           position: relative;
           z-index: 2;
           border: 1px solid #f9f9f9;
@@ -594,7 +595,7 @@ modal-legendaryhistory {
           height: 42px;
           border-radius: 13px;
           position: absolute;
-          right: 4px;
+          right: 12px;
           top: 0;
           z-index: 3;
           background: url(../assets/icon/like.svg) no-repeat center;
@@ -689,7 +690,8 @@ modal-legendaryhistory {
       // padding-bottom: 16px;
       .toolbar {
         border-bottom: 1px solid color($colors, bk);
-
+        padding-left: 0;
+        padding-right: 0;
         &.area-head {
           background: url('../assets/icon/logo.png') no-repeat center;
           background-size: auto 26px;
@@ -715,12 +717,12 @@ modal-legendaryhistory {
 
             &.user-icon {
               float: left;
-              margin-left: 16px;
+              margin-left: 12px;
             }
 
             &.legendary-icon {
               float: right;
-              margin-right: 16px;
+              margin-right: 12px;
             }
           }
         }

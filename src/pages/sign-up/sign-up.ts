@@ -18,7 +18,7 @@ import { SignUpConfirmPage } from '../sign-up-confirm/sign-up-confirm';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
 // import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 // import { ProfileSettingPage } from '../profile-setting/profile-setting';
-import { NetworkFindPage } from '../network-find/network-find';
+// import { NetworkFindPage } from '../network-find/network-find';
 
 // Providers
 import { Auth } from '../../providers/auth';

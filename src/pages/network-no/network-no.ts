@@ -58,7 +58,7 @@ export class NetworkNoPage {
 
     this.chatPrvd.setZipCode(params.zipCode);
     this.chatPrvd.setState(params.action);
-    this.tools.pushPage(ChatPage, params);
+    this.navCtrl.setRoot(ChatPage, params);
   }
 
   goFaq() {

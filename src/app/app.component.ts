@@ -66,38 +66,35 @@ export class MyApp {
       switch (authType) {
         case 'facebook':
           this.authPrvd.getFbLoginStatus().then(data => {
+            let root:any;
             if (data.status && data.status == 'connected') {
-              this.rootPage = this.undercoverPrvd.getCharacterPerson(
+              root = this.undercoverPrvd.getCharacterPerson(
               UndercoverCharacterPage, NetworkFindPage, ChatPage)
-            } else {
-              this.rootPage = LogInPage;
             }
-              // if (rootPage == NetworkFindPage) {
-              //   this.app.getRootNav().setRoot(ChatPage, {
-              //     action: 'undercover'
-              //   });
-              // } else {
-              //   this.rootPage = rootPage;
-              // }
+            if (root == NetworkFindPage) {
+              this.app.getRootNav().setRoot(ChatPage, {
+                action: 'undercover'
+              });
+            } else {
+              this.rootPage = root;
+            }
             this.splashScreen.hide();
           });
           break;
         case 'email':
           let fbConnected = this.authPrvd.getFbConnected();
-          // let rootPage:any;
+          let root:any;
           if (fbConnected) {
-            this.rootPage = this.undercoverPrvd.getCharacterPerson(
+            root = this.undercoverPrvd.getCharacterPerson(
             UndercoverCharacterPage, NetworkFindPage, ChatPage)
+          }
+          if (root == NetworkFindPage) {
+            this.app.getRootNav().setRoot(ChatPage, {
+              action: 'undercover'
+            });
           } else {
-            this.rootPage = LogInPage;
-          };
-          // if (rootPage == NetworkFindPage) {
-          //   this.app.getRootNav().setRoot(ChatPage, {
-          //     action: 'undercover'
-          //   });
-          // } else {
-          //   this.rootPage = rootPage;
-          // }
+            this.rootPage = root;
+          }
 
           this.splashScreen.hide();
           break;

@@ -22,7 +22,7 @@ import * as moment from 'moment';
 })
 export class UndercoverCharacterPage {
   @ViewChild(Slides) slides: Slides;
-  public persons: Array<any>;
+  public persons: Array<any> = [];
   public activePerson: any = {
     name: '',
     description: '',
@@ -78,7 +78,15 @@ export class UndercoverCharacterPage {
     } else {
       age = 40;
     }
-    this.persons = heroes[this.user.gender][age];
+    this.persons.push(heroes.default);
+    for (let i = 0; i < heroes[this.user.gender][age].length; i++) {
+      this.persons.push(heroes[this.user.gender][age][i]);
+    }
+    let defaultHero = this.persons[0];
+    let secondHero = this.persons[1];
+    this.persons[0] = secondHero;
+    this.persons[1] = defaultHero;
+    console.log('persons:', this.persons);
   }
 
   private changeSlider() {
@@ -103,8 +111,9 @@ export class UndercoverCharacterPage {
   ionViewDidLoad() {
     this.slides.ionSlideWillChange.subscribe(() => {
       let activeIndex = this.slides.getActiveIndex();
-
-      if (!this.sliderLoaded) setTimeout(() => { this.sliderLoaded = true; }, 500);
+      if (!this.sliderLoaded) setTimeout(() => {
+        this.sliderLoaded = true;
+      }, 500);
       if (this.persons[activeIndex]) this.activePerson = this.persons[activeIndex];
       if (activeIndex !== this.slides.length() - 2) this.changeSlider();
     });

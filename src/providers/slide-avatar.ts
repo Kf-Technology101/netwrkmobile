@@ -55,6 +55,7 @@ export class SlideAvatar {
     if (this.storage.get('chat_state') == 'area') {
       this.sliderPosition = 'left';
     }
+    let intervalCleared:boolean = false;
     let initInterval = setInterval(() => {
       let currentView = document.querySelector(pageTag);
 
@@ -67,6 +68,7 @@ export class SlideAvatar {
 
         if (this.selectedItem) {
           clearInterval(initInterval);
+          intervalCleared = true;
           if (this.storage.get('slider_position') === null) {
             this.sliderPosition = 'right';
             this.setSliderDimentions();
@@ -81,10 +83,12 @@ export class SlideAvatar {
         }
       }
     }, 100);
-    setTimeout(() => {
-      console.info('Stoping slider\'s init infinite loop...');
-      clearInterval(initInterval);
-    }, 3000);
+    if (initInterval && !intervalCleared) {
+      setTimeout(() => {
+        console.info('Stoping slider\'s init infinite loop...');
+        clearInterval(initInterval);
+      }, 3000);
+    }
   }
 
   private setSliderDimentions() {

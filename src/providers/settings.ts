@@ -17,7 +17,7 @@ export class Settings {
       let camOpt:boolean = this.storage.get('enable_uc_camera');
       this.storage.set('enable_uc_camera', !camOpt);
     } else {
-      this.storage.set('enable_uc_camera', false);
+      this.storage.set('enable_uc_camera', true);
     }
     this.ucCameraState = this.getUCCameraState();
   }
@@ -25,6 +25,6 @@ export class Settings {
   public getUCCameraState():string {
     let camState:any = this.storage.get('enable_uc_camera');
     if (camState !== null) return camState ? 'On' : 'Off';
-    else return 'On';
+    else return 'Off';
   }
 }

@@ -165,12 +165,13 @@
     },
     "com.synconset.imagepicker": {
         "source": {
-            "type": "git",
-            "url": "https://github.com/Telerik-Verified-Plugins/ImagePicker",
-            "subdir": "."
+            "type": "registry",
+            "id": "https://github.com/Telerik-Verified-Plugins/ImagePicker.git"
         },
         "is_top_level": true,
-        "variables": {}
+        "variables": {
+            "PHOTO_LIBRARY_DESCRIPTION": "image picker"
+        }
     },
     "twitter-connect-plugin": {
         "source": {

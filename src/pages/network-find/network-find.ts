@@ -46,7 +46,7 @@ export class NetworkFindPage {
 
   private getZipCode() {
     this.gps.getMyZipCode().then(zipRes => {
-      let getNet = this.gps.getNetwrk(zipRes.zip_code).subscribe(res => {
+      this.gps.getNetwrk(zipRes.zip_code).subscribe(res => {
         let post_code: number = res.network ? res.network.post_code : null;
         let params: any = {
           zipCode: post_code,

@@ -48,11 +48,11 @@
 
   <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state"
     class="post-timer">
-    <button (click)="setPostTimer(0)">None</button>
-    <button (click)="setPostTimer(1)">10 hours</button>
-    <button (click)="setPostTimer(2)">1 day</button>
-    <button (click)="setPostTimer(3)">1 week</button>
-    <button (click)="setPostTimer(4)">1 month</button>
+    <button (tap)="hideTopSlider('timer')">None</button>
+    <button (tap)="setPostTimer(1)">10 hours</button>
+    <button (tap)="setPostTimer(2)">1 day</button>
+    <button (tap)="setPostTimer(3)">1 week</button>
+    <button (tap)="setPostTimer(4)">1 month</button>
   </ion-toolbar>
 
   <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state"
@@ -113,7 +113,7 @@
   (chatPrvd.localStorage.get('enable_uc_camera') == false ||
     chatPrvd.localStorage.get('enable_uc_camera') === null)}"
   [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin}"
-  (ionScroll)="ionScroll()">
+  (ionScroll)="areaScroll()">
   <ion-refresher *ngIf="chatPrvd.getState() != 'area'"
                 (ionRefresh)="refreshChat($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios">
@@ -227,7 +227,7 @@
 
   <div #shareCont item-content class="gallery-container share-container"
     [hidden]="shareContainer.hidden" [@containerState]="shareContainer.state">
-    <ion-toolbar>
+    <ion-toolbar [ngClass]="{ 'no-events' : !socialLoaderHidden }">
       <div class="slide-container sl-facebook">
         <div #slfb [ngClass]="{'active': shareCheckbox.facebook}" class="toggle-el"
           (click)="toggleShareSlider('facebook')">
@@ -267,6 +267,10 @@
     </ion-toolbar>
 
     <div ion-content class="share-content">
+
+      <ion-spinner name="ios" class="share-spinner"
+      [hidden]="socialLoaderHidden"></ion-spinner>
+
       <ng-container *ngFor="let post of socialPosts">
 
         <ng-container  *ngIf="post.text_with_links || post.image_urls.length > 0">
@@ -291,15 +295,17 @@
 
   <div class="tip tail-bottom"
   *ngIf="chatPrvd.localStorage.get('area_first_time') === null &&
-         checkForNetwork()">Your in a new area</div>
+         chatPrvd.networkAvailable">Your in a new area</div>
   <div class="tip tail-bottom"
   *ngIf="chatPrvd.localStorage.get('area_first_time') === null &&
-         !checkForNetwork()">There's no one here yet</div>
+         !chatPrvd.networkAvailable">There's no one here yet</div>
 
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
     class="main-action-btn big has-footer transparent chatMainBtn"
-    (click)="goUndercover($event)" [disabled]="chatPrvd.isMainBtnDisabled">
+    (click)="goUndercover($event)" [disabled]="chatPrvd.isMainBtnDisabled"
+    [ngClass]="{ 'anim-glow' : chatPrvd.networkAvailable &&
+                  chatPrvd.localStorage.get('area_first_time') === null }">
       <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"
         *ngIf="chatPrvd.mainBtn.getState() == 'minimised'"
         class="small"></ion-icon>

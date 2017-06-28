@@ -38,7 +38,7 @@ export class Gps {
     // console.log('GPS Provider');
   }
 
-  getNetwrk(zipCode: number): any {
+  public getNetwrk(zipCode: number): any {
     let seq = this.api.get('networks', { post_code: zipCode }).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;

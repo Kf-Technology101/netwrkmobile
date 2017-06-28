@@ -71,6 +71,7 @@ export class Chat {
   public user:any;
 
   public isMessagesVisible: boolean = false;
+  public networkAvailable:boolean = false;
 
   constructor(
     public localStorage: LocalStorage,
@@ -90,6 +91,22 @@ export class Chat {
     // console.log('Hello Chat Provider');
     this.hostUrl = this.api.hostUrl;
     this.user = this.authPrvd.getAuthData();
+  }
+
+  public detectNetwork():any {
+    return new Promise((resolve, reject) => {
+      this.gps.getMyZipCode().then(zipRes => {
+        this.gps.getNetwrk(zipRes.zip_code).subscribe(res => {
+          console.log('(detectNetwork) res:', res);
+          resolve(res);
+        }, err => {
+          console.error(err);
+          reject(err);
+        });
+      }, err => {
+        console.error(err);
+      });
+    });
   }
 
   public updateAvatarUrl(event: any) {

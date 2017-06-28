@@ -93,6 +93,16 @@ export class LogInPage {
     }
   }
 
+  private skipNetworkFindPage() {
+    this.chatPrvd.detectNetwork().then(res => {
+      this.navCtrl.setRoot(NetworkFindPage, {
+        action: 'undercover'
+      });
+    }, err => {
+      console.error(err);
+    });
+  }
+
   doLogin(form: any) {
     console.log(form);
     if (form.invalid) {
@@ -109,7 +119,11 @@ export class LogInPage {
         this.undercoverPrvd.getCharacterPerson(
           UndercoverCharacterPage, NetworkFindPage) :
         SignUpFacebookPage;
-      this.tools.pushPage(page);
+      if (page == NetworkFindPage) {
+        this.skipNetworkFindPage();
+      } else {
+        this.tools.pushPage(page);
+      }
     }, err => {
       this.tools.showToast(this.textStrings.login);
       this.tools.hideLoader();
@@ -132,7 +146,11 @@ export class LogInPage {
             this.tools.hideLoader();
             let page = this.undercoverPrvd.getCharacterPerson(
               UndercoverCharacterPage, NetworkFindPage);
-            this.tools.pushPage(page);
+            if (page == NetworkFindPage) {
+              this.skipNetworkFindPage();
+            } else {
+              this.tools.pushPage(page);
+            }
           }
         } else  {
           this.tools.hideLoader();

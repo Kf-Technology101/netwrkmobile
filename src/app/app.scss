@@ -306,7 +306,7 @@ ion-app .ion-page .content {
   }
   .toggle-el {
     position: relative;
-    width: 110px;
+    width: 100px;
     margin: 0 auto;
     border-radius: 13px;
     height: 26px;
@@ -336,7 +336,7 @@ ion-app .ion-page .content {
       box-shadow: 0px 5px 9px -4px rgba(0, 0, 0, .3);
       transition: all 0.3s ease-out;
       &.right{
-        left: 85px;
+        left: 75px;
       }
       .icon {
         line-height: 28px;

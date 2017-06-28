@@ -233,7 +233,7 @@
           (click)="toggleShareSlider('facebook')">
           <span class="toggle-state" *ngIf="shareCheckbox.facebook">on</span>
           <span class="toggle-state" *ngIf="!shareCheckbox.facebook">off</span>
-          <div [ngClass]="{'right': shareCheckbox.facebook}" class="toggleable">
+          <div [ngClass]="{ 'right' : shareCheckbox.facebook }" class="toggleable">
             <ion-icon ios="logo-facebook" md="logo-facebook"></ion-icon>
           </div>
           <input type="checkbox" [checked]="shareCheckbox.facebook">
@@ -252,7 +252,7 @@
         </div>
       </div> -->
 
-      <div class="slide-container sl-twitter">
+      <div class="slide-container sl-twitter" *ngIf="chatPrvd.checkSocialData('twitter')">
         <div #sltw [ngClass]="{'active': shareCheckbox.twitter}" class="toggle-el"
           (click)="toggleShareSlider('twitter')">
           <span class="toggle-state" *ngIf="shareCheckbox.twitter">on</span>

@@ -37,13 +37,6 @@ export class ProfilePage {
   public ownProfile: boolean;
   private postLoaded: boolean = false;
 
-  connect: any = {
-    facebook: false,
-    instagram: false,
-    twitter: false,
-    snapchat: false
-  };
-
   public user: any = {};
   public profileTypePublic: boolean;
   private fbFriends: any = [];
@@ -83,12 +76,12 @@ export class ProfilePage {
   }
 
   ngAfterViewInit() {
-    this.connect.facebook = this.socialPrvd.getFacebookData();
-    this.connect.instagram = this.socialPrvd.getInstagramData();
-    this.connect.twitter = this.socialPrvd.getTwitterData();
-    this.connect.snapchat = false;
+    this.socialPrvd.connect.facebook = this.socialPrvd.getFacebookData();
+    this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
+    this.socialPrvd.connect.twitter = this.socialPrvd.getTwitterData();
+    this.socialPrvd.connect.snapchat = false;
 
-    console.log(this.connect.facebook);
+    console.log(this.socialPrvd.connect.facebook);
   }
 
   getFbProfile(userId) {
@@ -115,37 +108,9 @@ export class ProfilePage {
       this.nativeInputBtn.nativeElement, 'dispatchEvent', [clickEvent]);
   }
 
-  connectToFacebook() {
-    // this.social.connectToFacebook().then(res => {
-    //   this.connect.facebook = this.social.getFacebookData();
-    //   this.toolsPrvd.showToast('Facebook already connected');
-    // });
-    // this.social.getFbPermission();
-    //
-    // let confirm = this.alertCtrl.create({
-    //   title: 'Facebook authentication',
-    //   message: 'You need to sign into Facebook to use this feature. Sign in now?',
-    //   buttons: [
-    //     {
-    //       text: 'Cancel',
-    //       handler: () => {
-    //         console.log('Disagree clicked');
-    //       }
-    //     },
-    //     {
-    //       text: 'OK',
-    //       handler: () => {
-    //         console.log('Agree clicked');
-    //       }
-    //     }
-    //   ]
-    // });
-    // confirm.present();
-  }
-
   connectToInstagram() {
     this.socialPrvd.connectToInstagram().then(res => {
-      this.connect.instagram = this.socialPrvd.getInstagramData();
+      this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
       this.toolsPrvd.showToast('Instagram successfully connected');
     }, err => {
 

@@ -17,5 +17,4 @@ export class Permission {
   public geolocationPermission() {
     console.log(this.diagnostic);
   }
-
 }

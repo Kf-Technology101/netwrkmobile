@@ -370,18 +370,17 @@ modal-legendaryhistory {
   }
 
   div.share-container {
-    & {
-      border-top: none;
-      background-color: #f5f2f3;
-      padding: 0;
-    }
+    border-top: none;
+    background-color: #f5f2f3;
+    padding: 0;
     .toolbar{
-      &{
-        position: absolute;
-        left: 0;
-        top: 0;
-        padding: 0;
-        background: #e0e0e0;
+      position: absolute;
+      left: 0;
+      top: 0;
+      padding: 0;
+      background: #e0e0e0;
+      &.no-events {
+        pointer-events: none;
       }
       .toolbar-background{
         border: none;
@@ -397,20 +396,18 @@ modal-legendaryhistory {
       padding-bottom: 110px;
       width: 100%;
       box-sizing: border-box;
-      .social-posts-spinner {
-        margin-top: 15px;
+      .share-spinner {
+        top: 50px;
       }
       p.message{
-        & {
-          font-size: 12px;
-          text-align: left;
-          border-radius: 13px;
-          background: color($colors, white);
-          padding: 15px 10px 15px 40px;
-          position: relative!important;
-          margin: 0;
-          width: 100%;
-        }
+        font-size: 12px;
+        text-align: left;
+        border-radius: 13px;
+        background: color($colors, white);
+        padding: 15px 10px 15px 40px;
+        position: relative!important;
+        margin: 0;
+        width: 100%;
       }
 
       p.message:before,

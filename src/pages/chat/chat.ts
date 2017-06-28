@@ -21,6 +21,7 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 import { CameraPage } from '../camera/camera';
 import { NetworkFindPage } from '../network-find/network-find';
 import { ProfilePage } from '../profile/profile';
+import { NetworkNoPage } from '../network-no/network-no';
 
 // Custom libs
 import { Toggleable } from '../../includes/toggleable';
@@ -158,6 +159,8 @@ export class ChatPage {
     expireDate: null,
     time: null
   };
+
+  private socialLoaderHidden:boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -545,6 +548,13 @@ export class ChatPage {
     legModal.present();
   }
 
+  public checkForNetwork() {
+    let network = this.chatPrvd.getNetwork();
+    return (this.isUndercover &&
+       (network == 'undefined' || network == null ||
+       (network && network.users_count < 10)));
+  }
+
   goUndercover(event?:any) {
     if (event) {
       event.stopPropagation();
@@ -558,11 +568,15 @@ export class ChatPage {
     // Disable main button on view load
     this.chatPrvd.isMainBtnDisabled = true;
 
-    let network = this.chatPrvd.getNetwork();
-    if (this.isUndercover &&
-       (network == 'undefined' || network == null ||
-       (network && network.users_count < 10))) {
-      this.toolsPrvd.pushPage(NetworkFindPage);
+    if (this.checkForNetwork()) {
+      // this.toolsPrvd.pushPage(NetworkFindPage);
+      this.chatPrvd.detectNetwork().then(res => {
+        if (res.message == 'Network not found') {
+          this.toolsPrvd.pushPage(NetworkNoPage, {
+            action: 'create'
+          });
+        }
+      })
       // Enable main button after view loaded
       this.chatPrvd.isMainBtnDisabled = false;
       return;
@@ -618,6 +632,7 @@ export class ChatPage {
   public getSocialPosts() {
     this.socialPosts = [];
     let socials = [];
+    this.socialLoaderHidden = false;
     console.log('this.shareCheckbox:', this.shareCheckbox);
     for (let i in this.shareCheckbox) {
       if (this.shareCheckbox[i]) {
@@ -627,11 +642,15 @@ export class ChatPage {
     console.log('socials:', socials);
     if (socials.length > 0) {
       this.socialPrvd.getSocialPosts(socials).subscribe(res => {
+        this.socialLoaderHidden = true;
         console.log('[getSocialPosts] res:', res);
         this.socialPosts = res.messages;
       }, err => {
+        this.socialLoaderHidden = true;
         console.error('[getSocialPosts] err:', err);
       });
+    } else {
+      this.socialLoaderHidden = true;
     }
   }
 
@@ -764,11 +783,10 @@ export class ChatPage {
     });
   }
 
-  ionScroll() {
+  private areaScroll() {
     if (!this.postLoaded) {
       let dimensions = this.content.getContentDimensions();
-      if (!this.postLoading
-        && dimensions.scrollTop < (dimensions.scrollHeight - 400)) {
+      if (dimensions.scrollTop < (dimensions.scrollHeight - 400)) {
         this.postLoading = true;
         this.refreshChat();
       }
@@ -776,35 +794,35 @@ export class ChatPage {
   }
 
   refreshChat(refresher?:any) {
-    if (this.chatPrvd.getState() == 'area')
-      this.postLoading = true;
-    // console.log('Begin async operation', refresher);
-    this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
-    .subscribe(res => {
-      // console.log('[REFRESHER] postMessages:', this.chatPrvd.postMessages);
-      console.log('[REFRESHER] res:', res);
-      res = this.chatPrvd.organizeMessages(res.messages);
-      if (this.chatPrvd.getState() != 'area') {
-        for (let i in res) {
-          this.chatPrvd.postMessages.unshift(res[i]);
+    if (this.canRefresh) {
+      this.postLoading = this.chatPrvd.getState() == 'area';
+      // console.log('Begin async operation', refresher);
+      this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
+      .subscribe(res => {
+        // console.log('[REFRESHER] postMessages:', this.chatPrvd.postMessages);
+        console.log('[REFRESHER] res:', res);
+        res = this.chatPrvd.organizeMessages(res.messages);
+        if (this.chatPrvd.getState() != 'area') {
+          for (let i in res) {
+            this.chatPrvd.postMessages.unshift(res[i]);
+          }
+        } else {
+          if (res.length == 0) {
+            this.postLoaded = true;
+          }
+          for (let i in res)
+            this.chatPrvd.postMessages.push(res[i]);
+          this.postLoading = false;
         }
-      } else {
-        if (res.length == 0) {
-          this.postLoaded = true;
-        }
-        for (let i in res) {
-          this.chatPrvd.postMessages.push(res[i]);
-        }
-        this.postLoading = false;
-      }
-      this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
-      if (refresher)
-        refresher.complete();
-    }, err => {
-      if (refresher)
-        refresher.complete();
-      // console.error('[getMessages] Err:', err);
-    });
+        this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
+        if (refresher) refresher.complete();
+      }, err => {
+        if (refresher) refresher.complete();
+        // console.error('[getMessages] Err:', err);
+      });
+    } else {
+      if (refresher) refresher.complete();
+    }
   }
 
   sortById(messageA, messageB) {
@@ -938,7 +956,6 @@ export class ChatPage {
           scrollEl.style.bottom = res.keyboardHeight + 'px';
           // scrollEl.style.margin = '0px 0px ' + res.keyboardHeight + 70 + 'px 0px';
           footerEl.style.bottom = res.keyboardHeight + 'px';
-
           // this.contentMargin = res.keyboardHeight + 70 + 'px';
           this.isFeedbackClickable = false;
         } catch (e) {
@@ -987,7 +1004,6 @@ export class ChatPage {
         this.chatPrvd.postBtn.setState(false);
       }
       // }, chatAnim/2 + 1);
-
     }, err => {
       // console.log(err);
     });
@@ -1063,9 +1079,15 @@ export class ChatPage {
     if (!this.componentLoaded)
       this.constructorLoad();
 
+    this.chatPrvd.detectNetwork().then(res => {
+      this.chatPrvd.networkAvailable = res.network ? true : false;
+    }, err => {
+      console.error(err);
+    });
+
     if (this.chatPrvd.localStorage.get('area_first_time') === null) {
-      this.goUndercover();
-      let global = this.renderer.listen('document', 'click', (evt) => {
+      // this.goUndercover();
+      let global = this.renderer.listen('document', 'touchstart', (evt) => {
         console.log('Clicking the document', evt);
         this.chatPrvd.localStorage.set('area_first_time', false);
         global();

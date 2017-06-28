@@ -74,6 +74,67 @@
   }
 }
 
+// iPad fixes
+ion-app {
+  .platform-ipad {
+    page-network-no {
+      .row {
+        .be-founder {
+          font-size: 0.6em;
+          line-height: normal;
+        }
+      }
+      .heading {
+        p {
+          &.head {
+            font-size: 0.8em;
+          }
+          &.sub-head {
+            font-size: 0.6em;
+          }
+        }
+      }
+    }
+    page-network-contact-list {
+      .header {
+        .send-messages-header {
+          font-size: 0.8em;
+        }
+      }
+      .list {
+        .item-ios {
+          .text-ios-bk {
+            font-size: 1em;
+          }
+        }
+      }
+    }
+    modal-feedback {
+      ion-content {
+        &.content {
+          ion-list {
+            height: 45%;
+          }
+        }
+      }
+      .toolbar {
+        margin-top: 20px;
+      }
+    }
+    page-chat {
+      .footer {
+        .item {
+          .item-inner {
+            .text-input {
+              font-size: 0.6em;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 ion-app {
   .content[city-bg-animated] {
     .city-container {
@@ -102,55 +163,15 @@ ion-app {
       }
       .faces {
         position: absolute;
-        width: 70px;
-        height: 70px;
-        z-index: 1;
-        &.f-1 {
-          background: url('../assets/images/group_1.svg') no-repeat center;
-          background-size: contain;
-          top: 20%;
-          left: 10%;
-        }
-        &.f-2 {
-          background: url('../assets/images/group_2.svg') no-repeat center;
-          background-size: contain;
-          top: 28%;
-          left: 40%;
-        }
-        &.f-3 {
-          background: url('../assets/images/group_3.svg') no-repeat center;
-          background-size: contain;
-          top: 20%;
-          right: 10%;
-        }
-        &.f-4 {
-          background: url('../assets/images/group_1.svg') no-repeat center;
-          background-size: contain;
-          top: 44%;
-          right: 10%;
-          width: 60px;
-        }
-        &.f-5 {
-          background: url('../assets/images/group_3.svg') no-repeat center;
-          background-size: contain;
-          bottom: 18%;
-          right: 20%;
-          width: 60px;
-        }
-        &.f-6 {
-          background: url('../assets/images/group_2.svg') no-repeat center;
-          background-size: contain;
-          left: 15%;
-          top: 65%;
-          width: 60px;
-        }
-        &.f-7 {
-          background: url('../assets/images/group_1.svg') no-repeat center;
-          background-size: contain;
-          top: 50%;
-          left: 15%;
-          width: 60px;
-        }
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: url('../assets/images/faces_full.svg') no-repeat center;
+        background-size: contain;
+        width: 100%;
+        height: 100%;
+        z-index: 2;
       }
     }
   }
@@ -946,6 +967,9 @@ modal-sharelist {
     align-content: center;
     .row[align-items-center] {
       height: 100%;
+    }
+    .share-spinner {
+      top: 50px;
     }
     .inner-container {
       position: absolute;

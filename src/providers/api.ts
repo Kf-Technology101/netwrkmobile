@@ -9,7 +9,7 @@ export class Api {
   public httpProtocol: string = 'http://';
   private apiV: string = '/api/v1';
   public domain: any = {
-    local: '192.168.1.13:3000',
+    local: '192.168.1.13:2998', // default :3000
     remote: '34.208.20.67' /*'netwrk.com'*/
   };
   public siteDomain: string = this.domain.local;

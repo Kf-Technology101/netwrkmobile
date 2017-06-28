@@ -1,13 +1,7 @@
 <ion-content padding has-main-btn has-main-btn-label city-bg-animated
             id="login-content">
   <div class="city-container">
-    <div class="faces f-1" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-2" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-3" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-4" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-5" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-6" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-7" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+    <div class="faces" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
     <div class="city-bg top"></div>
   </div>
   <ion-grid [@fadeState]="controls.state" [hidden]="controls.hidden"
@@ -16,10 +10,8 @@
       <ion-col text-center>
         <!-- <img src="assets/icon/logo.png"> -->
         <p ion-text color="bk" class="login-caption">
-          To see the "insert" or your area's broadcast, share your location
-        </p>
-        <p ion-text color="bk" class="login-subcaption">
-          (don't worry, you are invisible to everyone else)
+          Naturally, to hang something on a spot, you must share your location.
+          No one can see where you are or what is surrounding you.
         </p>
       </ion-col>
     </ion-row>

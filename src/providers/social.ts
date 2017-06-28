@@ -24,6 +24,14 @@ export class Social {
     'user_posts',
   ];
 
+
+  public connect: any = {
+    facebook: false,
+    instagram: false,
+    twitter: false,
+    snapchat: false
+  };
+
   constructor(
     public http: Http,
     public storage: LocalStorage,
@@ -63,8 +71,7 @@ export class Social {
       this.twitter.login().then(data => {
         let seq = this.api.post('profiles/connect_social',
         {
-          user:
-          {
+          user: {
             token: data.token,
             provider_name: 'twitter',
             secret: data.secret
@@ -77,6 +84,9 @@ export class Social {
           console.error('[Twitter connect] twitter error:', err);
         });
         console.log('[Twitter connect] res:', data);
+        if ((<any>Object).values(data)) {
+          this.connect.twitter = true;
+        }
       }, err => {
         console.error('[Twitter connect] err:', err);
         let alert = this.alertCtrl.create({

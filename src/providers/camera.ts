@@ -39,13 +39,23 @@ export class Camera {
     }).then(() => {
       this.cameraPreview.startCamera(this.cameraPreviewOpts).then(res => {
         if ((params && params.isCamera && !params.isArea) || cOpt == true) {
-          this.cameraPreview.show();
-        } else if ((params && params.isArea) || cOpt == false || cOpt === null){
-          this.cameraPreview.hide();
+          try {
+            this.cameraPreview.show();
+          } catch (err) {
+            console.error(err);
+          }
+        } else if ((params && params.isArea) || cOpt == false || cOpt === null) {
+          try {
+            this.cameraPreview.hide();
+          } catch (err) {
+            console.error(err);
+          }
         }
-      }, err => {
+      }).catch(err => {
         console.error(err);
       });
+    }).catch( err => {
+      console.error(err);
     });
   }
 }

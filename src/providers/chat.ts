@@ -93,6 +93,11 @@ export class Chat {
     this.user = this.authPrvd.getAuthData();
   }
 
+  public checkSocialData(socialName:string):boolean {
+    let socialData = this.localStorage.get('social_auth_data');
+    return socialData[socialName] ? true : false;
+  }
+
   public detectNetwork():any {
     return new Promise((resolve, reject) => {
       this.gps.getMyZipCode().then(zipRes => {

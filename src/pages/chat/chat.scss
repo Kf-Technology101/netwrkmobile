@@ -1,5 +1,6 @@
 page-chat,
-modal-legendaryhistory {
+modal-legendaryhistory,
+page-network-no {
 
   .header {
     &.header::after {
@@ -118,11 +119,12 @@ modal-legendaryhistory {
     }
     .tip {
       color: #fff;
-      font-size: 14px;
-      padding: 3px 2px;
+      font-size: 15px;
+      padding: 3px 10px;
       bottom: 190px;
-      width: 160px;
+      width: auto;
       z-index: 2;
+      display: inline;
     &.tail-bottom:before {
         width: 60px;
         top: 13px;

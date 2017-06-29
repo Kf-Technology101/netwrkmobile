@@ -50,4 +50,39 @@ page-network-no {
   .button-clear {
     text-transform: none;
   }
+  .no-network-toolbar {
+    padding: 12px 0;
+  }
+  .no-network-head {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-around;
+    align-items: center;
+    .connect-to-network {
+      padding: 0 12px;
+      img {
+        min-width: 68px;
+        width: 68px;
+        height: 68px;
+        display: block;
+      }
+      p {
+        margin: 0;
+        color: color($colors, bk);
+        font-size: 12px;
+        margin-top: 12px;
+      }
+    }
+    .no-network-info {
+      margin: 0;
+      font-size: 16px;
+      padding: 0 12px;
+      text-align: left;
+    }
+  }
+  .broadcast-info {
+    text-align: center;
+    margin-top: 3px;
+    font-size: 10px;
+  }
 }

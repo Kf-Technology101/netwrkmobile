@@ -34,28 +34,18 @@ export class Camera {
 
   public toggleCameraBg(params?:any):void {
     let cOpt:any = this.storage.get('enable_uc_camera');
-    this.cameraPreview.stopCamera().then(()=>{}).catch( err => {
-      console.warn(err);
-    }).then(() => {
-      this.cameraPreview.startCamera(this.cameraPreviewOpts).then(res => {
-        if ((params && params.isCamera && !params.isArea) || cOpt == true) {
-          try {
-            this.cameraPreview.show();
-          } catch (err) {
-            console.error(err);
-          }
-        } else if ((params && params.isArea) || cOpt == false || cOpt === null) {
-          try {
-            this.cameraPreview.hide();
-          } catch (err) {
-            console.error(err);
-          }
-        }
-      }).catch(err => {
+    if ((params && params.isCamera && !params.isArea) || cOpt == true) {
+      try {
+        this.cameraPreview.show();
+      } catch (err) {
         console.error(err);
-      });
-    }).catch( err => {
-      console.error(err);
-    });
+      }
+    } else if ((params && params.isArea) || cOpt == false || cOpt === null) {
+      try {
+        this.cameraPreview.hide();
+      } catch (err) {
+        console.error(err);
+      }
+    }
   }
 }

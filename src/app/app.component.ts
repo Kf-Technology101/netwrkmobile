@@ -25,6 +25,7 @@ import { LocalStorage } from '../providers/local-storage';
 import { Tools } from '../providers/tools';
 import { UndercoverProvider } from '../providers/undercover';
 
+import { CameraPreview } from '@ionic-native/camera-preview';
 @Component({
   templateUrl: 'app.html'
 })
@@ -42,7 +43,8 @@ export class MyApp {
     public statusBar: StatusBar,
     public splashScreen: SplashScreen,
     private sim: Sim,
-    private apiPrvd: Api
+    private apiPrvd: Api,
+    private cameraPreview: CameraPreview
   ) {
     platform.registerBackButtonAction(() => {
       this.toolsPrvd.doBackButton();
@@ -55,6 +57,23 @@ export class MyApp {
       this.getLogin();
       this.getSimInfo();
       this.statusBar.styleDefault();
+    });
+
+    let cameraPreviewOpts = {
+      x: 0,
+      y: 0,
+      width: document.documentElement.clientWidth,
+      height: document.documentElement.clientHeight,
+      camera: 'rear',
+      tapPhoto: false,
+      previewDrag: true,
+      toBack: true,
+      alpha: 1
+    }
+
+    this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
+    }).catch(err => {
+      console.error(err);
     });
   }
 

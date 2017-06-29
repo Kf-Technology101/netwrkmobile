@@ -2,6 +2,14 @@ page-profile {
   .slide-container {
     width: 50%;
     margin-bottom: 15px;
+    .toggle-el {
+      width: 110px;
+      .toggleable {
+        .right {
+          left: 85px;
+        }
+      }
+    }
   }
   .header {
     min-height: 44px;

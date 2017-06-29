@@ -555,6 +555,32 @@ export class ChatPage {
        (network && network.users_count < 10)));
   }
 
+  private goArea():void {
+    if (this.messagesInterval) clearInterval(this.messagesInterval);
+    if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
+
+    this.postLockData.hint = null;
+    this.postLockData.password = null;
+    this.postTimerObj.expireDate = null;
+    this.postTimerObj.time = null;
+
+    this.cameraPrvd.toggleCameraBg({
+      isArea: true
+    });
+
+    this.hideTopSlider('lock');
+    this.hideTopSlider('timer');
+
+    this.slideAvatarPrvd.sliderPosition = 'left';
+
+    this.chatPrvd.setState('area');
+
+    this.cameraPreview.hide();
+    this.getUsers();
+    this.updateMessagesAndScrollDown();
+    this.postLoaded = false;
+  }
+
   goUndercover(event?:any) {
     if (event) {
       event.stopPropagation();
@@ -596,27 +622,7 @@ export class ChatPage {
         this.startMessageUpdateTimer();
         this.chatPrvd.scrollToBottom(this.content);
       } else {
-        if (this.messagesInterval) clearInterval(this.messagesInterval);
-        if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
-
-        this.postLockData.hint = null;
-        this.postLockData.password = null;
-        this.postTimerObj.expireDate = null;
-        this.postTimerObj.time = null;
-
-        this.cameraPrvd.toggleCameraBg({
-          isArea: true
-        });
-
-        this.hideTopSlider('lock');
-        this.hideTopSlider('timer');
-
-        this.slideAvatarPrvd.sliderPosition = 'left';
-        this.chatPrvd.setState('area');
-        this.cameraPreview.hide();
-        this.getUsers();
-        this.updateMessagesAndScrollDown();
-        this.postLoaded = false;
+        this.goArea();
       }
       this.content.resize();
       // this.startMessageUpdateTimer();

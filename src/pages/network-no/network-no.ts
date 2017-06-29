@@ -12,6 +12,7 @@ import { Tools } from '../../providers/tools';
 import { UndercoverProvider } from '../../providers/undercover';
 import { Chat } from '../../providers/chat';
 import { Gps } from '../../providers/gps';
+import { Auth } from '../../providers/auth';
 
 import { toggleFade, scaleMainBtn } from '../../includes/animations';
 
@@ -25,10 +26,7 @@ import { toggleFade, scaleMainBtn } from '../../includes/animations';
 })
 export class NetworkNoPage {
 
-  private controls: any = {
-    state: 'fadeOut',
-    hidden: true
-  };
+  private user:any;
 
   constructor(
     public navCtrl: NavController,
@@ -36,9 +34,11 @@ export class NetworkNoPage {
     public tools: Tools,
     public undercoverPrvd: UndercoverProvider,
     public chatPrvd: Chat,
-    public gps: Gps
+    public gps: Gps,
+    public authPrvd: Auth
   ) {
     this.chatPrvd.removeNetwork();
+    this.user = this.authPrvd.getAuthData();
   }
 
   doFounder() {
@@ -65,14 +65,8 @@ export class NetworkNoPage {
     this.tools.pushPage(NetworkFaqPage);
   }
 
-  ionViewDidEnter() {
-    this.controls.hidden = true;
-    this.controls.state = 'fadeOut';
-    setTimeout(() => {
-      this.controls.hidden = false;
-      this.chatPrvd.mainBtn.setState('normal');
-      this.controls.state = 'fadeIn';
-    }, 2000);
+  ionViewWillLeave() {
+    if (this.chatPrvd.localStorage.get('fist_time_noarea') === null)
+      this.chatPrvd.localStorage.set('fist_time_noarea', false);
   }
-
 }

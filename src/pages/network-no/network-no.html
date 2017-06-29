@@ -1,59 +1,49 @@
-<ion-content has-main-btn no-bounce city-bg-animated>
-  <div class="city-container">
-    <div class="faces f-1" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-2" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-3" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-4" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-5" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-6" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="faces f-7" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="city-bg half"></div>
+<ion-header class="chat-header">
+  <div class="netwrk-header">
+    <ion-toolbar class="area-head">
+      <img [src]="user.avatar_url ? user.avatar_url : tools.defaultAvatar"
+        (tap)="chatPrvd.goToProfile(null, true)" class="ic user-icon"
+         (error)="chatPrvd.updateAvatarUrl($event)">
+    </ion-toolbar>
+    <ion-toolbar class="no-network-toolbar">
+      <!-- <ion-slides slidesPerView="4" class="netwrk-slider">
+        <ion-slide class="netwrk-slide"
+          (click)="joinToNetwork()">
+          <div class="avatar add-to-netwrk">
+            <img src="assets/images/netwrk_plus.svg">
+          </div>
+        </ion-slide>
+      </ion-slides> -->
+      <div class="no-network-head">
+        <div class="connect-to-network">
+          <img src="assets/images/netwrk_plus.svg">
+          <p>connect</p>
+        </div>
+        <p ion-text color="bk" class="no-network-info">
+          Once a network of 10 is connected, anyone can broadcast to their area.
+        </p>
+      </div>
+    </ion-toolbar>
+    <p ion-text color="bk" class="broadcast-info">All broadcasts will go here</p>
   </div>
-  <div class="heading" [hidden]="controls.hidden" [@fadeState]="controls.state">
-    <p class="head">
-      A netwrk areacast has not been created here! Once founded, anyone can
-      broadcast to their area.
-    </p>
-    <p class="sub-head">
-      Connect to the netwrk to become a part of the daily areacast. You'll be
-      able to auto-share connected social media to your area (a guaranteed
-      audience boosting followers and awareness), decide what casts are seen
-      in the national area story, and shape the experience by deciding what
-      posts "insert" people are notified of near any location.
-    </p>
-    <p class="sub-head">
-      netwrk was created to localize the world which is needed to build the
-      ideal media system.
-    </p>
-  </div>
-  <ion-row align-items-center [hidden]="hideSearch || controls.hidden"
-           [@fadeState]="controls.state" class="center-absolute">
-    <ion-col text-center>
-      <button class="be-founder" ion-button clear (click)="doFounder()" color="bk">
-        <!-- <ion-icon class="sun-icon"></ion-icon> -->
-        <img src="assets/images/netwrk_plus.svg" class="connect">
-        Be a founder of the areacast
-      </button>
-    </ion-col>
-  </ion-row>
-  <!-- <ion-row align-items-start [hidden]="hideSearch">
-    <ion-col text-center>
-      <span ion-text color="bk">Or</span>
-    </ion-col>
-  </ion-row> -->
+</ion-header>
+
+<ion-content>
+
 </ion-content>
 
 <ion-footer>
+  <div class="tip tail-bottom"
+  *ngIf="chatPrvd.localStorage.get('first_time_noarea') === null">
+    Continue to get your area started
+  </div>
   <button ion-button color="bk" [@mainBtnState]="chatPrvd.mainBtn.getState()"
-    class="main-action-btn medium has-label" outline
-    (click)="goUndercover()" [hidden]="controls.hidden"
-    [@fadeState]="controls.state">
-    <ion-icon class="custom-text-icon">&#8250;</ion-icon>
+    class="main-action-btn medium has-label" outline (tap)="doFounder()">
+    <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline">
+    </ion-icon>
   </button>
-  <!-- <span class="main-action-text" ion-text color="bk">
-    Go undercover
-  </span> -->
-  <!-- <button ion-button class="footer-back-button" (click)="goFaq()" clear hidden>
-    <span ion-text color="bk">Why?</span>
-  </button> -->
+
+  <button ion-button class="footer-back-button" (tap)="goUndercover()" clear>
+    <span ion-text color="bk">Back</span>
+  </button>
 </ion-footer>

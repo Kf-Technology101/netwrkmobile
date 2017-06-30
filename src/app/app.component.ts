@@ -53,13 +53,6 @@ export class MyApp {
       return false;
     });
 
-    platform.ready().then(() => {
-      // this.apiPrvd.watchForConnect(); // watch for network connect
-      // this.apiPrvd.watchForDisconnect(); // watch for network disconnect
-      this.getLogin();
-      this.getSimInfo();
-      this.statusBar.styleDefault();
-    });
 
     let cameraPreviewOpts = {
       x: 0,
@@ -73,16 +66,24 @@ export class MyApp {
       alpha: 1
     }
 
-    permission.checkCameraPermissions().then(permissionOk => {
-      if (permissionOk) {
-        this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
-        }).catch(err => {
-          console.error(err);
-        });
-      }
-      else {
-        console.log('[permission] Camera: balls.');
-      }
+    platform.ready().then(() => {
+      // this.apiPrvd.watchForConnect(); // watch for network connect
+      // this.apiPrvd.watchForDisconnect(); // watch for network disconnect
+      this.getLogin();
+      this.getSimInfo();
+      this.statusBar.styleDefault();
+
+      permission.checkCameraPermissions().then(permissionOk => {
+        if (permissionOk) {
+          this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
+          }).catch(err => {
+            console.error(err);
+          });
+        }
+        else {
+          console.log('[permission] Camera: balls.');
+        }
+      });
     });
   }
 

@@ -29,7 +29,7 @@ export class PermissionsService {
   checkCameraPermissions(): Promise<boolean> {
     return new Promise(resolve => {
       if (!this.pluginsAreAvailable()) {
-        alert('Dev: Camera plugin unavailable.');
+        console.warn('Dev: Camera plugin unavailable.');
         resolve(false);
       }
       else if (this.isiOS()) {

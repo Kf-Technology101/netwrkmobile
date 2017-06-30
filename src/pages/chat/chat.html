@@ -55,6 +55,20 @@
     <button (tap)="setPostTimer(4)">1 month</button>
   </ion-toolbar>
 
+  <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state"
+  class="post-lock">
+    <form (submit)="unlockPost($event, unlockForm)" #unlockForm="ngForm">
+      <!-- <p ion-text [innerHTML]="getPostHint()"></p> -->
+      <input type="hidden" value="">
+      <ion-item>
+        <ion-input type="password" placeholder="Password" name="password"
+          [(ngModel)]="postUnlockData.password" required></ion-input>
+      </ion-item>
+      <button ion-button type="submit" class="submit"
+              *ngIf="postUnlockData.password">Unlock it</button>
+    </form>
+  </ion-toolbar>
+
   <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state"
     class="post-lock">
     <form (submit)="sendLockInfo($event, lockForm)" #lockForm="ngForm">
@@ -190,7 +204,7 @@
         </button>
 
         <ng-container *ngIf="user.id != message.user_id && message.locked">
-          <button class="feedback-button lock">
+          <button class="feedback-button lock" (tap)="showUnlockPostForm(message.id)">
             <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
           </button>
         </ng-container>

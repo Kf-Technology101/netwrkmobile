@@ -15,7 +15,7 @@
         </p>
       </ion-col>
     </ion-row>
-    <ion-row>
+    <ion-row class="top-form-row">
       <ion-col>
         <form (submit)="doLogin()" #loginForm="ngForm" novalidate
               [@fadeState]="form.getState()" [hidden]="!form.isVisible()">

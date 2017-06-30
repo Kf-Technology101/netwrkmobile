@@ -29,9 +29,6 @@
   </ion-toolbar>
 </ion-header>
 
-<input #input type="file" (change)="profile.filesAdded($event)"
-  style="display: none">
-
 <ion-content has-main-btn (ionScroll)="ionScroll()">
   <ion-row class="avatar-section">
     <ion-col>
@@ -39,9 +36,12 @@
         <!-- <ion-spinner *ngIf="profile.imageLoading"></ion-spinner> -->
         <img [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.avatar_url : profile.user.hero_avatar_url"
         (error)="chatPrvd.updateAvatarUrl($event)">
-        <button color="bk" ion-button (click)="uploadCallback($event)">
-          <ion-icon name="add"></ion-icon>
-        </button>
+        <div class="add-container">
+          <button color="bk" ion-button>
+            <ion-icon name="add"></ion-icon>
+          </button>
+          <input #input type="file" (change)="profile.filesAdded($event)">
+        </div>
       </div>
       <div class="avatar" *ngIf="!ownProfile && profileTypePublic">
         <img [src]="user.avatar_url"

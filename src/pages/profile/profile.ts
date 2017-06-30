@@ -95,18 +95,18 @@ export class ProfilePage {
     });
   }
 
-  public uploadCallback(event: Event): void {
-    console.log('event:', event);
-    this.profile.imageLoading = true;
-    this.nativeInputBtn.nativeElement.value = null;
-    console.log('upload-button callback executed');
-    // let fileInput = document.getElementById('file-input');
-
-    // trigger click event of hidden input
-    let clickEvent = new MouseEvent('click', {bubbles: true});
-    this.profile.renderer.invokeElementMethod(
-      this.nativeInputBtn.nativeElement, 'dispatchEvent', [clickEvent]);
-  }
+  // public uploadCallback(event: Event): void {
+  //   console.log('event:', event);
+  //   this.profile.imageLoading = true;
+  //   this.nativeInputBtn.nativeElement.value = null;
+  //   console.log('upload-button callback executed');
+  //   // let fileInput = document.getElementById('file-input');
+  //
+  //   // trigger click event of hidden input
+  //   let clickEvent = new MouseEvent('click', {bubbles: true});
+  //   this.profile.renderer.invokeElementMethod(
+  //     this.nativeInputBtn.nativeElement, 'dispatchEvent', [clickEvent]);
+  // }
 
   connectToInstagram() {
     this.socialPrvd.connectToInstagram().then(res => {

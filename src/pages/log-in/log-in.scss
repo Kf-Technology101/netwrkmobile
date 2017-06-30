@@ -23,7 +23,17 @@ page-log-in {
   .main-action-btn {
     z-index: 3;
   }
-
+  .row.top-form-row {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    max-width: 400px;
+    margin: auto;
+    background: #fff;
+    z-index: 2;
+  }
   form {
     .item {
       &.item-md {

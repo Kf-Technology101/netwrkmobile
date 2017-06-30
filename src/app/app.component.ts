@@ -24,6 +24,7 @@ import { Auth } from '../providers/auth';
 import { LocalStorage } from '../providers/local-storage';
 import { Tools } from '../providers/tools';
 import { UndercoverProvider } from '../providers/undercover';
+import { PermissionsService } from '../providers/permissionservice';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 @Component({
@@ -44,7 +45,8 @@ export class MyApp {
     public splashScreen: SplashScreen,
     private sim: Sim,
     private apiPrvd: Api,
-    private cameraPreview: CameraPreview
+    private cameraPreview: CameraPreview,
+    private permission: PermissionsService
   ) {
     platform.registerBackButtonAction(() => {
       this.toolsPrvd.doBackButton();
@@ -71,9 +73,16 @@ export class MyApp {
       alpha: 1
     }
 
-    this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
-    }).catch(err => {
-      console.error(err);
+    permission.checkCameraPermissions().then(permissionOk => {
+      if (permissionOk) {
+        this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
+        }).catch(err => {
+          console.error(err);
+        });
+      }
+      else {
+        console.log('[permission] Camera: balls.');
+      }
     });
   }
 

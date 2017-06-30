@@ -348,7 +348,8 @@
 
       <ion-input #textInput id="textInput" type="text"
         [placeholder]="placeholderText"
-        (keyup)="getCaretPos(textInput); calculateInputChar(textInput)">
+        (keyup)="getCaretPos(textInput); calculateInputChar(textInput)"
+        (tap)="hideTopSlider('timer'); hideTopSlider('lock')">
       </ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 

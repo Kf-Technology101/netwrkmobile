@@ -145,15 +145,19 @@ export class Chat {
     if (zip == 0) this.localStorage.set('chat_zip_code', zipCode);
   }
 
-  public chatZipCode(): number {
+  public chatZipCode(): any {
     let chatZipCode = this.localStorage.get('chat_zip_code');
     let result = chatZipCode ? chatZipCode : 0;
     return result;
   }
 
   public deleteMessages() {
-    let params = { network_id: this.networkPrvd.getNetworkId() };
-    let mess = this.api.post('messages/delete', params).share();
+    // let params = { network_id: this.networkPrvd.getNetworkId() };
+    let mess = this.api.post('messages/delete', {
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng,
+      post_code: this.chatZipCode()
+    }).share();
     let messMap = mess.map(res => res.json());
     return messMap;
   }

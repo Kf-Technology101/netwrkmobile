@@ -8,6 +8,7 @@ import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { StatusBar } from "@ionic-native/status-bar";
 import { Sim } from '@ionic-native/sim';
+import { Diagnostic } from '@ionic-native/diagnostic';
 
 // Pages
 import { MyApp } from './app.component';
@@ -49,7 +50,7 @@ import { ContactsProvider } from '../providers/contacts';
 import { Social } from '../providers/social';
 import { Gps } from '../providers/gps';
 import { Profile } from '../providers/profile';
-// import { Permission } from '../providers/permission';
+import { PermissionsService } from '../providers/permissionservice';
 import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
 import { Share } from '../providers/share';
@@ -127,7 +128,7 @@ export function providers() {
     ContactsProvider,
     Social,
     Gps,
-    // Permission,
+    PermissionsService,
     UndercoverProvider,
     SlideAvatar,
     Share,
@@ -155,6 +156,7 @@ export function providers() {
     LocationChange,
     Settings,
     Crop,
+    Diagnostic,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];

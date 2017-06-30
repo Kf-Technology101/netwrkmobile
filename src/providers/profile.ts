@@ -70,7 +70,8 @@ export class Profile {
     }
   }
 
-  public filesAdded(event: Event): void {
+  public filesAdded(event): void {
+    console.log('event:', event);
     this.tools.showLoader();
     let files: FileList = (<HTMLInputElement>event.target).files;
     console.log('files:', files);

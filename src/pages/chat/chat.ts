@@ -1080,6 +1080,7 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
+    this.toolsPrvd.showLoader();
     this.chatPrvd.postMessages = [];
     console.warn('[CHAT] Did enter');
     if (!this.componentLoaded)

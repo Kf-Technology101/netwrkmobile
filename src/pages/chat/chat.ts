@@ -168,6 +168,8 @@ export class ChatPage {
     password: null
   }
 
+  private currentHint:any;
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -344,10 +346,11 @@ export class ChatPage {
     }
   }
 
-  showUnlockPostForm(messageId:any) {
+  showUnlockPostForm(messageId:any, hint:any) {
     this.postUnlock.hidden = false;
     this.postUnlock.setState('slideDown');
     this.postUnlockData.id = messageId;
+    this.currentHint = hint;
   }
 
   unlockPost(event:any, form: any):void {
@@ -361,9 +364,16 @@ export class ChatPage {
       console.log('postUnlockData:', this.postUnlockData);
       this.chatPrvd.unlockPost(this.postUnlockData).subscribe(res => {
         console.log('unlock post:', res);
+        for (let m in this.chatPrvd.postMessages) {
+          if (this.chatPrvd.postMessages[m].id == this.postUnlockData.id) {
+            this.chatPrvd.postMessages[m].locked = false;
+            break;
+          }
+        }
         this.postUnlockData.id = null;
         this.postUnlockData.password = null;
         this.hideTopSlider('unlock');
+
       }, err => {
         console.error(err);
         this.postUnlockData.id = null;

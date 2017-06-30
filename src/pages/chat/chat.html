@@ -64,9 +64,11 @@
         <ion-input type="password" placeholder="Password" name="password"
           [(ngModel)]="postUnlockData.password" required></ion-input>
       </ion-item>
+      <p ion-text color="bk">Hint: {{ currentHint }}</p>
       <button ion-button type="submit" class="submit"
               *ngIf="postUnlockData.password">Unlock it</button>
     </form>
+    <button color="bk" class="back" (click)="hideTopSlider('unlock')"></button>
   </ion-toolbar>
 
   <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state"
@@ -204,7 +206,7 @@
         </button>
 
         <ng-container *ngIf="user.id != message.user_id && message.locked">
-          <button class="feedback-button lock" (tap)="showUnlockPostForm(message.id)">
+          <button class="feedback-button lock" (tap)="showUnlockPostForm(message.id, message.hint)">
             <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
           </button>
         </ng-container>

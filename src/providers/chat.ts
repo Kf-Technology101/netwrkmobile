@@ -272,6 +272,15 @@ export class Chat {
     return seqMap;
   }
 
+  public unlockPost(data) {
+    let seq = this.api.post('messages/unlock', {
+      id: data.id,
+      password: data.password
+    }).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+
   public getMessages(
     undercover: boolean,
     messagesArray?: Array<any>,

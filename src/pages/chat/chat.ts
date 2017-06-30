@@ -97,6 +97,7 @@ export class ChatPage {
   postTimer = new Toggleable('slideUp', true);
   postLock = new Toggleable('slideUp', true);
   topSlider = new Toggleable('slideDown', false);
+  postUnlock  = new Toggleable('slideUp', true);
 
   flipHover: boolean;
 
@@ -161,6 +162,11 @@ export class ChatPage {
   };
 
   private socialLoaderHidden:boolean = false;
+
+  private postUnlockData:any = {
+    id: null,
+    password: null
+  }
 
   constructor(
     public navCtrl: NavController,
@@ -335,6 +341,35 @@ export class ChatPage {
         password: form.value.password
       }
       this.postMessage();
+    }
+  }
+
+  showUnlockPostForm(messageId:any) {
+    this.postUnlock.hidden = false;
+    this.postUnlock.setState('slideDown');
+    this.postUnlockData.id = messageId;
+  }
+
+  unlockPost(event:any, form: any):void {
+    event.stopPropagation();
+    event.preventDefault();
+
+    if (form.invalid) {
+      this.toolsPrvd.showToast(this.textStrings.require);
+    } else {
+      this.postUnlockData.password = form.value.password;
+      console.log('postUnlockData:', this.postUnlockData);
+      this.chatPrvd.unlockPost(this.postUnlockData).subscribe(res => {
+        console.log('unlock post:', res);
+        this.postUnlockData.id = null;
+        this.postUnlockData.password = null;
+        this.hideTopSlider('unlock');
+      }, err => {
+        console.error(err);
+        this.postUnlockData.id = null;
+        this.postUnlockData.password = null;
+        this.hideTopSlider('unlock');
+      });
     }
   }
 
@@ -570,6 +605,7 @@ export class ChatPage {
 
     this.hideTopSlider('lock');
     this.hideTopSlider('timer');
+    this.hideTopSlider('unlock');
 
     this.slideAvatarPrvd.sliderPosition = 'left';
 
@@ -680,7 +716,19 @@ export class ChatPage {
   }
 
   getTopSlider(container:string):any {
-    return container == 'timer' ? this.postTimer : this.postLock;
+    let cont:any;
+    switch(container) {
+      case 'timer':
+        cont = this.postTimer;
+      break;
+      case 'lock':
+        cont = this.postLock;
+      break;
+      case 'unlock':
+        cont = this.postUnlock;
+      break;
+    }
+    return cont;
   }
 
   hideTopSlider(container:string):void {
@@ -698,6 +746,7 @@ export class ChatPage {
     let cont = this.getTopSlider(container);
     this.getTopSlider('timer').hide();
     this.getTopSlider('lock').hide();
+    this.getTopSlider('unlock').hide();
     if (cont.isVisible()) {
       setTimeout(() => {
         cont.hide();

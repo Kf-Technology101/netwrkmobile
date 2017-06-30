@@ -91,6 +91,7 @@ export class Tools {
       }
     } catch (err) {
       console.warn('[loader open] Error:', err);
+      this.showLoader();
     };
   }
 

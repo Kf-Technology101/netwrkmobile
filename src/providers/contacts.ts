@@ -90,9 +90,9 @@ export class ContactsProvider {
     return seqMap;
   }
 
-  private parsePhoneData(phone:string) {
-
-  }
+  // private parsePhoneData(phone:string) {
+  //
+  // }
 
   private readContacts() {
     this.tools.showLoader();
@@ -104,7 +104,7 @@ export class ContactsProvider {
           this.contacts.emails.push(data[i]);
         }
         if (data[i].phoneNumbers) {
-          this.parsePhoneData(data[i].phoneNumbers[0].value);
+          // this.parsePhoneData(data[i].phoneNumbers[0].value);
           this.contacts.phones.push(data[i]);
         }
       }

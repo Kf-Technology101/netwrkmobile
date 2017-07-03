@@ -48,7 +48,7 @@
 
   <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state"
     class="post-timer">
-    <button (tap)="hideTopSlider('timer')">None</button>
+    <button (tap)="setPostTimer(0)">None</button>
     <button (tap)="setPostTimer(1)">10 hours</button>
     <button (tap)="setPostTimer(2)">1 day</button>
     <button (tap)="setPostTimer(3)">1 week</button>

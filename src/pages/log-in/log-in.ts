@@ -21,7 +21,7 @@ import { User } from '../../providers/user';
 import { Chat } from '../../providers/chat';
 import { LocationChange } from '../../providers/locationchange';
 import { Keyboard } from '@ionic-native/keyboard';
-
+import { LocalStorage } from '../../providers/local-storage';
 // Animations
 import {
   scaleMainBtn,
@@ -71,7 +71,8 @@ export class LogInPage {
     public user: User,
     public chatPrvd: Chat,
     public locationchange: LocationChange,
-    public keyboard: Keyboard
+    public keyboard: Keyboard,
+    private storage: LocalStorage
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
@@ -85,11 +86,18 @@ export class LogInPage {
   }
 
   submitLoginForm() {
+    this.doLogin(this.logForm);
+  }
+
+  private toggleLoginForm():void {
     if (!this.form.isVisible()) {
       this.form.show();
       this.form.setState('fadeInfast');
     } else {
-      this.doLogin(this.logForm);
+      this.form.setState('fadeOutfast');
+      setTimeout(() => {
+        this.form.hide();
+      }, 400); // animation speed is 400ms
     }
   }
 
@@ -175,9 +183,9 @@ export class LogInPage {
   goToSignUp() { this.tools.pushPage(SignUpPage); }
 
   ionViewDidEnter() {
+    console.log('[log-in] did enter');
     let mainBtn:any;
     setTimeout(() => {
-      console.log('[log-in] did enter');
       mainBtn = <HTMLElement>document.getElementById('main-btn');
       this.controls.hidden = true;
       this.controls.state = 'fadeOut';
@@ -187,6 +195,11 @@ export class LogInPage {
       this.controls.hidden = false;
       this.controls.state = 'fadeIn';
       mainBtn.classList.add('anim-glow');
+      this.storage.rm('auth_data');
+      this.storage.rm('auth_type');
+      this.storage.rm('current_network');
+      this.storage.rm('social_auth_data');
+      this.storage.rm('current_network');
     }, 2000);
   }
 }

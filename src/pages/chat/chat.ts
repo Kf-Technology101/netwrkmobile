@@ -373,7 +373,6 @@ export class ChatPage {
         this.postUnlockData.id = null;
         this.postUnlockData.password = null;
         this.hideTopSlider('unlock');
-
       }, err => {
         console.error(err);
         this.postUnlockData.id = null;
@@ -771,6 +770,11 @@ export class ChatPage {
   setPostTimer(timeId:number) {
     let currentDate = moment(new Date());
     switch (timeId) {
+      case 0:
+        this.hideTopSlider('timer');
+        this.postTimerObj.time = null;
+        this.postTimerObj.expireDate = null;
+        break;
       case 1:
         // 10 hours
         this.postTimerObj.expireDate = currentDate.add(10, 'hours');
@@ -1184,7 +1188,9 @@ export class ChatPage {
     // this.contentBlock = document.getElementsByClassName('scroll-content')['0'];
     this.setContentPadding(false);
 
-    this.chatPrvd.updateAppendContainer();
+    setTimeout(() => {
+      this.chatPrvd.updateAppendContainer();
+    }, 1);
 
     this.user = this.authPrvd.getAuthData();
     this.getUsers();

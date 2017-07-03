@@ -17,6 +17,7 @@ export class LocalStorage {
     }
 
     window.localStorage.setItem(key, value);
+    console.log('Set ['+key+'] -> ['+value+'] to localStorage...');
     return value;
   }
 
@@ -36,9 +37,11 @@ export class LocalStorage {
   rm(key: any) {
     if (typeof key == 'object' && Array.isArray(key)) {
       for (let i = 0; i < key.length; i++) {
+        console.log('Removing [' + key[i] + '] from localStorage...');
         window.localStorage.removeItem(key[i]);
       }
     } else {
+      console.log('Removing [' + key + '] from localStorage...');
       window.localStorage.removeItem(key);
     }
   }

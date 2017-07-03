@@ -36,7 +36,7 @@ export class ProfileSettingPage {
   public profileTypePublic: boolean;
   private imageLoading: boolean = false;
   private pageTag: string;
-  
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -161,14 +161,14 @@ export class ProfileSettingPage {
     }
 
     if (params)
-    this.userPrvd.update(this.user.id, params)
-    .map(res => res.json()).subscribe(res => {
-      console.log(res);
-      this.user = res;
-      // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
-    }, err => {
-      console.log(err);
-    });
+      this.userPrvd.update(this.user.id, params, this.auth.getAuthType())
+      .map(res => res.json()).subscribe(res => {
+        console.log(res);
+        this.user = res;
+        // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
+      }, err => {
+        console.log(err);
+      });
   }
 
   ionViewDidLoad() {

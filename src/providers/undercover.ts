@@ -39,7 +39,8 @@ export class UndercoverProvider {
       this.tools.showLoader();
       this.user.update(
         this.auth.getAuthData().id,
-        { user: updateObj }
+        { user: updateObj },
+        this.auth.getAuthType()
       ).map(res => res.json()).subscribe(res => {
         this.tools.hideLoader();
         resolve(res);

@@ -482,7 +482,7 @@ export class Chat {
       this.postBtn.setState(true);
       this.appendContainer.show();
       this.appendContainer.setState('on_append');
-      if (this.mainBtn.state != 'moved-n-scaled')
+      if (this.mainBtn.getState() != 'moved-n-scaled')
         this.mainBtn.setState('above_append');
     }
   }

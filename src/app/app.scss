@@ -1145,3 +1145,18 @@ page-sockets {
     color: #fff;
   }
 }
+
+
+@media screen and (max-width: 640px) {
+  page-chat {
+    .footer {
+      .item {
+        .item-inner {
+          .text-input {
+            font-size: 0.6em;
+          }
+        }
+      }
+    }
+  }
+}

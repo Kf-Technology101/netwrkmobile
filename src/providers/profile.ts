@@ -157,7 +157,7 @@ export class Profile {
     }
 
     if (params)
-      this.userPrvd.update(this.user.id, params)
+      this.userPrvd.update(this.user.id, params, this.auth.getAuthType())
       .map(res => res.json()).subscribe(res => {
         console.log('[user provider] (Update) res:', res);
         this.user = res;

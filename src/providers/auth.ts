@@ -114,13 +114,15 @@ export class Auth {
 
   public logout(): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      let authType = this.storage.get('auth_type');
-      this.storage.rm('auth_type');
-      this.storage.rm('auth_data');
+      let authType:any = this.getAuthType();
+      console.log('[logout] authType:', authType);
       if (authType == 'facebook') {
+        this.disconnectFromFb();
         this.facebook.logout().then(() => {
+          console.log('facebook logout OK');
           resolve();
         }).catch(() => {
+          console.warn('facebook logout rejected');
           reject(false);
         });
       } else {
@@ -160,6 +162,11 @@ export class Auth {
         this.loginWithFacebook(fbData, resolve, reject, false);
       }, err => reject(err));
     });
+  }
+
+  public disconnectFromFb():void {
+    let userId = this.getAuthData().id;
+    // send user id for logout
   }
 
   private loginWithFacebook(data: FacebookLoginResponse, resolve, reject, oAuth: boolean) {

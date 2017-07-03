@@ -100,7 +100,7 @@
       <label>{{ fbFriends.length }} Сommon Connections</label>
       <ion-slides #fbSlider slidesPerView="5" pager="true">
         <ion-slide *ngFor="let friend of fbFriends">
-          <div class="avatar" (click)="getFbProfile(friend.id)">
+          <div class="avatar" (tap)="getFbProfile(friend.id)">
             <img [src]="friend.picture.data.url"
             (error)="chatPrvd.updateAvatarUrl($event)">
           </div>

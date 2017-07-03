@@ -40,7 +40,10 @@ export class CameraPage {
 
   cameraUI: any = {
     tooltip: 'tooltipFadeIn',
-    button: 'photoButtonFadeIn'
+    button:  {
+      state: 'photoButtonFadeIn',
+      hidden: false
+    }
   };
 
   imgBg: string;
@@ -71,10 +74,11 @@ export class CameraPage {
     }
 
     // take a picture
+    this.cameraUI.button.hidden = true;
     this.cameraPreview.takePicture(pictureOpts).then(imageData => {
       console.log(imageData);
       // this.cameraPrvd.takenPictures = data:image/jpeg;base64,' + imageData[0];
-      this.cameraUI.button = 'photoButtonFadeOut';
+      this.cameraUI.button.state = 'photoButtonFadeOut';
       this.cameraUI.tooltip = 'tooltipFadeOut';
       if (this.storage.get('first_time_camera') === null) {
         this.storage.set('first_time_camera', true);
@@ -128,7 +132,8 @@ export class CameraPage {
 
   cancelSave() {
     this.imgBg = undefined;
-    this.cameraUI.button = 'photoButtonFadeIn';
+    this.cameraUI.button.hidden = false;
+    this.cameraUI.button.state = 'photoButtonFadeIn';
   }
 
   ionViewDidEnter() {

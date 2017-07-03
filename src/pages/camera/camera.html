@@ -8,8 +8,8 @@
           Tap for a picture
           <div></div>
         </div>
-        <button ion-button *ngIf="!imgBg" [@cameraUIstate]="cameraUI.button"
-          class="take-photo" (click)="takePhoto()"
+        <button ion-button *ngIf="!imgBg" [@cameraUIstate]="cameraUI.button.state"
+        class="take-photo" (click)="takePhoto()" [hidden]="cameraUI.button.hidden"
           outline color="bk">
           <div class="white"></div>
         </button>

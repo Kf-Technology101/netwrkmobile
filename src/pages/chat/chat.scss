@@ -264,8 +264,11 @@ page-network-no {
       height: 42px;
       background: transparent;
       input {
+        width: 100%;
         height: 42px;
         margin: 0;
+        padding: 0;
+        line-height: 1;
         background: color($colors, white);
       }
     }

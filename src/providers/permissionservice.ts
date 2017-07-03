@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { Platform } from 'ionic-angular';
 import { Diagnostic } from '@ionic-native/diagnostic';
+import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 @Injectable()
 export class PermissionsService {
 
   constructor (
   public _platform: Platform,
-  public _Diagnostic: Diagnostic
+  public _Diagnostic: Diagnostic,
+  public _androidPermission: AndroidPermissions
   ) {}
 
   isAndroid() {
@@ -59,6 +61,18 @@ export class PermissionsService {
         }
         });
       }
+    });
+  }
+
+  checkAndroidPermission(permission:any): Promise<any> {
+    return new Promise(resolve => {
+      this._androidPermission.checkPermission(this._androidPermission.PERMISSION[permission]).then(
+        success => {
+          console.log('Permission ' + permission + ' granted');
+          resolve();
+        },
+        err => this._androidPermission.requestPermissions(this._androidPermission.PERMISSION[permission])
+      );
     });
   }
 }

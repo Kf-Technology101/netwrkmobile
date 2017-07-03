@@ -69,16 +69,30 @@ export class MyApp {
     platform.ready().then(() => {
       // this.apiPrvd.watchForConnect(); // watch for network connect
       // this.apiPrvd.watchForDisconnect(); // watch for network disconnect
-      this.getLogin();
-      this.getSimInfo();
-      this.statusBar.styleDefault();
-
       permission.checkCameraPermissions().then(permissionOk => {
         if (permissionOk) {
           this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
           }).catch(err => {
             console.error(err);
           });
+          if (platform.is('android')) {
+            permission.checkAndroidPermission('READ_CONTACTS').then(()=>{
+              permission.checkAndroidPermission('READ_EXTERNAL_STORAGE').then(() => {
+                permission.checkAndroidPermission('WRITE_EXTERNAL_STORAGE').then(() => {
+                  permission.checkAndroidPermission('LOCATION_HARDWARE').then(() => {
+                    console.log('last permission checked');
+                    this.getLogin();
+                    this.getSimInfo();
+                    this.statusBar.styleDefault();
+                  });
+                });
+              });
+            });
+          } else if (platform.is('ios')){
+            this.getLogin();
+            this.getSimInfo();
+            this.statusBar.styleDefault();
+          }
         }
         else {
           console.log('[permission] Camera: balls.');

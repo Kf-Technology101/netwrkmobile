@@ -225,7 +225,7 @@ export class ChatPage {
   }
 
   private changePlaceholderText() {
-    this.placeholderText = this.isUndercover ? 'Tap to hang anything on this spot' : 'Tap to broadcast to this area';
+    this.placeholderText = this.isUndercover ? 'Add to this location only...' : 'Share with the area...';
   }
 
   generateEmoticons() {

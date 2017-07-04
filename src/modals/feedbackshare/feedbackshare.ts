@@ -35,6 +35,10 @@ export class FeedbackShareModal {
     url: 'http://34.208.20.67' /*'http://netwrk.com'*/
   }
 
+  private backBtn:any = {
+    hidden: null
+  }
+
   constructor(
     private params: NavParams,
     private viewCtrl: ViewController,
@@ -87,6 +91,7 @@ export class FeedbackShareModal {
     //   console.log(err);
     // });
   }
+
   shareViaTwitter() {
     this.toolsPrvd.showLoader();
     let self = this;
@@ -123,7 +128,8 @@ export class FeedbackShareModal {
   }
 
   ionViewDidEnter() {
-    console.log('chat state:', this.chatPrvd.getState() + ' ');
+    console.log('feedbackShare modal [did enter]');
+    this.backBtn.hidden = false;
     if (this.chatPrvd.getState() == 'undercover') {
       this.share.coords = this.params.get('coords');
       this.gpsPrvd.getGoogleAdress(this.share.coords.lat, this.share.coords.lng)

@@ -86,11 +86,16 @@ page-network-no {
       background: color($colors, white);
     }
 
-    &.netwrk-content.content-ios,
+
     &.netwrk-content.content-md {
       .scroll-content {
         margin-top: 140px!important;
         // margin-bottom: 70px;
+      }
+    }
+    &.netwrk-content.content-ios {
+      .scroll-content {
+        margin-top: 150px!important;
       }
     }
 

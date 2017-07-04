@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "_from": "cordova-plugin-android-permissions",
   "_id": "cordova-plugin-android-permissions@1.0.0",
   "_inBundle": false,
@@ -31,11 +30,6 @@
     "url": "https://github.com/NeoLSN/cordova-plugin-android-permission/issues"
   },
   "bundleDependencies": false,
-=======
-  "name": "cordova-plugin-android-permissions",
-  "version": "1.0.0",
-  "description": "Android 6.0 permissions check.",
->>>>>>> 03930f94b655038eae615ecdf14f5b2d00df27dc
   "cordova": {
     "id": "cordova-plugin-android-permissions",
     "platforms": [
@@ -44,7 +38,6 @@
       "browser"
     ]
   },
-<<<<<<< HEAD
   "deprecated": false,
   "description": "Android 6.0 permissions check.",
   "engines": [
@@ -54,19 +47,12 @@
     }
   ],
   "homepage": "https://github.com/NeoLSN/cordova-plugin-android-permission#readme",
-=======
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/NeoLSN/cordova-plugin-android-permission.git"
-  },
->>>>>>> 03930f94b655038eae615ecdf14f5b2d00df27dc
   "keywords": [
     "ecosystem:cordova",
     "cordova-android",
     "cordova-browser",
     "cordova-ios"
   ],
-<<<<<<< HEAD
   "license": "BSD",
   "name": "cordova-plugin-android-permissions",
   "repository": {
@@ -74,18 +60,4 @@
     "url": "git+https://github.com/NeoLSN/cordova-plugin-android-permission.git"
   },
   "version": "1.0.0"
-=======
-  "engines": [
-    {
-      "name": "cordova",
-      "version": ">=5.0.0"
-    }
-  ],
-  "author": "Jason Yang",
-  "license": "BSD",
-  "bugs": {
-    "url": "https://github.com/NeoLSN/cordova-plugin-android-permission/issues"
-  },
-  "homepage": "https://github.com/NeoLSN/cordova-plugin-android-permission#readme"
->>>>>>> 03930f94b655038eae615ecdf14f5b2d00df27dc
 }

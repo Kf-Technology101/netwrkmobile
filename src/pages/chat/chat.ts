@@ -366,7 +366,7 @@ export class ChatPage {
         console.log('unlock post:', res);
         for (let m in this.chatPrvd.postMessages) {
           if (this.chatPrvd.postMessages[m].id == this.postUnlockData.id) {
-            this.chatPrvd.postMessages[m].locked = false;
+            this.chatPrvd.postMessages[m].locked_by_user = false;
             break;
           }
         }

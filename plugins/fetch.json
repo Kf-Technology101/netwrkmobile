@@ -213,13 +213,5 @@
             "APP_ID": "390382104668705",
             "APP_NAME": "Netwrk"
         }
-    },
-    "cordova-sqlite-storage": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-sqlite-storage"
-        },
-        "is_top_level": true,
-        "variables": {}
     }
 }

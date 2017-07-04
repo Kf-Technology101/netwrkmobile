@@ -1007,6 +1007,10 @@ export class ChatPage {
     return (camOpt === null || !camOpt);
   }
 
+  private setMainBtnStateRelativeToEvents() {
+    if (this.shareContainer.getState())
+  }
+
   constructorLoad() {
     this.keyboard.disableScroll(true);
     this.authData = this.authPrvd.getAuthData();

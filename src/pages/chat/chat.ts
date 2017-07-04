@@ -538,6 +538,7 @@ export class ChatPage {
       console.log('sendFeedback:', res);
       let feedbackModal = this.modalCtrl.create(FeedbackModal, res);
       feedbackModal.onDidDismiss(data => {
+        this.setMainBtnStateRelativeToEvents();
         if (data) {
           if (data.like) {
             this.chatPrvd.postMessages[mIndex].likes_count = data.like.total;
@@ -1007,9 +1008,16 @@ export class ChatPage {
     return (camOpt === null || !camOpt);
   }
 
-  // private setMainBtnStateRelativeToEvents() {
-  //   if (this.shareContainer.getState())
-  // }
+  private setMainBtnStateRelativeToEvents():void {
+    if (this.shareContainer.getState() == 'on' ||
+        this.emojiContainer.getState() == 'on') {
+      this.chatPrvd.mainBtn.setState('moved-n-scaled');
+    } else if (this.chatPrvd.appendContainer.getState() == 'on'){
+      this.chatPrvd.mainBtn.setState('above_append');
+    } else {
+      this.chatPrvd.mainBtn.setState('normal');
+    }
+  }
 
   constructorLoad() {
     this.keyboard.disableScroll(true);

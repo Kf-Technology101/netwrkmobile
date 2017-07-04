@@ -192,14 +192,11 @@ export class LogInPage {
       this.chatPrvd.mainBtn.setState('centered');
     }, 1);
     setTimeout(() => {
+      this.storage.rm('auth_data');
+      this.storage.rm('auth_type');
       this.controls.hidden = false;
       this.controls.state = 'fadeIn';
       mainBtn.classList.add('anim-glow');
-      this.storage.rm('auth_data');
-      this.storage.rm('auth_type');
-      this.storage.rm('current_network');
-      this.storage.rm('social_auth_data');
-      this.storage.rm('current_network');
     }, 2000);
   }
 }

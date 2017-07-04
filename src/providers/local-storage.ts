@@ -21,6 +21,10 @@ export class LocalStorage {
     return value;
   }
 
+  clear():void {
+    window.localStorage.clear();
+  }
+
   get(key: string): any {
     let val = window.localStorage.getItem(key);
     let parsedVal;

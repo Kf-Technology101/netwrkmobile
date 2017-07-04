@@ -71,17 +71,6 @@
         "is_top_level": false,
         "variables": {}
     },
-    "cordova-plugin-facebook4": {
-        "source": {
-            "type": "registry",
-            "id": "cordova-plugin-facebook4"
-        },
-        "is_top_level": true,
-        "variables": {
-            "APP_ID": "390382104668705",
-            "APP_NAME": "Netwrk"
-        }
-    },
     "cordova-plugin-contacts": {
         "source": {
             "type": "registry",
@@ -210,6 +199,25 @@
         "source": {
             "type": "registry",
             "id": "cordova-plugin-android-permissions"
+        },
+        "is_top_level": true,
+        "variables": {}
+    },
+    "cordova-plugin-facebook4": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-plugin-facebook4@~1.7.4"
+        },
+        "is_top_level": true,
+        "variables": {
+            "APP_ID": "390382104668705",
+            "APP_NAME": "Netwrk"
+        }
+    },
+    "cordova-sqlite-storage": {
+        "source": {
+            "type": "registry",
+            "id": "cordova-sqlite-storage"
         },
         "is_top_level": true,
         "variables": {}

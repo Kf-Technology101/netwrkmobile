@@ -3,6 +3,7 @@ import { Platform, Events, App } from 'ionic-angular';
 import { Sim } from '@ionic-native/sim';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { CameraPreview } from '@ionic-native/camera-preview';
 
 // Pages
 import { LogInPage } from '../pages/log-in/log-in';
@@ -25,8 +26,8 @@ import { LocalStorage } from '../providers/local-storage';
 import { Tools } from '../providers/tools';
 import { UndercoverProvider } from '../providers/undercover';
 import { PermissionsService } from '../providers/permissionservice';
+import { NetworkCheck } from '../providers/networkcheck';
 
-import { CameraPreview } from '@ionic-native/camera-preview';
 @Component({
   templateUrl: 'app.html'
 })
@@ -46,7 +47,8 @@ export class MyApp {
     private sim: Sim,
     private apiPrvd: Api,
     private cameraPreview: CameraPreview,
-    private permission: PermissionsService
+    private permission: PermissionsService,
+    private network: NetworkCheck
   ) {
     platform.registerBackButtonAction(() => {
       this.toolsPrvd.doBackButton();
@@ -66,9 +68,14 @@ export class MyApp {
       alpha: 1
     }
 
+    let init = () => {
+      this.network.networkStatus(); // watch for network status
+      this.getLogin();
+      this.getSimInfo();
+      this.statusBar.styleDefault();
+    };
+
     platform.ready().then(() => {
-      // this.apiPrvd.watchForConnect(); // watch for network connect
-      // this.apiPrvd.watchForDisconnect(); // watch for network disconnect
       permission.checkCameraPermissions().then(permissionOk => {
         if (permissionOk) {
           this.cameraPreview.startCamera(cameraPreviewOpts).then(res => {
@@ -80,21 +87,18 @@ export class MyApp {
               permission.checkAndroidPermission('READ_EXTERNAL_STORAGE').then(() => {
                 permission.checkAndroidPermission('WRITE_EXTERNAL_STORAGE').then(() => {
                   permission.checkAndroidPermission('LOCATION_HARDWARE').then(() => {
-                    console.log('last permission checked');
-                    this.getLogin();
-                    this.getSimInfo();
-                    this.statusBar.styleDefault();
+                      permission.checkAndroidPermission('ACCESS_WIFI_STATE').then(() => {
+                      console.log('last permission checked');
+                      init();
+                    })
                   });
                 });
               });
             });
-          } else if (platform.is('ios')){
-            this.getLogin();
-            this.getSimInfo();
-            this.statusBar.styleDefault();
+          } else {
+            init();
           }
-        }
-        else {
+        } else {
           console.log('[permission] Camera: balls.');
         }
       });

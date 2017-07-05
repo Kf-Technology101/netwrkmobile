@@ -19,7 +19,7 @@ import { NetworkPage } from '../pages/network/network';
 // Gallery
 import { ImagePicker } from 'ionic-native';
 import { Camera } from '../providers/camera';
-import { NetworkProvider } from '../providers/network';
+import { NetworkProvider } from '../providers/networkservice';
 import { chatAnim } from '../includes/animations';
 // File transfer
 import { File } from '@ionic-native/file';
@@ -255,7 +255,7 @@ export class Chat {
       } else {
         // console.log('params', params);
         this.sendMessageWithoutImage(params).subscribe(res => {
-          // console.log('[SEND MESSAGE] res:', res);
+          console.log('SEND MESSAGE WITHOUT IMAGE');
           resolve(res);
         }, err => {
           // console.log(err);
@@ -430,28 +430,28 @@ export class Chat {
               let xhr: XMLHttpRequest = new XMLHttpRequest();
 
               console.info('[getFileObject] params:', params.undercover + '');
+              if (params) {
+                let formData: FormData = self.api.createFormData(params);
+                for (let i in files)
+                  formData.append('images[]', files[i], files[i].name);
 
-              let formData: FormData = self.api.createFormData(params);
-              for (let i in files)
-                formData.append('images[]', files[i], files[i].name);
-
-              xhr.onreadystatechange = () => {
-                if (xhr.readyState === 4) {
-                  if (xhr.status === 200) {
-                    // console.log(JSON.parse(xhr.response));
-                    resolve(JSON.parse(xhr.response));
-                  } else {
-                    // console.log(xhr.response);
-                    reject(xhr.response);
+                xhr.onreadystatechange = () => {
+                  if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                      // console.log(JSON.parse(xhr.response));
+                      resolve(JSON.parse(xhr.response));
+                    } else {
+                      // console.log(xhr.response);
+                      reject(xhr.response);
+                    }
                   }
-                }
-              };
+                };
 
-              xhr.open('POST', self.api.url + '/messages', true);
-              xhr.setRequestHeader(
-                'Authorization', self.localStorage.get('auth_data').auth_token);
-              xhr.send(formData);
-
+                xhr.open('POST', self.api.url + '/messages', true);
+                xhr.setRequestHeader(
+                  'Authorization', self.localStorage.get('auth_data').auth_token);
+                xhr.send(formData);
+              }
             } else {
               r(i);
             }
@@ -585,13 +585,13 @@ export class Chat {
         clearInterval(this.scrollTimer.interval);
         setTimeout(() => {
           this.isMessagesVisible = true;
-          this.tools.hideLoader();
+          // this.tools.hideLoader();
         }, 150);
       }
     }, 300);
     this.scrollTimer.timeout = setTimeout(() => {
       clearInterval(this.scrollTimer.interval);
-    }, 3000);
+    }, 10000);
   }
 
   public showMessages(messages:any, location: any, isUndercover?: boolean): Promise<any> {

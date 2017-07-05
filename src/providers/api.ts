@@ -26,7 +26,7 @@ export class Api {
     private network: Network
   ) {}
 
-  public watchForConnect() {
+  public watchForConnect():void {
     // this.unsubscribeConnect();
     this.connectSubscription = this.network.onConnect().subscribe(() => {
       console.log('network connected!');
@@ -40,7 +40,7 @@ export class Api {
     });
   }
 
-  public watchForDisconnect() {
+  public watchForDisconnect():void {
     // this.unsubscribeDisconnect();
     this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
       console.log('network was disconnected :-(');
@@ -49,13 +49,13 @@ export class Api {
     });
   }
 
-  public unsubscribeConnect() {
+  public unsubscribeConnect():void {
     if (this.connectSubscription) {
       this.connectSubscription.unsubscribe();
     }
   }
 
-  public unsubscribeDisconnect() {
+  public unsubscribeDisconnect():void {
     if (this.disconnectSubscription) {
       this.disconnectSubscription.unsubscribe();
     }

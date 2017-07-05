@@ -38,7 +38,7 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 import { Auth } from '../../providers/auth';
 import { Camera } from '../../providers/camera';
 import { Chat } from '../../providers/chat';
-import { NetworkProvider } from '../../providers/network';
+import { NetworkProvider } from '../../providers/networkservice';
 import { Gps } from '../../providers/gps';
 import { Social } from '../../providers/social';
 
@@ -374,6 +374,7 @@ export class ChatPage {
         this.postUnlockData.password = null;
         this.hideTopSlider('unlock');
       }, err => {
+        this.toolsPrvd.showToast('Wrong password');
         console.error(err);
         this.postUnlockData.id = null;
         this.postUnlockData.password = null;
@@ -474,25 +475,7 @@ export class ChatPage {
           this.postLockData.password = null;
           this.postTimerObj.expireDate = null;
           this.postTimerObj.time = null;
-          // if (this.postLockData.hint && this.postLockData.password) {
-          //   let lockData:any = {
-          //     id: res.id,
-          //
-          //   }
-          //
-          //   this.chatPrvd.lockMessage(lockData).subscribe(lockRes => {
-          //     console.log('[lock] res:', lockRes);
-          //     this.updatePost(lockRes, message, emoji);
-          //     this.postLockData = {
-          //       hint: null,
-          //       password: null
-          //     }
-          //   }, lockErr => {
-          //     console.error('[lock] err:', lockErr);
-          //   });
-          // } else {
           this.updatePost(res, message, emoji);
-          // }
         }).catch(err => {
           console.log(err);
           this.updatePost(err, message);
@@ -520,7 +503,7 @@ export class ChatPage {
       this.caretPos = oField.selectionStart;
   }
 
-  updateMessagesAndScrollDown(scroll?:string) {
+  updateMessagesAndScrollDown(scroll?:boolean):void {
     console.log('(updateMessagesAndScrollDown) isUndercover:', this.isUndercover);
     this.chatPrvd.showMessages(this.chatPrvd.postMessages, 'chat', this.isUndercover).then(res => {
       this.chatPrvd.postMessages = res.messages;
@@ -554,7 +537,7 @@ export class ChatPage {
                 this.startMessageUpdateTimer();
                 break;
               case 'area':
-                this.updateMessagesAndScrollDown('noscroll');
+                this.updateMessagesAndScrollDown(false);
                 break;
             }
           }
@@ -593,7 +576,7 @@ export class ChatPage {
     legModal.present();
   }
 
-  public checkForNetwork() {
+  public checkForNetwork():any {
     let network = this.chatPrvd.getNetwork();
     return (this.isUndercover &&
        (network == 'undefined' || network == null ||
@@ -608,6 +591,7 @@ export class ChatPage {
     this.postLockData.password = null;
     this.postTimerObj.expireDate = null;
     this.postTimerObj.time = null;
+    this.slideAvatarPrvd.sliderPosition = 'left';
 
     this.cameraPrvd.toggleCameraBg({
       isArea: true
@@ -617,14 +601,11 @@ export class ChatPage {
     this.hideTopSlider('timer');
     this.hideTopSlider('unlock');
 
-    this.slideAvatarPrvd.sliderPosition = 'left';
-
     this.chatPrvd.setState('area');
 
-    this.cameraPreview.hide();
     this.getUsers();
-    this.updateMessagesAndScrollDown();
-    this.postLoaded = false;
+    this.updateMessagesAndScrollDown(false);
+    this.postLoaded = false
   }
 
   goUndercover(event?:any) {
@@ -648,32 +629,31 @@ export class ChatPage {
             action: 'create'
           });
         }
-      })
-      // Enable main button after view loaded
-      this.chatPrvd.isMainBtnDisabled = false;
-      return;
+        // Enable main button after view loaded
+        this.chatPrvd.isMainBtnDisabled = false;
+      });
+    } else {
+      // this.toolsPrvd.showLoader();
+      this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
+      this.flipInput();
+      this.changePlaceholderText();
+      this.toolsPrvd.hideLoader();
+      this.toolsPrvd.showLoader();
+      setTimeout(() => {
+        if (this.chatPrvd.getState() == 'area') {
+          this.chatPrvd.setState('undercover');
+          this.cameraPrvd.toggleCameraBg();
+          this.runUndecoverSlider(this.pageTag);
+          this.startMessageUpdateTimer();
+          this.chatPrvd.scrollToBottom(this.content);
+        } else {
+          this.goArea();
+        }
+        this.content.resize();
+        // this.startMessageUpdateTimer();
+        // this.chatPrvd.scrollToBottom(this.content);
+      }, 1);
     }
-
-    // this.toolsPrvd.showLoader();
-    this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
-    this.flipInput();
-    this.changePlaceholderText();
-    this.toolsPrvd.hideLoader();
-    this.toolsPrvd.showLoader();
-    setTimeout(() => {
-      if (this.chatPrvd.getState() == 'area') {
-        this.chatPrvd.setState('undercover');
-        this.cameraPrvd.toggleCameraBg();
-        this.runUndecoverSlider(this.pageTag);
-        this.startMessageUpdateTimer();
-        this.chatPrvd.scrollToBottom(this.content);
-      } else {
-        this.goArea();
-      }
-      this.content.resize();
-      // this.startMessageUpdateTimer();
-      // this.chatPrvd.scrollToBottom(this.content);
-    }, 1);
   }
 
   toggleShareSlider(social_network){
@@ -853,12 +833,17 @@ export class ChatPage {
     });
   }
 
-  private areaScroll() {
-    if (!this.postLoaded) {
-      let dimensions = this.content.getContentDimensions();
-      if (dimensions.scrollTop < (dimensions.scrollHeight - 400)) {
-        this.postLoading = true;
-        this.refreshChat();
+  private areaScroll():void {
+    // console.log('_[scroll]');
+    if (this.chatPrvd.getState() == 'area') {
+      if (!this.postLoaded) {
+        // console.log('_[scroll] getting scroll dimentions...');
+        let dimensions = this.content.getContentDimensions();
+        if (!this.postLoading && dimensions.scrollTop < (dimensions.scrollHeight - 400)) {
+          this.postLoading = true;
+          console.log('_[scroll] refreshing chat...');
+          this.refreshChat();
+        }
       }
     }
   }
@@ -1158,7 +1143,7 @@ export class ChatPage {
 
   ionViewDidEnter() {
     this.toolsPrvd.showLoader();
-    this.chatPrvd.postMessages = [];
+    // this.chatPrvd.postMessages = [];
     console.warn('[CHAT] Did enter');
     if (!this.componentLoaded)
       this.constructorLoad();

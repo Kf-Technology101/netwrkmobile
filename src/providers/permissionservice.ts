@@ -71,8 +71,13 @@ export class PermissionsService {
           console.log('Permission ' + permission + ' granted');
           resolve();
         },
-        err => this._androidPermission.requestPermissions(this._androidPermission.PERMISSION[permission])
-      );
+        err => {
+        let requestPermission = () => this._androidPermission.requestPermissions(this._androidPermission.PERMISSION[permission]).then(
+          success => resolve()
+          ,err => requestPermission()
+        )
+        requestPermission();
+      });
     });
   }
 }

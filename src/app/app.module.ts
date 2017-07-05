@@ -55,11 +55,12 @@ import { PermissionsService } from '../providers/permissionservice';
 import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
 import { Share } from '../providers/share';
-import { NetworkProvider } from '../providers/network';
+import { NetworkProvider } from '../providers/networkservice';
 import { Camera } from '../providers/camera';
 import { Chat } from '../providers/chat';
 import { LocationChange } from '../providers/locationchange';
 import { Settings } from '../providers/settings';
+import { NetworkCheck } from '../providers/networkcheck';
 
 // Native services
 import { Geolocation } from '@ionic-native/geolocation';
@@ -158,6 +159,7 @@ export function providers() {
     Settings,
     Crop,
     Diagnostic,
+    NetworkCheck,
     // Keep this to enable Ionic's runtime error handling during development
     { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];

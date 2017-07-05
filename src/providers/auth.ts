@@ -6,7 +6,7 @@ import 'rxjs/add/operator/toPromise';
 
 import { Api } from './api';
 import { LocalStorage } from './local-storage';
-import { NetworkProvider } from './network';
+import { NetworkProvider } from './networkservice';
 import { Social } from './social';
 
 import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';

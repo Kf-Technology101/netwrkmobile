@@ -37,10 +37,10 @@
 
 <ion-footer>
   <button *ngIf="accessed" ion-button color="bk"
-          class="main-action-btn medium" outline (click)="goHome()">
+          class="main-action-btn medium" outline (tap)="goHome()">
     <ion-icon class="custom-text-icon">&#8250;</ion-icon>
   </button>
-  <button ion-button class="footer-back-button" (click)="goBack()">
+  <button ion-button class="footer-back-button" (tap)="goBack()">
     <span ion-text color="bk">Back</span>
   </button>
 </ion-footer>

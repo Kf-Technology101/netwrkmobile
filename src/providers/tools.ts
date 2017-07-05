@@ -80,12 +80,14 @@ export class Tools {
     this.toast.present();
   }
 
-  showLoader() {
+  showLoader(message?:string) {
+    let loaderMessage:any = message ?  message : 'Please wait...';
+    let loaderContent:any = '<div class="glowing-icon"></div><span class="loading-text">' + loaderMessage + '</span>';
     try {
       if (!this.loader || this.loader === null) {
         this.loader = this.loadingCtrl.create({
           spinner: 'hide',
-          content: '<div class="glowing-icon"></div><span class="loading-text">Please wait...</span>'
+          content: loaderContent
         });
         this.loader.present();
       }

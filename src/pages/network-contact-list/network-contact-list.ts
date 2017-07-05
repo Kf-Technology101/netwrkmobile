@@ -13,7 +13,7 @@ import { Auth } from '../../providers/auth';
 import { User } from '../../providers/user';
 import { ContactsProvider } from '../../providers/contacts';
 import { Tools } from '../../providers/tools';
-import { NetworkProvider } from '../../providers/network';
+import { NetworkProvider } from '../../providers/networkservice';
 import { Gps } from '../../providers/gps';
 import { Chat } from '../../providers/chat';
 
@@ -192,7 +192,7 @@ export class NetworkContactListPage {
       if (this.listType == 'emails') {
         this.tools.showToast(this.selectErrorString);
       } else {
-        this.tools.showToast(this.selectMinSMSErrorString);
+        this.tools.showToast('Can\'t load contacts');
       }
     }
   }

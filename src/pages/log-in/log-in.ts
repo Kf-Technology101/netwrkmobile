@@ -23,7 +23,6 @@ import { LocationChange } from '../../providers/locationchange';
 import { Keyboard } from '@ionic-native/keyboard';
 import { LocalStorage } from '../../providers/local-storage';
 import { Social } from '../../providers/social';
-import { Storage } from '@ionic/storage';
 
 // Animations
 import {
@@ -75,8 +74,7 @@ export class LogInPage {
     public chatPrvd: Chat,
     public locationchange: LocationChange,
     public keyboard: Keyboard,
-    private storage: LocalStorage,
-    private appStorage: Storage
+    private storage: LocalStorage
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';

@@ -68,6 +68,7 @@ page-network-no {
         color: color($colors, bk);
         font-size: 18px;
         font-weight: 500;
+        position: relative;
         &.left {
           float: left;
           line-height: 68px;

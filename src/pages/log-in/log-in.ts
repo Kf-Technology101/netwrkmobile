@@ -22,6 +22,9 @@ import { Chat } from '../../providers/chat';
 import { LocationChange } from '../../providers/locationchange';
 import { Keyboard } from '@ionic-native/keyboard';
 import { LocalStorage } from '../../providers/local-storage';
+import { Social } from '../../providers/social';
+import { Storage } from '@ionic/storage';
+
 // Animations
 import {
   scaleMainBtn,
@@ -72,14 +75,17 @@ export class LogInPage {
     public chatPrvd: Chat,
     public locationchange: LocationChange,
     public keyboard: Keyboard,
-    private storage: LocalStorage
+    private storage: LocalStorage,
+    private appStorage: Storage
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
     this.textStrings.require = 'Please fill all fields';
 
     this.keyboard.onKeyboardHide().subscribe(res => {
-      this.chatPrvd.mainBtn.setState('centered');
+      setTimeout(() => {
+        this.chatPrvd.mainBtn.setState('centered');
+      }, 1);
     }, err => {
       console.log(err);
     });
@@ -194,6 +200,7 @@ export class LogInPage {
     setTimeout(() => {
       this.storage.rm('auth_data');
       this.storage.rm('auth_type');
+      this.storage.rm('social_auth_data');
       this.controls.hidden = false;
       this.controls.state = 'fadeIn';
       mainBtn.classList.add('anim-glow');

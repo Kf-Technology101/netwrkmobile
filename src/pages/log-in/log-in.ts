@@ -81,9 +81,8 @@ export class LogInPage {
     this.textStrings.require = 'Please fill all fields';
 
     this.keyboard.onKeyboardHide().subscribe(res => {
-      setTimeout(() => {
+      if (this.chatPrvd.mainBtn.setState('minimised'))
         this.chatPrvd.mainBtn.setState('centered');
-      }, 1);
     }, err => {
       console.log(err);
     });
@@ -180,10 +179,14 @@ export class LogInPage {
     });
   }
 
-  inputBlured(event:any):void {
-    setTimeout(() => {
+  private inputBlured(event:any):void {
+    if (this.chatPrvd.mainBtn.getState() == 'minimised')
       this.chatPrvd.mainBtn.setState('centered');
-    }, 1);
+  }
+
+  private inputFocused():void {
+    if (this.chatPrvd.mainBtn.getState() == 'centered')
+      this.chatPrvd.mainBtn.setState('minimised');
   }
 
   goToSignUp() { this.tools.pushPage(SignUpPage); }

@@ -10,7 +10,7 @@ import { StatusBar } from "@ionic-native/status-bar";
 import { Sim } from '@ionic-native/sim';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
-import { Storage } from '@ionic/storage';
+
 // Pages
 import { MyApp } from './app.component';
 

@@ -81,7 +81,7 @@ export class LogInPage {
     this.textStrings.require = 'Please fill all fields';
 
     this.keyboard.onKeyboardHide().subscribe(res => {
-      if (this.chatPrvd.mainBtn.setState('minimised'))
+      if (this.chatPrvd.mainBtn.getState() != 'centered')
         this.chatPrvd.mainBtn.setState('centered');
     }, err => {
       console.log(err);
@@ -180,13 +180,11 @@ export class LogInPage {
   }
 
   private inputBlured(event:any):void {
-    if (this.chatPrvd.mainBtn.getState() == 'minimised')
-      this.chatPrvd.mainBtn.setState('centered');
+    this.chatPrvd.mainBtn.setState('centered');
   }
 
   private inputFocused():void {
-    if (this.chatPrvd.mainBtn.getState() == 'centered')
-      this.chatPrvd.mainBtn.setState('minimised');
+    this.chatPrvd.mainBtn.setState('minimised');
   }
 
   goToSignUp() { this.tools.pushPage(SignUpPage); }

@@ -101,7 +101,6 @@ export class Tools {
     setTimeout(() => {
       try {
         this.loader.dismiss();
-        this.loader = null;
       } catch (err) {
         console.warn('[loader close] Error:', err);
       }

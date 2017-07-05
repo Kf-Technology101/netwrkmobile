@@ -147,7 +147,7 @@ export class ChatPage {
   private contentPadding: string;
   private contentMargin: string;
 
-  private canRefresh: boolean = false;
+  private canRefresh: boolean = true;
   private idList: any = [];
   private messageRefreshInterval: any;
   private socialPosts: Array<any> = [];
@@ -412,7 +412,7 @@ export class ChatPage {
         this.debug.postHangTime = 0;
       }
     }
-    this.canRefresh = false;
+    this.canRefresh = true;
     // this.chatPrvd.postMessages.push(data);
     if (this.chatPrvd.getState() != 'area')
       this.chatPrvd.scrollToBottom(this.content);
@@ -612,6 +612,11 @@ export class ChatPage {
     if (event) {
       event.stopPropagation();
       if (this.chatPrvd.mainBtn.getState() == 'minimised') {
+        this.keyboard.close();
+        return;
+      } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled'){
+        this.toggleContainer(this.emojiContainer, 'hide');
+        this.toggleContainer(this.shareContainer, 'hide');
         this.keyboard.close();
         return;
       }
@@ -849,9 +854,10 @@ export class ChatPage {
   }
 
   refreshChat(refresher?:any) {
+    console.log('canRefresh?', this.canRefresh);
     if (this.canRefresh) {
-      this.postLoading = this.chatPrvd.getState() == 'area';
-      // console.log('Begin async operation', refresher);
+      this.postLoading = (this.chatPrvd.getState() == 'area');
+      console.log('Begin async operation', refresher);
       this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
       .subscribe(res => {
         // console.log('[REFRESHER] postMessages:', this.chatPrvd.postMessages);
@@ -955,11 +961,12 @@ export class ChatPage {
       this.canRefresh = true;
     }, err => {
       // console.log('[sendDeletedMessages] Error:', err);
+      this.canRefresh = true;
     });
   }
 
   clearMessages() {
-    this.canRefresh = false;
+    // this.canRefresh = false;
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
     this.idList = this.getMessagesIds(this.chatPrvd.postMessages);

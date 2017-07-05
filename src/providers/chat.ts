@@ -303,7 +303,8 @@ export class Chat {
 
     let messagesIds = [];
     for (let i in messagesArray) {
-      messagesIds.push(messagesArray[i].id);
+      if (messagesArray[i])
+        messagesIds.push(messagesArray[i].id);
     }
 
     // console.log('[getMessages] data:', data);

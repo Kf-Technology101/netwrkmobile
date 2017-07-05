@@ -106,7 +106,7 @@
           </div>
         </ion-slide>
         <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
-          <div class="avatar" (click)="goToProfile(user.id)">
+          <div class="avatar" (tap)="goToProfile(user.id)">
             <img [src]="chatPrvd.users[user.id].avatar_url"
             (error)="chatPrvd.updateAvatarUrl($event)">
           </div>

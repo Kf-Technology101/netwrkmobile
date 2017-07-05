@@ -997,9 +997,11 @@ export class ChatPage {
     }
   }
 
-  goToProfile(profileId?: number, profileTypePublic?: boolean) {
+  private goToProfile(profileId?: number, profileTypePublic?: boolean):void {
     this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
       this.toolsPrvd.pushPage(ProfilePage, res);
+    }, err => {
+      console.error('goToProfile err:', err);
     });
   }
 

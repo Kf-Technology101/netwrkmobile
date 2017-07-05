@@ -546,11 +546,12 @@ export class Chat {
   public goToProfile(profileId?: number, profileTypePublic?: boolean): Promise<any> {
     return new Promise(res => {
       // console.log('[ChatProvider][goToProfile]', profileTypePublic);
-      if (!profileId) profileId = this.authPrvd.getAuthData().id;
+      let currentUser = this.authPrvd.getAuthData();
+      if (!profileId) profileId = currentUser.id;
       let params = {
         id: profileId,
         public: profileTypePublic,
-        currentUser: this.authPrvd.getAuthData(),
+        currentUser: currentUser,
       };
       res(params);
     });

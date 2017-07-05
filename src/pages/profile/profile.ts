@@ -294,6 +294,7 @@ export class ProfilePage {
   }
 
   ionViewDidEnter() {
+    this.loadProfile();
     this.cameraPrvd.toggleCameraBg();
     if (this.ownProfile) {
       if (this.authPrvd.storage.get('profile_first_time') === null) {

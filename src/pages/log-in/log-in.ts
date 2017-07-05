@@ -181,7 +181,9 @@ export class LogInPage {
   }
 
   inputBlured(event:any):void {
-    this.chatPrvd.mainBtn.setState('centered');
+    setTimeout(() => {
+      this.chatPrvd.mainBtn.setState('centered');
+    }, 1);
   }
 
   goToSignUp() { this.tools.pushPage(SignUpPage); }

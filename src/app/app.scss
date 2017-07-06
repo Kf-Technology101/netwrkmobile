@@ -388,7 +388,9 @@ ion-app .ion-page .content {
   box-shadow: 0 0 10px rgba(255,255,255,0.8);
   padding: 0;
   box-sizing: content-box;
-  .forward-arrow {
+  .forward-arrow,
+  .icon.ion-ios-arrow-forward-outline,
+  .icon.ion-ios-arrow-back-outline {
     font-size: 40px;
     color: color($colors, bk);
   }
@@ -396,16 +398,7 @@ ion-app .ion-page .content {
     background: transparent;
     box-shadow: none;
   }
-  &.big {
-    width: 54px;
-    height: 90px;
-    border-width: 5px;
-    border-radius: 11px;
-    .icon.ion-ios-arrow-forward-outline {
-      font-size: 40px;
-    }
-  }
-
+  &.big,
   &.medium {
     width: 54px;
     height: 90px;

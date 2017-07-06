@@ -13,17 +13,24 @@ import { User } from '../../providers/user';
 import { Chat } from '../../providers/chat';
 import { Auth } from '../../providers/auth';
 import { Camera } from '../../providers/camera';
+import { Api } from '../../providers/api';
+import { Toggleable } from '../../includes/toggleable';
 
 import { AlertController } from 'ionic-angular';
-import { Api } from '../../providers/api';
 import { Keyboard } from '@ionic-native/keyboard';
 import { CameraPreview } from '@ionic-native/camera-preview';
+
+// Animations
+import { toggleFade, animSpeed } from '../../includes/animations';
 
 @Component({
   selector: 'page-profile',
   templateUrl: 'profile.html',
   providers: [
     Profile
+  ],
+  animations: [
+    toggleFade
   ]
 })
 export class ProfilePage {
@@ -31,6 +38,9 @@ export class ProfilePage {
   @ViewChild('incognitoSlider') incoSlider;
   @ViewChild(Content) content: Content;
   @ViewChild('input') nativeInputBtn: ElementRef
+
+  profileContent = new Toggleable('fadeIn', false);
+  public backBtnDisabled: boolean = false;
 
   greeting: string;
   testSlides: string[] = [];
@@ -43,6 +53,8 @@ export class ProfilePage {
   private posts: Array<any> = [];
   private pageTag: string;
   private postLoading: boolean = false;
+
+  private usersQueue: Array<any> = [];
 
   constructor(
     public navCtrl: NavController,
@@ -57,14 +69,18 @@ export class ProfilePage {
     public alertCtrl: AlertController,
     public api: Api,
     public chatPrvd: Chat,
-    elRef: ElementRef,
+    public elRef: ElementRef,
     public profile: Profile,
     public platform: Platform,
     public keyboard: Keyboard,
     public cameraPrev: CameraPreview,
     public cameraPrvd: Camera
   ) {
-    this.pageTag = elRef.nativeElement.tagName.toLowerCase();
+    this.loadConstructor();
+  }
+
+  private loadConstructor():void {
+    this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
     this.user.id = this.navParams.get('id');
 
     let publicProfile = this.navParams.get('public');
@@ -84,31 +100,55 @@ export class ProfilePage {
     console.log(this.socialPrvd.connect.facebook);
   }
 
-  getFbProfile(userId) {
-    this.userPrvd.getFacebookFriendProfile(userId)
-    .subscribe(res => {
-      console.log('[GetfbProfile] Res:', res);
-      this.posts = [];
-      this.showUserData(res);
+  private getFbProfile(userId:any):void {
+    this.toggleProfilePageAnimation(false);
+    this.userPrvd.getFacebookFriendProfile(userId).subscribe(res => {
+      setTimeout(() => {
+        this.posts = [];
+        console.log('[GetfbProfile] Res:', res);
+        this.showUserData(res);
+        this.usersQueue.push(res.id);
+        console.log('[usersQueue]:', this.usersQueue);
+        this.toggleProfilePageAnimation(true);
+      }, 400);
     }, err => {
       console.error('[GetfbProfile] Err:', err);
+      this.toggleProfilePageAnimation(true);
     });
   }
 
-  // public uploadCallback(event: Event): void {
-  //   console.log('event:', event);
-  //   this.profile.imageLoading = true;
-  //   this.nativeInputBtn.nativeElement.value = null;
-  //   console.log('upload-button callback executed');
-  //   // let fileInput = document.getElementById('file-input');
-  //
-  //   // trigger click event of hidden input
-  //   let clickEvent = new MouseEvent('click', {bubbles: true});
-  //   this.profile.renderer.invokeElementMethod(
-  //     this.nativeInputBtn.nativeElement, 'dispatchEvent', [clickEvent]);
-  // }
+  private goBack():void {
+    if (this.usersQueue.length > 0) {
+      this.backBtnDisabled = true;
+      this.toggleProfilePageAnimation(false);
+      setTimeout(() => {
+        this.usersQueue.pop();
+        this.loadConstructor();
+        this.viewDidEnter({
+          id: this.usersQueue[this.usersQueue.length - 1],
+          public: true
+        });
+        this.toggleProfilePageAnimation(true);
+      }, 400);
+    } else {
+      this.toolsPrvd.popPage();
+    }
+  }
 
-  connectToInstagram() {
+  private toggleProfilePageAnimation(state:boolean):void {
+    let cState = state ? 'fadeIn' : 'fadeOutfast';
+    let duration = state ? 1000 : null;
+    let runAnimation = () => {
+      this.profileContent.setState(cState);
+      this.backBtnDisabled = false;
+    };
+    if (duration)
+      setTimeout(() => { runAnimation(); }, duration);
+    else
+      runAnimation();
+  }
+
+  private connectToInstagram():void {
     this.socialPrvd.connectToInstagram().then(res => {
       this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
       this.toolsPrvd.showToast('Instagram successfully connected');
@@ -120,9 +160,7 @@ export class ProfilePage {
     this.toolsPrvd.showToast('LinkedIn isn\'t connected');
   }
 
-  connectToSnapchat() {
-
-  }
+  connectToSnapchat() { }
 
   openSettings() {
     this.toolsPrvd.pushPage(ProfileSettingPage, {
@@ -140,13 +178,11 @@ export class ProfilePage {
       if (!this.postLoading
         && dimensions.scrollTop < (dimensions.scrollHeight - 800)) {
         this.postLoading = true;
-        this.showMessagesWithType();
+        this.showMessages(this.undercoverPrvd.isUndercover);
       }
     }
     // console.log(this.content, lastPost, lastPostOffset, this.content.getContentDimensions());
   }
-
-  goBack() { this.toolsPrvd.popPage(); }
 
   private loadPublicProfile() {
     this.userPrvd.getUserData(this.user.id).subscribe(
@@ -174,23 +210,6 @@ export class ProfilePage {
     }
   }
 
-  private showMessagesWithType() {
-    // if (this.ownProfile) {
-    //   if (this.slideAvatarPrvd.sliderPosition == 'right') {
-    //     this.showMessages();
-    //   } else {
-    //     this.showMessages(false);
-    //   }
-    // } else {
-    //   if (this.profileTypePublic) {
-    //     this.showMessages(false);
-    //   } else {
-    //     this.showMessages(true);
-    //   }
-    // }
-    this.showMessages(this.undercoverPrvd.isUndercover);
-  }
-
   private showUserData(res: any) {
     // this.toolsPrvd.hideLoader();
     console.log(res);
@@ -198,7 +217,7 @@ export class ProfilePage {
     this.ownProfile = (res.id == this.authPrvd.getAuthData().id) ? true : false;
     this.user = res;
 
-    this.showMessagesWithType();
+    this.showMessages(this.undercoverPrvd.isUndercover);
 
     this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
       console.log(friends);
@@ -236,6 +255,8 @@ export class ProfilePage {
       undercover: undercover,
       public: this.profileTypePublic,
     };
+
+    console.log('[Profile](showMessages) params:', params);
 
     if (this.ownProfile) {
       params.public = this.slideAvatarPrvd.sliderPosition == 'right'
@@ -293,13 +314,16 @@ export class ProfilePage {
     this.profile.userDescription = this.user.role_description;
   }
 
-  ionViewDidEnter() {
+  private viewDidEnter(params?:any):void {
+    if (params.id) this.user.id = params.id;
+    if (params.public) this.profileTypePublic = params.public;
+    this.posts = [];
     this.loadProfile();
     this.cameraPrvd.toggleCameraBg();
     if (this.ownProfile) {
-      if (this.authPrvd.storage.get('profile_first_time') === null) {
-        this.showFirstTimeMessage();
-      }
+      // if (this.authPrvd.storage.get('profile_first_time') === null) {
+      //   this.showFirstTimeMessage();
+      // }
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(this.pageTag);
     }
@@ -307,6 +331,10 @@ export class ProfilePage {
     this.user = this.authPrvd.getAuthData();
     this.setProfileData();
     // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
+  }
+
+  ionViewDidEnter() {
+    this.viewDidEnter();
   }
 
   ionViewDidLoad() {

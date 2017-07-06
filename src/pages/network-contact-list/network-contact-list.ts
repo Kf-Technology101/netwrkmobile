@@ -124,7 +124,7 @@ export class NetworkContactListPage {
     let count = 0;
     for (let c in this.contacts) if (this.contacts[c].checked) count++;
     if (this.listType == 'emails')
-      this.accessed = count >= 20 ? true : false;
+      this.accessed = (count >= 20);
     else if (count > 0)
       this.accessed = true;
   }
@@ -173,15 +173,14 @@ export class NetworkContactListPage {
           .map(res => res.json()).subscribe(res => {
             if (this.listType == 'emails')
               this.contactsPrvd.sendContacts(this.contacts)
-              // .subscribe(
-              //   () => {}, () => {}
-              // );
 
             let inviteCode = this.chatPrvd.localStorage.get('chat_zip_code');
             let inviteCodes = this.networkPrvd.getInviteZipAccess();
             this.tools.hideLoader();
-            if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode)
-            this.networkPrvd.saveInviteZipAccess(inviteCodes)
+
+            if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode);
+            
+            this.networkPrvd.saveInviteZipAccess(inviteCodes);
             this.networkPrvd.saveInviteAccess(true);
             this.tools.popPage();
           },
@@ -198,9 +197,5 @@ export class NetworkContactListPage {
   }
 
   goBack() { this.tools.popPage(); }
-
-  // ionViewDidEnter() {
-  //
-  // }
 
 }

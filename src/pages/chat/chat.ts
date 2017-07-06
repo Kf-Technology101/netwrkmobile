@@ -844,7 +844,7 @@ export class ChatPage {
       if (!this.postLoaded) {
         // console.log('_[scroll] getting scroll dimentions...');
         let dimensions = this.content.getContentDimensions();
-        if (!this.postLoading && dimensions.scrollTop < (dimensions.scrollHeight - 400)) {
+        if (!this.postLoading && dimensions.scrollTop < (dimensions.scrollHeight - 80)) {
           this.postLoading = true;
           console.log('_[scroll] refreshing chat...');
           this.refreshChat();

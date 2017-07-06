@@ -66,10 +66,10 @@
 </ion-content>
 
 <ion-footer>
-  <button *ngIf="invitationSent || accessed" ion-button color="bk"
-    class="main-action-btn medium has-label"
-    (click)="doAction()" outline>
-    <ion-icon class="custom-text-icon">&#8250;</ion-icon>
+  <button ion-button color="bk"
+    class="main-action-btn medium" (tap)="doAction()" outline>
+    <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline">
+    </ion-icon>
   </button>
 
   <button ion-button class="footer-back-button" (click)="goBack()" clear>

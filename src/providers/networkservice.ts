@@ -50,13 +50,13 @@ export class NetworkProvider {
     return this.localStorage.set('invitation_sent', invitationSent);
   }
 
-  public getInviteZipAccess(): Array<number> {
+  public getInviteZipAccess(): Array<string> {
     let invites = this.localStorage.get('invitation_zip_codes');
     if (!invites) invites = [];
     return invites;
   }
 
-  public saveInviteZipAccess(invites: Array<number>) {
+  public saveInviteZipAccess(invites: Array<string>) {
     return this.localStorage.set('invitation_zip_codes', invites);
   }
 

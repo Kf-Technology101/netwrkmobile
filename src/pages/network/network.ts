@@ -45,7 +45,7 @@ export class NetworkPage {
     this.user = this.authPrvd.getAuthData();
 
     this.textStrings.actionError = 'Something went wrong, please reload app and try again';
-    this.textStrings.inviteError = 'Please, invite 20 or more friends for create netwrk';
+    this.textStrings.inviteError = 'Please, invite 20 or more friends to create a netwrk';
     this.textStrings.created = 'The netwrk already created, please wait for connections';
     this.textStrings.joined = 'You have already joined, please wait for connections';
   }

@@ -202,6 +202,7 @@ export class LogInPage {
       this.storage.rm('auth_data');
       this.storage.rm('auth_type');
       this.storage.rm('social_auth_data');
+      this.storage.rm('current_network');
       this.controls.hidden = false;
       this.controls.state = 'fadeIn';
       mainBtn.classList.add('anim-glow');

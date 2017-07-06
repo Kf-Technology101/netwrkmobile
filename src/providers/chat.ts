@@ -190,7 +190,7 @@ export class Chat {
 
     this.ng2cable.subscribe(this.hostUrl + '/cable', {
       channel: <string> channel,
-      post_code: <number> zipCode
+      post_code: <string> zipCode
     });
 
     console.log('broadcaster:', this.broadcaster);

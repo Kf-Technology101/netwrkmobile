@@ -401,6 +401,9 @@ ion-app .ion-page .content {
     height: 90px;
     border-width: 5px;
     border-radius: 11px;
+    .icon.ion-ios-arrow-forward-outline {
+      font-size: 40px;
+    }
   }
 
   &.medium {

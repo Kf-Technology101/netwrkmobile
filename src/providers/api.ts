@@ -12,7 +12,7 @@ export class Api {
     local: '192.168.1.13:2998', // default :3000
     remote: '34.208.20.67' /*'netwrk.com'*/
   };
-  public siteDomain: string = this.domain.local;
+  public siteDomain: string = this.domain.remote;
   public hostUrl = this.httpProtocol + this.siteDomain;
   public url: string = this.hostUrl + this.apiV;
 

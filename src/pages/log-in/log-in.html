@@ -78,9 +78,9 @@
     <button ion-button default (tap)="toggleLoginForm()"
             round item-left color="bk" [@fadeState]="controls.state"
             [hidden]="controls.hidden">Login</button>
-    <button ion-button default round item-left
+    <!-- <button ion-button default round item-left
             (tap)="locationchange.showLocationSelect()"
-            class="debug-btn">Change location</button>
+            class="debug-btn">Change location</button> -->
     <button type="submit" (tap)="doFbLogin()" ion-button default round item-right
             color="bk" [@fadeState]="controls.state"
             [hidden]="controls.hidden">FB login</button>

@@ -333,20 +333,12 @@ export class Chat {
   }
 
   public getMessagesByUserId(params: any) {
-    let socials:any = [];
-    for (let i in this.socialPrvd.connect) {
-      if (this.socialPrvd.connect[i]) {
-        socials.push(i);
-      }
-    }
-
-    console.log('socials:', socials);
     let data: any = {
       network_id: this.networkPrvd.getNetworkId(),
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       limit: 20,
-      social: socials
+      social: ['facebook', 'twitter'] // gavnocod
     };
 
     if (params) Object.assign(data, params);

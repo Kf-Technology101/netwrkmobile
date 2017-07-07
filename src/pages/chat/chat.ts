@@ -747,6 +747,7 @@ export class ChatPage {
       event.stopPropagation();
       event.preventDefault();
     }
+
     let cont = this.getTopSlider(container);
     // this.getTopSlider('timer').hide();
     // this.getTopSlider('lock').hide();

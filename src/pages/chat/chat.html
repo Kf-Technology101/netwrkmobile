@@ -85,7 +85,7 @@
       <button ion-button type="submit" class="submit"
               *ngIf="postLockData.password && postLockData.hint">Lock it</button>
     </form>
-    <button color="bk" class="back" (click)="hideTopSlider('lock')"></button>
+    <!-- <button color="bk" class="back" (click)="hideTopSlider('lock')"></button> -->
   </ion-toolbar>
 
   <div *ngIf="!isUndercover" class="netwrk-header">
@@ -365,7 +365,7 @@
       <ion-input #textInput id="textInput" type="text"
         [placeholder]="placeholderText"
         (keyup)="getCaretPos(textInput); calculateInputChar(textInput)"
-        (tap)="hideTopSlider('timer'); hideTopSlider('lock')">
+        (tap)="hideTopSlider(activeTopForm);" (focus)="if (plt.is('ios')) keyboard.show()">
       </ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 

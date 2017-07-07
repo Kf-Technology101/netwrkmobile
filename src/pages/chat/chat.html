@@ -20,23 +20,23 @@
     </div>
 
     <!-- <button *ngIf="isUndercover && chatPrvd.postMessages.length === 0 && !chatPrvd.postBtn.state"
-            class="side refresh-btn top-icon" (click)="startMessageUpdateTimer()"
+            class="side refresh-btn top-icon" (click)="refreshChat()"
             [hidden]="!canRefresh" ion-button>
       <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
     </button> -->
-    <button ion-button class="side clear-btn" (click)="clearMessages()"
+    <button ion-button class="side clear-btn" (tap)="clearMessages()"
             *ngIf="isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state">
       Clear
     </button>
 
     <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
-            class="side lock-btn top-icon" (click)="toggleTopSlider('lock')"
+            class="side lock-btn top-icon" (mousedown)="toggleTopSlider('lock', $event)"
             [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
       <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
     </button>
 
     <button ion-button *ngIf="isUndercover && chatPrvd.postBtn.state"
-            class="side left timer-btn top-icon" (click)="toggleTopSlider('timer')"
+            class="side left timer-btn top-icon" (mousedown)="toggleTopSlider('timer', $event)"
             [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
       <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
     </button>
@@ -68,7 +68,7 @@
       <button ion-button type="submit" class="submit"
               *ngIf="postUnlockData.password">Unlock it</button>
     </form>
-    <button color="bk" class="back" (click)="hideTopSlider('unlock')"></button>
+    <!-- <button color="bk" class="back" (click)="hideTopSlider('unlock')"></button> -->
   </ion-toolbar>
 
   <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state"

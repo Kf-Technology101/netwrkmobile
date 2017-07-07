@@ -14,7 +14,7 @@ import {
   AlertController,
   Config,
   Events
-   } from 'ionic-angular';
+} from 'ionic-angular';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 // Pages
@@ -169,6 +169,8 @@ export class ChatPage {
   }
 
   private currentHint:any;
+
+  private activeTopForm:any;
 
   constructor(
     public navCtrl: NavController,
@@ -597,9 +599,10 @@ export class ChatPage {
       isArea: true
     });
 
-    this.hideTopSlider('lock');
-    this.hideTopSlider('timer');
-    this.hideTopSlider('unlock');
+    // this.hideTopSlider('lock');
+    // this.hideTopSlider('timer');
+    // this.hideTopSlider('unlock');
+    this.hideTopSlider(this.activeTopForm);
 
     this.chatPrvd.setState('area');
 
@@ -612,9 +615,14 @@ export class ChatPage {
     if (event) {
       event.stopPropagation();
       if (this.chatPrvd.mainBtn.getState() == 'minimised') {
+        if (this.activeTopForm) {
+          console.log('txtIn:', this.txtIn);
+          this.txtIn.value = '';
+        }
+        this.hideTopSlider(this.activeTopForm);
         this.keyboard.close();
         return;
-      } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled'){
+      } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled') {
         this.toggleContainer(this.emojiContainer, 'hide');
         this.toggleContainer(this.shareContainer, 'hide');
         this.keyboard.close();
@@ -651,9 +659,7 @@ export class ChatPage {
           this.runUndecoverSlider(this.pageTag);
           this.startMessageUpdateTimer();
           this.chatPrvd.scrollToBottom(this.content);
-        } else {
-          this.goArea();
-        }
+        } else this.goArea();
         this.content.resize();
         // this.startMessageUpdateTimer();
         // this.chatPrvd.scrollToBottom(this.content);
@@ -711,7 +717,7 @@ export class ChatPage {
   }
 
   getTopSlider(container:string):any {
-    let cont:any;
+    let cont:any = null;
     switch(container) {
       case 'timer':
         cont = this.postTimer;
@@ -728,26 +734,33 @@ export class ChatPage {
 
   hideTopSlider(container:string):void {
     let cont = this.getTopSlider(container);
-    if (cont.isVisible()) {
+    if (cont && cont.isVisible()) {
       cont.setState('slideUp');
       setTimeout(() => {
         cont.hide();
       }, chatAnim/2);
-      cont.setState('slideUp');
-    }
+    } else console.warn('[hideTopSlider] container is not valid');
   }
 
-  toggleTopSlider(container:string):void {
+  toggleTopSlider(container:string, event?:any):void {
+    if (event) {
+      event.stopPropagation();
+      event.preventDefault();
+    }
     let cont = this.getTopSlider(container);
-    this.getTopSlider('timer').hide();
-    this.getTopSlider('lock').hide();
-    this.getTopSlider('unlock').hide();
+    // this.getTopSlider('timer').hide();
+    // this.getTopSlider('lock').hide();
+    // this.getTopSlider('unlock').hide();
+    if (this.activeTopForm)
+      this.hideTopSlider(this.activeTopForm);
     if (cont.isVisible()) {
+      cont.setState('slideUp');
       setTimeout(() => {
         cont.hide();
+        this.activeTopForm = null;
       }, chatAnim/2);
-      cont.setState('slideUp');
     } else {
+      this.activeTopForm = container;
       cont.show();
       cont.setState('slideDown');
     }

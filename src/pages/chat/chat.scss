@@ -656,14 +656,33 @@ page-network-no {
       margin: auto;
       z-index: 50;
       &.top-icon {
-        height: 26px;
-        width: 26px;
+        height: 32px;
+        width: 32px;
         border-radius: 50%;
         padding: 0;
         background-color: transparent;
         background: color($colors, bk);
         border: 1px solid #fff;
         box-sizing: content-box;
+        &.refresh-btn {
+          font-size: 30px;
+        }
+        &.lock-btn {
+          &.active {
+            &:after {
+              content: '';
+              display: block;
+              position: absolute;
+              width: 10px;
+              height: 10px;
+              border-radius: 50%;
+              background: color($colors, bk-red);
+              z-index: 3;
+              left: 0;
+              bottom: -5px;
+            }
+          }
+        }
         &.white {
           background: transparent;
           border: none;
@@ -671,7 +690,7 @@ page-network-no {
         }
         & ion-icon {
           // font-size: 32px;
-          font-size: 20px;
+          font-size: 26px;
           color: color($colors, white);
         }
       }

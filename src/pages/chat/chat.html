@@ -19,11 +19,12 @@
       </div>
     </div>
 
-    <!-- <button *ngIf="isUndercover && chatPrvd.postMessages.length === 0 && !chatPrvd.postBtn.state"
-            class="side refresh-btn top-icon" (click)="refreshChat()"
+    <button *ngIf="isUndercover && chatPrvd.postMessages.length == 0 && !chatPrvd.postBtn.state"
+            class="side refresh-btn top-icon" (tap)="refreshChat()"
             [hidden]="!canRefresh" ion-button>
-      <ion-icon ios="md-refresh-circle" md="md-refresh-circle"></ion-icon>
-    </button> -->
+      <ion-icon ios="ios-refresh-outline" md="ios-refresh-outline"></ion-icon>
+    </button>
+
     <button ion-button class="side clear-btn" (tap)="clearMessages()"
             *ngIf="isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state">
       Clear
@@ -135,6 +136,13 @@
     <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios">
     </ion-refresher-content>
   </ion-refresher>
+
+  <p ion-text class="refresh-tip"
+  *ngIf="chatPrvd.postMessages.length == 0 &&
+        chatPrvd.localStorage.get('first_time_refresh') == null">
+    Swipe down to search for hidden messages
+  </p>
+
   <div class="chat-container visible" #chatContainer
       [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover' }">
     <!-- [ngClass]="{'visible' : chatPrvd.isMessagesVisible}" -->
@@ -365,7 +373,7 @@
       <ion-input #textInput id="textInput" type="text"
         [placeholder]="placeholderText"
         (keyup)="getCaretPos(textInput); calculateInputChar(textInput)"
-        (tap)="hideTopSlider(activeTopForm);" (focus)="if (plt.is('ios')) keyboard.show()">
+        (tap)="hideTopSlider(activeTopForm);">
       </ion-input>
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 

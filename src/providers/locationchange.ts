@@ -147,7 +147,7 @@ export class LocationChange {
     } else {
       locations.push(newLocation);
     }
-    this.storage.set('location_history', locations);
+    // this.storage.set('location_history', locations);
   }
 
   private setCustomLocation(data):void {

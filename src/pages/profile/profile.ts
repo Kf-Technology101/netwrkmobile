@@ -315,8 +315,8 @@ export class ProfilePage {
   }
 
   private viewDidEnter(params?:any):void {
-    if (params.id) this.user.id = params.id;
-    if (params.public) this.profileTypePublic = params.public;
+    if (params && params.id) this.user.id = params.id;
+    if (params && params.public) this.profileTypePublic = params.public;
     this.posts = [];
     this.loadProfile();
     this.cameraPrvd.toggleCameraBg();

@@ -1097,6 +1097,18 @@ modal-sharelist {
   color: #0093ee;
 }
 
+.refresh-tip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 80px;
+  margin: auto;
+  text-align: center;
+  font-size: 12px;
+  text-shadow: 0px 1px 2px rgba(150, 150, 150, 0.9);
+  color: #fff;
+}
+
 .no-data-message {
   text-align: center;
   color: #fff;

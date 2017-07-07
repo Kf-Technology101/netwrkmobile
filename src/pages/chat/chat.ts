@@ -344,7 +344,7 @@ export class ChatPage {
         hint: form.value.hint,
         password: form.value.password
       }
-      this.postMessage();
+      // this.postMessage();
     }
   }
 
@@ -618,6 +618,7 @@ export class ChatPage {
         if (this.activeTopForm) {
           console.log('txtIn:', this.txtIn);
           this.txtIn.value = '';
+          this.setMainBtnStateRelativeToEvents();
         }
         this.hideTopSlider(this.activeTopForm);
         this.keyboard.close();
@@ -743,11 +744,14 @@ export class ChatPage {
   }
 
   toggleTopSlider(container:string, event?:any):void {
-    if (event) {
-      event.stopPropagation();
-      event.preventDefault();
+    // if (event) {
+    //   event.preventDefault();
+    //   event.stopPropagation();
+    // }
+    if (container == 'lock' && this.txtIn.value.trim() == '') {
+      this.toolsPrvd.showToast('What do you want to hang?');
+      return;
     }
-
     let cont = this.getTopSlider(container);
     // this.getTopSlider('timer').hide();
     // this.getTopSlider('lock').hide();
@@ -764,6 +768,11 @@ export class ChatPage {
       this.activeTopForm = container;
       cont.show();
       cont.setState('slideDown');
+      if (container == 'lock' || container == 'timer') {
+        setTimeout(() => {
+          this.chatPrvd.mainBtn.setState('minimised');
+        }, 400);
+      }
     }
   }
 
@@ -890,7 +899,10 @@ export class ChatPage {
           this.postLoading = false;
         }
         this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
-        if (refresher) refresher.complete();
+        if (refresher) {
+          refresher.complete();
+          this.chatPrvd.localStorage.set('first_time_refresh', false);
+        }
       }, err => {
         if (refresher) refresher.complete();
         // console.error('[getMessages] Err:', err);
@@ -1089,8 +1101,12 @@ export class ChatPage {
         this.chatPrvd.mainBtn.setState('normal');
       }
       if (this.txtIn.value.trim() == '' &&
-          !this.chatPrvd.appendContainer.isVisible()) {
+          !this.chatPrvd.appendContainer.isVisible() &&
+          !this.activeTopForm) {
         this.chatPrvd.postBtn.setState(false);
+      } else if (this.txtIn.value.trim() == '' &&
+                 this.activeTopForm) {
+        this.chatPrvd.mainBtn.setState('minimised');
       }
       // }, chatAnim/2 + 1);
     }, err => {

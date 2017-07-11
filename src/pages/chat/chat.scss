@@ -726,6 +726,9 @@ page-network-no {
         position: relative;
         top: -2px;
         z-index: 99;
+        &.text-ios {
+          top: -5px;
+        }
         span {
           background-color: #fff;
           padding: 0 2px;

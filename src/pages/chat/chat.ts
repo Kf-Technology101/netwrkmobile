@@ -662,6 +662,7 @@ export class ChatPage {
           this.runUndecoverSlider(this.pageTag);
           this.startMessageUpdateTimer();
           this.chatPrvd.scrollToBottom(this.content);
+          this.toolsPrvd.hideLoader();
         } else this.goArea();
         this.content.resize();
         // this.startMessageUpdateTimer();
@@ -1182,7 +1183,7 @@ export class ChatPage {
   }
 
   ionViewDidEnter() {
-    this.toolsPrvd.showLoader();
+    // this.toolsPrvd.showLoader();
     // this.chatPrvd.postMessages = [];
     console.warn('[CHAT] Did enter');
     if (!this.componentLoaded)

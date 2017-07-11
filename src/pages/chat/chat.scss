@@ -296,6 +296,9 @@ page-network-no {
         // border-radius: 13px;
         // border: 1px solid white;
       }
+      &.disabled {
+        pointer-events: none;
+      }
     }
   }
   div.appended-pictures-container{
@@ -715,6 +718,19 @@ page-network-no {
     background: color($colors, white);
     .netwrk-header {
       // padding-bottom: 16px;
+      .area-subhead-tip {
+        font-size: 10px;
+        text-align: center;
+        margin-top: 0;
+        margin-bottom: 0;
+        position: relative;
+        top: -2px;
+        z-index: 99;
+        span {
+          background-color: #fff;
+          padding: 0 2px;
+        }
+      }
       .toolbar {
         border-bottom: 1px solid color($colors, bk);
         padding-left: 0;

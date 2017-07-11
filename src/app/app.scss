@@ -411,6 +411,12 @@ ion-app .ion-page .content {
     height: 42px;
     border-width: 3px!important;
     border-radius: 4px;
+    &.small-icon {
+      .icon.ion-ios-arrow-forward-outline,
+      .icon.ion-ios-arrow-back-outline {
+        font-size: 30px;
+      }
+    }
   }
   &.anim-glow {
     background: transparent;

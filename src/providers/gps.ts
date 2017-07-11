@@ -178,7 +178,7 @@ export class Gps {
             name:<string> res.results[0].formatted_address,
             lat:<number> this.coords.lat,
             lng:<number> this.coords.lng,
-            zip:<any> zipCode
+            zip:<number> zipCode
           });
 
           // console.log('zipCode:', zipCode);
@@ -193,44 +193,10 @@ export class Gps {
             this.localStorage.rm('current_network');
             this.localStorage.set('chat_zip_code', zipCode);
             if (nav.getActive().name == 'ChatPage') {
-              let alert = this.alertCtrl.create({
-                enableBackdropDismiss: false,
-                title: '',
-                subTitle: 'You left the Netwrk area, please join to other netwrk or go Undercover',
-                buttons: [
-                  {
-                    text: 'Go Undercover',
-                    handler: () => {
-                      alert.dismiss().then(() => {
-                        // if (this.changeZipCallback) this.changeZipCallback({
-                        //   undercover: true
-                        // });
-                        // this.events.publish('page:undercover', {undercover: true});
-                        nav.setRoot(ChatPage, {
-                          action_from_gps: 'undercover',
-                          zipCode: zipCode
-                        });
-
-                      });
-                      // return false;
-                    }
-                  },
-                  {
-                    text: 'Join',
-                    handler: () => {
-                      alert.dismiss().then(() => {
-                        // nav.push(NetworkFindPage, null, { animate: false })
-                        nav.setRoot(NetworkFindPage, {
-                          animate: false
-                        })
-                      });
-                      // return false;
-                    }
-                  }
-                ]
+              nav.setRoot(ChatPage, {
+                action_from_gps: this.localStorage.get('chat_state'),
+                zipCode: zipCode
               });
-
-              alert.present();
             }
           }
           // console.log('[Gps][getZipCode] zipCode:', zipCode);

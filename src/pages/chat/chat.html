@@ -120,6 +120,7 @@
         </ion-slide>
       </ion-slides>
     </ion-toolbar>
+    <p ion-text color="bk" class="area-subhead-tip"><span>Local netwrk broadcast</span></p>
   </div>
 
 </ion-header>
@@ -318,11 +319,9 @@
   </div>
 
   <div class="tip tail-bottom"
-  *ngIf="chatPrvd.localStorage.get('area_first_time') === null &&
-         chatPrvd.networkAvailable">Your in a new area</div>
+  *ngIf="chatPrvd.networkAvailable == true">Your in a new area</div>
   <div class="tip tail-bottom"
-  *ngIf="chatPrvd.localStorage.get('area_first_time') === null &&
-         !chatPrvd.networkAvailable">There's no one here yet</div>
+  *ngIf="chatPrvd.networkAvailable == false">There's no one here yet</div>
 
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
@@ -378,7 +377,8 @@
     <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
       <button ion-button item-right clear
-        [ngClass]="{ 'post-button' : chatPrvd.postBtn.state }"
+        [ngClass]="{ 'post-button' : chatPrvd.postBtn.state,
+                     'disabled' : chatPrvd.postBtn.disabled }"
         (tap)="postMessage()" class="post-message">
         <img *ngIf="!chatPrvd.postBtn.state && !isUndercover"
           src="assets/icon/netwrk-chat.svg">

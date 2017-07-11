@@ -227,7 +227,7 @@ export class ChatPage {
   }
 
   private changePlaceholderText() {
-    this.placeholderText = this.isUndercover ? 'Add to this location only...' : 'Share with the area...';
+    this.placeholderText = this.isUndercover ? 'Add to this location only...' : 'Tap to broadcast';
   }
 
   generateEmoticons() {
@@ -398,6 +398,7 @@ export class ChatPage {
 
   updatePost(data: any, message?:any, emoji?:any) {
     // console.log(data);
+    this.toolsPrvd.hideLoader();
     if (!emoji) {
       this.txtIn.value = '';
       if (!data.social)
@@ -470,7 +471,7 @@ export class ChatPage {
         || (message.images && message.images.length > 0)
         || (message.social_urls && message.social_urls.length > 0)) {
         // console.log(messageParams);
-
+        this.toolsPrvd.showLoader();
         this.chatPrvd.sendMessage(messageParams).then(res => {
           console.log('[sendMessage] res:', res);
           this.postLockData.hint = null;
@@ -479,6 +480,7 @@ export class ChatPage {
           this.postTimerObj.time = null;
           this.updatePost(res, message, emoji);
         }).catch(err => {
+          this.toolsPrvd.hideLoader();
           console.log(err);
           this.updatePost(err, message);
         });
@@ -748,7 +750,8 @@ export class ChatPage {
     //   event.preventDefault();
     //   event.stopPropagation();
     // }
-    if (container == 'lock' && this.txtIn.value.trim() == '') {
+    if ((container == 'lock' || container == 'timer')
+        && this.txtIn.value.trim() == '') {
       this.toolsPrvd.showToast('What do you want to hang?');
       return;
     }
@@ -981,7 +984,7 @@ export class ChatPage {
 
   private sendDeletedMessages() {
     // this.idList = this.getMessagesIds(this.chatPrvd.postMessages);
-    this.chatPrvd.deleteMessages().subscribe( res => {
+    this.chatPrvd.deleteMessages(this.idList).subscribe( res => {
       // console.log('[sendDeletedMessages] Success:', res);
       // this.chatPrvd.postMessages = res ? res : [];
       this.canRefresh = true;
@@ -992,7 +995,7 @@ export class ChatPage {
   }
 
   clearMessages() {
-    // this.canRefresh = false;
+    this.canRefresh = false;
     if (this.messagesInterval) clearInterval(this.messagesInterval);
     if (this.messageRefreshInterval) clearTimeout(this.messageRefreshInterval);
     this.idList = this.getMessagesIds(this.chatPrvd.postMessages);
@@ -1110,7 +1113,7 @@ export class ChatPage {
       }
       // }, chatAnim/2 + 1);
     }, err => {
-      // console.log(err);
+      console.log(err);
     });
 
     this.user = this.authPrvd.getAuthData();
@@ -1185,20 +1188,12 @@ export class ChatPage {
     if (!this.componentLoaded)
       this.constructorLoad();
 
-    this.chatPrvd.detectNetwork().then(res => {
-      this.chatPrvd.networkAvailable = res.network ? true : false;
-    }, err => {
-      console.error(err);
+    let global = this.renderer.listen('document', 'touchstart', (evt) => {
+      console.log('Clicking the document', evt);
+      this.chatPrvd.networkAvailable = null;
+      this.chatPrvd.localStorage.set('first_time_refresh', false)
+      global();
     });
-
-    if (this.chatPrvd.localStorage.get('area_first_time') === null) {
-      // this.goUndercover();
-      let global = this.renderer.listen('document', 'touchstart', (evt) => {
-        console.log('Clicking the document', evt);
-        this.chatPrvd.localStorage.set('area_first_time', false);
-        global();
-      });
-    }
 
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
 
@@ -1206,6 +1201,21 @@ export class ChatPage {
     if (providedStateFromGps == 'undercover') {
       this.isUndercover = true;
       this.chatPrvd.setState('undercover');
+      this.chatPrvd.detectNetwork().then(res => {
+        this.chatPrvd.networkAvailable = res.network ? true : false;
+      }, err => {
+        console.error(err);
+      });
+    } else if (providedStateFromGps == 'area') {
+      if (this.checkForNetwork()) {
+        this.chatPrvd.detectNetwork().then(res => {
+          if (res.message == 'Network not found') {
+            this.toolsPrvd.pushPage(NetworkNoPage, {
+              action: 'create'
+            });
+          } else this.goArea();
+        });
+      }
     }
     // init sockets
     this.chatPrvd.socketsInit();

@@ -84,7 +84,7 @@ export class Tools {
     let loaderMessage:any = message ?  message : 'Please wait...';
     let loaderContent:any = '<div class="glowing-icon"></div><span class="loading-text">' + loaderMessage + '</span>';
     try {
-      if (!this.loader || this.loader === null) {
+      if (!this.loader && this.loader == null) {
         this.loader = this.loadingCtrl.create({
           spinner: 'hide',
           content: loaderContent
@@ -98,13 +98,13 @@ export class Tools {
   }
 
   hideLoader() {
-    setTimeout(() => {
-      try {
+    try {
+      if (this.loader !== null)
         this.loader.dismiss();
-      } catch (err) {
-        console.warn('[loader close] Error:', err);
-      }
-    }, 1);
+    } catch (err) {
+      console.warn('[loader close] Error:', err);
+    }
+    this.loader = null;
   }
 
   public pushPage(page: any, params?: any, animate?: boolean) {

@@ -72,7 +72,7 @@ export class Chat {
   public user:any;
 
   public isMessagesVisible: boolean = false;
-  public networkAvailable:boolean = false;
+  public networkAvailable:boolean = null;
 
   constructor(
     public localStorage: LocalStorage,
@@ -153,12 +153,13 @@ export class Chat {
     return result;
   }
 
-  public deleteMessages() {
+  public deleteMessages(id_list:any) {
     // let params = { network_id: this.networkPrvd.getNetworkId() };
     let mess = this.api.post('messages/delete', {
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
-      post_code: this.chatZipCode()
+      post_code: this.chatZipCode(),
+      ids: id_list
     }).share();
     let messMap = mess.map(res => res.json());
     return messMap;
@@ -192,7 +193,7 @@ export class Chat {
 
     this.ng2cable.subscribe(this.hostUrl + '/cable', {
       channel: <string> channel,
-      post_code: <string> zipCode
+      post_code: <number> zipCode
     });
 
     console.log('broadcaster:', this.broadcaster);

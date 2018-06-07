@@ -20,9 +20,9 @@ export class HomePage {
     public auth: Auth,
     public tools: Tools
   ) {
-    // tools.doBackButton('home', (page) => {
-    //   console.log(page);
-    // });
+     //tools.doBackButton('home', (page) => {
+     //  console.log(page);
+     //});
   }
 
   logOut() {

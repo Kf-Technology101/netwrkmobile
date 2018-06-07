@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import {
   NavController,
   NavParams,
@@ -34,8 +34,10 @@ export class SignUpConfirmPage {
     state: 'hidden'
   };
 
+  private codeVal:any = '';
   private signUpErrorString: string;
   private codeErrorString: string;
+  private termsAgreement:boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -53,7 +55,8 @@ export class SignUpConfirmPage {
     console.log('data', this.auth.registerData);
     console.log('sms', this.confirmCode);
     this.tools.showLoader();
-    if (this.confirmCode == this.auth.confirmCode) {
+    if (this.confirmCode == this.auth.confirmCode &&
+        this.termsAgreement) {
       this.auth.signup(this.auth.registerData)
         .map(res => res.json())
         .subscribe(resp => {
@@ -71,22 +74,28 @@ export class SignUpConfirmPage {
   }
 
   sendCode() {
+    let errorTimer = setTimeout(() => {
+      this.tools.showToast('Something went wrong, try again');
+      this.tools.hideLoader();
+    }, 10000);
     this.tools.showLoader();
     this.auth.verification(this.auth.registerData)
-      .map(res => res.json())
-      .subscribe(res => {
-        this.tools.hideLoader();
-        switch (res.login_type) {
-          case 'email':
-          case 'phone':
-            this.auth.registerData.type = res.login_type;
-            this.auth.saveRegisterData(this.auth.registerData);
-            break;
-          default: this.tools.showToast(this.codeErrorString);
-        }
-        this.tools.showToast(res.login_message);
+    .map(res => res.json())
+    .subscribe(res => {
+      this.tools.hideLoader();
+      clearTimeout(errorTimer);
+      switch (res.login_type) {
+        case 'email':
+        case 'phone':
+          this.auth.registerData.type = res.login_type;
+          this.auth.saveRegisterData(this.auth.registerData);
+          break;
+        default: this.tools.showToast(this.codeErrorString);
+      }
+      this.tools.showToast(res.login_message);
     }, err => {
       this.tools.hideLoader();
+      clearTimeout(errorTimer);
       if (this.platform.is('cordova')) {
         this.tools.showToast(this.codeErrorString);
       } else {
@@ -95,8 +104,9 @@ export class SignUpConfirmPage {
     });
   }
 
-  private checkCode(event:any, eventName?:string):void {
-    if (event.target.value.trim() != '') {
+  private checkCode(eventName?:string):void {
+    if (this.codeVal.trim() != '' &&
+        this.termsAgreement) {
       let state:string;
       switch(eventName){
         case 'focus':
@@ -105,6 +115,9 @@ export class SignUpConfirmPage {
         case 'blur':
           state = 'normal';
           break;
+      }
+      if (!eventName) {
+        this.mainBtn.state = 'normal';
       }
       this.mainBtn.state = state;
     } else {

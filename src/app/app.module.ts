@@ -10,6 +10,7 @@ import { StatusBar } from "@ionic-native/status-bar";
 import { Sim } from '@ionic-native/sim';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
+// import { Autosize } from 'ng-autosize';
 
 // Pages
 import { MyApp } from './app.component';
@@ -21,6 +22,7 @@ import { SignUpPage } from '../pages/sign-up/sign-up';
 import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
 import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
 import { SignUpFacebookPage } from '../pages/sign-up-facebook/sign-up-facebook';
+import { HoldScreenPage } from '../pages/hold-screen/hold-screen';
 
 import { ProfilePage } from '../pages/profile/profile';
 import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
@@ -28,7 +30,6 @@ import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 import { NetworkPage } from '../pages/network/network';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 import { NetworkNoPage } from '../pages/network-no/network-no';
-import { NetworkFaqPage } from '../pages/network-faq/network-faq';
 import { NetworkContactListPage } from '../pages/network-contact-list/network-contact-list';
 import { ChatPage } from '../pages/chat/chat';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
@@ -37,9 +38,11 @@ import { CameraPage } from '../pages/camera/camera';
 
 // Modals
 import { LegendaryModal } from '../modals/legendaryhistory/legendaryhistory';
-import { ShareListModal } from '../modals/sharelist/sharelist';
 import { FeedbackShareModal } from '../modals/feedbackshare/feedbackshare';
 import { FeedbackModal } from '../modals/feedback/feedback';
+import { BlacklistModal } from '../modals/blacklist/blacklist';
+import { ArealistModal } from '../modals/arealist/arealist';
+import { MapsModal } from '../modals/maps/maps';
 
 // Services
 import { Api } from '../providers/api';
@@ -54,13 +57,16 @@ import { Profile } from '../providers/profile';
 import { PermissionsService } from '../providers/permissionservice';
 import { UndercoverProvider } from '../providers/undercover';
 import { SlideAvatar } from '../providers/slide-avatar';
-import { Share } from '../providers/share';
 import { NetworkProvider } from '../providers/networkservice';
 import { Camera } from '../providers/camera';
 import { Chat } from '../providers/chat';
 import { LocationChange } from '../providers/locationchange';
 import { Settings } from '../providers/settings';
 import { NetworkCheck } from '../providers/networkcheck';
+import { Places } from '../providers/places';
+import { ReportService } from '../providers/reportservice';
+import { VideoService } from '../providers/videoservice';
+import { FeedbackService } from '../providers/feedback.service';
 
 // Native services
 import { Geolocation } from '@ionic-native/geolocation';
@@ -75,13 +81,15 @@ import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { TwitterConnect } from '@ionic-native/twitter-connect';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { Crop } from '@ionic-native/crop';
+import { AppAvailability } from '@ionic-native/app-availability';
 
 // sockets
-import { Ng2Cable, Broadcaster } from 'ng2-cable/js/index';
-
-// enableProdMode();
+import { Ng2CableModule } from 'ng2-cable';
+// Google Maps
+import { GoogleMapsModule } from 'google-maps-angular2';
 
 let pages = [
+  // Autosize,
   MyApp,
 
   HomePage,
@@ -92,18 +100,22 @@ let pages = [
   SignUpAfterFbPage,
   SignUpFacebookPage,
 
+  HoldScreenPage,
+
   ProfilePage,
   ProfileSettingPage,
 
   NetworkPage,
   NetworkFindPage,
   NetworkNoPage,
-  NetworkFaqPage,
   NetworkContactListPage,
   LegendaryModal,
-  ShareListModal,
   FeedbackShareModal,
   FeedbackModal,
+  MapsModal,
+  BlacklistModal,
+  ArealistModal,
+
   ChatPage,
   UndercoverCharacterPage,
 
@@ -120,7 +132,6 @@ export function entryComponents() {
 
 export function providers() {
   return [
-    Storage,
     User,
     Auth,
     Api,
@@ -133,7 +144,6 @@ export function providers() {
     AndroidPermissions,
     UndercoverProvider,
     SlideAvatar,
-    Share,
     NetworkProvider,
     Camera,
     Chat,
@@ -153,17 +163,20 @@ export function providers() {
     InAppBrowser,
     BackgroundMode,
     Profile,
-    Ng2Cable,
-    Broadcaster,
     LocationChange,
     Settings,
     Crop,
     Diagnostic,
     NetworkCheck,
+    ReportService,
+    VideoService,
+    FeedbackService,
+    AppAvailability,
+
+    Places,
     // Keep this to enable Ionic's runtime error handling during development
-    { provide: ErrorHandler, useClass: IonicErrorHandler }
   ];
-}
+};
 
 @NgModule({
   declarations: declarations(),
@@ -171,7 +184,11 @@ export function providers() {
     BrowserModule,
     HttpModule,
     BrowserAnimationsModule,
-    IonicModule.forRoot(MyApp)
+    Ng2CableModule,
+    IonicModule.forRoot(MyApp),
+    GoogleMapsModule.forRoot({
+      url: 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBjoCQlLGverzDsYq0bpYpxXO9E20FT3yI'
+    })
   ],
   bootstrap: [IonicApp],
   entryComponents: entryComponents(),

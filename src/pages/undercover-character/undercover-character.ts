@@ -2,6 +2,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
 
 import { Slides } from 'ionic-angular';
+import { SplashScreen } from '@ionic-native/splash-screen';
 import { LocalStorage } from '../../providers/local-storage';
 // Pages
 import { NetworkFindPage } from '../network-find/network-find';
@@ -13,7 +14,6 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 import { Auth } from '../../providers/auth';
 
 import { heroes } from '../../includes/heroes';
-
 import * as moment from 'moment';
 
 @Component({
@@ -26,7 +26,7 @@ export class UndercoverCharacterPage {
   public activePerson: any = {
     name: '',
     description: '',
-    imageUrl: '',
+    imageUrl: ''
   };
   public sliderLoaded: boolean = false;
   public changeError: string;
@@ -44,7 +44,8 @@ export class UndercoverCharacterPage {
     public slideAvatarPrvd: SlideAvatar,
     public authPrvd: Auth,
     elRef: ElementRef,
-    private storage: LocalStorage
+    private storage: LocalStorage,
+    public splash: SplashScreen
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.changeError = 'You can\'t leave this page right now';
@@ -79,14 +80,14 @@ export class UndercoverCharacterPage {
       age = 40;
     }
     this.persons.push(heroes.default);
-    for (let i = 0; i < heroes[this.user.gender][age].length; i++) {
-      this.persons.push(heroes[this.user.gender][age][i]);
+    for (let i = 0; i < heroes[age].length; i++) {
+      this.persons.push(heroes[age][i]);
     }
     let defaultHero = this.persons[0];
     let secondHero = this.persons[1];
     this.persons[0] = secondHero;
     this.persons[1] = defaultHero;
-    console.log('persons:', this.persons);
+    console.log('characters:', this.persons);
   }
 
   private changeSlider() {
@@ -95,16 +96,7 @@ export class UndercoverCharacterPage {
 
     for(var i = 0; i < allSlides.length;i++) {
       allSlides[i].classList.remove('active-character')
-      if(allSlides[i] == activeSlide) allSlides[i].classList.add('active-character');
-    }
-  }
-
-  changeCallback(positionLeft?: boolean) {
-    if (positionLeft) {
-      setTimeout(() => {
-        this.slideAvatarPrvd.setSliderPosition('right');
-      }, 300)
-      this.toolsPrvd.showToast(this.changeError);
+      if (allSlides[i] == activeSlide) allSlides[i].classList.add('active-character');
     }
   }
 
@@ -122,10 +114,13 @@ export class UndercoverCharacterPage {
   }
 
   ionViewDidEnter() {
+    this.splash.hide();
+    this.toolsPrvd.hideLoader();
     if (this.storage.get('first_time_hero') === null)
       this.firstTimeHero = true;
-    this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+    // this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
     this.slideAvatarPrvd.sliderInit(this.pageTag);
+    this.slideAvatarPrvd.setSliderPosition('right');
   }
 
 }

@@ -1,6 +1,13 @@
 import { Injectable } from '@angular/core';
-import { AlertController, ToastController } from 'ionic-angular';
+import { ModalController } from 'ionic-angular';
+
+// Providers
 import { LocalStorage } from './local-storage';
+import { Api } from './api';
+
+// Modals
+import { BlacklistModal } from '../modals/blacklist/blacklist';
+import { ArealistModal } from '../modals/arealist/arealist';
 
 @Injectable()
 export class Settings {
@@ -8,8 +15,8 @@ export class Settings {
 
     constructor(
     private storage: LocalStorage,
-    private alertCtrl: AlertController,
-    private toastCtrl: ToastController
+    private modalCtrl: ModalController,
+    private api: Api
   ) {}
 
   public toggleCameraOnUC():void {
@@ -26,5 +33,21 @@ export class Settings {
     let camState:any = this.storage.get('enable_uc_camera');
     if (camState !== null) return camState ? 'On' : 'Off';
     else return 'Off';
+  }
+
+  public showBlacklist():void {
+    let blacklistModal = this.modalCtrl.create(BlacklistModal);
+    blacklistModal.present();
+  }
+
+  public showArealist():void {
+    let arealistModal = this.modalCtrl.create(ArealistModal);
+    arealistModal.present();
+  }
+
+  public sendDeactivationRequest():any {
+    let seq = this.api.delete('profiles').share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
   }
 }

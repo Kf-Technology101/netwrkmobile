@@ -1,7 +1,54 @@
 {
-  "name": "cordova-plugin-facebook4",
-  "version": "1.7.4",
-  "description": "Cordova Facebook SDK 4 Plugin",
+  "_args": [
+    [
+      {
+        "raw": "cordova-plugin-facebook4",
+        "scope": null,
+        "escapedName": "cordova-plugin-facebook4",
+        "name": "cordova-plugin-facebook4",
+        "rawSpec": "",
+        "spec": "latest",
+        "type": "tag"
+      },
+      "F:\\ionic\\demo"
+    ]
+  ],
+  "_from": "cordova-plugin-facebook4@latest",
+  "_id": "cordova-plugin-facebook4@2.1.0",
+  "_inCache": true,
+  "_location": "/cordova-plugin-facebook4",
+  "_nodeVersion": "9.11.1",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/cordova-plugin-facebook4_2.1.0_1525413252343_0.1030543947282967"
+  },
+  "_npmUser": {
+    "name": "peterpeterparker",
+    "email": "david.dalbusco@outlook.com"
+  },
+  "_npmVersion": "5.8.0",
+  "_phantomChildren": {},
+  "_requested": {
+    "raw": "cordova-plugin-facebook4",
+    "scope": null,
+    "escapedName": "cordova-plugin-facebook4",
+    "name": "cordova-plugin-facebook4",
+    "rawSpec": "",
+    "spec": "latest",
+    "type": "tag"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-facebook4/-/cordova-plugin-facebook4-2.1.0.tgz",
+  "_shasum": "01d527fd60a06b6d9c10563a0f7531938d85f0be",
+  "_shrinkwrap": null,
+  "_spec": "cordova-plugin-facebook4",
+  "_where": "F:\\ionic\\demo",
+  "bugs": {
+    "url": "https://github.com/jeduan/cordova-plugin-facebook4/issues"
+  },
   "cordova": {
     "id": "cordova-plugin-facebook4",
     "platforms": [
@@ -10,10 +57,20 @@
       "browser"
     ]
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/jeduan/cordova-plugin-facebook4"
+  "dependencies": {},
+  "description": "Cordova Facebook SDK 4 Plugin",
+  "devDependencies": {},
+  "directories": {},
+  "dist": {
+    "integrity": "sha512-W2Cr4iDg3EHANbuOqjobJtYhHrptIEJ7mBQZTqp3qh1fSRm2yNcnt8sgmfqbotl2Qh2nCKb3qLVv3v8v3DoRkw==",
+    "shasum": "01d527fd60a06b6d9c10563a0f7531938d85f0be",
+    "tarball": "https://registry.npmjs.org/cordova-plugin-facebook4/-/cordova-plugin-facebook4-2.1.0.tgz",
+    "fileCount": 135,
+    "unpackedSize": 56885292,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa6/WHCRA9TVsSAnZWagAAjt4P+gOq4akMrmoEENd60xmQ\nI7uZtf+LoamhBlW4CrJcRzK8x/OnXaCU8xMJsKGssxn2M0zTA3hLSVYQCk9k\nQw//J48R1JW68BSlrmOeBVUjSkET8j8m463ShLjKw+74i94k/nbpUiMAJ4vG\nFo41+PIvwqptrLaQJOr6pPawoJ5IH8ESNuttIRRL534H+CR8JggL6M4BXhu7\nMyFZpaEpJLVWZjdqOIou5cjzL1MjoMPeM//fh+OjnANvYbCW+lNFWJC/XlxW\nQUkcrSvzAB89l2vYP0lLX0rPgl8pAmrurwy4ZRxC9DQGS/j0QdibdfWzqgMv\n+D8ku4Rd/SUCm6iIbL9ugNvvBAsZObwAY2jjwhJfEkbMvgkCUlPs/HjZs7rh\n0Meo8HSvNxAbwuU7uwy2uWA1RV+HvlmKn8ch1ztc708QOe/AXE9pQldTyC7N\noIxZDVt1q48uIwY+nRG7BnjnEk5yX2yPtvBWq6ilCYg9Hb3hxf77yWl/OAD4\nRxbnNO6vBGKQfxglM9Bt+/y98qY9f38rJV6NNnlIS9UNubL82u+ItBBbHOyV\nY0pspBwJOREsVe7lb+G55qTkwcDM/kmzedCFepz17kh6PZgmpvZnKZ1rYUKC\n/Pxt8n6AIvp/z9aUMqxPUvMNYrVqxT8WBAYdR9BCK1pAzFFD/wCvc45xyRBk\nDTH4\r\n=CRcs\r\n-----END PGP SIGNATURE-----\r\n"
   },
+  "gitHead": "9535ae7d251b4d2801ac3531ee6fd1f817d3a2c1",
+  "homepage": "https://github.com/jeduan/cordova-plugin-facebook4#readme",
   "keywords": [
     "cordova",
     "facebook",
@@ -25,5 +82,31 @@
     "social",
     "sharing"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "maintainers": [
+    {
+      "name": "arnesson",
+      "email": "hello@arnesson.io"
+    },
+    {
+      "name": "jeduan",
+      "email": "jeduan@gmail.com"
+    },
+    {
+      "name": "nightstomp",
+      "email": "info@nightstomp.com"
+    },
+    {
+      "name": "peterpeterparker",
+      "email": "david.dalbusco@outlook.com"
+    }
+  ],
+  "name": "cordova-plugin-facebook4",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeduan/cordova-plugin-facebook4.git"
+  },
+  "version": "2.1.0"
 }

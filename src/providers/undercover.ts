@@ -52,7 +52,7 @@ export class UndercoverProvider {
     });
   }
 
-  public getCharacterPerson(UCPage: any, NFPage: any, ChatPage?: any): any {
+  public getCharacterPerson(HSPage: any, NFPage: any, ChatPage?: any): any {
     let authData = this.auth.getAuthData();
     if (authData && authData.role_name
       && authData.role_description && authData.role_image_url) {
@@ -62,7 +62,7 @@ export class UndercoverProvider {
         return NFPage;
       // }
     } else {
-      return UCPage;
+      return HSPage;
     }
   }
 }

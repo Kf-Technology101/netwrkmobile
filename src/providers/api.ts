@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, URLSearchParams } from '@angular/http';
 import { LocalStorage } from './local-storage';
-import { Network } from '@ionic-native/network';
 import 'rxjs/add/operator/map';
 
 @Injectable()
@@ -9,8 +8,8 @@ export class Api {
   public httpProtocol: string = 'http://';
   private apiV: string = '/api/v1';
   public domain: any = {
-    local: '192.168.1.13:2998', // default :3000
-    remote: '34.208.20.67' /*'netwrk.com'*/
+    local: '18.188.223.201:3000', // default :3000
+    remote: '18.188.223.201:3000' // 'netwrk.com'
   };
   public siteDomain: string = this.domain.local;
   public hostUrl = this.httpProtocol + this.siteDomain;
@@ -22,31 +21,13 @@ export class Api {
 
   constructor(
     public http: Http,
-    public storage: LocalStorage,
-    private network: Network
+    public storage: LocalStorage
   ) {}
 
-  public watchForConnect():void {
-    // this.unsubscribeConnect();
-    this.connectSubscription = this.network.onConnect().subscribe(() => {
-      console.log('network connected!');
-      setTimeout(() => {
-        if (this.network.type === 'wifi') {
-          console.log('we got a wifi connection, woohoo!');
-        }
-      }, 3000);
-    }, err => {
-      console.error('connect subscribe err:', err);
-    });
-  }
-
-  public watchForDisconnect():void {
-    // this.unsubscribeDisconnect();
-    this.disconnectSubscription = this.network.onDisconnect().subscribe(() => {
-      console.log('network was disconnected :-(');
-    }, err => {
-      console.error('disconnect subscribe err:', err);
-    });
+  public checkAuthStatus():any {
+    let mess = this.get('sessions/check').share();
+    let messMap = mess.map(res => res.json());
+    return messMap;
   }
 
   public unsubscribeConnect():void {
@@ -75,6 +56,7 @@ export class Api {
     }
 
     let headers = new Headers();
+
     if (this.storage.get('auth_data')) {
       headers.append('Authorization', this.storage.get('auth_data').auth_token);
       options.headers = headers;
@@ -114,9 +96,12 @@ export class Api {
     return this.http.put(this.url + '/' + endpoint, body, options);
   }
 
-  delete(endpoint: string, body: any, options?: RequestOptions) {
+  delete(endpoint: string, options?: RequestOptions) {
     options = this.createAuthorizationHeader(options);
-    return this.http.post(this.url + '/' + endpoint, body, options);
+    if (options)
+      return this.http.delete(this.url + '/' + endpoint, options);
+    else
+      return this.http.delete(this.url + '/' + endpoint);
   }
 
   patch(endpoint: string, body: any, options?: RequestOptions) {
@@ -129,11 +114,11 @@ export class Api {
     for (let property in object) {
       let value = object[property];
       if (!object.hasOwnProperty(property) || value === null || value === undefined) {
-        console.warn('object.' + property + ':', value);
+        // console.warn('object.' + property + ':', value);
         continue;
       }
       const formKey = namespace ? `${namespace}[${property}]` : property;
-      console.log('[createFormData] formKey:', formKey, ' value:', value);
+      // console.log('[createFormData] formKey:', formKey, ' value:', value);
       if (value instanceof Date) {
         formData.append(formKey, value.toISOString());
       } else if (typeof value === 'object' && !(value instanceof File)) {

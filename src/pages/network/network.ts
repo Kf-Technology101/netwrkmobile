@@ -54,21 +54,8 @@ export class NetworkPage {
     this.toolsPrvd.pushPage(ProfilePage, { id: data.id, public: true });
   }
 
-  public sendEmails() {
-    let params = {
-      type: 'emails',
-      accessed: this.accessed,
-    };
-
-    this.toolsPrvd.pushPage(NetworkContactListPage, params);
-  }
-
-  public sendSMS() {
-    let params = {
-      type: 'phones',
-      accessed: this.accessed,
-    };
-
+  public sendEmailsOrSMS(type:string):void {
+    let params = { type: type, accessed: this.accessed };
     this.toolsPrvd.pushPage(NetworkContactListPage, params);
   }
 
@@ -98,9 +85,10 @@ export class NetworkPage {
 
   private doCreate() {
     let access = this.networkPrvd.getInviteAccess();
-    console.log(access);
+    console.log('[network] doCreate() | access:', access);
     if (!access) {
       this.toolsPrvd.showToast(this.textStrings.inviteError);
+      this.sendEmailsOrSMS('emails');
       return false;
     }
 
@@ -138,10 +126,10 @@ export class NetworkPage {
 
   private afterJoin() {
     console.log('this.users', this.users);
-    if (this.users.length >= 10) {
+    if(this.users.length >= 10) {
       let params: any = {
         action: 'netwrk',
-        zipCode: this.navParams.get('zipCode'),
+        zipCode: this.navParams.get('zipCode')
       };
 
       this.chatPrvd.setZipCode(this.chatPrvd.localStorage.get('chat_zip_code'));
@@ -156,7 +144,7 @@ export class NetworkPage {
   private getUsers() {
     if (this.action == 'create') return;
     this.networkPrvd.getUsers(this.networkParams).subscribe(res => {
-      this.users = this.formateAvatarUrl(res);
+      this.users = this.formateAvatarUrl(res.users);
       if (this.users.length >= 10) {
         this.isUndercover = false;
       }

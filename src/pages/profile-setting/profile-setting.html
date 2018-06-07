@@ -1,21 +1,12 @@
-<!-- <ion-header>
-  <ion-toolbar>
-    <div class="drag-container">
-    </div>
-  </ion-toolbar>
-</ion-header>
--->
-<ion-content has-main-btn>
+<ion-header></ion-header>
+<ion-content has-main-btn no-bounce>
   <ion-list>
     <ion-list-header>
       Settings
     </ion-list-header>
     <ion-item-group>
 
-      <ion-item-divider>
-        Location
-      </ion-item-divider>
-      <button ion-item (tap)="locationchange.showLocationSelect()">
+       <button ion-item (tap)="locationchange.showLocationSelect()">
         <ion-icon ios="ios-globe" md="ios-globe" color="primary"></ion-icon>
         <span>Select custom location</span>
       </button>
@@ -25,106 +16,30 @@
         <span>Set current location as default</span>
       </button>
 
-      <ion-item-divider>
-        Camera
-      </ion-item-divider>
       <button ion-item (tap)="settings.toggleCameraOnUC()">
         <ion-icon ios="ios-camera" md="ios-camera" color="secondary"></ion-icon>
-        <span>Undercover camera</span>
+        <span>Background camera</span>
         <ion-note item-end>
           {{ settings.ucCameraState }}
         </ion-note>
       </button>
 
+      <button ion-item (tap)="settings.showBlacklist()">
+        <ion-icon ios="ios-contacts" md="ios-contacts" color="primary"></ion-icon>
+        <span>Blacklist</span>
+      </button>
+      <button ion-item (tap)="settings.showArealist()">
+        <ion-icon ios="ios-git-network" md="ios-git-network" color="bk"></ion-icon>
+        <span>Area list</span>
+      </button>
+      <button ion-item (tap)="deactivateAccount()">
+        <ion-icon ios="ios-remove-circle" md="ios-remove-circle"
+          color="bk-red"></ion-icon>
+        <span>Deactivate account</span>
+      </button>
+
     </ion-item-group>
   </ion-list>
-  <!--
-  <ion-row class="avatar-section">
-    <ion-col>
-      <div class="avatar">
-        <ion-spinner *ngIf="imageLoading"></ion-spinner>
-        <img [src]="slideAvatarPrvd.sliderPosition == 'left'
-          ? user.avatar_url : user.hero_avatar_url">
-        <button color="bk" ion-button (click)="uploadCallback($event)">
-          <ion-icon name="add"></ion-icon>
-        </button>
-        <input #input type="file" (change)="filesAdded($event)"
-          style="display: none">
-      </div>
-    </ion-col>
-  </ion-row>
-  <ion-row class="input-section">
-    <ion-col>
-      <ion-input text-center type="text" placeholder="Choose a name"
-        [(ngModel)]="userName" [ngClass]="{'has-value' : userName}"></ion-input>
-    </ion-col>
-  </ion-row>
-  <ion-row class="points-section bad-rating" hidden>
-    <ion-col text-center>
-      <span>- 67 points</span>
-    </ion-col>
-  </ion-row>
-  <div ion-content class="description-section">
-      <ion-card>
-        <h1 text-center>Will you be a super hero or a villain?</h1>
-        <p>
-          Points are given by bringing joy to netwrk, or becoming a legend. Being vulgar or blocked takes them away.
-        </p>
-        <p>
-          Beware: too much negativity and your powers will be recinded.
-        </p>
-      </ion-card>
-      <ng-container *ngIf="slideAvatarPrvd.sliderPosition == 'right'">
-        <textarea autosize [(ngModel)]="userDescription" rows="7">
-          {{ userDescription }}
-        </textarea>
-      </ng-container>
-  </div>
-  <ion-row class="feed" hidden>
-    <ion-col>
-      <h3><span>Recent</span></h3>
-
-      <ion-row class="facebook-post">
-        <ion-col>
-          <ion-card>
-            <ion-card-content>
-              <ion-card-title>Shared via Facebook - 6h</ion-card-title>
-              <p>
-                Just waking up in the morning, gotta thank God. I don't know, but today seems kinda odd. No barking from the dog, no smog. And momma cooked a breakfast with no hog. I got my grub on, but didn't pig out. Just waking up in the morning, gotta thank God. I don't know, but today seems kinda odd. No barking from the dog, no smog. And momma cooked a breakfast with no hog.
-              </p>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-        <ion-col width-10>
-          <ion-badge item-right>
-            0
-            <ion-icon name="bulb"></ion-icon>
-          </ion-badge>
-          <ion-badge item-right>
-            0
-            <ion-icon name="contact"></ion-icon>
-          </ion-badge>
-          <div class="points" text-center>
-            20
-            <br>
-            points
-          </div>
-        </ion-col>
-      </ion-row>
-
-      <ion-row class="instagram-post">
-        <ion-col>
-          <img src="assets/images/instagram.png">
-          <ion-card>
-            <ion-card-content>
-              <ion-card-title>Shared via Instagram - 6h</ion-card-title>
-            </ion-card-content>
-          </ion-card>
-        </ion-col>
-      </ion-row>
-    </ion-col>
-  </ion-row>
-  -->
 </ion-content>
 
 <ion-footer>

@@ -17,6 +17,7 @@ export class User {
 
       let formData = this.api.createFormData(userData);
       formData.append(`user[${fieldName}]`, files[0], files[0].name);
+      formData.append('type', 'update');
 
       xhr.onreadystatechange = () => {
         if (xhr.readyState === 4) {
@@ -44,8 +45,13 @@ export class User {
     return seqMap;
   }
 
-  public update(id: number, accountInfo: any, type?: string) {
-    let seq = this.api.patch(`registrations/${id}`, accountInfo).share();
+  public update(id:number, accountInfo:any, type?:string, operationType?:string) {
+    console.log('user update:', accountInfo);
+    let userOnly = accountInfo.user;
+    let seq = this.api.patch(`registrations/${id}`, {
+      user: userOnly,
+      type: operationType ? operationType : 'login'
+    }).share();
     seq.map(res => res.json()).subscribe(
       res => {
         console.log(res);
@@ -53,7 +59,6 @@ export class User {
         this.auth.saveAuthData(res, authType);
       }, err => console.error('ERROR', err)
     );
-
     return seq;
   }
 
@@ -65,9 +70,5 @@ export class User {
 
   public getUserId() {
     return this.auth.getAuthData().id;
-  }
-
-  public errorHandler(error) {
-
   }
 }

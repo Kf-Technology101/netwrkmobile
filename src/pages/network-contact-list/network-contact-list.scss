@@ -4,13 +4,29 @@ page-network-contact-list {
       font-size: 1.6rem;
     }
     .send-messages-header {
-      font-size: 16px;
+      font-size: 10px;
       margin-right: 33px;
       margin-left: 33px
+    }
+    .sun-logo {
+      display: block;
+      margin: 0 auto;
+      height: 48px;
+      margin-top: 1rem;
+    }
+    .heading {
+      font-size: 1.6rem;
+      margin-top: 1rem;
+    }
+    .description {
+      font-size: 12px;
     }
   }
 
   .select-all {
+    &.opaque {
+      opacity: 0;
+    }
     margin-right: 33px;
     text-transform: capitalize;
   }

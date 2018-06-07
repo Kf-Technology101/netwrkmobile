@@ -9,7 +9,6 @@ import { Api } from './api';
 import { LocalStorage } from './local-storage';
 import { LocationChange } from './locationchange';
 
-import { NetworkFindPage } from '../pages/network-find/network-find';
 import { ChatPage } from '../pages/chat/chat';
 
 @Injectable()
@@ -19,6 +18,8 @@ export class Gps {
     lng: <number> null
   };
   public zipCode: number = null;
+  public placeId:string;
+
   public changeZipCallback: (params?: any) => void;
   private watch: any;
   private maxDistance: number = 50;
@@ -38,8 +39,25 @@ export class Gps {
     // console.log('GPS Provider');
   }
 
+  public addUserToNetwork(zipCode: number):any{
+    let seq = this.api.post('members', { post_code: zipCode }).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+
   public getNetwrk(zipCode: number): any {
     let seq = this.api.get('networks', { post_code: zipCode }).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+
+  public createNetwrk(zipCode: number):any {
+    let seq = this.api.post('networks', {
+      network: {
+        post_code: zipCode,
+        google_place_id: this.localStorage.get('place_id')
+      }
+    }).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }
@@ -68,7 +86,7 @@ export class Gps {
       let options: GeolocationOptions = {
         timeout: 10000,
         enableHighAccuracy: true,
-        maximumAge: 3000,
+        maximumAge: 3000
       }
 
       if (this.watch) {
@@ -83,8 +101,7 @@ export class Gps {
           if (!this.coords.lat && !this.coords.lng) {
             if (this.loc.isCustomCoordAvaliable()) {
               this.coords = this.loc.getCoordObject();
-            }
-            else {
+            } else {
               this.coords.lat = resp.coords.latitude;
               this.coords.lng = resp.coords.longitude;
             }
@@ -97,13 +114,12 @@ export class Gps {
           } else {
             if (this.loc.isCustomCoordAvaliable()) {
               this.coords = this.loc.getCoordObject();
-            }
-            else {
+            } else {
               this.coords.lat = resp.coords.latitude;
               this.coords.lng = resp.coords.longitude;
             }
           }
-        }
+        } else reject();
       }, err => {
         // console.log('[Gps][getMyZipCode]', err);
         reject(err);
@@ -127,18 +143,18 @@ export class Gps {
 
   private parseGoogleAddress(data: any): number {
     // let zip: number;
-    // console.log('parseGoogleAddress', data);
-    // console.log('Address = ', data[0].formatted_address);
-    for (let i = 0; i < data.length; i++)
-      for (let j = 0; j < data[i].address_components.length; j++)
-        for (let z = 0; z < data[i].address_components[j].types.length; z++)
+    for (let i = 0; i < data.length; i++) {
+      for (let j = 0; j < data[i].address_components.length; j++) {
+        for (let z = 0; z < data[i].address_components[j].types.length; z++) {
           if (data[i].address_components[j].types[z] == 'postal_code') {
             this.zipCode = data[i].address_components[j].long_name;
-            // zip = this.localStorage.get('test_zip_code');
-            // if (!zip) this.localStorage.set('test_zip_code',
-            //   data[i].address_components[j].long_name);
+            this.placeId = data[i].place_id;
+            this.localStorage.set('place_id', this.placeId);
             break;
           }
+        }
+      }
+    }
     return this.zipCode;
     // return zip;
   }
@@ -167,6 +183,7 @@ export class Gps {
   private getZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.coords.lat && this.coords.lng) {
+        console.log('lat:', this.coords.lat, 'lng:', this.coords.lng);
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
           // console.log('[google addres] res:', res);
           // default:
@@ -186,13 +203,14 @@ export class Gps {
             this.localStorage.set('chat_zip_code', zipCode);
           }
           let nav = this.app.getActiveNav();
-          let activeNav = nav.getActive();
-          if (zipCode != this.localStorage.get('chat_zip_code') &&
+          if (nav.getActive() && zipCode != this.localStorage.get('chat_zip_code') &&
               this.localStorage.get('chat_zip_code') !== null) {
-            clearInterval(this.zipInterval);
+            // clearInterval(this.zipInterval);
             this.localStorage.rm('current_network');
             this.localStorage.set('chat_zip_code', zipCode);
-            if (nav.getActive().name == 'ChatPage') {
+            if (nav.getActive().name.toLowerCase() == 'chatpage' ||
+                nav.getActive().name.toLowerCase() == 'networknopage') {
+              this.localStorage.set('areaChange_triggered', true);
               nav.setRoot(ChatPage, {
                 action_from_gps: this.localStorage.get('chat_state'),
                 zipCode: zipCode

@@ -1,0 +1,77 @@
+
+
+<!--<ion-header class="incognito-header">-->
+    <!--<ion-toolbar>-->
+        <!--<div class="drag-container" style="pointer-events: none">-->
+            <!--<div class="dragline">-->
+                <!--<span class="info">-->
+                  <!--<span class="username" ion-text color="bk">Choose a Category</span>-->
+                <!--</span>-->
+                <!--<img class="draggable-element" src="assets/icon/netwrk-chat.svg" style="left: 129px">-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</ion-toolbar>-->
+<!--</ion-header>-->
+
+<ion-content has-main-btn>
+    <ion-row align-items-center>
+        <ion-col text-center>
+            <h1 ion-text color="bk">Hello, here are the connectors and networks near you. Tap
+                <button ion-button color="bk">
+                    <ion-icon ios="ios-add" md="md-add"></ion-icon>
+                </button>
+                to follow them.
+            </h1>
+        </ion-col>
+    </ion-row>
+
+    <ion-row>
+        <ion-col>
+            <ion-list>
+                <ion-item class="item-line">
+                    <ion-avatar item-start>
+                        <img src="assets/icon/netwrk-chat.svg">
+                    </ion-avatar>
+                    <h2 class="total-line-point"><span>Point: 10</span>, <span>10 people in net</span></h2>
+                    <p class="line-name">My Neighbor Totoro</p>
+                    <p class="line-area">San francisco</p>
+                    <button ion-button color="bk" item-end (click)="goToChat()">
+                        <ion-icon ios="ios-add" md="md-add"></ion-icon>
+                    </button>
+                </ion-item>
+
+                <ion-item class="item-line">
+                    <ion-avatar item-start>
+                        <img src="assets/icon/netwrk-chat.svg">
+                    </ion-avatar>
+                    <h2 class="total-line-point"><span>Point: 10</span>, <span>10 people in net</span></h2>
+                    <p class="line-name">My Neighbor Totoro</p>
+                    <p class="line-area">San francisco</p>
+                    <button ion-button color="bk" item-end (click)="goToChat()">
+                        <ion-icon ios="ios-add" md="md-add"></ion-icon>
+                    </button>
+                </ion-item>
+
+                <ion-item class="item-line">
+                    <ion-avatar item-start>
+                        <img src="assets/icon/netwrk-chat.svg">
+                    </ion-avatar>
+                    <h2 class="total-line-point"><span>Point: 10</span>, <span>10 people in net</span></h2>
+                    <p class="line-name">My Neighbor Totoro</p>
+                    <p class="line-area">San francisco</p>
+                    <button ion-button color="bk" item-end (click)="goToChat()">
+                        <ion-icon ios="ios-add" md="md-add"></ion-icon>
+                    </button>
+                </ion-item>
+
+            </ion-list>
+        </ion-col>
+    </ion-row>
+</ion-content>
+
+<ion-footer>
+    <button ion-button color="bk" class="main-action-btn small transparent" outline
+    (click)="goToChat()">
+        <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
+    </button>
+</ion-footer>

@@ -8,8 +8,9 @@ import { Api } from './api';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { TwitterConnect } from '@ionic-native/twitter-connect';
-import { Facebook, FacebookLoginResponse } from '@ionic-native/facebook';
-import { AlertController } from 'ionic-angular';
+import { Facebook } from '@ionic-native/facebook';
+import { AlertController, Platform } from 'ionic-angular';
+import { AppAvailability } from "@ionic-native/app-availability";
 
 @Injectable()
 export class Social {
@@ -21,9 +22,8 @@ export class Social {
     'user_friends',
     'email',
     'user_birthday',
-    'user_posts',
+    'user_posts'
   ];
-
 
   public connect: any = {
     facebook: false,
@@ -40,7 +40,9 @@ export class Social {
     private twitter: TwitterConnect,
     private iab: InAppBrowser,
     private backgroundMode: BackgroundMode,
-    private alertCtrl: AlertController
+    private alertCtrl: AlertController,
+    private appAvailability: AppAvailability,
+    private platform: Platform,
   ) {}
 
   public connectToFacebook(): Promise<any> {
@@ -65,86 +67,117 @@ export class Social {
     })
   }
 
-  connectToTwitter(isConnected?:boolean) {
-    this.backgroundMode.disable();
-    if (!isConnected)
-      this.twitter.login().then(data => {
-        let seq = this.api.post('profiles/connect_social',
-        {
-          user: {
-            token: data.token,
-            provider_name: 'twitter',
-            secret: data.secret
-          }
-        }).share();
-        seq.map(res => res.json()).subscribe( res => {
-          console.log('[Twitter connect] twitter res:', res);
-          this.setSocialAuth(data, Social.TWITTER);
-        }, err => {
-          console.error('[Twitter connect] twitter error:', err);
-        });
-        console.log('[Twitter connect] res:', data);
-        if ((<any>Object).values(data)) {
-          this.connect.twitter = true;
-        }
-      }, err => {
-        console.error('[Twitter connect] err:', err);
-        let alert = this.alertCtrl.create({
-          title: '',
-          subTitle: 'You might need to install Twitter app to be able to login',
-          buttons: ['Ok']
-        });
-        alert.present();
-      });
+  private checkTwitterAvailability():Promise<any> {
+    return new Promise((resolve, reject) => {
+      let app:string;
+      if (this.platform.is('ios')) {
+        app = 'twitter://';
+      } else if (this.platform.is('android')) {
+        app = 'com.twitter.android';
+      }
+
+      this.appAvailability.check(app)
+        .then(yes => resolve(), no => reject());
+    });
   }
 
-  parseInstagramData(res:any) {
-    let responseObj: any = {};
+  connectToTwitter() {
+    // this.checkTwitterAvailability().then(yes => {
+      this.backgroundMode.disable();
+      if (!this.connect.twitter) {
+        this.twitter.login().then(data => {
+          let seq = this.api.post('profiles/connect_social',
+          {
+            user: {
+              token: data.token,
+              provider_name: 'twitter',
+              secret: data.secret,
+              name: data.userName
+            }
+          }).share();
+          seq.map(res => res.json()).subscribe( res => {
+            console.log('[Twitter connect] twitter res:', res);
+            this.setSocialAuth(data, Social.TWITTER);
+          }, err => {
+            console.error('[Twitter connect] twitter error:', err);
+          });
+          console.log('[Twitter connect] res:', data);
+          if ((<any>Object).values(data)) {
+            this.connect.twitter = true;
+          }
+        }, err => {
+          console.error('[Twitter connect] err:', err);
+          let alert = this.alertCtrl.create({
+            title: '',
+            subTitle: 'You might need to install Twitter app to be able to login',
+            buttons: ['Ok']
+          });
+          alert.present();
+        });
+      }
+    // }, no => {
+    //   let alert = this.alertCtrl.create({
+    //     title: '',
+    //     subTitle: 'You might need to install Twitter app to be able to login',
+    //     buttons: ['Ok']
+    //   });
+    //   alert.present();
+    // });
+
+  }
+
+  private getAccessToken(res:any) {
     if (res.url.indexOf('access_token') !== -1) {
       let splitUrl = res.url.split('#');
-      let access_token = splitUrl[splitUrl.length - 1].split('=')[1];
-      responseObj = access_token ;
-    }
-    return responseObj;
+      return splitUrl[splitUrl.length - 1].split('=')[1];
+    } else return false;
   }
 
-  connectToInstagram(): Promise<any> {
+  connectToInstagram():Promise<any> {
     return new Promise((resolve, reject) => {
-      let clientId = '2d3db558942e4eaabfafc953263192a7';
-      let clientSecret = 'bcf35f1ba4e94d59ad9f2c6c1322c640';
-      let redirectUrl = 'http://192.168.1.13:3000/';
-      let access_token:any;
-      let autorization_link = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=token`;
-      let browser = this.iab.create(autorization_link, '_blank');
+      const clientId = '2d3db558942e4eaabfafc953263192a7';
+      const clientSecret = 'bcf35f1ba4e94d59ad9f2c6c1322c640';
+      const redirectUrl = this.api.hostUrl + '/loader';
+      let autorizationLink = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=token`;
+
+      let instagramData:any = {
+        token: null,
+        provider_name: 'instagram',
+        client_id: clientId,
+        client_secret: clientSecret
+      };
+
+      const browser = this.iab.create(autorizationLink, '_blank', {
+        clearcache: 'yes'
+      });
       browser.on('loadstop').subscribe(res => {
-        console.log('instagram first url data [res]:', res);
-        if (res.url.indexOf(this.api.siteDomain) != -1) {
-          if (this.parseInstagramData(res)) {
-            access_token = this.parseInstagramData(res);
-            browser.close();
-          }
-
-          let instagramData = {
-            token: access_token,
-            provider_name: 'instagram'
-          };
+        console.log('instagram auth res:', res);
+        if (res.url.indexOf('access_token=') != -1 && !instagramData.token) {
+          browser.hide();
+          const accessToken = this.getAccessToken(res);
+          instagramData.token = accessToken ? accessToken : false;
           console.log('[instagram] instagramData:', instagramData);
-          let seq = this.api.post('profiles/connect_social', {
-            user: instagramData
-          }).share();
-          seq.map(res => res.json()).subscribe(res => {
-            // this.setSocialAuth(responseObj, Social.INSTAGRAM);
-            console.log('[instagram] res:', res);
-          }, err => {
-            console.error('[instagram] err:', err);
-          });
-
-          resolve();
+          if (instagramData.token) {
+            let seq = this.api.post('profiles/connect_social', {
+              user: instagramData
+            }).share();
+            seq.map(res => res.json()).subscribe(res => {
+              console.log('[instagram] res:', res);
+              if (res.message == 'ok') { browser.close(); resolve(); }
+              else browser.show();
+            }, err => {
+              console.error('[instagram] err:', err);
+              browser.show();
+              reject();
+            });
+          } else console.warn('[INSTAGRAM] No access token');
         }
-      }, (err) => {
-        console.log(err);
-        reject(err);
-      })
+      }, err => { console.log(err); reject(err); });
+
+      browser.on('exit').subscribe(res => {
+        console.log('browser close');
+        reject();
+      }, err => { console.error(err); reject(err); })
     });
   }
 

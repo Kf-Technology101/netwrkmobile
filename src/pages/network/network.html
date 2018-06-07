@@ -11,7 +11,7 @@
           <span ion-text color="bk" *ngIf="action == 'create'">
             <p class="fs-20">
               You'r going to be an areacast founder. Awesome!
-            </p>
+            </p>+
             <p class="fs-14">
               To become an areacast founder, share netwrk by e-mail so more people
               can connect to your area. You can also send a quick message
@@ -35,19 +35,14 @@
   </ion-row>
   <ion-row class="action-buttons">
     <ion-col text-left>
-      <button ion-button clear (click)="sendEmails()">
+      <button ion-button clear (click)="sendEmailsOrSMS('emails')">
         <span ion-text color="bk">Send emails</span>
       </button>
     </ion-col>
     <ion-col text-right>
-      <button ion-button clear (click)="sendSMS()">
+      <button ion-button clear (click)="sendEmailsOrSMS('phones')">
         <span ion-text color="bk">Send texts</span>
       </button>
-    </ion-col>
-  </ion-row>
-  <ion-row class="count-people" *ngIf="users.length > 0 && users.length <= 10">
-    <ion-col text-center>
-      <span ion-text color="bk">{{ users.length }}/10</span>
     </ion-col>
   </ion-row>
   <ion-row>

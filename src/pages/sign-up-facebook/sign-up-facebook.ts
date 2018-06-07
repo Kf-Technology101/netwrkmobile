@@ -9,6 +9,7 @@ import { Social } from '../../providers/social';
 import { Tools } from '../../providers/tools';
 import { Auth } from '../../providers/auth';
 import { User } from '../../providers/user';
+import { FeedbackService } from "../../providers/feedback.service";
 
 // Interfaces
 // import { User } from '../../interfaces/user';
@@ -25,7 +26,8 @@ export class SignUpFacebookPage {
     public socialPrvd: Social,
     public toolsPrvd: Tools,
     public authPrvd: Auth,
-    public userPrvd: User
+    public userPrvd: User,
+    private feedbackService: FeedbackService
   ) {}
 
   public connectToFacebook() {
@@ -40,10 +42,17 @@ export class SignUpFacebookPage {
       let authData = this.authPrvd.getAuthData();
 
       this.authPrvd.connectAccountToFb(data, fbRes).then(connectRes => {
-        this.userPrvd.update(authData.id, connectRes.update)
+        this.userPrvd.update(authData.id, connectRes.update, 'facebook')
         .map(connectRes => connectRes.json()).subscribe(updateRes => {
-          console.log(updateRes);
-          this.toolsPrvd.showToast('Facebook already connected');
+          console.log('user.update res:', updateRes);
+
+          // ####################### FACEBOOK AUTOPOST #########################
+          //
+          // this.feedbackService.autoPostToFacebook();
+          //
+          // ###################################################################
+
+          this.toolsPrvd.showToast('Facebook successfully connected');
           this.toolsPrvd.pushPage(UndercoverCharacterPage);
         }, err => {
           console.log(err);
@@ -55,6 +64,10 @@ export class SignUpFacebookPage {
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad SignUpFacebookPage');
+  }
+
+  ionViewDidEnter() {
+    this.toolsPrvd.hideLoader();
   }
 
 }

@@ -2,11 +2,13 @@ import { Component } from '@angular/core';
 import {
   NavController,
   NavParams,
-  Platform
+  Platform,
+  AlertController,
+  App
 } from 'ionic-angular';
 
-// import { HomePage } from '../home/home';
-// import { NetworkFindPage } from '../network-find/network-find';
+// Pages
+import { ChatPage } from '../chat/chat';
 
 // Providers
 import { Auth } from '../../providers/auth';
@@ -17,23 +19,27 @@ import { NetworkProvider } from '../../providers/networkservice';
 import { Gps } from '../../providers/gps';
 import { Chat } from '../../providers/chat';
 
-// Pipes
-// import { ContactListPipe } from '../../pipes/contact-list';
+import { Facebook } from '@ionic-native/facebook';
+import { FeedbackService } from "../../providers/feedback.service";
 
 @Component({
   selector: 'page-network-contact-list',
   templateUrl: 'network-contact-list.html'
 })
 export class NetworkContactListPage {
-  contacts: Array<any>;
+  contacts: Array<any> = [];
   selectAll: boolean = false;
 
   public listType: string;
   private selectErrorString: string;
   private selectMinErrorString: string;
   private selectMinSMSErrorString: string;
-  private accessed: boolean;
+  private accessed: boolean = false;
   private message: string;
+  private fromArea: boolean = false;
+  private selectBtnStr: string = '';
+
+  private showShareDialog:boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -45,47 +51,157 @@ export class NetworkContactListPage {
     public tools: Tools,
     public networkPrvd: NetworkProvider,
     public gpsPrvd: Gps,
-    public chatPrvd: Chat
+    public chatPrvd: Chat,
+    public facebook: Facebook,
+    private alertCtrl: AlertController,
+    public app: App,
+    public feedbackService: FeedbackService
   ) {
+    this.showShareDialog = this.navParams.get('show_share_dialog');
     this.listType = this.navParams.get('type');
     this.accessed = this.navParams.get('accessed');
     this.message = this.navParams.get('message');
+    this.fromArea = this.navParams.get('from_area');
     console.log(this.listType);
-
-    // if (!this.platform.is('cordova')) {
-      // this.contacts = [];
-      // for (let i = 0; i < 20; i++) {
-      //   this.contacts.push({
-      //     name: {
-      //       formatted: `Test ${i}`,
-      //     },
-      //     emails: [{
-      //       value: `test${i}@mail.com`
-      //     }],
-      //     phoneNumbers: [{
-      //       value: `+1 000 000 00${i}`
-      //     }],
-      //     checked: false
-      //   });
-      // }
-      // this.setErrorMessages(this.contacts);
-    // }
 
     this.contactsPrvd.getContacts(this.listType).then(data => {
       console.log(data);
       this.contacts = data;
-      this.setErrorMessages(this.contacts);
-      if(this.listType == 'emails') {
+      if (this.contacts.length > 0 ||
+         (this.contacts[this.listType] &&
+          this.contacts[this.listType].length > 0)) {
+        this.setErrorMessages(this.contacts);
         this.doSelectAll();
+      } else {
+        this.tools.showToast('Contacts not available');
       }
     }, err => {
       console.log(err);
+      this.tools.showToast('Contacts not available');
     });
+  }
 
+  private parseContactsObject(contacts:Array<any>):Array<any> {
+    console.log('contacts:', contacts);
+    let parsedContacts:Array<any> = [];
+    for (let i = 0; i < contacts.length; i++) {
+      parsedContacts.push(
+      {
+        name: contacts[i]['_objectInstance'].displayName,
+        email: contacts[i]['_objectInstance'].emails[0].value
+      });
+    }
+    console.log('parsed contacts:', parsedContacts);
+    return parsedContacts;
+  }
+
+  private sendInvitesToEmails():Promise<any> {
+    return new Promise((resolve, reject) => {
+      let contactsToParse:Array<any> = [];
+      for (let c = 0; c < this.contacts.length; c++) {
+        if (this.contacts[c].checked) contactsToParse.push(this.contacts[c]);
+      }
+      if (contactsToParse.length > 0) {
+        let parsedContacts:Array<any> = this.parseContactsObject(contactsToParse);
+        this.contactsPrvd.sendInvitations(parsedContacts).map(res => res.json())
+        .subscribe(res => resolve(), err => reject(err));
+      } else {
+        resolve();
+      }
+    });
+  }
+
+  private initAreaTransition():Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.sendInvitesToEmails().then(res => {
+        this.app.getRootNav().setRoot(ChatPage, {
+          action: 'area'
+        });
+        resolve();
+      }, err => {
+        this.tools.hideLoader();
+        this.tools.showToast('Something went wrong');
+        reject();
+      });
+    });
+  }
+
+  private goToArea():Promise<any> {
+    return new Promise ((resolve, reject) => {
+      this.tools.showLoader();
+      this.gpsPrvd.createNetwrk(this.chatPrvd.localStorage.get('chat_zip_code'))
+      .subscribe(res => {
+        console.log('createNetwrk res:', res);
+        this.initAreaTransition().then(res => resolve(), err => reject());
+      }, err => {
+        this.gpsPrvd
+        .addUserToNetwork(this.chatPrvd.localStorage.get('chat_zip_code'))
+        .subscribe(res => {
+          this.initAreaTransition().then(res => resolve(), err => reject());
+        });
+        console.error('goToArea err:', err);
+      });
+    });
+  }
+
+  private showShareQuestion(forced?:boolean):any {
+    if (this.showShareDialog || forced) {
+      let alert = this.alertCtrl.create({
+        enableBackdropDismiss: false,
+        title: '',
+        subTitle: 'Share this app with your friends on facebook too?',
+        buttons: [{
+            text: 'Skip',
+            role: 'cancel',
+            handler: () => {
+              if (forced && this.contacts) {
+                for (let c = 0; c < this.contacts.length; c++) {
+                  this.contacts[c].checked = false;
+                }
+              }
+              this.goToArea().then(res => {
+                this.tools.hideLoader();
+                alert.dismiss();
+              }, err => alert.dismiss());
+              return false;
+            }
+          }, {
+            cssClass: 'active',
+            text: 'Sure!',
+            handler: () => {
+                this.goToArea().then(res => {
+                    this.tools.hideLoader();
+                    alert.dismiss();
+                }, err => alert.dismiss());
+
+              console.log('runing handler for [Sure!]');
+              this.feedbackService.autoPostToFacebook({
+                message: 'Become a part of local life! Local people join together in a netwrk to share and choose the best content. Download it to connect to local life wherever you are!',
+                url: 'http://18.188.223.201:3000'
+              }).then(res => {
+                this.tools.showToast('App successfully shared');
+                this.goToArea().then(res => {
+                  this.tools.hideLoader();
+                  alert.dismiss();
+                }, err => alert.dismiss());
+              }, err => {
+                this.tools.showToast('Something went wrong :(');
+                this.tools.hideLoader();
+                alert.dismiss();
+              });
+              return false;
+            }
+          }
+        ]
+      });
+      alert.present();
+    } else {
+      this.goHome();
+    }
   }
 
   private setErrorMessages(contacts: Array<any>) {
-    let count: number = 20;
+    let count: number = 0;
     if (contacts.length > count) {
       this.selectMinErrorString = `You need to select ${count} or more contacts`
       this.selectErrorString = `Please, select ${count} or more contacts to continue`;
@@ -94,6 +210,25 @@ export class NetworkContactListPage {
       this.selectErrorString = 'Please, select all contacts to continue';
     }
     this.selectMinSMSErrorString = 'Please, select minimum one contact';
+  }
+
+  private shareViaFacebook():Promise<any> {
+    return new Promise((resolve, reject) => {
+      let shareUrl = 'http://18.188.223.201:3000';
+      let shareImage = shareUrl + '/assets/logo-88088611a0d6230481f2a5e9aabf7dee19b26eb5b8a24d0576000c6c33ccc867.png';
+
+      let shareParams:any = {
+        method: 'share',
+        caption: 'Netwrk',
+        description: 'Some test description',
+        picture: shareImage,
+        share_native: true
+      };
+      this.facebook.showDialog(shareParams).then(res => {
+        console.log('shareViaFacebook res:', res);
+        resolve('ok');
+      }).catch(err => reject(err));
+    });
   }
 
   doSelectAll() {
@@ -122,11 +257,12 @@ export class NetworkContactListPage {
 
   private checkContactsCount() {
     let count = 0;
-    for (let c in this.contacts) if (this.contacts[c].checked) count++;
-    if (this.listType == 'emails')
-      this.accessed = (count >= 20);
-    else if (count > 0)
-      this.accessed = true;
+    for (let c = 0; c < this.contacts.length; c++) {
+      if (this.contacts[c].checked) count++;
+    }
+    this.accessed = (count > 0);
+    if (this.fromArea) this.accessed = true;
+    this.selectBtnStr = this.selectAll ? 'Unselect all' : 'Select all';
   }
 
   goHome() {
@@ -138,7 +274,7 @@ export class NetworkContactListPage {
         let checkedObj = {
           name: this.contacts[c].name.formatted || '',
           email: null,
-          phone: null,
+          phone: null
         }
         if (this.listType == 'emails') {
           checkedObj.email = this.contacts[c].emails[0].value || '';
@@ -151,7 +287,7 @@ export class NetworkContactListPage {
     }
 
     if (checkedContacts.length > 0) {
-      if (this.listType == 'emails' && checkedContacts.length < 20) {
+      if (this.listType == 'emails') {
         this.tools.hideLoader();
         this.tools.showToast(this.selectMinErrorString);
         return;
@@ -179,7 +315,7 @@ export class NetworkContactListPage {
             this.tools.hideLoader();
 
             if (inviteCodes.indexOf(inviteCode) === -1) inviteCodes.push(inviteCode);
-            
+
             this.networkPrvd.saveInviteZipAccess(inviteCodes);
             this.networkPrvd.saveInviteAccess(true);
             this.tools.popPage();
@@ -187,13 +323,21 @@ export class NetworkContactListPage {
           err => this.tools.hideLoader());
       }
     } else {
-      this.tools.hideLoader();
       if (this.listType == 'emails') {
         this.tools.showToast(this.selectErrorString);
       } else {
         this.tools.showToast('Can\'t load contacts');
       }
+      this.tools.hideLoader();
     }
+  }
+
+  public toggleSelection():void {
+    for (let c in this.contacts) {
+      this.contacts[c].checked = !this.selectAll;
+    }
+    this.toggleSelectAll(this.selectAll);
+    this.checkContactsCount();
   }
 
   goBack() { this.tools.popPage(); }

@@ -1,21 +1,32 @@
 <ion-header>
-  <h4 text-center ion-text color="bk" class="send-messages-header">
+  <ng-container *ngIf="showShareDialog || listType == emails">
+    <img src="assets/images/sun_icon.png" class="sun-logo">
+    <h4 text-center ion-text color="bk" class="heading">
+      Help netwrk grow in this area!
+    </h4>
+    <p text-center ion-text color="bk" class="description">
+      We'll be sending a story and an invitation to join the emails you share,
+      no spam!
+    </p>
+  </ng-container>
+  <h4 text-center ion-text color="bk" class="send-messages-header"
+    *ngIf="!showShareDialog">
     <!-- Select contacts you want to invite -->
-    <ng-container *ngIf="listType == 'emails'">
+    <!-- <ng-container *ngIf="listType == 'emails'">
       It's awesome your connecting to your area! To finish, invite your email
       contacts to help grow it. We'll just send them a story about netwrk, an
       invitation to use the "insert" and see what's going on nearby.
-    </ng-container>
+    </ng-container> -->
     <ng-container *ngIf="listType == 'phones'">
       Send the text: "I connected to my area on this cool app called netwrk,
       where you can hang anything anywhere "insert". Check it out" to anyone by
       tapping next to their name.
     </ng-container>
   </h4>
-  <div text-right>
-    <button *ngIf="listType != 'emails'" ion-button color="bk"
-            class="select-all" (click)="doSelectAll()"
-            [outline]="!selectAll">Select All</button>
+  <div ion-content text-right>
+    <button ion-button color="bk" class="select-all" (click)="toggleSelection()"
+            [outline]="!selectAll" [innerHTML]="selectBtnStr"
+            [ngClass]="{'opaque': selectBtnStr == ''}"></button>
   </div>
 </ion-header>
 
@@ -26,8 +37,12 @@
         <h2 ion-text color="bk" *ngIf="c.name.formatted">
           <strong>{{c.name.formatted}}</strong>
         </h2>
-        <p *ngIf="c.emails && listType == 'emails'">{{c.emails[0].value}}</p>
-        <p *ngIf="c.phoneNumbers && listType == 'phones'">{{c.phoneNumbers[0].value}}</p>
+        <p *ngIf="c.emails && listType == 'emails'">
+          {{c.emails[0].value}}
+        </p>
+        <p *ngIf="c.phoneNumbers && listType == 'phones'">
+          {{c.phoneNumbers[0].value}}
+        </p>
       </ion-label>
       <ion-checkbox item-right color="bk" checked="true"
         [(ngModel)]="c.checked" (click)="doChange(c)"></ion-checkbox>
@@ -37,11 +52,16 @@
 
 <ion-footer>
   <button *ngIf="accessed" ion-button color="bk"
-          class="main-action-btn medium" outline (tap)="goHome()">
+          class="main-action-btn medium" outline (click)="showShareQuestion()">
       <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline">
       </ion-icon>
   </button>
-  <button ion-button class="footer-back-button" (tap)="goBack()">
-    <span ion-text color="bk">Back</span>
+  <button ion-button class="footer-back-button"
+          [ngClass]="{'left' : showShareDialog}" (tap)="goBack()">
+    <span ion-text color="bk">back</span>
+  </button>
+  <button ion-button class="footer-skip-button right"
+          (tap)="showShareQuestion(true)" *ngIf="showShareDialog">
+    <span ion-text color="bk">skip</span>
   </button>
 </ion-footer>

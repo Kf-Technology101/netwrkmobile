@@ -110,9 +110,11 @@ export class CameraPage {
   }
 
   switchCamera() {
-    this.cameraPreview.switchCamera().then(()=>{})
+    this.cameraPreview.switchCamera().then(res => {
+      console.log('camera switched');
+    })
     .catch(err => {
-      console.warn('switch camera error:', err);
+      console.error('switch camera error:', err);
     });
   }
 
@@ -123,7 +125,7 @@ export class CameraPage {
   saveImage() {
     // console.log("Saving image:", this.imgUrl);
     if (this.cameraPrvd.takenPictures.length < 3) {
-      this.cameraPrvd.takenPictures.push(this.imgUrl);
+      this.cameraPrvd.pushPhoto(this.imgUrl);
       this.goBack();
     } else {
       this.tools.showToast('You can\'t append more pictures');
@@ -137,9 +139,9 @@ export class CameraPage {
   }
 
   ionViewDidEnter() {
-    this.cameraPrvd.toggleCameraBg({
-      isCamera: true
-    });
+    // this.cameraPrvd.toggleCameraBg({
+    //   isCamera: true
+    // });
 
     setTimeout(() => {
       this.cameraUI.tooltip = 'tooltipFadeIn';

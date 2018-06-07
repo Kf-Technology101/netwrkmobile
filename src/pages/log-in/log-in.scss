@@ -52,6 +52,9 @@ page-log-in {
         }
         &.has-border {
           border-bottom: none;
+          .item-inner {
+            border-bottom: 1px solid #dedede;
+          }
         }
         &.ng-invalid.ng-touched:not(.input-has-focus):last-child,
         &.input-has-focus:last-child {
@@ -79,6 +82,7 @@ page-log-in {
       display: block;
       padding: 10px;
       box-sizing: border-box;
+      box-shadow: none;
     }
   }
 
@@ -95,10 +99,11 @@ page-log-in {
       }
       button {
         opacity: 1;
-        height: 42px;
+        height: 26px;
         width: 86px;
         border-radius: 17px;
         box-shadow: none;
+        font-size: 13px;
         &.debug-btn{
           width: 120px;
           position: absolute;
@@ -107,6 +112,19 @@ page-log-in {
           margin: auto;
         }
       }
+    }
+  }
+  .tip {
+    z-index: 99;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(50% + 60px);
+    font-size: 10px;
+    &:before {
+      width: 35px;
+      height: 15px;
+      top: -6px;
     }
   }
   .transparent {

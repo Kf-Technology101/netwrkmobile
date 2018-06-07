@@ -1,6 +1,6 @@
-import { Injectable, ViewChild } from '@angular/core';
-
-import { Platform, ModalController } from 'ionic-angular';
+import { Injectable } from '@angular/core';
+import { Platform, ModalController, Events } from 'ionic-angular';
+import { ImagePicker } from 'ionic-native';
 
 import { LocalStorage } from './local-storage';
 import { Gps } from './gps';
@@ -10,38 +10,29 @@ import { Auth } from './auth';
 import { Social } from './social';
 
 import * as moment from 'moment';
-import { Toggleable } from '../includes/toggleable';
-import { MainButton } from '../includes/mainButton';
-
-// Pages
-import { NetworkNoPage } from '../pages/network-no/network-no';
-import { NetworkPage } from '../pages/network/network';
 
 // Gallery
-import { ImagePicker } from 'ionic-native';
 import { Camera } from '../providers/camera';
 import { NetworkProvider } from '../providers/networkservice';
-import { chatAnim } from '../includes/animations';
+
 // File transfer
 import { File } from '@ionic-native/file';
-import {
-  Transfer,
-  FileUploadOptions,
-  TransferObject
-} from '@ionic-native/transfer';
+import { Transfer } from '@ionic-native/transfer';
 
 // sockets
-import { Ng2Cable, Broadcaster } from 'ng2-cable/js/index';
+import { Ng2Cable, Broadcaster } from 'ng2-cable';
 
 // Custom libs
 import { MessageDateTimer } from '../includes/messagedatetimer';
+import { Toggleable } from '../includes/toggleable';
 
 @Injectable()
 export class Chat {
   public users: any = {};
-  private message: any = null;
 
   public postMessages: any = [];
+
+  public oldMessages:any = [];
 
   public appendContainer = new Toggleable('off', true);
   public mainBtn = new Toggleable('normal', false);
@@ -49,17 +40,11 @@ export class Chat {
   public bgState = new Toggleable('compressed');
   public plusBtn = new Toggleable('default');
   public chatBtns = new Toggleable(['btnHidden', 'btnHidden', 'btnHidden', 'btnHidden']);
+  public lobbyContainer = new Toggleable('hide');
 
   public messageDateTimer: any = new MessageDateTimer();
 
-  private pickerOptions = {
-    maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
-  }
   public hostUrl: string;
-
-  private sounds:any = {
-    message: new Audio('assets/sound/message.mp3')
-  }
 
   public isMainBtnDisabled: boolean;
 
@@ -74,6 +59,20 @@ export class Chat {
   public isMessagesVisible: boolean = false;
   public networkAvailable:boolean = null;
 
+  public alreadyScolledToBottom:boolean = false;
+
+  public isCleared:boolean = false;
+
+  public isLobbyChat:boolean = false;
+  public currentLobby:any = {
+    id: undefined,
+    users: undefined,
+    currentUserPresent: false,
+    isAddButtonAvailable: true
+  };
+
+  public allowUndercoverUpdate:boolean = true;
+
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -86,45 +85,68 @@ export class Chat {
     public authPrvd: Auth,
     public modalCtrl: ModalController,
     private networkPrvd: NetworkProvider,
-    public ng2cable: Ng2Cable,
-    public broadcaster: Broadcaster,
-    public socialPrvd: Social
+    private ng2cable: Ng2Cable,
+    private broadcaster: Broadcaster,
+    private roomCable: Ng2Cable,
+    private roomBroadcaster: Broadcaster,
+    public socialPrvd: Social,
+    public events: Events
   ) {
-    // console.log('Hello Chat Provider');
     this.hostUrl = this.api.hostUrl;
     this.user = this.authPrvd.getAuthData();
   }
 
+  public deleteMessage(messageId:number):any {
+    let mess = this.api.post('messages/delete_for_all', {
+      id: messageId
+    }).share();
+    let messMap = mess.map(res => res.json());
+    return messMap;
+  }
+
+  public getLocationLobby(messageId:number):any {
+    let mess = this.api.get('messages/' + messageId + '/room/messages').share();
+    let messMap = mess.map(res => res.json());
+    return messMap;
+  }
+
+  public getLocationLobbyUsers(messageId:number):any {
+    let mess = this.api.get('messages/' + messageId + '/room/users').share();
+    let messMap = mess.map(res => res.json());
+    return messMap;
+  }
+
+  public connectUserToChat(roomId:number):any {
+    let mess = this.api.post('rooms/' + roomId + '/users', {}).share();
+    let messMap = mess.map(res => res.json());
+    return messMap;
+  }
+
   public checkSocialData(socialName:string):boolean {
-    let socialData = this.localStorage.get('social_auth_data');
-    return socialData[socialName] ? true : false;
+    // let socialData = this.localStorage.get('social_auth_data');
+    return this.socialPrvd.connect[socialName];
+    //   return this.socialPrvd.connect[socialName] ? true : false;
+    // else
+    //   return false;
   }
 
   public detectNetwork():any {
     return new Promise((resolve, reject) => {
-      this.gps.getMyZipCode().then(zipRes => {
-        this.gps.getNetwrk(zipRes.zip_code).subscribe(res => {
-          console.log('(detectNetwork) res:', res);
-          resolve(res);
-        }, err => {
-          console.error(err);
-          reject(err);
-        });
+      this.gps.getNetwrk(this.localStorage.get('chat_zip_code')).subscribe(res => {
+        console.log('(detectNetwork) res:', res);
+        resolve(res);
       }, err => {
         console.error(err);
+        reject(err);
       });
     });
   }
 
-  public updateAvatarUrl(event: any) {
+  public updateAvatarUrl(event: any):void {
     event.target.src = 'assets/icon/netwrk-chat.svg';
   }
 
-  public playSound() {
-    this.sounds.message.play();
-  }
-
-  public blockPost(messageID:number) {
+  public blockPost(messageID:number):any {
     let mess = this.api.get('messages/block', {
       message_id: messageID
     }).share();
@@ -132,7 +154,7 @@ export class Chat {
     return messMap;
   }
 
-  public setState(state: string) {
+  public setState(state: string):void {
     this.localStorage.set('chat_state', state);
   }
 
@@ -142,7 +164,7 @@ export class Chat {
     return result;
   }
 
-  public setZipCode(zipCode: number) {
+  public setZipCode(zipCode: number):void {
     let zip = this.chatZipCode();
     if (zip == 0) this.localStorage.set('chat_zip_code', zipCode);
   }
@@ -153,8 +175,7 @@ export class Chat {
     return result;
   }
 
-  public deleteMessages(id_list:any) {
-    // let params = { network_id: this.networkPrvd.getNetworkId() };
+  public deleteMessages(id_list:any):any {
     let mess = this.api.post('messages/delete', {
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
@@ -165,42 +186,185 @@ export class Chat {
     return messMap;
   }
 
-  public sendFeedbackData(link: string, data: any) {
+  public sendFeedbackData(link: string, data: any):any {
     let feed = this.api.post(link, data).share();
     let feedMap = feed.map(res => res.json());
     return feedMap;
   }
 
-  public closeSockets() {
+  public closeSockets():void {
     try {
+      this.broadcaster['_eventBus'].observers = [];
       this.ng2cable.unsubscribe();
-    } catch (err) {
-      console.error(err);
+    } catch (err) { console.error(err); }
+  }
+
+  private syncMessage(message:any):void {
+    this.postMessages.forEach((m, index) => {
+      console.log('syncing message:', m);
+      if (m.timestamp == message.timestamp) {
+        this.postMessages.splice(index, 1, message);
+        // this.postMessages[index] = JSON.parse(JSON.stringify(message));
+        console.log('sync completed successfully. Res:', m);
+      } else console.log('skipping...');
+    });
+  }
+
+  private appendMessage(data:any, messageContainer:any):void {
+    if (data.message.user_id != this.user.id || data.message.social)
+      messageContainer.unshift(data.message);
+    else if (data.message.user_id == this.user.id)
+      this.syncMessage(data.message);
+    this.messageDateTimer.start(messageContainer);
+  }
+
+  public sortLobbyUsersByHostId(hostId:number):void {
+    let hostIndex:number;
+    let hostUser:any;
+    this.currentLobby.users.forEach((u, index) => {
+      if (u.id == hostId) {
+        hostIndex = index;
+        hostUser = u;
+      }
+    });
+    this.currentLobby.users.splice(hostIndex, 1);
+    this.currentLobby.users.unshift(hostUser);
+  }
+
+  public isCurrentUserBelongsToChat(users:Array<any>):any {
+    let isInside:boolean = false;
+    for (let i = 0; i < users.length; i++) {
+      if (users[i].id == this.user.id) { isInside = true; break; }
+    }
+    console.log('[isCurrentUserBelongsToChat] res:', isInside);
+    return isInside;
+  }
+
+  public handleUserChatJoinRequest():void {
+    if (this.currentLobby.id) {
+      this.connectUserToChat(this.currentLobby.id).subscribe(() => {
+      }, err => console.error(err));
+    } else console.error('[handleUserChatJoinRequest] Lobby object does not contain {id} property');
+  }
+
+  public openLobbyForPinned(message:any):Promise<any> {
+    return new Promise ((resolve, reject) => {
+      console.log('openLobbyForPinned:', message);
+      if (!this.isLobbyChat && this.getState() == 'undercover') {
+        this.getLocationLobby(message.id).subscribe(res => {
+          console.log('getLocationLobby:', res);
+          if (res && res.messages && res.room_id) {
+            this.postMessages = res.messages;
+            this.currentLobby.id = res.room_id;
+            this.startLobbySocket(res.room_id);
+            this.getLocationLobbyUsers(message.id).subscribe(res => {
+              console.log('getLocationLobbyUsers:', res);
+              if (res && res.users && res.host_id) {
+                console.log('lobby users:', res.users);
+                this.currentLobby.users = res.users;
+                this.currentLobby.hostId = res.host_id;
+                this.currentLobby.isAddButtonAvailable = !this.isCurrentUserBelongsToChat(this.currentLobby.users);
+                this.sortLobbyUsersByHostId(this.currentLobby.hostId);
+                resolve();
+              } else {
+                reject('[getLocationLobbyUsers] Server returned no users or host_id');
+              }
+            }, err => {
+              console.error(err);
+              reject(err); });
+          } else {
+            reject('[getLocationLobby] no res or res.messages');
+          }
+        }, err => {
+          console.error(err);
+          reject(err);
+        });
+      } else {
+        reject('[getLocationLobby] Post is not legendary or you are currently in lobby');
+      }
+    });
+  }
+
+  public toggleLobbyChatMode():void {
+    this.isLobbyChat = !this.isLobbyChat;
+    if (!this.isLobbyChat) {
+      this.currentLobby.id = null;
+      this.closeLobbySocket();
+      this.socketsInit();
     }
   }
 
-  public socketsInit() {
+  public closeLobbySocket():void {
+    if (this.roomCable.subscription) {
+      this.roomCable.unsubscribe();
+    }
+  }
+
+  public startLobbySocket(roomId:number):void {
+    let channel:string = 'RoomChannel';
+    console.log('starting lobby socket on', roomId);
+    this.closeLobbySocket();
+
+    this.roomCable.subscribe(this.hostUrl + '/cable', channel, {
+      room_id: roomId
+    });
+    console.log('[SOCKET] roomCable object:', this.roomCable);
+
+    this.roomBroadcaster['_eventBus'].observers = [];
+    this.roomBroadcaster.on<any>(channel).subscribe(
+      data => {
+        console.log('[SOCKET] data:', data);
+        if (data && data.socket_type) {
+          switch(data.socket_type) {
+            case 'message':
+              this.appendMessage(data, this.postMessages);
+            break;
+            case 'user_connect':
+              console.log('[SOCKET] User joined your chat');
+              if (!this.isCurrentUserBelongsToChat(this.currentLobby.users)) {
+                this.currentLobby.users.push(this.user);
+                this.currentLobby.isAddButtonAvailable = false;
+              }
+            break;
+          }
+        }
+      }
+    )
+  }
+
+  public socketsInit():void {
     console.info('socketsInit()');
     let channel = 'ChatChannel';
     let zipCode = this.localStorage.get('chat_zip_code');
     console.log('[chat constructor] storage zip:', this.localStorage.get('chat_zip_code'));
-    let lobby = 'messages' + zipCode + 'chat';
 
     console.log('ng2cable link:', this.hostUrl + '/cable');
     if (this.ng2cable.subscription) {
       this.ng2cable.unsubscribe();
     }
 
-    this.ng2cable.subscribe(this.hostUrl + '/cable', {
-      channel: <string> channel,
+    this.ng2cable.subscribe(this.hostUrl + '/cable', channel, {
       post_code: <number> zipCode
     });
 
     console.log('broadcaster:', this.broadcaster);
     this.broadcaster['_eventBus'].observers = [];
     this.broadcaster.on<any>(channel).subscribe(
-      data => {
-        console.log('[SOCKET] Message received:', data);
+    data => {
+      console.log('[SOCKET] Message received:', data);
+      let blacklist = this.localStorage.get('blacklist');
+      let postOrNotToPostThatIsTheQuestion:boolean = true;
+      if (blacklist && blacklist.length > 0) {
+        for (let i = 0; i < blacklist.length; i ++) {
+          if (data.message.user_id == blacklist[i].id) {
+            console.warn('User', data.message.user.name, 'is blocked! What a looser');
+            postOrNotToPostThatIsTheQuestion = false;
+            break;
+          }
+        }
+      }
+
+      if (postOrNotToPostThatIsTheQuestion) {
         let insideUndercover = this.gps
         .calculateDistance({
           lat: <number> parseFloat(data.message.lat),
@@ -208,74 +372,66 @@ export class Chat {
         });
         if (this.getState() == 'undercover') {
           if (data.message.undercover && insideUndercover) {
-            this.postMessages.push(data.message);
-            if (data.message.user_id != this.user.id)
-              this.playSound();
-            this.messageDateTimer.start(this.postMessages);
+            setTimeout(() => {
+              this.events.publish('message:received', {
+                messageReceived: true,
+                runVideoService: data.message.video_urls.length > 0
+              });
+            }, 1);
+            this.appendMessage(data, this.postMessages);
           }
-        } else if (this.getState() != 'undercover' && !data.message.undercover) {
-          console.log('[area message] data:', data.message);
-          this.postMessages.unshift(data.message);
-          if (data.message.user_id != this.user.id)
-            this.playSound();
-          this.messageDateTimer.start(this.postMessages);
-        }
-    }, err => {
-      console.error('[SOCKET] Message error:', err);
-    });
-
-    this.broadcaster.on<any>(lobby).subscribe(
-      data => {
-        console.log('[SOCKET] lobby:', data);
-      }, err => {
-        console.error('[SOCKET] lobby error:', err);
+        } else if (this.getState() != 'undercover' && !data.message.undercover &&
+                   this.user.id != data.message.user_id)
+          this.appendMessage(data, this.postMessages);
       }
-    );
+    }, err => console.error('[SOCKET] Message error:', err));
   }
 
-  public sendMessage(data: any): any {
+  public getBlacklist():any {
+    let mess = this.api.get('blacklist').share();
+    let messMap = mess.map(res => res.json());
+    return messMap;
+  }
+
+  public sendMessage(data: any):any {
     return new Promise((resolve, reject) => {
       let params = {
         message: data,
-        post_code: this.localStorage.get('chat_zip_code')
+        post_code: this.localStorage.get('chat_zip_code'),
+        room_id: this.currentLobby.id
       };
       params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
       params.message.lat = this.gps.coords.lat;
       params.message.lng = this.gps.coords.lng;
 
+      if (params.room_id) params.message.network_id = null;
+
       console.info('[sendMessage] params:', params);
 
       if (data.images && data.images.length > 0) {
-        this.tools.showLoader();
+        // this.tools.showLoader();
         this.sendMessageWithImage(params, data.images).then(res => {
           console.log('[sendMessageWithImage] res:', res);
-          this.tools.hideLoader();
           resolve(res);
-        }).catch(err => {
-          // console.log(err);
-          reject(err);
-        });
+        }).catch(err => reject(err));
       } else {
-        // console.log('params', params);
         this.sendMessageWithoutImage(params).subscribe(res => {
           console.log('SEND MESSAGE WITHOUT IMAGE');
           resolve(res);
-        }, err => {
-          // console.log(err);
-          reject(err);
-        });
+        }, err => reject(err));
       }
 
     })
   }
 
-  public lockMessage(lock) {
+  public lockMessage(lock:any):any {
     let seq = this.api.post('messages/lock', lock).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }
 
   public unlockPost(data) {
+    console.log('UNLOCK POST data:', data);
     let seq = this.api.post('messages/unlock', {
       id: data.id,
       password: data.password
@@ -289,7 +445,7 @@ export class Chat {
     messagesArray?: Array<any>,
     params?: any,
     doRefresh?: any
-  ) {
+  ):any {
     // console.log('===================================');
     // console.log('[getMessages] arguments:', arguments);
     let offset: number = messagesArray && messagesArray.length
@@ -304,7 +460,7 @@ export class Chat {
       limit: 20
     };
 
-    let messagesIds = [];
+    let messagesIds: Array<any> = [];
     for (let i in messagesArray) {
       if (messagesArray[i])
         messagesIds.push(messagesArray[i].id);
@@ -333,13 +489,14 @@ export class Chat {
     return seqMap;
   }
 
-  public getMessagesByUserId(params: any) {
+  public getMessagesByUserId(params: any):any {
     let data: any = {
       network_id: this.networkPrvd.getNetworkId(),
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       limit: 20,
-      social: ['facebook', 'twitter'] // gavnocod
+      social: ['facebook', 'twitter'], // gavnocod
+      post_code: this.localStorage.get('chat_zip_code')
     };
 
     if (params) Object.assign(data, params);
@@ -360,7 +517,7 @@ export class Chat {
     this.users = stUsers;
   }
 
-  public organizeMessages(data: any, fn?: any): any {
+  public organizeMessages(data: any): any {
     let messages: Array<any> = [];
     for (let i in data) {
       data[i].date = moment(data[i].created_at).fromNow();
@@ -433,8 +590,7 @@ export class Chat {
             if (i == images.length) {
               // console.log('end', files);
               let xhr: XMLHttpRequest = new XMLHttpRequest();
-
-              console.info('[getFileObject] params:', params.undercover + '');
+              console.log('[getFileObject] params:', params);
               if (params) {
                 let formData: FormData = self.api.createFormData(params);
                 for (let i in files)
@@ -479,6 +635,10 @@ export class Chat {
     // console.log('[chatPrvd] updateAppendContainer()...');
     let pictures = this.cameraPrvd.takenPictures;
     if (pictures && pictures.length > 0) {
+      this.events.publish('image:pushed', {
+        picturesLen: pictures.length
+      });
+
       this.plusBtn.setState('default');
       this.bgState.setState('compressed');
       for (let i = 0; i < this.chatBtns.state.length; i++) {
@@ -492,29 +652,30 @@ export class Chat {
     }
   }
 
-  public openGallery(): void {
-    let pickerOptions = {
-      maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
-    }
-    if (pickerOptions.maximumImagesCount <= 0) {
-      this.tools.showToast('You can\'t append more pictures');
-    } else {
-      ImagePicker.getPictures(pickerOptions).then(file_uris => {
-        for (let fileUrl of file_uris) {
-          if (this.cameraPrvd.takenPictures.length < 3) {
-            if (this.plt.is('android')) {
-              if (fileUrl.indexOf('file:///') !== -1)
-                this.cameraPrvd.takenPictures.push(fileUrl);
-            } else {
-              this.cameraPrvd.takenPictures.push(fileUrl);
+  public openGallery() {
+      let pickerOptions = {
+        maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
+      }
+      if (pickerOptions.maximumImagesCount <= 0) {
+        this.tools.showToast('You can\'t append more pictures');
+      } else {
+        ImagePicker.getPictures(pickerOptions).then(file_uris => {
+          for (let fileUrl of file_uris) {
+            if (this.cameraPrvd.takenPictures.length < 3) {
+              if (this.plt.is('android')) {
+                if (fileUrl.indexOf('file:///') !== -1)
+                  this.cameraPrvd.pushPhoto(fileUrl);
+                  this.updateAppendContainer();
+              } else {
+                this.cameraPrvd.pushPhoto(fileUrl);
+                this.updateAppendContainer();
+              }
             }
           }
-        }
-        this.updateAppendContainer();
-      }, err => {
-      //console.log('[imagePicker] err:', err);
-      });
-    }
+        }, err => {
+          console.log('[imagePicker]', err);
+        });
+      }
   }
 
   public sendFeedback(messageData: any, mIndex: number) {
@@ -576,22 +737,25 @@ export class Chat {
     }
   }
 
-  public scrollToBottom(content:any){
-    if (this.scrollTimer.interval) {
-      clearInterval(this.scrollTimer.interval);
-    }
-    if (this.scrollTimer.timeout) {
-      clearTimeout(this.scrollTimer.timeout);
-    }
+  public scrollToTop():void {
+    let scroll = document.querySelector('.scroll-content');
+    if (scroll) scroll.scrollTop = 0;
+    else console.warn('Unable to scroll to top: no scroll element found');
+  }
+
+  public scrollToBottom(content:any, params?:any):void {
+    if (this.scrollTimer.interval) clearInterval(this.scrollTimer.interval);
+    if (this.scrollTimer.timeout) clearTimeout(this.scrollTimer.timeout);
     this.scrollTimer.interval = setInterval(() => {
       // console.log('[scrollToBottom] loaded:', this.loadedImages + '/' + this.imagesToLoad);
-      if (this.imagesToLoad == this.loadedImages) {
+      if (this.imagesToLoad == this.loadedImages || (params && params.forced)) {
+        console.log('[SCROLLING TO BOTTOM]');
         content.scrollTo(0, content.getContentDimensions().scrollHeight, 100);
-        clearInterval(this.scrollTimer.interval);
         setTimeout(() => {
           this.isMessagesVisible = true;
           // this.tools.hideLoader();
         }, 150);
+        clearInterval(this.scrollTimer.interval);
       }
     }, 300);
     this.scrollTimer.timeout = setTimeout(() => {
@@ -599,7 +763,7 @@ export class Chat {
     }, 10000);
   }
 
-  public showMessages(messages:any, location: any, isUndercover?: boolean): Promise<any> {
+  public showMessages(messages:any, location: any, isUndercover?: boolean):Promise<any> {
     let loadMessages:any;
     let arg:any;
     switch (location) {
@@ -616,52 +780,44 @@ export class Chat {
         arg = isUndercover ? isUndercover : false;
       break;
     }
-    // console.log('[ChatPage][showMessages] isUndercover:', isUndercover);
-    return new Promise(res => {
+    return new Promise((resolve, reject) => {
       loadMessages(arg).subscribe(data => {
         let receivedMessages:any;
-        if (location == 'chat') {
-          receivedMessages = data.messages;
-        } else {
-          receivedMessages = data.messages.reverse();
-        }
-        // console.log('[ChatPage][showMessages] data:', data);
-        // console.log('[ChatPage][showMessages] postMessages:', this.postMessages);
+        console.log('[ChatPage][showMessages] data:', data);
         if (!data) {
-          // console.warn('[showMessages] NO DATA');
           this.tools.hideLoader();
           this.isMainBtnDisabled = false;
+          reject();
           return;
-        }
-        if (messages.length > 0 && data.messages.length > 0) {
-          res({
-            messages: this.organizeMessages(receivedMessages),
-            callback: (mess) => {
-              // console.log('[showMessages] messages:', mess);
-              this.calcTotalImages(mess);
-              this.messageDateTimer.start(mess);
-              setTimeout(() => {
-                this.isMainBtnDisabled = false;
-              }, 1);
-            }
-          });
-        } else if (data.messages.length > 0) {
-          res({
-            messages: this.organizeMessages(receivedMessages),
-            callback: (mess) => {
-              // console.log('[showMessages] messages:', mess);
-              this.calcTotalImages(mess);
-              this.messageDateTimer.start(mess);
-              setTimeout(() => {
-                this.isMainBtnDisabled = false;
-              }, 1);
-            }
-          });
+        } else if (data && data.messages && data.messages.length > 0) {
+          if (location == 'chat') receivedMessages = data.messages;
+          else receivedMessages = data.messages.reverse();
+          if (messages.length > 0) {
+            resolve({
+              messages: this.organizeMessages(receivedMessages),
+              callback: (mess) => {
+                this.calcTotalImages(mess);
+                this.messageDateTimer.start(mess);
+              }
+            });
+          } else {
+            resolve({
+              messages: this.organizeMessages(receivedMessages),
+              callback: (mess) => {
+                this.calcTotalImages(mess);
+                this.messageDateTimer.start(mess);
+              }
+            });
+          }
+        } else {
+          this.tools.hideLoader();
+          if (data.messages.length == 0) reject('no messages');
+          else reject('something went wrong');
         }
       }, err => {
         this.tools.hideLoader();
         this.isMainBtnDisabled = false;
-        // console.log('[getMessage] Err:', err);
+        reject('something went wrong');
       });
     })
   }

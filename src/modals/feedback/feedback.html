@@ -1,32 +1,47 @@
-<ion-toolbar class="translucent">
-  <ion-buttons end>
-    <button class="legendary-btn" (click)="toggleLikes('legendary')"
-            [ngClass]="{ 'active' : postStatus.isLegendary }">
-      <ion-badge>{{ postInf.totalLegendary }}</ion-badge>
-    </button>
-  </ion-buttons>
-</ion-toolbar>
+<ion-content class="translucent" no-bounce>
+  <ion-toolbar class="translucent"
+  [ngClass]="{'display' : displayToolbar, 'liked' : postStatus.isLiked}">
+    <ng-container *ngIf="displayToolbar">
+      <span [ngClass]="{ 'right' : isUndercover }" class="heading" *ngIf="!isUndercover">Add to the area's story</span>
+    </ng-container>
+    <ion-buttons end [ngClass]="{'left' : isUndercover}">
+      <button class="legendary-btn" (click)="toggleLikes('legendary')"
+              [ngClass]="{ 'active' : postStatus.isLegendary,
+                           'reversed' : isUndercover }">
+        <img *ngIf="!postStatus.isLegendary" src="assets/icon/legendary_dis.svg">
+        <img *ngIf="postStatus.isLegendary" src="assets/icon/legendary_act.svg">
+        <ion-badge>{{ postInf.totalLegendary }}</ion-badge>
+        <div class="tag" *ngIf="isUndercover && displayToolbar">Pin it</div>
+      </button>
+    </ion-buttons>
+  </ion-toolbar>
 
-<ion-content class="translucent">
-  <ion-list>
-    <button class="like-btn" (click)="toggleLikes('like')"
+  <ion-list [ngClass]="{ 'has-top-bar': displayToolbar }">
+    <button #likebutton class="like-btn" (click)="toggleLikes('like')"
             [ngClass]="{ 'liked': postStatus.isLiked }">
       <div class="like-bg"></div>
       <ion-badge>{{ postInf.totalLikes }}</ion-badge>
     </button>
-    <!-- <button class="secondary vulgar-btn">Vulgar</button> -->
-    <button class="secondary block-btn" (click)="blockMessage()">Block</button>
     <button *ngIf="chatPrvd.getState() == 'undercover'" class="secondary share"
-    (click)="goShare()">Share my location</button>
+    (click)="goShare()">Share location</button>
     <button *ngIf="chatPrvd.getState() == 'area'" class="secondary share"
     (click)="goShare()">Share</button>
   </ion-list>
 </ion-content>
 
-<ion-footer>
+
+<ion-footer class="footer">
   <button ion-button isScrolling="false" tapable color="bk"
-          class="main-action-btn small has-footer transparent chatMainBtn"
+          class="main-action-btn small has-footer transparent chatMainBtn small-icon"
           (click)="closeModal()" [@fadeState]="mainBtn.state" style="opacity: 1!important">
     <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
+  </button>
+  <button ion-button class="footer-back-button light-col left"
+          (tap)="blockMessage()">
+    <span ion-text color="bk">block</span>
+  </button>
+  <button ion-button class="footer-skip-button light-col"
+          (tap)="report.message(likeData.message_id)">
+    <span ion-text color="bk">report this</span>
   </button>
 </ion-footer>

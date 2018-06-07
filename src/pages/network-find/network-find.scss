@@ -14,15 +14,19 @@ page-network-find {
     }
   }
 }
-
-.glowing-icon {
-  background-image: url('../assets/images/glowing_icon.png');
-  width: 26px;
-  height: 26px;
-  background-size: 26px;
-  float: left;
-  margin-right: 10px;
-}
-.loading-text {
-  line-height: 26px;
+.loading-content {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  .glowing-icon {
+    background-image: url('../assets/images/glowing_icon.png');
+    width: 26px;
+    height: 26px;
+    min-width: 26px;
+    background-size: 26px;
+    margin-right: 10px;
+  }
+  .loading-text {
+    line-height: 26px;
+  }
 }

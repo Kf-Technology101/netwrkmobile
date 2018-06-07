@@ -3,7 +3,7 @@ import { Network } from '@ionic-native/network';
 import { Tools } from './tools';
 
 @Injectable()
-export class NetworkCheck{
+export class NetworkCheck {
 
   constructor(
     public network: Network,
@@ -13,9 +13,10 @@ export class NetworkCheck{
   public networkStatus():void {
     console.log('networkStatus() in');
     let onDisconnect = () => {
-      let onDisconnect = this.network.onDisconnect().subscribe(() => {
+      this.network.onDisconnect().subscribe(() => {
         console.warn('NO INTERNET CONNECTION');
-        this.tools.showLoader('No internet connection');
+        this.tools.showLoader('Internet is needed to connect to the world around you');
+        // this.tools.showSplashScreen();
         // onDisconnect.unsubscribe();
       });
     }
@@ -27,6 +28,7 @@ export class NetworkCheck{
       setTimeout(() => {
         if (this.network.type !== 'none') {
           this.tools.hideLoader();
+          // this.tools.hideSplashScreen();
           onDisconnect();
         }
       }, 3000);

@@ -1,88 +1,66 @@
-<ion-content padding has-main-btn has-main-btn-label city-bg-animated no-bounce
-            id="login-content">
-  <div class="city-container">
-    <div class="faces" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
-    <div class="city-bg top"></div>
-  </div>
-  <ion-grid [@fadeState]="controls.state" [hidden]="controls.hidden"
-            class="login-grid">
+<ion-content padding has-main-btn has-main-btn-label city-bg-animated no-bounce id="login-content">
+      <div class="city-container">
+        <div class="faces" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+        <div class="city-bg top"></div>
+      </div>
+  <ion-grid [@fadeState]="controls.state" [hidden]="controls.hidden" class="login-grid">
     <ion-row>
       <ion-col text-center>
-        <!-- <img src="assets/icon/logo.png"> -->
         <p ion-text color="bk" class="login-caption">
-          Naturally, to hang something on a spot, you must share your location.
+          Naturally, to access your local broadcast netwrk, you must share your location.
           No one can see where you are or what is surrounding you.
         </p>
       </ion-col>
     </ion-row>
+
     <ion-row class="top-form-row">
       <ion-col>
-        <form (submit)="doLogin()" #loginForm="ngForm" novalidate
+        <form (submit)="doLogin(loginForm)" #loginForm="ngForm" novalidate
               [@fadeState]="form.getState()" [hidden]="!form.isVisible()">
           <ion-list>
 
             <ion-item>
-              <ion-input (focus)="inputFocused()"
-                (blur)="inputBlured($event)" type="text"
+              <ion-input (ionFocus)="inputFocused()"
+                (ionBlur)="inputBlured()" type="text"
                 placeholder="Email/Phone number..." [(ngModel)]="account.login"
                 name="login" required></ion-input>
             </ion-item>
 
             <ion-item class="has-border">
-              <ion-input (focus)="inputFocused()"
-                (blur)="inputBlured($event)" type="password"
+              <ion-input (ionFocus)="inputFocused()"
+                (ionBlur)="inputBlured()" type="password"
                 placeholder="Password..." [(ngModel)]="account.password"
                 name="password" required></ion-input>
             </ion-item>
-
-            <!-- <ion-item class="item-right">
-              <button type="button" ion-button icon-left clear color="bk"
-                (click)="doFbLogin()">
-                <ion-icon name="logo-facebook"></ion-icon>
-                Login with Facebook
-              </button>
-              <button type="submit" ion-button default round item-right
-                color="bk">Login</button>
-            </ion-item> -->
             <button ion-button class="login" type="submit"
-            *ngIf="account.login && account.password"
-            (tap)="submitLoginForm()">Login</button>
+            *ngIf="account.login && account.password">Login</button>
           </ion-list>
         </form>
       </ion-col>
     </ion-row>
-    <!-- <ion-row>
-      <ion-col>
-        <ion-list>
-
-          <ion-item class="custom-center-block" text-center text-wrap>
-            <span ion-text color="bk">
-              You will be asked when you login or sign up for your location, it's needed to access your local netwrk.
-            </span>
-          </ion-item>
-
-        </ion-list>
-      </ion-col>
-    </ion-row> -->
   </ion-grid>
 
-  <button isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()"
+  <button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()"
     ion-button color="bk" class="main-action-btn medium has-label"
-    (click)="goToSignUp()" outline id="main-btn"></button>
+    (tap)="doFbLogin()" outline id="main-btn">
+  </button>
+
+  <!--<button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()"-->
+    <!--ion-button color="bk" class="main-action-btn medium has-label"-->
+    <!--(tap)="toggleLoginForm()" outline id="main-btn">-->
+  <!--</button>-->
+
+  <div *ngIf="chatPrvd.mainBtn.getState() == 'centered'" class="tip">Quick login via facebook</div>
 
 </ion-content>
 
 <ion-footer>
-  <!-- <span class="main-action-text" ion-text color="bk">New? Tap to get started</span> -->
   <ion-item class="transparent login-btns-container">
     <button ion-button default (tap)="toggleLoginForm()"
             round item-left color="bk" [@fadeState]="controls.state"
             [hidden]="controls.hidden">Login</button>
-    <!-- <button ion-button default round item-left
-            (tap)="locationchange.showLocationSelect()"
-            class="debug-btn">Change location</button> -->
-    <button type="submit" (tap)="doFbLogin()" ion-button default round item-right
+    <button type="submit" (tap)="goToSignUp()" ion-button default round item-right
             color="bk" [@fadeState]="controls.state"
-            [hidden]="controls.hidden">FB login</button>
+            [hidden]="controls.hidden">Full sign up</button>
   </ion-item>
 </ion-footer>

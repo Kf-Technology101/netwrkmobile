@@ -1,11 +1,8 @@
 {
-  "name": "BK",
+  "name": "Netwrk",
   "app_id": "",
-  "proxies": [
-    {
-      "path": "/v1",
-      "proxyUrl": "http://192.168.1.13:3000/api/"
-    }
-  ],
-  "type": "ionic-angular"
+  "type": "ionic-angular",
+  "integrations": {
+    "cordova": {}
+  }
 }

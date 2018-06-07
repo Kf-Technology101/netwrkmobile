@@ -11,16 +11,13 @@ import { NavController, NavParams, IonicPage } from 'ionic-angular';
 import { LogInPage } from '../pages/log-in/log-in';
 
 // Providers
-import { Auth } from '../providers/auth';
-import { Tools } from '../providers/tools';
-import { SlideAvatar } from '../providers/slide-avatar';
-import { User } from '../providers/user';
-import { UndercoverProvider } from '../providers/undercover';
+import { Auth } from './auth';
+import { Tools } from './tools';
+import { SlideAvatar } from './slide-avatar';
+import { User } from './user';
+import { UndercoverProvider } from './undercover';
 
 import { Keyboard } from '@ionic-native/keyboard';
-
-// Custom libs
-import { MessageDateTimer } from '../includes/messagedatetimer';
 
 @Injectable()
 export class Profile {
@@ -157,7 +154,7 @@ export class Profile {
     }
 
     if (params)
-      this.userPrvd.update(this.user.id, params, this.auth.getAuthType())
+      this.userPrvd.update(this.user.id, params, this.auth.getAuthType(), 'update')
       .map(res => res.json()).subscribe(res => {
         console.log('[user provider] (Update) res:', res);
         this.user = res;

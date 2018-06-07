@@ -3,12 +3,10 @@
     <div class="drag-container" style="pointer-events: none">
       <div class="dragline">
         <span class="info">
-          <span class="username" ion-text color="bk">Choose a character</span>
+          <span class="username" ion-text color="bk">Choose a Category</span>
         </span>
-        <!-- <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon"> -->
-        <img class="draggable-element"
-          [src]="slideAvatarPrvd.sliderPosition == 'right' ?
-            activePerson.imageUrl : user.avatar_url">
+        <img class="draggable-element" src="assets/icon/netwrk-chat.svg" *ngIf="!activePerson.imageUrl" style="left: 129px">
+        <img class="draggable-element" *ngIf="activePerson.imageUrl" [src]="activePerson.imageUrl" style="left: 129px">
       </div>
     </div>
   </ion-toolbar>
@@ -20,10 +18,8 @@
 <ion-content has-main-btn>
   <ion-row align-items-center>
     <ion-col text-center>
-      <h1 ion-text color="bk">We agree, some things shouldn't have your name on it.</h1>
-      <ion-slides slidesPerView="3"
-        initialSlide="1"
-        spaceBetween="10">
+      <h1 ion-text color="bk">Start out invisible and anonymous.</h1>
+      <ion-slides slidesPerView="3" initialSlide="1" spaceBetween="10">
         <ion-slide></ion-slide>
         <ion-slide [ngClass]="{'transition': sliderLoaded}" *ngFor="let p of persons"
         (click)="choosePerson()">
@@ -42,7 +38,7 @@
   </ion-row>
 </ion-content>
 
-<!-- <ion-footer>
-  <button ion-button color="bk" class="main-action-btn medium transparent" outline
-    (click)="choosePerson()"></button>
-</ion-footer> -->
+<!--<ion-footer>-->
+  <!--<button ion-button color="bk" class="main-action-btn medium transparent" outline-->
+    <!--(click)="choosePerson()"></button>-->
+<!--</ion-footer>-->

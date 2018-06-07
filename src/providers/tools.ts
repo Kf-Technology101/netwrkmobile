@@ -4,7 +4,9 @@ import { LogInPage } from '../pages/log-in/log-in';
 
 import { InAppBrowser } from '@ionic-native/in-app-browser';
 import { BackgroundMode } from '@ionic-native/background-mode';
+import { SplashScreen } from '@ionic-native/splash-screen';
 import { AlertController } from 'ionic-angular';
+import { Api } from './api';
 import * as moment from 'moment';
 
 import {
@@ -21,6 +23,8 @@ export class Tools {
   public defaultAvatar: string = 'assets/images/incognito.png';
   private toast: any;
   private loader: any = null;
+  public isCameraReady: boolean = false;
+  public hideSplash: boolean = false;
 
   constructor(
     public events: Events,
@@ -30,17 +34,47 @@ export class Tools {
     public app: App,
     private iab: InAppBrowser,
     private backgroundMode: BackgroundMode,
-    public alertCtrl: AlertController
-  ) {
+    public alertCtrl: AlertController,
+    public splash: SplashScreen,
+    public api: Api
+  ) {}
+
+  public sendPointData(pointData):any {
+    let seq = this.api.post('profiles/change_points_count', pointData).share();
+    let messMap = seq.map(res => res.json());
+    return messMap;
   }
 
-  public parseObjectForPopup(object) {
-    let alert = this.alertCtrl.create({
-      title: 'Log',
-      subTitle: JSON.stringify(object),
-      buttons: ['Ok']
-    });
+  public isLegendaryAvailable():any {
+    let seq = this.api.get('legendary_likes').share();
+    let messMap = seq.map(res => res.json());
+    return messMap;
   }
+
+  public checkIfHeroAvalable():any {
+    let seq = this.api.get('profiles/disabled_hero').share();
+    let messMap = seq.map(res => res.json());
+    return messMap;
+  }
+
+  /**
+  *  Send user id to toggle terms of use acceptance status on the DB
+    Observable positive result is .message == 'ok'
+  */
+  public toggleUsersTermsStatus(userId:number):any {
+    let seq = this.api.patch('profiles/accept_terms_of_use', {
+      id: userId
+    }).share();
+    let messMap = seq.map(res => res.json());
+    return messMap;
+  }
+
+  public hideSplashScreen():void {
+    this.splash.hide();
+  }
+  // // public showSplashScreen():void {
+  // //   this.splash.show();
+  // // }
 
   public doBackButton() {
     console.log(this.app.getActiveNav());
@@ -60,7 +94,7 @@ export class Tools {
     event.stopPropagation();
     if (event.target.tagName == 'A') {
       this.backgroundMode.disable();
-      let browser = this.iab.create(event.target.href, '_blank');
+      this.iab.create(event.target.href, '_blank');
     }
   }
 
@@ -127,13 +161,10 @@ export class Tools {
     return result;
   }
 
-  public getToday(age?: number): string {
-    let myDate = new Date();
-    let year = myDate.getFullYear();
-    if (age) year = year - age;
-    let month = myDate.getMonth() < 10 ? '0' + (myDate.getMonth() + 1) : myDate.getMonth() + 1;
-    let day = myDate.getDate() < 10 ? '0' + myDate.getDate() : myDate.getDate();
-    return `${year}-${month}-${day}`;
+  public getToday(age?: number):string {
+    let date = moment().subtract(age, 'years').toISOString();
+    console.log('date:', date);
+    return date;
   }
 
   public getTime(date?: string): string {

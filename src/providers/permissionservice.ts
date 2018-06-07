@@ -5,6 +5,15 @@ import { AndroidPermissions } from '@ionic-native/android-permissions';
 
 @Injectable()
 export class PermissionsService {
+  public permissionList:Array<string> = [
+    'ACCESS_LOCATION_EXTRA_COMMANDS',
+    'ACCESS_FINE_LOCATION',
+    'READ_CONTACTS',
+    'READ_EXTERNAL_STORAGE',
+    'WRITE_EXTERNAL_STORAGE',
+    'LOCATION_HARDWARE',
+    'ACCESS_WIFI_STATE'
+  ];
 
   constructor (
   public _platform: Platform,
@@ -28,13 +37,12 @@ export class PermissionsService {
     return !this.isUndefined(document.plugins);
   }
 
-  checkCameraPermissions(): Promise<boolean> {
+  public checkCameraPermissions(): Promise<boolean> {
     return new Promise(resolve => {
       if (!this.pluginsAreAvailable()) {
         console.warn('Dev: Camera plugin unavailable.');
         resolve(false);
-      }
-      else if (this.isiOS()) {
+      } else if (this.isiOS()) {
         this._Diagnostic.getCameraAuthorizationStatus().then(status => {
         if (status == this._Diagnostic.permissionStatus.GRANTED) {
           resolve(true);
@@ -48,23 +56,19 @@ export class PermissionsService {
           });
         }
         });
-      }
-      else if (this.isAndroid()) {
+      } else if (this.isAndroid()) {
         this._Diagnostic.isCameraAuthorized().then(authorised => {
-        if (authorised) {
-        resolve(true);
-        }
-        else {
+        if (authorised) resolve(true);
+        else
           this._Diagnostic.requestCameraAuthorization().then(authorisation => {
             resolve(authorisation == this._Diagnostic.permissionStatus.GRANTED);
           });
-        }
         });
       }
     });
   }
 
-  checkAndroidPermission(permission:any): Promise<any> {
+  public checkAndroidPermission(permission:any): Promise<any> {
     return new Promise(resolve => {
       this._androidPermission.checkPermission(this._androidPermission.PERMISSION[permission]).then(
         success => {
@@ -72,12 +76,25 @@ export class PermissionsService {
           resolve();
         },
         err => {
-        let requestPermission = () => this._androidPermission.requestPermissions(this._androidPermission.PERMISSION[permission]).then(
-          success => resolve()
-          ,err => requestPermission()
-        )
+        let requestPermission = () => this._androidPermission
+        .requestPermissions(this._androidPermission.PERMISSION[permission]).then(
+          success => resolve(), err => requestPermission())
         requestPermission();
       });
     });
+  }
+
+  public checkAll():Promise<any> {
+    return new Promise((resolve, reject) => {
+      let pIndex = 0;
+      let permCheck = (permList) => {
+        this.checkAndroidPermission(permList[pIndex]).then(() => {
+          pIndex++;
+          if (pIndex < permList.length) permCheck(permList[pIndex]);
+          else resolve();
+        }, err => reject());
+      }
+      permCheck(this.permissionList);
+    })
   }
 }

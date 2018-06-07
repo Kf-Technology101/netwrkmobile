@@ -13,6 +13,7 @@ log.txt
 npm-debug.log*
 
 .idea/
+.sourcemaps/
 .sass-cache/
 .tmp/
 .versions/
@@ -22,33 +23,13 @@ node_modules/
 tmp/
 temp/
 hooks/
+platforms/
+plugins/
 plugins/android.json
 plugins/ios.json
-/www/
+www/
 $RECYCLE.BIN/
 
-# Disable other platforms
-plugins/*/*/blackberry*/
-plugins/*/*/windows*/
-plugins/*/*/ubuntu/
-plugins/*/*/wp*/
-plugins/*/*/firefoxos/
-plugins/*/*/osx/
-plugins/*/*/tizen/
-plugins/*/*/amazon/
-plugins/*/test*/
-plugins/*/doc*/
-
-# Remove .md from plugins
-plugins/*/*.md
-
-# disable platform
-platforms/
-
-build/
-
-gradle*
-local.properties
 .DS_Store
 Thumbs.db
 UserInterfaceState.xcuserstate

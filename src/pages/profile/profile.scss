@@ -1,4 +1,5 @@
-page-profile {
+page-profile,
+page-arealist {
   background: #302f2f!important;
   .slide-container {
     width: 50%;
@@ -71,23 +72,60 @@ page-profile {
     .bar-buttons {
       position: absolute;
       right: 10px;
+      bottom: 5px;
+    }
+    .report-btn {
+      background: transparent;
+      box-shadow: none;
+      opacity: 0.6;
+      font-size: 12px;
+      position: absolute;
+      top: 0;
+      &.left {
+        left: 0;
+      }
+      &.right {
+        right: 0;
+      }
     }
   }
 
   .content {
     background: #302f2f;
+    .broadcast-central-head {
+      font-size: 22px;
+      width: 100%;
+    }
     &.public-undercover {
       background: #fff;
     }
+    .user-points {
+      width: 100%;
+      text-align: center;
+      display: block;
+      font-size: 18px;
+      margin: 15px 0;
+      color: #fff;
+    }
     .avatar-section {
       .avatar {
+        position: relative;
         text-align: center;
         height: 178px;
-
+        width: 178px;
+        margin: auto;
+        .blocked-ico {
+          position: absolute;
+          bottom: 5px;
+          right: 5px;
+          width: 42px;
+          height: 42px;
+        }
         img {
           border-radius: 100%;
           height: 100%;
           width: auto;
+          object-fit: cover;
         }
         .upload-avatar-btn {
           position: relative;
@@ -113,6 +151,10 @@ page-profile {
         width: 100%;
         text-align: center;
         margin: 21px 0;
+      }
+      .blocked-info {
+        text-align: center;
+        color: color($colors, bk-red);
       }
 
       .description {
@@ -148,8 +190,8 @@ page-profile {
 
         .swiper-pagination {
           display: block !important;
-          bottom: initial;
-          left: initial;
+          bottom: 0;
+          left: 0;
           top: -1px;
           text-align: right;
 
@@ -175,73 +217,6 @@ page-profile {
           font-size: 1.1em;
         }
       }
-
-      // &.connect {
-      //   color: #fff;
-      //   border-top: 2px solid #b8b8b8;
-      //
-      //   .col {
-      //     text-align: center;
-      //
-      //     button {
-      //       background: none;
-      //       border: none;
-      //       color: inherit;
-      //       font-size: inherit;
-      //       line-height: inherit;
-      //     }
-      //
-      //     .icon {
-      //       color: #fff;
-      //       width: 42px;
-      //       height: 42px;
-      //       border-radius: 6px;
-      //       display: block;
-      //       margin: 0 auto 3px;
-      //       font-size: 36px;
-      //       padding: 4px 0px;
-      //     }
-      //
-      //     &.fb {
-      //       .icon {
-      //         background: #3b5998;
-      //       }
-      //     }
-      //
-      //     &.in {
-      //       .icon {
-      //         background: -webkit-radial-gradient(32% 106%, circle cover, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), -webkit-linear-gradient(-45deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
-      //       	background: -moz-radial-gradient(32% 106%, circle cover, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), -moz-linear-gradient(-45deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
-      //       	background: -ms-radial-gradient(32% 106%, circle cover, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), -ms-linear-gradient(-45deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
-      //       	background: -o-radial-gradient(32% 106%, circle cover, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), -o-linear-gradient(-45deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
-      //       	background: radial-gradient(circle farthest-corner at 32% 106%, rgb(255, 225, 125) 0%, rgb(255, 205, 105) 10%, rgb(250, 145, 55) 28%, rgb(235, 65, 65) 42%, transparent 82%), linear-gradient(135deg, rgb(35, 75, 215) 12%, rgb(195, 60, 190) 58%);
-      //       }
-      //     }
-      //
-      //     &.tw {
-      //       .icon {
-      //         background: #00a1f2;
-      //       }
-      //     }
-      //
-      //     &.li {
-      //       .icon {
-      //         background: #0083be;
-      //       }
-      //     }
-      //
-      //     &.sc {
-      //       .icon {
-      //         background: #fffc00;
-      //         font-size: 37px;
-      //         padding: 4px 5px;
-      //         text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
-      //       }
-      //     }
-      //   }
-      //
-      //
-      // }
       .connect-accounts {
         width: 100%;
         border-radius: 100px;
@@ -254,6 +229,66 @@ page-profile {
       }
     }
   }
+
+  // SLIDERS AND VIDEOS IN POSTS
+  .content {
+    .post {
+      position: relative;
+      padding: 10px 5px;
+      padding-top: 0;
+      .card {
+        margin: 0;
+        &.has-media {
+          border-radius: 16px 16px 0 0;
+        }
+      }
+      img {
+        width: 100%;
+      }
+      video {
+        max-height: 400px;
+        width: 100%;
+      }
+      .slides {
+        .swiper-container {
+          padding-top: 0;
+        }
+        .swiper-pagination {
+          top: 10px;
+          text-align: center;
+          .swiper-pagination-bullet {
+            width: 16px;
+            height: 16px;
+            background: rgba(255, 255, 255, .6);
+            opacity: 1;
+            border: 1px solid #ccc!important;
+            &.swiper-pagination-bullet-active {
+              opacity: 1;
+              background: color($colors, bk-active-blue);
+            }
+          }
+        }
+      }
+      .swiper-slide {
+        align-items: center;
+        .slide-zoom {
+          height: 360px;
+          max-height: 360px;
+          video, img {
+            top: 0;
+          }
+          img {
+            height: 100%;
+            object-fit: contain;
+          }
+        }
+      }
+    }
+  }
+} // end of page-profile
+
+.address-link {
+  text-align: center;
 }
 
 // Vlad

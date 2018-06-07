@@ -26,16 +26,13 @@ export class ContactsProvider {
   ) {}
 
   sendInvitations(list: Array<any>) {
-    let contactList = { contact_list: list }
-
+    let contactList = { invitation: list };
     let seq = this.api.post('invitations', contactList).share();
     seq.map(res => res.json()).subscribe(
       res => {
         this.storage.set('invite_sent', this.storage.get('auth_data').id);
-      },
-      err => console.error('ERROR', err)
+      }, err => console.error('ERROR', err)
     );
-
     return seq;
   }
 
@@ -57,7 +54,7 @@ export class ContactsProvider {
     return seqMap;
   }
 
-  getContacts(type: string): Promise<any> {
+  public getContacts(type: string): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.contacts[type].length > 0) {
         resolve(this.contacts[type]);
@@ -70,6 +67,37 @@ export class ContactsProvider {
             }
           }, 10);
         }, err => reject(err))
+      }
+    });
+  }
+
+  public getAllContacts(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      console.log('getAllContacts()...');
+      var contactsArray:any = [];
+      if (this.contacts['emails'].length > 0)
+        contactsArray = contactsArray.concat(this.contacts['emails']);
+      if (this.contacts['phones'].length > 0)
+        contactsArray = contactsArray.concat(this.contacts['phones']);
+      console.log('contactsArray.length:', contactsArray.length);
+      if (contactsArray.length == 0) {
+        this.readContacts().then(data => {
+          let interval = setInterval(() => {
+            if (this.contacts['emails'].length > 0 ||
+                this.contacts['phones'].length > 0) {
+              clearInterval(interval);
+              if (this.contacts['emails'].length > 0) {
+                contactsArray = contactsArray.concat(this.contacts['emails']);
+              }
+              if (this.contacts['phones'].length > 0) {
+                contactsArray = contactsArray.concat(this.contacts['phones']);
+              }
+              resolve(contactsArray);
+            }
+          }, 10);
+        }, err => reject(err))
+      } else {
+        resolve(contactsArray);
       }
     });
   }
@@ -90,26 +118,19 @@ export class ContactsProvider {
     return seqMap;
   }
 
-  // private parsePhoneData(phone:string) {
-  //
-  // }
-
   private readContacts() {
     this.tools.showLoader();
     return Contacts.find(['emails']).then(data => {
       this.contacts.emails = [];
       this.contacts.phones = [];
       for (let i in data) {
-        if (data[i].emails) {
+        if (data[i].emails)
           this.contacts.emails.push(data[i]);
-        }
-        if (data[i].phoneNumbers) {
-          // this.parsePhoneData(data[i].phoneNumbers[0].value);
+        if (data[i].phoneNumbers)
           this.contacts.phones.push(data[i]);
-        }
       }
       this.tools.hideLoader();
-      console.log(this.contacts);
+      console.log('[contacts provider] contacts:', this.contacts);
     }, err => {
       this.tools.hideLoader();
     });

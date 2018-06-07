@@ -11,23 +11,10 @@
         <form [formGroup]="signUpForm" (submit)="doSignUp(signUpForm)" #submitForm="ngForm" novalidate class="registration-form">
           <ion-list>
 
-            <ion-item [hidden]="!states.date_of_birthday.bool" [@inputState]="states.date_of_birthday.str">
-              <ion-datetime
-                (focus)="inputOnFocus($event)" (blur)="inputOnBlur($event)"
-                #focusBirthday placeholder="Birthday..."
-                displayFormat="MMMM D, YYYY"
-                pickerFormat="MMMM D YYYY"
-                [max]="maxBirthday"
-                name="date_of_birthday"
-                [formControl]="signUpForm.controls['date_of_birthday']"
-                [ngClass]="{'error-border':!signUpForm.controls['date_of_birthday'].valid}"
-                (ionChange)="doSignUp(signUpForm)" (input)="fieldChange($event)"
-                required></ion-datetime>
-            </ion-item>
-
             <ion-item [hidden]="!states.login.bool" [@inputState]="states.login.str">
               <ion-input
-                (focus)="inputOnFocus($event)" (blur)="inputOnBlur($event)"
+                (ionFocus)="inputOn($event, 'focus')"
+                (ionBlur)="inputOn($event, 'blur')"
                 type="text"
                 placeholder="Email/Phone number..."
                 [formControl]="signUpForm.controls['login']"
@@ -38,7 +25,8 @@
 
             <ion-item [hidden]="!states.password.bool" [@inputState]="states.password.str">
               <ion-input
-                (focus)="inputOnFocus($event)" (blur)="inputOnBlur($event)"
+                (ionFocus)="inputOn($event, 'focus')"
+                (ionBlur)="inputOn($event, 'blur')"
                 type="password"
                 placeholder="Password..."
                 name="password"
@@ -50,7 +38,8 @@
 
             <ion-item [hidden]="!states.password.bool" [@inputState]="states.password.str">
               <ion-input
-                (focus)="inputOnFocus($event)" (blur)="inputOnBlur($event)"
+                (ionFocus)="inputOn($event, 'focus')"
+                (ionBlur)="inputOn($event, 'blur')"
                 type="password"
                 placeholder="Confirm password..."
                 name="confirm_password"
@@ -60,22 +49,24 @@
                 (input)="fieldChange($event)"></ion-input>
             </ion-item>
 
+            <ion-item [hidden]="!states.date_of_birthday.bool" [@inputState]="states.date_of_birthday.str">
+              <ion-datetime
+                placeholder="Birthday..."
+                displayFormat="MMMM DD YYYY"
+                pickerFormat="MMMM DD YYYY"
+                name="date_of_birthday"
+                [max]="maxBirthday"
+                [min]="minBirthday"
+                [(ngModel)]="maxBirthday"
+                [formControl]="signUpForm.controls['date_of_birthday']"
+                [ngClass]="{'error-border':!signUpForm.controls['date_of_birthday'].valid}"
+                (input)="fieldChange($event)"
+                (ionFocus)="openDatePicker({delay:false})"
+                required>
+              </ion-datetime>
+            </ion-item>
+
             <ion-item></ion-item>
-
-            <!--
-              <ion-item-divider text-center class="or-divider">
-                <span ion-text color="bk">OR</span>
-              </ion-item-divider>
-
-              <div text-center>
-                <button type="button" ion-button icon-left clear color="bk"
-                  (click)="doFbLogin()">
-                  <ion-icon name="logo-facebook"></ion-icon>
-                  Sign Up with Facebook
-                </button>
-              </div>
-            -->
-
           </ion-list>
         </form>
       </ion-col>
@@ -84,11 +75,12 @@
 
 </ion-content>
 
-<ion-footer>
+<ion-footer class="signUpFooter">
   <button [@mainBtnState]="mainBtn.state" ion-button color="bk"
           class="main-action-btn medium has-label"
-          (click)="doSignUp(signUpForm)" outline></button>
-  <span class="main-action-text" ion-text color="bk">
+          (tap)="doSignUp(signUpForm)" outline
+          *ngIf="!mainBtn.disabled"></button>
+  <span class="main-action-text" ion-text color="bk" [hidden]="mainBtn.state=='hidden'">
     Tap to continue
   </span>
 

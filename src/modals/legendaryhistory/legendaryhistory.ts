@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, NgZone, ElementRef } from '@angular/core';
 import { NavParams, ViewController, ModalController, Content } from 'ionic-angular';
 
 // Pages
@@ -8,6 +8,8 @@ import { ProfilePage } from '../../pages/profile/profile';
 import { Chat } from '../../providers/chat';
 import { Tools } from '../../providers/tools';
 import { Auth } from '../../providers/auth';
+import { VideoService } from '../../providers/videoservice';
+
 // Modals
 import { FeedbackModal } from '../feedback/feedback';
 
@@ -28,7 +30,7 @@ import {
 })
 export class LegendaryModal {
   @ViewChild(Content) content: Content;
-
+  public pageTag:any;
   private areSomeLegendary: boolean = false;
   public lgMessages: any = [];
   public netwrkId: number;
@@ -44,14 +46,40 @@ export class LegendaryModal {
     public chatPrvd: Chat,
     public toolsPrvd: Tools,
     public modalCtrl: ModalController,
-    public authPrvd: Auth
+    public authPrvd: Auth,
+    public zone: NgZone,
+    public elRef: ElementRef,
+    public videoservice: VideoService
   ) {
     this.userId = this.params.get('user_id');
+    this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
   }
 
   closeModal(params?:any) {
-    this.chatPrvd.mainBtn.setPrevState();
     this.viewCtrl.dismiss(params);
+  }
+
+  public listenForScrollEnd(event):void {
+    console.log('[scroll end]');
+    this.zone.run(() => {
+      console.log('scroll end...');
+      this.videoservice
+      .toggleVideoPlay(<HTMLElement>document.querySelector(this.pageTag));
+    });
+  }
+
+  public messageSliderChange(event:any):void {
+    let parentSlider = document.querySelector('.' + event.slideId);
+    let currentSlide = parentSlider.querySelectorAll('ion-slide.swiper-slide')[event.realIndex];
+    let video = currentSlide.querySelector('video');
+    let videos = parentSlider.querySelectorAll('video');
+    for (let i = 0; i < videos.length; i++) {
+      videos[i].pause();
+    }
+    if (video) {
+      video.muted = true;
+      video.play();
+    }
   }
 
   goToProfile(profileId?: number, profileTypePublic?: boolean) {

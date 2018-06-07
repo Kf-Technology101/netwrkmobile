@@ -57,7 +57,7 @@ export class MessageDateTimer {
     if (this.enableLogMessages) {
       this.logMessage('Starting timer...');
     }
-    if (this.messages) {
+    if (this.messages && this.messages.length > 0) {
       if (this.enableForceStart || !this.timer) {
         this.getMessagesDate();
         this.timer = setInterval(() => {

@@ -1,0 +1,53 @@
+page-hold {
+  .header {
+    &::after {
+      background: none;
+    }
+
+    .toolbar-background {
+      background: transparent;
+      border: none;
+    }
+
+    .warning {
+      color: color($colors, 'bk-stone');
+      font-size: 8px;
+      margin-top: -6px;
+    }
+
+    .drag-container {
+      .dragline {
+        background: transparent;
+        color: #ccc;
+        border-color: color($colors, 'bk');
+
+        .info {
+          .username {
+            max-width: 100%;
+          }
+        }
+      }
+    }
+  }
+
+  h1 {
+    margin-top: 0px;
+  }
+
+  .cusrom-center-block {
+    margin-top: 10px;
+  }
+
+  .content {
+    height: 100%;
+    h1 {
+      font-size: 20px;
+      text-align: center;
+      font-weight: 400;
+      .button-md {
+        height: 2.6rem;
+        padding: 0 0.7em;
+      }
+    }
+  }
+}

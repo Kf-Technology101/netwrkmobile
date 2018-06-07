@@ -54,6 +54,23 @@ page-profile {
 
   .content {
     background: #302f2f;
+    ion-list.list.list-md,
+    ion-list.list.list-ios {
+      .item,
+      .ion-header-ios,
+      .item-divider-ios {
+        color: #fff;
+        background: transparent;
+      }
+    }
+    .list-md,
+    .list-ios {
+      .item-block {
+        .item-inner {
+          border-bottom: 0;
+        }
+      }
+    }
     ion-item-group{
       .icon {
         float: left;

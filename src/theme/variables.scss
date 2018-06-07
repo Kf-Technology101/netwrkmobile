@@ -3,8 +3,6 @@
 $font-path: "../assets/fonts";
 
 @import "ionic.globals";
-@import "../assets/emoji/css/ng2-emoji";
-
 
 // Shared Variables
 // --------------------------------------------------
@@ -37,7 +35,10 @@ $colors: (
   bk-red:     #f95e65,
   black:      #000,
   white:      #fff,
-  chat-icon:  #7a7a7a
+  chat-icon:  #7a7a7a,
+  facebook: #195e99,
+  twitter: #0093ee,
+  instagram: #c13584
 );
 
 

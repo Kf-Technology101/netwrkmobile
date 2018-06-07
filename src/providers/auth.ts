@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { Http, Headers, RequestOptions } from '@angular/http';
+
 import 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/toPromise';
@@ -24,31 +26,34 @@ export class Auth {
     public storage: LocalStorage,
     public network: NetworkProvider,
     public social: Social,
-    private facebook: Facebook
+    public facebook: Facebook
   ) {
     this.hostUrl = this.api.hostUrl;
   }
 
   public checkLogin(params: any) {
-
     let seq = this.api.get('registrations/check_login', params).share();
     let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
 
+  public getSocialStatus():any {
+    let seq = this.api.get('profiles/social_net_status').share();
+    let seqMap = seq.map(res => res.json());
     return seqMap;
   }
 
   public verification(accountInfo: any) {
     let data = {
       country_code: this.storage.get('country_code'),
-      login: accountInfo.login,
+      login: accountInfo.login
     }
 
     let seq = this.api.post('sessions/verification', data).share();
     seq.map(res => res.json()).subscribe(
       res => {
         this.confirmCode = res.login_code;
-      }, err => console.error('verification ERROR', err)
-    );
+      }, err => console.error('verification ERROR', err));
 
     return seq;
   }
@@ -60,11 +65,11 @@ export class Auth {
     console.log('[login] user:', user);
     seq.map(res => res.json()).subscribe(
       res => this.saveAuthData(res, 'email'),
-      err => console.error('login ERROR', err)
-    );
+      err => console.error('login ERROR', err));
 
     return seq;
   }
+
 
   public signup(accountInfo: any) {
     let info = {
@@ -85,8 +90,7 @@ export class Auth {
     let seq = this.api.post('registrations', info).share();
     seq.map(res => res.json()).subscribe(
       res => this.saveAuthData(res, 'email'),
-      err => console.error('ERROR', err)
-    );
+      err => console.error('signup ERROR', err));
 
     return seq;
   }
@@ -102,13 +106,9 @@ export class Auth {
           this.facebook.login(this.social.fbPermissions)
             .then((data: FacebookLoginResponse) => {
             this.loginWithFacebook(data, resolve, reject, true);
-          }, err => {
-            reject(err);
-          });
+          }, err => reject(err));
         }
-      }, err => {
-        reject(err);
-      });
+      }, err => reject(err));
     });
   }
 
@@ -117,7 +117,6 @@ export class Auth {
       let authType:any = this.getAuthType();
       console.log('[logout] authType:', authType);
       if (authType == 'facebook') {
-        this.disconnectFromFb();
         this.facebook.logout().then(() => {
           console.log('facebook logout OK');
           resolve();
@@ -150,7 +149,7 @@ export class Auth {
   }
 
   public getFbConnected() {
-    let authData = this.storage.get('facebook_connected');;
+    let authData = this.storage.get('facebook_connected');
     let result = authData ? this.facebook.getLoginStatus() : null;
     return result;
   }
@@ -162,11 +161,6 @@ export class Auth {
         this.loginWithFacebook(fbData, resolve, reject, false);
       }, err => reject(err));
     });
-  }
-
-  public disconnectFromFb():void {
-    let userId = this.getAuthData().id;
-    // send user id for logout
   }
 
   private loginWithFacebook(data: FacebookLoginResponse, resolve, reject, oAuth: boolean) {

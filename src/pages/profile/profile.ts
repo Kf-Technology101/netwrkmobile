@@ -1,8 +1,12 @@
 import { Component, ViewChild, NgZone, ElementRef } from '@angular/core';
-import { NavController, NavParams, Slides, Content, Platform } from 'ionic-angular';
+import { NavController, NavParams, Slides, Content, Platform, AlertController } from 'ionic-angular';
+
+import { Keyboard } from '@ionic-native/keyboard';
+import { CameraPreview } from '@ionic-native/camera-preview';
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
+
 // Providers
 import { Profile } from '../../providers/profile';
 import { Social } from '../../providers/social';
@@ -14,12 +18,10 @@ import { Chat } from '../../providers/chat';
 import { Auth } from '../../providers/auth';
 import { Camera } from '../../providers/camera';
 import { Api } from '../../providers/api';
+import { ReportService } from '../../providers/reportservice';
+import { VideoService } from '../../providers/videoservice';
+
 import { Toggleable } from '../../includes/toggleable';
-
-import { AlertController } from 'ionic-angular';
-import { Keyboard } from '@ionic-native/keyboard';
-import { CameraPreview } from '@ionic-native/camera-preview';
-
 // Animations
 import { toggleFade, animSpeed } from '../../includes/animations';
 
@@ -74,19 +76,40 @@ export class ProfilePage {
     public platform: Platform,
     public keyboard: Keyboard,
     public cameraPrev: CameraPreview,
-    public cameraPrvd: Camera
+    public cameraPrvd: Camera,
+    public report: ReportService,
+    public videoservice: VideoService
   ) {
     this.loadConstructor();
+  }
+
+  public listenForScrollEnd(event):void {
+    this.zone.run(() => {
+      console.log('scroll end...');
+      this.videoservice
+      .toggleVideoPlay(<HTMLElement>document.querySelector(this.pageTag));
+    });
+  }
+
+  public messageSliderChange(event:any) {
+    let parentSlider = document.querySelector('.' + event.slideId);
+    let currentSlide = parentSlider.querySelectorAll('ion-slide.swiper-slide')[event.realIndex];
+    let video = currentSlide.querySelector('video');
+    let videos = parentSlider.querySelectorAll('video');
+    for (let i = 0; i < videos.length; i++) {
+      videos[i].pause();
+    }
+    if (video) {
+      video.volume = 0;
+      video.play();
+    }
   }
 
   private loadConstructor():void {
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
     this.user.id = this.navParams.get('id');
-
     let publicProfile = this.navParams.get('public');
     this.profileTypePublic = typeof publicProfile == 'boolean' ? publicProfile : true;
-    // console.log(this.user);
-    // this.isUndercover = this.undercoverPrvd.isUndercover;
     console.log('[ProfilePage][constructor]', this.navParams.get('public'));
     console.log('[ProfilePage][constructor]', this.profileTypePublic);
   }
@@ -100,20 +123,70 @@ export class ProfilePage {
     console.log(this.socialPrvd.connect.facebook);
   }
 
+  public removeMessage(messageId:number):void {
+    this.toolsPrvd.showLoader();
+    this.chatPrvd.deleteMessage(messageId).subscribe(res => {
+      console.log('removeMessage success:', res);
+      this.toolsPrvd.hideLoader();
+      for (let i = 0; i < this.posts.length; i++) {
+        if (this.posts[i].id == messageId) {
+          this.posts.splice(i, 1);
+          this.toolsPrvd.showToast('Post was successfully removed');
+          break;
+        }
+      }
+    }, err => {
+      this.toolsPrvd.hideLoader();
+      this.toolsPrvd.showToast('Error while removing post');
+      console.error('removeMessage err:', err);
+    });
+  }
+
+  private toggleUserBlock():any {
+    this.toolsPrvd.showLoader();
+    this.report.blockUser(this.user.id).subscribe(res => {
+      console.log('blockUser success:', res);
+      if (res.message == 'block_ok') {
+        this.user.blocked = true;
+        this.toolsPrvd.showToast('User successfully blocked');
+      } else if (res.message == 'unblock_ok') {
+        this.user.blocked = false;
+        this.toolsPrvd.showToast('User successfully unblocked');
+      }
+      this.toolsPrvd.hideLoader();
+    }, err => {
+      this.toolsPrvd.hideLoader();
+      this.toolsPrvd.showToast('Error unblocking user');
+      console.error('blockUser err:', err);
+    });
+  }
+
   private getFbProfile(userId:any):void {
     this.toggleProfilePageAnimation(false);
     this.userPrvd.getFacebookFriendProfile(userId).subscribe(res => {
-      setTimeout(() => {
-        this.posts = [];
-        console.log('[GetfbProfile] Res:', res);
-        this.showUserData(res);
-        this.usersQueue.push(res.id);
-        console.log('[usersQueue]:', this.usersQueue);
+      if (res) {
+        setTimeout(() => {
+          this.posts = [];
+          console.log('[GetfbProfile] Res:', res);
+          this.showUserData(res);
+          this.usersQueue.push(res.id);
+          console.log('[usersQueue]:', this.usersQueue);
+          if (res.id == this.authPrvd.getAuthData().id)
+            this.loadOwnProfile();
+          this.toggleProfilePageAnimation(true);
+        }, 400);
+      } else {
         this.toggleProfilePageAnimation(true);
-      }, 400);
+        setTimeout(() => {
+          this.toolsPrvd.showToast('Unable to load profile data');
+        }, 400);
+      }
     }, err => {
-      console.error('[GetfbProfile] Err:', err);
       this.toggleProfilePageAnimation(true);
+      setTimeout(() => {
+        this.toolsPrvd.showToast('Unable to load profile data');
+      }, 400);
+      console.error('[GetfbProfile] Err:', err);
     });
   }
 
@@ -149,11 +222,14 @@ export class ProfilePage {
   }
 
   private connectToInstagram():void {
+    this.toolsPrvd.showLoader();
     this.socialPrvd.connectToInstagram().then(res => {
-      this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
+      this.toolsPrvd.hideLoader();
+      this.socialPrvd.connect.instagram = true;
       this.toolsPrvd.showToast('Instagram successfully connected');
     }, err => {
-
+      this.toolsPrvd.hideLoader();
+      console.error(err);
     });
   }
   connectToLinkedIn() {
@@ -168,20 +244,10 @@ export class ProfilePage {
     });
   }
 
-  ionScroll() {
-    if (!this.postLoaded) {
-      let posts: any = document.getElementsByClassName('post');
-      let lastPost = posts[posts.length - 1];
-      let lastPostOffset = lastPost.offsetTop;
-      let dimensions = this.content.getContentDimensions();
-
-      if (!this.postLoading
-        && dimensions.scrollTop < (dimensions.scrollHeight - 800)) {
-        this.postLoading = true;
-        this.showMessages(this.undercoverPrvd.isUndercover);
-      }
-    }
-    // console.log(this.content, lastPost, lastPostOffset, this.content.getContentDimensions());
+  doInfinite(scroll):void {
+    this.showMessages(this.undercoverPrvd.isUndercover).then(res => {
+      if (res == 'ok') scroll.complete();
+    }, err => scroll.complete());
   }
 
   private loadPublicProfile() {
@@ -195,12 +261,29 @@ export class ProfilePage {
   }
 
   private loadOwnProfile() {
+    console.log('LOAD | OWN PROFILE');
     this.showUserData(this.authPrvd.getAuthData());
+    this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+    this.slideAvatarPrvd.sliderInit(this.pageTag);
+
+    this.user = this.authPrvd.getAuthData();
+    this.setProfileData();
+    this.authPrvd.getSocialStatus().subscribe(res => {
+      let socialArray = [ 'fb', 'twitter', 'instagram' ];
+      console.log('get social status:',res);
+      // Go through all social networks and toggle their switch if active
+      for (let i = 0; i < socialArray.length; i++) {
+        if (res[socialArray[i]]) {
+          this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
+        }
+      }
+    }, err => console.error(err));
   }
 
   private loadProfile() {
     this.toolsPrvd.showLoader();
-    console.log(this.user.id, this.authPrvd.getAuthData().id)
+    console.log('stored user id:', this.user.id,
+                ' current user id:', this.authPrvd.getAuthData().id);
     if (this.user.id == this.authPrvd.getAuthData().id) {
       this.ownProfile = true;
       this.loadOwnProfile();
@@ -211,7 +294,6 @@ export class ProfilePage {
   }
 
   private showUserData(res: any) {
-    // this.toolsPrvd.hideLoader();
     console.log(res);
 
     this.ownProfile = (res.id == this.authPrvd.getAuthData().id) ? true : false;
@@ -222,20 +304,13 @@ export class ProfilePage {
     this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
       console.log(friends);
       this.fbFriends = friends.data;
-      console.log('this.fbFriends', this.fbFriends);
+      console.log('this.fbFriends:', this.fbFriends);
       console.log('this.user:', this.user);
-
-      // this.socialPrvd.getFbUserPosts(this.user.provider_id).then(posts => {
-      //   console.log('[ProfilePage][posts]', posts);
-      //   this.fbPosts = posts.data;
-      // }).catch(err => console.log('[ProfilePage][posts]', err));
-
     }).catch(err => console.log(err));
   }
 
   changeCallback(positionLeft?: boolean) {
     console.log('changeCallback', positionLeft);
-    // positionLeft ? this.showMessages(false) : this.showMessages();
     this.zone.run(() => {
       if (positionLeft) {
         this.undercoverPrvd.profileType = 'public';
@@ -248,98 +323,80 @@ export class ProfilePage {
     this.user = this.profile.changeCallback(positionLeft);
   }
 
-  private showMessages(undercover?: any) {
-    let params: any = {
-      user_id: this.user.id,
-      offset: this.posts.length,
-      undercover: undercover,
-      public: this.profileTypePublic,
-    };
+  private showMessages(undercover?: any):Promise<any> {
+    return new Promise ((resolve, reject) => {
+      let params: any = {
+        user_id: this.user.id,
+        offset: this.posts.length,
+        undercover: undercover,
+        public: this.profileTypePublic,
+      };
 
-    console.log('[Profile](showMessages) params:', params);
+      console.log('[Profile](showMessages) params:', params);
 
-    if (this.ownProfile) {
-      params.public = this.slideAvatarPrvd.sliderPosition == 'right'
-        ? false : true;
-    } else {
-      params.public = this.profileTypePublic;
-    }
+      if (this.ownProfile) {
+        params.public = this.slideAvatarPrvd.sliderPosition == 'right'
+          ? false : true;
+      } else {
+        params.public = this.profileTypePublic;
+      }
 
-    console.log('showMessages');
-
-    let mesReq = this.chatPrvd.getMessagesByUserId(params).subscribe(res => {
-      console.log(res);
-      if (res) {
-        if (res.messages && res.messages.length == 0) this.postLoaded = true;
-        if (params.offset == 0) this.posts = [];
-        for (let m of res.messages) {
-          m.date = this.toolsPrvd.getTime(m.created_at)
-          this.posts.push(m);
+      let mesReq = this.chatPrvd.getMessagesByUserId(params).subscribe(res => {
+        console.log('[getMessagesByUserId] res:', res);
+        if (res) {
+          if (res.messages && res.messages.length == 0) this.postLoaded = true;
+          if (params.offset == 0) this.posts = [];
+          for (let m of res.messages) {
+            m.date = this.toolsPrvd.getTime(m.created_at)
+            this.posts.push(m);
+          }
+          this.postLoading = false;
+          this.toolsPrvd.hideLoader();
+          mesReq.unsubscribe();
+          resolve('ok');
         }
+      }, err => {
+        console.error('[getMessagesByUserId] err', err);
         this.postLoading = false;
         this.toolsPrvd.hideLoader();
         mesReq.unsubscribe();
-      }
-    }, err => {
-      console.log(err);
-      this.postLoading = false;
-      this.toolsPrvd.hideLoader();
-      mesReq.unsubscribe();
-    });
+        reject();
+      });
 
-    setTimeout(() => {
-      this.toolsPrvd.hideLoader();
-    }, 10000);
-  }
-
-  showFirstTimeMessage() {
-    let subTitle = `We\'re glad you decided to join netwrk! All accounts that
-        you connect can be shared manually and seen on your profile, allowing
-        others to follow or add you! If you want to boost followers and awareness,
-        connect to this area on the shareboard to auto-share all public posts on
-        those connected accounts.`;
-        this.authPrvd.storage.set('profile_first_time', false);
-    let welcomeAlert = this.alertCtrl.create({
-      title: '',
-      subTitle: subTitle,
-      buttons: ['OK']
+      setTimeout(() => {
+        this.toolsPrvd.hideLoader();
+      }, 10000);
     });
-    welcomeAlert.present();
   }
 
   setProfileData() {
     this.profile.userName = this.slideAvatarPrvd.sliderPosition == 'left'
-      ? this.user.name
-      : this.user.role_name;
+      ? this.user.name : this.user.role_name;
     this.profile.userDescription = this.user.role_description;
   }
 
   private viewDidEnter(params?:any):void {
-    if (params && params.id) this.user.id = params.id;
-    if (params && params.public) this.profileTypePublic = params.public;
+    console.log('PROFILE | DIDENTER');
+    console.log('connect:', this.socialPrvd.connect);
+    if (params) {
+      if (params.id) this.user.id = params.id;
+      if (params.public) this.profileTypePublic = params.public;
+    }
     this.posts = [];
     this.loadProfile();
     this.cameraPrvd.toggleCameraBg();
     if (this.ownProfile) {
-      // if (this.authPrvd.storage.get('profile_first_time') === null) {
-      //   this.showFirstTimeMessage();
-      // }
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(this.pageTag);
-    }
 
+    }
     this.user = this.authPrvd.getAuthData();
     this.setProfileData();
-    // this.user.avatar_url = this.authPrvd.hostUrl + this.user.avatar_url;
   }
 
-  ionViewDidEnter() {
-    this.viewDidEnter();
-  }
+  ionViewDidEnter() { this.viewDidEnter(); }
 
-  ionViewDidLoad() {
-    this.loadProfile();
-  }
+  ionViewDidLoad() { this.loadProfile(); }
 
   ionViewWillLeave() {
     this.profile.saveChangesOnLeave();

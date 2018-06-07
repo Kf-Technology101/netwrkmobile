@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { App } from 'ionic-angular';
-import { Tools } from '../providers/tools';
+import { Tools } from './tools';
 
-import { UndercoverProvider } from '../providers/undercover';
+import { UndercoverProvider } from './undercover';
 import { LocalStorage } from './local-storage';
 
 @Injectable()
@@ -26,7 +26,9 @@ export class SlideAvatar {
   private firedOnce: boolean = true;
 
   public changeCallback: (positionLeft?: boolean) => void;
-  public sliderPosition: string = null;
+  public sliderPosition: string = 'left';
+
+  public heroDisabled:boolean = false;
 
   constructor(
     public app: App,
@@ -35,7 +37,7 @@ export class SlideAvatar {
     public storage: LocalStorage
   ) {
     this.app.viewDidLoad.subscribe(view => {
-      // console.log("<SLIDER.ts> viewDidLoad");
+      // console.log('<SLIDER.ts> viewDidLoad');
     });
 
     this.app.viewDidEnter.subscribe(view => {
@@ -52,43 +54,53 @@ export class SlideAvatar {
 
   public sliderInit(pageTag: string) {
     this.stopSliderEvents();
-    if (this.storage.get('chat_state') == 'area') {
-      this.sliderPosition = 'left';
-    }
-    let intervalCleared:boolean = false;
-    let initInterval = setInterval(() => {
-      let currentView = document.querySelector(pageTag);
-
-      if (currentView) {
-        this.selectedItem = currentView.querySelectorAll('.draggable-element')['0'];
-        console.log('[SLIDER] currentView:', currentView);
-        console.log('[SLIDER] selectedItem:', this.selectedItem);
-
-        console.log('slider position ', this.sliderPosition);
-
-        if (this.selectedItem) {
-          clearInterval(initInterval);
-          intervalCleared = true;
-          if (this.storage.get('slider_position') === null) {
-            this.sliderPosition = 'right';
-            this.setSliderDimentions();
-            this.setSliderPosition(this.sliderPosition);
-          } else {
-            this.sliderPosition = this.storage.get('slider_position');
-            this.setSliderPosition(this.sliderPosition);
-          }
-          this.startSliderEvents();
-        } else {
-          console.log('error');
-        }
+    this.toolsPrvd.checkIfHeroAvalable().subscribe(res => {
+      console.log('checkIfHeroAvalable res:', res);
+      if (res.disabled) {
+        this.heroDisabled = res.disabled;
+        this.stopSliderEvents();
       }
-    }, 100);
-    if (initInterval && !intervalCleared) {
-      setTimeout(() => {
-        console.info('Stoping slider\'s init infinite loop...');
-        clearInterval(initInterval);
-      }, 3000);
-    }
+      if (this.storage.get('chat_state') == 'area') {
+        this.sliderPosition = 'left';
+      }
+      let intervalCleared:boolean = false;
+      let initInterval = setInterval(() => {
+        let currentView = document.querySelector(pageTag);
+        if (currentView) {
+          this.selectedItem = currentView.querySelectorAll('.draggable-element')['0'];
+          if (this.heroDisabled) {
+            this.setSliderPosition('left');
+            this.sliderPosition = 'left';
+          }
+          if (this.selectedItem) {
+            clearInterval(initInterval);
+            intervalCleared = true;
+            if (!this.heroDisabled) {
+              if (this.storage.get('slider_position') === null) {
+                this.sliderPosition = 'right';
+                this.setSliderDimentions();
+                this.setSliderPosition(this.sliderPosition);
+              } else {
+                this.sliderPosition = this.storage.get('slider_position');
+                this.setSliderPosition(this.sliderPosition);
+              }
+              this.startSliderEvents();
+            } else {
+              this.setSliderDimentions();
+              this.setSliderPosition(this.sliderPosition);
+            }
+          } else {
+            console.error('Slider interval error: Can not find slider DOM element');
+          }
+        }
+      }, 100);
+      if (initInterval && !intervalCleared) {
+        setTimeout(() => {
+          console.info('Stoping slider\'s init infinite loop...');
+          clearInterval(initInterval);
+        }, 3000);
+      }
+    });
   }
 
   private setSliderDimentions() {
@@ -103,9 +115,6 @@ export class SlideAvatar {
           this.dStart = 0 - this.selectedItem.offsetWidth / 2;
           this.dEnd = dragLineW - this.selectedItem.offsetWidth / 2;
         }
-        console.log(this.selectedItem.offsetWidth);
-
-        console.log('start:', this.dStart, ' end:', this.dEnd, ' dragline:', dragLineW);
       }
     }, 100);
   }
@@ -199,9 +208,11 @@ export class SlideAvatar {
   }
 
   private startSliderEvents() {
-    document.addEventListener('touchstart', this.onTouchStart.bind(this));
-    document.addEventListener('touchmove', this.onTouchMove.bind(this));
-    document.addEventListener('touchend', this.onTouchEnd.bind(this));
+    if (!this.heroDisabled) {
+      document.addEventListener('touchstart', this.onTouchStart.bind(this));
+      document.addEventListener('touchmove', this.onTouchMove.bind(this));
+      document.addEventListener('touchend', this.onTouchEnd.bind(this));
+    }
   }
 
   private stopSliderEvents() {

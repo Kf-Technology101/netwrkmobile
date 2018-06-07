@@ -80,7 +80,8 @@ export const scaleMainBtn: any = trigger('mainBtnState', [
   })),
   state('centered', style({
     bottom: 0,
-    top: 0
+    top: 0,
+    transform: 'scale(1)'
   })),
 
   state('moved-n-scaled', style({
@@ -187,6 +188,20 @@ export const toggleUcSlider: any = trigger('sliderState', [
   })),
   state('slideDown', style({
     top: '0px'
+  })),
+  transition('* => *', animate(chatAnim/2 + 'ms ease-out'))
+]);
+
+export const lobbyAnimation: any = trigger('toggleLobbyContainer', [
+  state('show', style({
+    width: '100%',
+    height: '100%',
+    display: 'block'
+  })),
+  state('hide', style({
+    width: '0',
+    height: '0',
+    display: 'none'
   })),
   transition('* => *', animate(chatAnim/2 + 'ms ease-out'))
 ]);

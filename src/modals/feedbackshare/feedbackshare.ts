@@ -1,18 +1,18 @@
-import { Component } from '@angular/core';
-import { NavParams, ViewController, ModalController, AlertController } from 'ionic-angular';
+import { Component, NgZone } from '@angular/core';
+import { NavParams, ViewController, ModalController, AlertController, Platform } from 'ionic-angular';
 
 import { NetworkContactListPage } from '../../pages/network-contact-list/network-contact-list';
 
 import { Chat } from '../../providers/chat';
 import { Tools } from '../../providers/tools';
 import { Gps } from '../../providers/gps';
+import { Auth } from '../../providers/auth';
 
 import { toggleFade } from '../../includes/animations';
 
-import { ShareListModal } from '../sharelist/sharelist';
-
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { Facebook } from '@ionic-native/facebook';
+import { FeedbackService } from '../../providers/feedback.service';
 
 @Component({
   selector: 'modal-feedbackshare',
@@ -32,12 +32,12 @@ export class FeedbackShareModal {
     coords: null,
     message: null,
     image: null,
-    url: 'http://34.208.20.67' /*'http://netwrk.com'*/
+    url: 'http://netwrkapp.com' /*'http://netwrk.com'*/
   }
 
   private backBtn:any = {
     hidden: null
-  }
+  };
 
   constructor(
     private params: NavParams,
@@ -48,9 +48,11 @@ export class FeedbackShareModal {
     private socialShare: SocialSharing,
     private facebook: Facebook,
     private alertCtrl: AlertController,
-    private gpsPrvd: Gps
-  ) {
-  }
+    private gpsPrvd: Gps,
+    private plt: Platform,
+    public auth: Auth,
+    public feedback: FeedbackService
+  ) { }
 
   public sendSMS() {
     if (!this.share.message) {
@@ -68,41 +70,29 @@ export class FeedbackShareModal {
   }
 
   shareViaFacebook() {
-    console.log('share:', this.share);
+    console.log('fb this.share:', this.share);
+    this.toolsPrvd.showLoader();
+    this.feedback.autoPostToFacebook(this.share).then(res => {
+      this.toolsPrvd.hideLoader();
+      console.log(res);
+    }, err => {
+      this.toolsPrvd.hideLoader();
+      console.error(err);
+    });
 
-    if (!this.share.image)
-      this.share.image = this.share.url + '/assets/logo-88088611a0d6230481f2a5e9aabf7dee19b26eb5b8a24d0576000c6c33ccc867.png';
-    if (!this.share.message)
-      this.share.message = 'Shared from netwrk';
-
-    this.facebook.showDialog({
-      method: 'share',
-      href: this.share.url,
-      caption: 'Netwrk',
-      description: this.share.message,
-      picture: this.share.image
-    }).then(res => {
-      console.log('shareViaFacebook', res);
-    }).catch(err => console.log(err));
-
-    // this.facebook.login(['publish_actions']).then(data => {
-    //   console.log(data);
-    // }, err => {
-    //   console.log(err);
-    // });
   }
 
   shareViaTwitter() {
+    console.log('twtr this.share:', this.share);
     this.toolsPrvd.showLoader();
-    let self = this;
     this.socialShare.shareViaTwitter(this.share.message, this.share.image)
-    .then(function(result) {
+    .then(result => {
       // Success!
-      self.toolsPrvd.hideLoader();
+      this.toolsPrvd.hideLoader();
       console.log('[Twitter share] success!:', result);
-    }, function(err) {
+    }, err => {
       // An error occurred. Show a message to the user
-      self.toolsPrvd.hideLoader();
+      this.toolsPrvd.hideLoader();
       console.error('[Twitter share] error:', err);
       let alert = this.alertCtrl.create({
         title: '',
@@ -111,11 +101,6 @@ export class FeedbackShareModal {
       });
       alert.present();
     });
-  }
-
-  chooseToShare() {
-    let sharelistModal = this.modalCtrl.create(ShareListModal);
-    sharelistModal.present();
   }
 
   closeModal() {

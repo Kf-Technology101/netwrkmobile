@@ -17,7 +17,6 @@ export class LocalStorage {
     }
 
     window.localStorage.setItem(key, value);
-    console.log('Set ['+key+'] -> ['+value+'] to localStorage...');
     return value;
   }
 

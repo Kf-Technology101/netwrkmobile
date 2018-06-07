@@ -2,7 +2,8 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import {
   NavController,
   NavParams,
-  Events
+  Events,
+  AlertController
 } from 'ionic-angular';
 
 // Pages
@@ -11,6 +12,7 @@ import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
 import { NetworkFindPage } from '../network-find/network-find';
 import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 import { SignUpFacebookPage } from '../sign-up-facebook/sign-up-facebook';
+import { HoldScreenPage } from '../hold-screen/hold-screen';
 
 // Providers
 import { Auth } from '../../providers/auth';
@@ -23,15 +25,14 @@ import { LocationChange } from '../../providers/locationchange';
 import { Keyboard } from '@ionic-native/keyboard';
 import { LocalStorage } from '../../providers/local-storage';
 import { Social } from '../../providers/social';
+import { Gps } from '../../providers/gps';
 
 // Animations
-import {
-  scaleMainBtn,
-  toggleFade
+import {scaleMainBtn,toggleFade,
+  chatAnim
 } from '../../includes/animations';
-
-// Animations
-import { chatAnim } from '../../includes/animations';
+//LogInPage.prototype.doFbLogin
+// Custom classes
 import { Toggleable } from '../../includes/toggleable';
 
 @Component({
@@ -46,19 +47,17 @@ import { Toggleable } from '../../includes/toggleable';
 export class LogInPage {
   @ViewChild('loginForm') logForm: ElementRef;
   private showLoginForm: boolean = false;
-  public account: { login: string, password: string } = {
+  public account: any = {
     login: '',
     password: ''
   };
-  // public contentState: string = 'fadeOut';
-  // public mainBtn: any = { state: 'normal' };
+
   public controls: any = {
     state: 'fadeOut',
     hidden: true
   };
   private textStrings: any = {};
 
-  // public mainBtn = new Toggleable('centered', false);
   public postBtn = new Toggleable(false);
   public form = new Toggleable('fadeOut', true);
 
@@ -74,22 +73,13 @@ export class LogInPage {
     public chatPrvd: Chat,
     public locationchange: LocationChange,
     public keyboard: Keyboard,
-    private storage: LocalStorage
+    private storage: LocalStorage,
+    private alertCtrl: AlertController,
+    private gps: Gps
   ) {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
     this.textStrings.require = 'Please fill all fields';
-
-    this.keyboard.onKeyboardHide().subscribe(res => {
-      if (this.chatPrvd.mainBtn.getState() != 'centered')
-        this.chatPrvd.mainBtn.setState('centered');
-    }, err => {
-      console.log(err);
-    });
-  }
-
-  submitLoginForm() {
-    this.doLogin(this.logForm);
   }
 
   private toggleLoginForm():void {
@@ -104,36 +94,55 @@ export class LogInPage {
     }
   }
 
-  private skipNetworkFindPage() {
-    this.chatPrvd.detectNetwork().then(res => {
-      this.navCtrl.setRoot(NetworkFindPage, {
-        action: 'undercover'
+  private skipNetworkFindPage():Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.chatPrvd.detectNetwork().then(res => {
+        this.navCtrl.setRoot(NetworkFindPage, {
+          action: 'undercover'
+        });
+        resolve('ok');
+      }, err => {
+        console.error(err);
+        reject();
       });
-    }, err => {
-      console.error(err);
+    })
+  }
+
+  /*
+    Toggle user terms of use status, providing user id.
+    This function used for log in control.
+  */
+  private patchUserTerms(userId:number):Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.tools.showLoader();
+      this.tools.toggleUsersTermsStatus(userId).subscribe(res => {
+        this.tools.hideLoader();
+        if (res.message == 'ok') resolve();
+      }, err => {
+        this.tools.hideLoader();
+        console.error('[patchUserTerms]', err);
+        reject();
+      });
     });
   }
 
-  doLogin(form: any) {
-    console.log(form);
-    if (form.invalid) {
-      this.tools.showToast(this.textStrings.require);
-      return;
-    }
+  doLogin(form:any) {
+    if (form.invalid) {this.tools.showToast(this.textStrings.require); return;}
 
     this.tools.showLoader();
     this.authPrvd.login(this.account).map(res => res.json()).subscribe(resp => {
-      console.log(resp);
-      this.tools.hideLoader();
-      let fbConnected = this.authPrvd.getFbConnected();
-      let page = fbConnected ?
-        this.undercoverPrvd.getCharacterPerson(
-          UndercoverCharacterPage, NetworkFindPage) :
-        SignUpFacebookPage;
-      if (page == NetworkFindPage) {
-        this.skipNetworkFindPage();
-      } else {
-        this.tools.pushPage(page);
+      console.log('login resp:', resp);
+      if (resp.tou_accepted) {
+        let page = resp.fb_connected ?
+          this.undercoverPrvd.getCharacterPerson(HoldScreenPage, NetworkFindPage) : SignUpFacebookPage;
+        if (page == NetworkFindPage) {
+          this.skipNetworkFindPage();
+        } else {
+          this.tools.pushPage(page);
+        }
+      } else if (!resp.tou_accepted &&
+        typeof resp.tou_accepted == 'boolean'){
+        this.termsAlertShow('form', resp.id);
       }
     }, err => {
       this.tools.showToast(this.textStrings.login);
@@ -143,62 +152,114 @@ export class LogInPage {
 
   doFbLogin() {
     this.tools.showLoader();
-    this.authPrvd.signUpFacebook().then((data: any) => {
-      console.log(data);
-      // this.tools.showLoader();
-      this.user.update(data.result.id, data.update, 'facebook')
-      .map(res => res.json()).subscribe(res => {
-        console.log(res);
-        // this.tools.hideLoader();
-        if (res.date_of_birthday) {
-          let date = new Date(res.date_of_birthday);
-          if (typeof date == 'object') {
-            this.authPrvd.setFbConnected();
-            this.tools.hideLoader();
-            let page = this.undercoverPrvd.getCharacterPerson(
-              UndercoverCharacterPage, NetworkFindPage);
-            if (page == NetworkFindPage) {
-              this.skipNetworkFindPage();
-            } else {
-              this.tools.pushPage(page);
+    this.authPrvd.signUpFacebook().then(data => {
+      console.log("Inside facebook Signup");
+      console.log('signUpFacebook data:', data);
+      // check user's terms of use acceptance status
+      if (data.result.tou_accepted) {
+        this.user.update(data.result.id, data.update, 'facebook')
+        .map(res => res.json()).subscribe(res => {
+          if (res.date_of_birthday) {
+            let date = new Date(res.date_of_birthday);
+            if (typeof date == 'object') {
+              this.authPrvd.setFbConnected();
+              let page = this.undercoverPrvd.getCharacterPerson(
+                  HoldScreenPage, NetworkFindPage);
+              if (page == NetworkFindPage) {
+                  this.skipNetworkFindPage();
+              } else {
+                this.chatPrvd.detectNetwork()
+                .then(res => this.tools.pushPage(page),
+                      err => console.error('Detect network err:', err));
+              }
             }
+          } else {
+            this.tools.hideLoader();
+            this.tools.pushPage(SignUpAfterFbPage);
           }
-        } else  {
+        }, err => {
+          console.error(err);
           this.tools.hideLoader();
-          this.tools.pushPage(SignUpAfterFbPage);
-        }
-      }, err => {
-        console.log(err);
-        this.tools.hideLoader();
-        this.tools.showToast(JSON.stringify(err));
-      });
+          this.tools.showToast(JSON.stringify(err));
+        });
+      } else if (!data.result.tou_accepted &&
+                 typeof data.result.tou_accepted == 'boolean'){
+        this.termsAlertShow('fb', data.result.id);
+      }
     }, err => {
-      console.log(err);
+      console.error(err);
       this.tools.hideLoader();
       this.tools.showToast(this.textStrings.fb);
     });
   }
 
-  private inputBlured(event:any):void {
+  public inputBlured():void {
     this.chatPrvd.mainBtn.setState('centered');
   }
 
-  private inputFocused():void {
+  public inputFocused():void {
     this.chatPrvd.mainBtn.setState('minimised');
   }
 
-  goToSignUp() { this.tools.pushPage(SignUpPage); }
+  private goToSignUp():void { this.tools.pushPage(SignUpPage); }
+
+  public termsAlertShow(loginType:string, userId:number):void {
+    let alert = this.alertCtrl.create({
+      enableBackdropDismiss: false,
+      title: '',
+      subTitle: 'Do you agree to the ',
+      buttons: [
+        {
+          cssClass: 'active',
+          text: 'I agree',
+          handler: () => {
+            this.patchUserTerms(userId).then(res => {
+              if (loginType == 'fb') this.doFbLogin();
+              else this.doLogin(this.logForm);
+              alert.dismiss();
+            }, err => console.error('[pathUserTerms]', err));
+            return false;
+          }
+        },
+        {
+          text: 'Decline',
+          handler: () => {
+            alert.dismiss();
+            this.tools.hideLoader();
+          }
+        }
+      ]
+    });
+    alert.present().then(res => {
+      let alertSt = document.querySelector('.alert-sub-title');
+      alertSt.innerHTML +=
+      '<a href="http://netwrkapp.com/terms_of_use" target="_blank">Terms of Use</a>?';
+    });
+  }
+
+  ngOnInit() {
+    this.inputBlured();
+  }
 
   ionViewDidEnter() {
-    console.log('[log-in] did enter');
+    this.tools.hideLoader();
+    this.keyboard.onKeyboardHide().subscribe(res => {
+      this.chatPrvd.mainBtn.setState('centered');
+    }, err => console.error(err));
+    // console.log('[log-in] did enter');
     let mainBtn:any;
     setTimeout(() => {
       mainBtn = <HTMLElement>document.getElementById('main-btn');
       this.controls.hidden = true;
       this.controls.state = 'fadeOut';
       this.chatPrvd.mainBtn.setState('centered');
+      setTimeout(() => {
+        if (this.tools.hideSplash)
+          this.tools.hideSplashScreen();
+      }, 1);
     }, 1);
     setTimeout(() => {
+      this.storage.rm('facebook_connected');
       this.storage.rm('auth_data');
       this.storage.rm('auth_type');
       this.storage.rm('social_auth_data');

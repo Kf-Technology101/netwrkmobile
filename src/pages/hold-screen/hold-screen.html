@@ -2,18 +2,18 @@
 
 <!--<ion-header class="incognito-header">-->
     <!--<ion-toolbar>-->
-        <!--<div class="drag-container" style="pointer-events: none">-->
-            <!--<div class="dragline">-->
-                <!--<span class="info">-->
-                  <!--<span class="username" ion-text color="bk">Choose a Category</span>-->
-                <!--</span>-->
-                <!--<img class="draggable-element" src="assets/icon/netwrk-chat.svg" style="left: 129px">-->
-            <!--</div>-->
-        <!--</div>-->
+        <!--<button-->
+        <!--class="side refresh-btn top-icon" (tap)="refreshLines()"-->
+        <!--ion-button [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">-->
+            <!--<ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>-->
+        <!--</button>-->
     <!--</ion-toolbar>-->
 <!--</ion-header>-->
 
+
+
 <ion-content has-main-btn>
+
     <ion-row align-items-center>
         <ion-col text-center>
             <h1 ion-text color="bk">Hello, here are the connectors and networks near you. Tap
@@ -28,42 +28,21 @@
     <ion-row>
         <ion-col>
             <ion-list>
-                <ion-item class="item-line">
+                <ion-item class="item-line" *ngFor="let message of postMessages">
                     <ion-avatar item-start>
-                        <img src="assets/icon/netwrk-chat.svg">
+                        <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public)" (tap)="openLobbyForPinned(message)"
+                        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
+
+                        <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public)" (tap)="openLobbyForPinned(message)"
+                        [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
                     </ion-avatar>
-                    <h2 class="total-line-point"><span>Point: 10</span>, <span>10 people in net</span></h2>
-                    <p class="line-name">My Neighbor Totoro</p>
+                    <h2 class="total-line-point"><span>Point: {{message.points}}</span>, <span> <span *ngIf="message.users_count">{{message.users_count}}</span> <span *ngIf="!message.users_count">0</span> Number of people in net</span></h2>
+                    <p class="line-name">{{message.user.role_name}}</p>
                     <p class="line-area">San francisco</p>
                     <button ion-button color="bk" item-end (click)="goToChat()">
                         <ion-icon ios="ios-add" md="md-add"></ion-icon>
                     </button>
                 </ion-item>
-
-                <ion-item class="item-line">
-                    <ion-avatar item-start>
-                        <img src="assets/icon/netwrk-chat.svg">
-                    </ion-avatar>
-                    <h2 class="total-line-point"><span>Point: 10</span>, <span>10 people in net</span></h2>
-                    <p class="line-name">My Neighbor Totoro</p>
-                    <p class="line-area">San francisco</p>
-                    <button ion-button color="bk" item-end (click)="goToChat()">
-                        <ion-icon ios="ios-add" md="md-add"></ion-icon>
-                    </button>
-                </ion-item>
-
-                <ion-item class="item-line">
-                    <ion-avatar item-start>
-                        <img src="assets/icon/netwrk-chat.svg">
-                    </ion-avatar>
-                    <h2 class="total-line-point"><span>Point: 10</span>, <span>10 people in net</span></h2>
-                    <p class="line-name">My Neighbor Totoro</p>
-                    <p class="line-area">San francisco</p>
-                    <button ion-button color="bk" item-end (click)="goToChat()">
-                        <ion-icon ios="ios-add" md="md-add"></ion-icon>
-                    </button>
-                </ion-item>
-
             </ion-list>
         </ion-col>
     </ion-row>

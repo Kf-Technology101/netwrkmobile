@@ -112,7 +112,7 @@ export class MyApp {
           this.authPrvd.getFbLoginStatus().then(data => {
             if (data.status && data.status == 'connected') {
               root = this.undercoverPrvd.getCharacterPerson(
-                UndercoverCharacterPage, NetworkFindPage, ChatPage)
+                  HoldScreenPage, NetworkFindPage, ChatPage)
             }
             this.goToPage(root);
           });
@@ -121,7 +121,7 @@ export class MyApp {
           let fbConnected = this.authPrvd.getFbConnected();
           if (fbConnected) {
             root = this.undercoverPrvd.getCharacterPerson(
-              UndercoverCharacterPage, NetworkFindPage, ChatPage)
+                HoldScreenPage, NetworkFindPage, ChatPage)
           }
           this.goToPage(root);
           break;

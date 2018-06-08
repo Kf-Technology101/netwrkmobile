@@ -135,11 +135,12 @@ export class LogInPage {
       if (resp.tou_accepted) {
         let page = resp.fb_connected ?
           this.undercoverPrvd.getCharacterPerson(HoldScreenPage, NetworkFindPage) : SignUpFacebookPage;
-        if (page == NetworkFindPage) {
-          this.skipNetworkFindPage();
-        } else {
-          this.tools.pushPage(page);
-        }
+        //if (page == NetworkFindPage) {
+        //  this.skipNetworkFindPage();
+        //} else {
+        //  this.tools.pushPage(page);
+        //}
+          this.tools.pushPage(HoldScreenPage);
       } else if (!resp.tou_accepted &&
         typeof resp.tou_accepted == 'boolean'){
         this.termsAlertShow('form', resp.id);

@@ -6,6 +6,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { LocalStorage } from '../../providers/local-storage';
 // Pages
 import { NetworkFindPage } from '../network-find/network-find';
+import { NetworkNoPage } from '../network-no/network-no';
+import { NetworkPage } from '../network/network';
 import { ChatPage } from '../chat/chat';
 // Providers
 import { Gps } from '../../providers/gps';
@@ -18,15 +20,44 @@ import { Auth } from '../../providers/auth';
 import { heroes } from '../../includes/heroes';
 import * as moment from 'moment';
 
+// Animations
+import {
+    animSpeed,
+        chatAnim,
+        toggleInputsFade,
+        rotateChatPlus,
+        toggleChatOptionsBg,
+        scaleMainBtn,
+        toggleGallery,
+        toggleFade,
+        slideToggle,
+        toggleUcSlider,
+        lobbyAnimation
+} from '../../includes/animations';
+import { ModalRTLEnterAnimation } from '../../includes/rtl-enter.transition';
+import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
+
 @Component({
   selector: 'page-hold',
-  templateUrl: 'hold-screen.html'
+  templateUrl: 'hold-screen.html',
+    animations: [
+        toggleInputsFade,
+        rotateChatPlus,
+        toggleChatOptionsBg,
+        scaleMainBtn,
+        toggleGallery,
+        toggleFade,
+        slideToggle,
+        toggleUcSlider,
+        lobbyAnimation
+    ]
 })
 
 export class HoldScreenPage {
 
   private user: any = {};
-  public nearNetworkLines : any = {};
+  public nearByNetworks: Array<any> = [];
+  public postMessages : Array<any> = [];
 
   constructor(
     public platform: Platform,
@@ -48,13 +79,28 @@ export class HoldScreenPage {
 
     ionViewDidEnter() {
         this.splash.hide();
-        this.toolsPrvd.hideLoader();
+        this.getAndUpdateUndercoverMessages();
+        this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
+            console.log('Nearby netwrk List:', res);
+            this.nearByNetworks.push(res.network);
+            this.toolsPrvd.hideLoader();
+        }, err => this.toolsPrvd.errorHandler(err));
     }
+
+    private getAndUpdateUndercoverMessages() {
+        this.chatPrvd.getMessages(true).subscribe(res => {
+            this.postMessages=res.messages;
+        }, err => {
+            this.toolsPrvd.hideLoader();
+        });
+    }
+
 
     goToChat() {
         this.splash.hide();
         this.toolsPrvd.pushPage(ChatPage);
     }
+
 
     goToLanding() {
         this.splash.hide();

@@ -39,7 +39,7 @@
                     <h2 class="total-line-point"><span>Point: {{message.points}}</span>, <span> <span *ngIf="message.users_count">{{message.users_count}}</span> <span *ngIf="!message.users_count">0</span> Number of people in net</span></h2>
                     <p class="line-name">{{message.user.role_name}}</p>
                     <p class="line-area">San francisco</p>
-                    <button ion-button color="bk" item-end (click)="goToChat()">
+                    <button ion-button color="bk" item-end (click)="followNearByNetwork(message)">
                         <ion-icon ios="ios-add" md="md-add"></ion-icon>
                     </button>
                 </ion-item>
@@ -49,8 +49,7 @@
 </ion-content>
 
 <ion-footer>
-    <button ion-button color="bk" class="main-action-btn small transparent" outline
-    (click)="goToChat()">
+    <button ion-button color="bk" class="main-action-btn small transparent" outline (click)="goToChat()">
         <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
     </button>
 </ion-footer>

@@ -95,14 +95,22 @@ export class HoldScreenPage {
         });
     }
 
+    public followNearByNetwork(chatRoomId) {
+        this.toolsPrvd.showLoader();
+        this.toolsPrvd.showToast('Connected successfully');
+        this.chatPrvd.connectUserToChat(chatRoomId).subscribe(res => {
+            this.toolsPrvd.hideLoader();
+        }, err => {
+            this.toolsPrvd.hideLoader();
+        });
+    }
 
-    goToChat() {
+    public goToChat() {
         this.splash.hide();
         this.toolsPrvd.pushPage(ChatPage);
     }
 
-
-    goToLanding() {
+    public goToLanding() {
         this.splash.hide();
         this.toolsPrvd.pushPage(ChatPage);
     }

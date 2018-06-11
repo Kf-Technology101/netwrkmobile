@@ -3,7 +3,7 @@
   to { opacity: 1; }
 }
 
-page-chat,
+page-chat,page-hold,
 modal-legendaryhistory {
   .content {
     &.netwrk-content.content-md {
@@ -36,7 +36,7 @@ modal-legendaryhistory {
   }
 }
 
-page-chat {
+page-chat,page-hold {
   #mapElement {
     height: 100%;
   }
@@ -80,7 +80,7 @@ page-chat {
   }
 }
 
-page-chat,
+page-chat,page-hold,
 modal-legendaryhistory,
 page-network-no {
 

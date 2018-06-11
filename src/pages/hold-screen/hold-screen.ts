@@ -57,7 +57,7 @@ export class HoldScreenPage {
 
   private user: any = {};
   public nearByNetworks: Array<any> = [];
-  public postMessages : Array<any> = [];
+  public isUndercover: boolean;
 
   constructor(
     public platform: Platform,
@@ -89,7 +89,7 @@ export class HoldScreenPage {
 
     private getAndUpdateUndercoverMessages() {
         this.chatPrvd.getMessages(true).subscribe(res => {
-            this.postMessages=res.messages;
+            this.chatPrvd.postMessages=res.messages;
         }, err => {
             this.toolsPrvd.hideLoader();
         });
@@ -115,4 +115,33 @@ export class HoldScreenPage {
         this.toolsPrvd.pushPage(ChatPage);
     }
 
+    private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.chatPrvd.getMessages(true, this.chatPrvd.postMessages, null, true)
+                .subscribe(res => {
+                    res = this.chatPrvd.organizeMessages(res.messages);
+                    for (let i in res) this.chatPrvd.postMessages.push(res[i]);
+                    this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
+                    this.chatPrvd.isCleared = false;
+                    if (refresher) refresher.complete();
+                    resolve();
+                }, err => {
+                    console.error(err);
+                    if (refresher) refresher.complete();
+                    reject();
+                });
+        });
+    }
+
+    public listenForScrollEnd(event):void {
+        this.zone.run(() => {
+            console.log('scroll end...');
+        });
+    }
+
+    private doInfinite(ev):void {
+        setTimeout(() => {
+            this.refreshChat().then(succ => ev.complete(), err => ev.complete());
+        }, 500);
+    }
 }

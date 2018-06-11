@@ -1,18 +1,9 @@
 
+<ion-content has-main-btn has-main-btn-label no-bounce>
 
-<!--<ion-header class="incognito-header">-->
-    <!--<ion-toolbar>-->
-        <!--<button-->
-        <!--class="side refresh-btn top-icon" (tap)="refreshLines()"-->
-        <!--ion-button [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">-->
-            <!--<ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>-->
-        <!--</button>-->
-    <!--</ion-toolbar>-->
-<!--</ion-header>-->
-
-
-
-<ion-content has-main-btn>
+    <ion-refresher (ionRefresh)="refreshChat($event)">
+        <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
+    </ion-refresher>
 
     <ion-row align-items-center>
         <ion-col text-center>
@@ -28,7 +19,7 @@
     <ion-row>
         <ion-col>
             <ion-list>
-                <ion-item class="item-line" *ngFor="let message of postMessages">
+                <ion-item class="item-line" *ngFor="let message of chatPrvd.postMessages">
                     <ion-avatar item-start>
                         <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public)" (tap)="openLobbyForPinned(message)"
                         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
@@ -46,6 +37,10 @@
             </ion-list>
         </ion-col>
     </ion-row>
+
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 </ion-content>
 
 <ion-footer>

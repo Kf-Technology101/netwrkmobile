@@ -105,11 +105,6 @@ export class HoldScreenPage {
         });
     }
 
-    public goToChat() {
-        this.splash.hide();
-        this.toolsPrvd.pushPage(ChatPage);
-    }
-
     public goToLanding() {
         this.splash.hide();
         this.toolsPrvd.pushPage(ChatPage);

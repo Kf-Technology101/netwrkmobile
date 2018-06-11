@@ -1,7 +1,6 @@
 import { Component, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { ViewController,NavController, NavParams, Platform } from 'ionic-angular';
 
-import { Tools } from '../../providers/tools';
 import { Api } from '../../providers/api';
 import { Chat } from '../../providers/chat';
 
@@ -52,6 +51,7 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 })
 export class NetwrklistModal {
   private netwrklist:Array<any> = [];
+  public isUndercover: boolean;
 
   constructor(
     private viewCtrl: ViewController,
@@ -72,7 +72,7 @@ export class NetwrklistModal {
       this.getAndUpdateUndercoverMessages()
   }
     private getAndUpdateUndercoverMessages() {
-        this.chatPrvd.getMessages(true).subscribe(res => {
+        this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true).subscribe(res => {
             this.chatPrvd.postMessages=res.messages;
         }, err => {
             this.toolsPrvd.hideLoader();

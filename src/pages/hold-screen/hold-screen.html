@@ -5,7 +5,7 @@
     <ion-row align-items-center>
         <ion-col text-center>
             <h1 ion-text color="bk">
-                Hold button to Find Netwrk
+                Hold button to find nearby Netwrk
             </h1>
         </ion-col>
     </ion-row>
@@ -13,7 +13,7 @@
 </ion-content>
 
 <ion-footer>
-    <button ion-button color="bk" class="main-action-btn medium transparent" outline (click)="settings.showNetwrklist()" (hold)="goToLanding()">
+    <button ion-button color="bk" class="main-action-btn medium transparent" outline (click)="settings.showNetwrklist()" (tap)="goToLanding()">
         <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
     </button>
 </ion-footer>

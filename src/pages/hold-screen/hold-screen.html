@@ -1,50 +1,19 @@
 
-<ion-content has-main-btn has-main-btn-label no-bounce>
+<ion-content class="hold-main-content">
 
-    <ion-refresher (ionRefresh)="refreshChat($event)">
-        <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
-    </ion-refresher>
-
+    <!--Follow line Info-->
     <ion-row align-items-center>
         <ion-col text-center>
-            <h1 ion-text color="bk">Hello, here are the connectors and networks near you. Tap
-                <button ion-button color="bk">
-                    <ion-icon ios="ios-add" md="md-add"></ion-icon>
-                </button>
-                to follow them.
+            <h1 ion-text color="bk">
+                Hold button to Find Netwrk
             </h1>
         </ion-col>
     </ion-row>
 
-    <ion-row>
-        <ion-col>
-            <ion-list>
-                <ion-item class="item-line" *ngFor="let message of chatPrvd.postMessages">
-                    <ion-avatar item-start>
-                        <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public)" (tap)="openLobbyForPinned(message)"
-                        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
-
-                        <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public)" (tap)="openLobbyForPinned(message)"
-                        [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
-                    </ion-avatar>
-                    <h2 class="total-line-point"><span>Point: {{message.points}}</span>, <span> <span *ngIf="message.users_count">{{message.users_count}}</span> <span *ngIf="!message.users_count">0</span> Number of people in net</span></h2>
-                    <p class="line-name">{{message.user.role_name}}</p>
-                    <p class="line-area">San francisco</p>
-                    <button ion-button color="bk" item-end (click)="followNearByNetwork(message)">
-                        <ion-icon ios="ios-add" md="md-add"></ion-icon>
-                    </button>
-                </ion-item>
-            </ion-list>
-        </ion-col>
-    </ion-row>
-
-    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-        <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
 </ion-content>
 
 <ion-footer>
-    <button ion-button color="bk" class="main-action-btn small transparent" outline (click)="goToLanding()">
+    <button ion-button color="bk" class="main-action-btn medium transparent" outline (click)="settings.showNetwrklist()" (hold)="goToLanding()">
         <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
     </button>
 </ion-footer>

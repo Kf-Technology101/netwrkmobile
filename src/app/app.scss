@@ -1384,7 +1384,8 @@ page-sockets {
 }
 
 modal-blacklist,
-modal-arealist {
+modal-arealist,
+modal-netwrklist {
   ion-content.content {
     background: #302f2f;
     img.user-avatar {
@@ -1415,16 +1416,17 @@ modal-arealist {
   }
 }
 
-// @media screen and (max-width: 640px) {
-//   page-chat {
-//     .footer {
-//       .item {
-//         .item-inner {
-//           .text-input {
-//             font-size: 0.7em!important;
-//           }
-//         }
-//       }
-//     }
-//   }
-// }
+modal-netwrklist {
+  h1 {
+    font-size: 2rem !important;
+  }
+  .ion-netwrk-btn {
+    height: 25px !important;
+    width: 25px !important;
+    font-size: 14px !important;
+  }
+  .scroll-content {
+    border-top:0 !important;
+  }
+}
+

@@ -1,4 +1,18 @@
 page-hold {
+  .chat-header {
+    background: color($colors, white);
+    .netwrk-header {
+      height: auto !important;
+      .hold-screen-toolbar {
+        padding-bottom: 20px !important;
+      }
+    }
+  }
+
+  .hold-main-content {
+    margin-top:71px;
+  }
+
   .header {
     &::after {
       background: none;

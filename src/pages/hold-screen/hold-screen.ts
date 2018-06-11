@@ -15,6 +15,7 @@ import { Chat } from '../../providers/chat';
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
+import { Settings } from '../../providers/settings';
 import { Auth } from '../../providers/auth';
 
 import { heroes } from '../../includes/heroes';
@@ -66,6 +67,7 @@ export class HoldScreenPage {
     public undercoverPrvd: UndercoverProvider,
     public toolsPrvd: Tools,
     public chatPrvd: Chat,
+    public settings: Settings,
     public zone: NgZone,
     public gpsPrvd: Gps,
     public slideAvatarPrvd: SlideAvatar,
@@ -77,32 +79,25 @@ export class HoldScreenPage {
     this.user = this.authPrvd.getAuthData();
   }
 
+
+    public goBack():void {
+        this.storage.set('_fromPrSett', true);
+        this.toolsPrvd.popPage();
+    }
+
+    ionViewWillLeave() {
+        this.slideAvatarPrvd.changeCallback = null;
+    }
+
     ionViewDidEnter() {
         this.splash.hide();
-        this.getAndUpdateUndercoverMessages();
         this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
-            console.log('Nearby netwrk List:', res);
+            console.log('Nearby network List:', res);
             this.nearByNetworks.push(res.network);
             this.toolsPrvd.hideLoader();
         }, err => this.toolsPrvd.errorHandler(err));
-    }
 
-    private getAndUpdateUndercoverMessages() {
-        this.chatPrvd.getMessages(true).subscribe(res => {
-            this.chatPrvd.postMessages=res.messages;
-        }, err => {
-            this.toolsPrvd.hideLoader();
-        });
-    }
-
-    public followNearByNetwork(chatRoomId) {
-        this.toolsPrvd.showLoader();
-        this.toolsPrvd.showToast('Connected successfully');
-        this.chatPrvd.connectUserToChat(chatRoomId).subscribe(res => {
-            this.toolsPrvd.hideLoader();
-        }, err => {
-            this.toolsPrvd.hideLoader();
-        });
+        this.toolsPrvd.hideLoader();
     }
 
     public goToLanding() {
@@ -110,33 +105,4 @@ export class HoldScreenPage {
         this.toolsPrvd.pushPage(ChatPage);
     }
 
-    private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.chatPrvd.getMessages(true, this.chatPrvd.postMessages, null, true)
-                .subscribe(res => {
-                    res = this.chatPrvd.organizeMessages(res.messages);
-                    for (let i in res) this.chatPrvd.postMessages.push(res[i]);
-                    this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
-                    this.chatPrvd.isCleared = false;
-                    if (refresher) refresher.complete();
-                    resolve();
-                }, err => {
-                    console.error(err);
-                    if (refresher) refresher.complete();
-                    reject();
-                });
-        });
-    }
-
-    public listenForScrollEnd(event):void {
-        this.zone.run(() => {
-            console.log('scroll end...');
-        });
-    }
-
-    private doInfinite(ev):void {
-        setTimeout(() => {
-            this.refreshChat().then(succ => ev.complete(), err => ev.complete());
-        }, 500);
-    }
 }

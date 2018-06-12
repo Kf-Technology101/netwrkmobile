@@ -1,16 +1,15 @@
 
-<ion-content class="hold-main-content">
 
-    <!--Follow line Info-->
-    <ion-row align-items-center>
-        <ion-col text-center>
-            <h1 ion-text color="bk">
-                Hold button to find nearby Netwrk
-            </h1>
-        </ion-col>
-    </ion-row>
-
+<ion-content no-bounce>
+<ion-row class="loading" align-items-center>
+<ion-col text-center>
+      <span ion-text color="bk">
+         Hold for net to look for networks nearby
+      </span>
+</ion-col>
+</ion-row>
 </ion-content>
+
 
 <ion-footer>
     <button ion-button color="bk" class="main-action-btn medium transparent" outline (click)="settings.showNetwrklist()" (tap)="goToLanding()">

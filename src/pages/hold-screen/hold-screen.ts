@@ -56,7 +56,7 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 
 export class HoldScreenPage {
 
-  private user: any = {};
+  public users: any = {};
   public nearByNetworks: Array<any> = [];
   public isUndercover: boolean;
 
@@ -76,7 +76,7 @@ export class HoldScreenPage {
     private storage: LocalStorage,
     public splash: SplashScreen
   ) {
-    this.user = this.authPrvd.getAuthData();
+    this.users = this.authPrvd.getAuthData();
   }
 
 

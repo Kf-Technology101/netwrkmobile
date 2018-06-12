@@ -489,6 +489,55 @@ export class Chat {
     return seqMap;
   }
 
+    public getNearByMessages(
+    undercover: boolean,
+    messagesArray?: Array<any>,
+    params?: any,
+    doRefresh?: any
+  ):any {
+    // console.log('===================================');
+    // console.log('[getMessages] arguments:', arguments);
+    let offset: number = messagesArray && messagesArray.length
+      ? messagesArray.length : 0;
+
+    let data: any = {
+      post_code: this.localStorage.get('chat_zip_code'),
+      undercover: undercover ? undercover : false,
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng,
+      offset: offset,
+      limit: 20
+    };
+
+    let messagesIds: Array<any> = [];
+    for (let i in messagesArray) {
+      if (messagesArray[i])
+        messagesIds.push(messagesArray[i].id);
+    }
+
+    // console.log('[getMessages] data:', data);
+    // console.log('[getMessages] messagesIds:', messagesIds);
+
+    // console.log('messagesIds:', messagesIds);
+    if (data.undercover && !doRefresh) {
+      data.offset = 0;
+      data.limit = offset == 0 ? 20 : offset;
+      data.current_ids = messagesIds;
+    }
+
+    if (params) Object.assign(data, params);
+
+    // console.log('[getMessages] params:', params);
+    // console.log('[getMessages] data (if undecover & can\'t refresh):', data);
+
+    let seq = this.api.get('messages/nearby', data).share();
+    let seqMap = seq.map(res => res.json());
+
+    // console.log('===================================');
+
+    return seqMap;
+  }
+
   public getMessagesByUserId(params: any):any {
     let data: any = {
       network_id: this.networkPrvd.getNetworkId(),

@@ -1044,11 +1044,11 @@ export class ChatPage implements DoCheck {
     });
     alert.present();
 
-    // this.networkPrvd.join(this.networkParams).subscribe(res => {
-    //   this.getUsers();
-    // }, err => {
-    //   console.log(err);
-    // });
+    this.networkPrvd.join(this.networkParams).subscribe(res => {
+       this.getUsers();
+    }, err => {
+       console.log(err);
+    });
   }
 
   private getUsers():Promise<any> {

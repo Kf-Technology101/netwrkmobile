@@ -1402,6 +1402,18 @@ modal-netwrklist {
     .item.item-block {
       background: transparent;
       color: #fff;
+      .ion-netwrk-btn {
+        background: #fff;
+        color:#000;
+      }
+    }
+    .isFollowed {
+      background: #fff !important;
+      color: #3a78c2 !important;
+      .ion-netwrk-btn {
+        background: #0064b4 !important;
+        color:#fff !important;
+      }
     }
     .item-button {
       width: 42px;

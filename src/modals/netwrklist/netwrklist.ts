@@ -52,6 +52,7 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 export class NetwrklistModal {
   private netwrklist:Array<any> = [];
   public isUndercover: boolean;
+  public user: any = {};
 
   constructor(
     private viewCtrl: ViewController,
@@ -66,23 +67,27 @@ export class NetwrklistModal {
     public slideAvatarPrvd: SlideAvatar,
     public authPrvd: Auth,
     elRef: ElementRef
-  ) {}
+  ) {
+      this.user = this.authPrvd.getAuthData();
+  }
 
   ionViewDidEnter() {
-      this.getAndUpdateUndercoverMessages()
+     this.getAndUpdateUndercoverMessages()
   }
     private getAndUpdateUndercoverMessages() {
-        this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true).subscribe(res => {
+        this.chatPrvd.getNearByMessages(this.isUndercover, this.chatPrvd.postMessages, null, true).subscribe(res => {
             this.chatPrvd.postMessages=res.messages;
         }, err => {
             this.toolsPrvd.hideLoader();
         });
     }
 
-    public followNearByNetwork(chatRoomId) {
+
+    public followNearByNetwork(message) {
         this.toolsPrvd.showLoader();
+        message.isFollowed=true;
         this.toolsPrvd.showToast('Connected successfully');
-        this.chatPrvd.connectUserToChat(chatRoomId).subscribe(res => {
+        this.chatPrvd.connectUserToChat(message.room_id).subscribe(res => {
             this.toolsPrvd.hideLoader();
         }, err => {
             this.toolsPrvd.hideLoader();
@@ -95,7 +100,7 @@ export class NetwrklistModal {
 
     private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
         return new Promise((resolve, reject) => {
-            this.chatPrvd.getMessages(true, this.chatPrvd.postMessages, null, true)
+            this.chatPrvd.getNearByMessages(true, this.chatPrvd.postMessages, null, true)
                 .subscribe(res => {
                     res = this.chatPrvd.organizeMessages(res.messages);
                     for (let i in res) this.chatPrvd.postMessages.push(res[i]);
@@ -122,7 +127,6 @@ export class NetwrklistModal {
             this.refreshChat().then(succ => ev.complete(), err => ev.complete());
         }, 500);
     }
-
 
   public closeModal():void {
     this.viewCtrl.dismiss();

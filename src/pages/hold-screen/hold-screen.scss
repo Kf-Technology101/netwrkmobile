@@ -1,4 +1,20 @@
 page-hold {
+
+  .loading {
+    height: 100%;
+  }
+
+  .main-action-btn {
+    .icon {
+      &.glowing-icon {
+        background-image: url('../assets/images/glowing_icon.png');
+        width: 26px;
+        height: 26px;
+        background-size: 26px;
+      }
+    }
+  }
+
   .chat-header {
     background: color($colors, white);
     .netwrk-header {
@@ -162,3 +178,4 @@ page-hold {
     }
   }
 }
+

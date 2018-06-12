@@ -179,7 +179,7 @@
                    'lobby' : chatPrvd.isLobbyChat }">
 
     <p *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)"
-    class="no-data-message abs">There are no posts yet</p>
+class="no-data-message abs">There are no posts yet</p>
 
     <div class="message place" #directions
          *ngIf="nearestPlace && chatPrvd.getState() == 'undercover' && dirVisible"

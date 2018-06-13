@@ -244,7 +244,7 @@ class="no-data-message abs">There are no posts yet</p>
             <span *ngIf="message.text_with_links" class="text"
                   [ngClass]="{ 'emoji' : message.is_emoji }"
                   [innerHTML]="message.text_with_links"
-                  (click)="toolsPrvd.handleLinkClick($event)"></span>
+                  (click)="toolsPrvd.handleLinkClick($event)" (tap)="viewMyLocation(message)"></span>
           </ng-container>
 
           <ng-container *ngIf="message.locked_by_user && user.id != message.user_id">
@@ -324,8 +324,8 @@ class="no-data-message abs">There are no posts yet</p>
 </ion-content>
 
 <ion-footer class="has-input chatFooter">
-  <!-- <button ion-button (tap)="locationchange.showLocationSelect()"
-  style="margin-bottom: 200px">Change loc</button> -->
+  <!--<button ion-button (tap)="locationchange.showLocationSelect()"-->
+  <!--style="margin-bottom: 200px">Change loc</button>-->
   <div item-content class="appended-pictures-container"
     [hidden]="chatPrvd.appendContainer.hidden"
     [@containerState]="chatPrvd.appendContainer.state"

@@ -232,6 +232,7 @@ export class ChatPage implements DoCheck {
     public feedbackService: FeedbackService
   ) {
     console.log('%c [CHAT] CONSTRUCTOR ', 'background: #1287a8;color: #ffffff');
+    this.initLpMap();
   }
 
   public shareMessageToFacebook(message):void {
@@ -262,20 +263,7 @@ export class ChatPage implements DoCheck {
 
   private initLpMap():void {
     this.gapi.init.then((google_maps: any) => {
-        let loc: any = {};
-
-        console.log('maps:', google_maps);
-        console.log('place current location lat:', this.nearestPlace);
-        console.log('place current location lng:', this.nearestPlace.location.lng);
-
-        if(this.nearestPlace){
-            var latitude=this.nearestPlace.location.lat;
-            var longitude=this.nearestPlace.location.lng;
-
-            loc= new google_maps.LatLng(latitude, longitude)
-        }else{
-            loc= new google_maps.LatLng(20.0074, 73.7674)
-        }
+        let loc = { lat: this.gpsPrvd.coords.lat, lng: this.gpsPrvd.coords.lng };
 
         this.map = new google_maps.Map(this.mapElement.nativeElement, {
             zoom: 16,
@@ -292,37 +280,42 @@ export class ChatPage implements DoCheck {
             }
         });
 
-        let infowindow = new google_maps.InfoWindow();
+        let marker = new google_maps.Marker({
+            map: this.map,
+            position: loc,
+            icon: 'assets/icon/wi-fi.png'
+        });
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(position => {
-                loc = {
-                    lat: position.coords.latitude,
-                    lng: position.coords.longitude
-                };
-                let marker = new google_maps.Marker({
-                    map: this.map,
-                    position: loc,
-                    icon: 'assets/icon/user_marker.png'
-                });
-            });
-        }
+        this.map.setCenter(loc);
+    });
+  }
 
-        if(this.nearestPlace ){
-            let marker = new google_maps.Marker({
-                map: this.map,
-                position: this.nearestPlace.location,
-                icon: 'assets/icon/marker.png'
-            });
+  private viewMyLocation(message):void {
+    this.gapi.init.then((google_maps: any) => {
+        let loc = new google_maps.LatLng(message.lat, message.lng);
 
-            google_maps.event.addListener(marker, 'click', () => {
-                infowindow.setContent(this.nearestPlace.name);
-                infowindow.open(this.map, this);
-            });
+        this.map = new google_maps.Map(this.mapElement.nativeElement, {
+            zoom: 16,
+            center: loc,
+            scrollwheel: true,
+            panControl: true,
+            mapTypeControl: true,
+            zoomControl: true,
+            streetViewControl: true,
+            scaleControl: true,
+            zoomControlOptions: {
+                style: google_maps.ZoomControlStyle.LARGE,
+                position: google_maps.ControlPosition.RIGHT_BOTTOM
+            }
+        });
 
-            this.map.setCenter(this.nearestPlace.location);
-        }
+        let marker = new google_maps.Marker({
+            map: this.map,
+            position: loc,
+            icon: 'assets/icon/wi-fi.png'
+        });
 
+        this.map.setCenter(loc);
     });
   }
 
@@ -1461,7 +1454,6 @@ export class ChatPage implements DoCheck {
             ).then(plcs => {
               this.nearestPlace = plcs;
               this.dirVisible = true;
-              this.initLpMap();
               reject();
               // console.log('nearest place:', plcs);
               resolve();

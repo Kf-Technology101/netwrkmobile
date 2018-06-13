@@ -209,7 +209,7 @@ class="no-data-message abs">There are no posts yet</p>
           [src]="toolsPrvd.defaultAvatar"
           class="chat-avatar"
           (error)="chatPrvd.updateAvatarUrl($event)">
-        <p class="message-container">
+        <p class="message-container" (tap)="openLobbyForPinned(message)">
           <span class="username" *ngIf="message.user">
             <ng-container *ngIf="message.public">
               {{ message.user.name }}

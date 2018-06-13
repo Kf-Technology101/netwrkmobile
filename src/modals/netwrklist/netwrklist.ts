@@ -88,7 +88,7 @@ export class NetwrklistModal {
         this.toolsPrvd.showLoader();
         this.chatPrvd.connectUserToChat(message.room_id).subscribe(res => {
             this.toolsPrvd.hideLoader();
-            this.toolsPrvd.showToast('User connected Successfully');
+            this.toolsPrvd.showToast('User connected successfully');
         }, err => {
             this.toolsPrvd.hideLoader();
             this.toolsPrvd.showToast('User already connected');

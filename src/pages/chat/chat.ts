@@ -295,7 +295,7 @@ export class ChatPage implements DoCheck {
         let loc = new google_maps.LatLng(message.lat, message.lng);
 
         this.map = new google_maps.Map(this.mapElement.nativeElement, {
-            zoom: 16,
+            zoom: 18,
             center: loc,
             scrollwheel: true,
             panControl: true,

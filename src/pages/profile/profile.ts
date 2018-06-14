@@ -193,7 +193,7 @@ export class ProfilePage {
   private goBack():void {
     if (this.usersQueue.length > 0) {
       this.backBtnDisabled = true;
-      this.toggleProfilePageAnimation(false);
+      this.toggleProfilePageAnimation(false);ss
       setTimeout(() => {
         this.usersQueue.pop();
         this.loadConstructor();

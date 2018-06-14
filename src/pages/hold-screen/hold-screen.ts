@@ -101,7 +101,8 @@ export class HoldScreenPage {
     }
 
     public goToLanding() {
-        this.splash.hide();
+        this.chatPrvd.setState('landing');
+        this.chatPrvd.isLanding.setState(true);
         this.toolsPrvd.pushPage(ChatPage);
     }
 

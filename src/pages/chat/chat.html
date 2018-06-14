@@ -175,8 +175,7 @@
   <div id="places"></div>
 
   <div class="chat-container visible" #chatContainer
-      [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover',
-                   'lobby' : chatPrvd.isLobbyChat }">
+      [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat }">
 
     <p *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)"
 class="no-data-message abs">There are no posts yet</p>
@@ -465,7 +464,11 @@ class="no-data-message abs">There are no posts yet</p>
         class="small"></ion-icon>
   </button>
 
-  <div class="flip-container" [ngClass]="{'hover' : flipHover}">
+  <button class="netwrk-button" (press)="settings.showNetwrklist()" *ngIf="chatPrvd.isLanding.getState()">
+        <img src="assets/icon/wifi.png"/>
+  </button>
+
+  <div class="flip-container" [ngClass]="{'hover' : flipHover}" *ngIf="!chatPrvd.isLanding.getState()">
     <ion-item class="text front" #inputItem
               *ngIf="(chatPrvd.currentLobby.currentUserPresent &&
               chatPrvd.isLobbyChat) || !mainInput.hidden"
@@ -528,8 +531,7 @@ class="no-data-message abs">There are no posts yet</p>
               class="lobby-bubble">
           <ion-icon ios="ios-text" md="ios-text"></ion-icon>
         </span>
-        <ion-icon *ngIf="!chatPrvd.postBtn.state && isUndercover"
-        ios="ios-text-outline" md="ios-text-outline"></ion-icon>
+        <ion-icon *ngIf="!chatPrvd.postBtn.state && isUndercover" ios="ios-text-outline" md="ios-text-outline"></ion-icon>
       </button>
     </ion-item>
   </div>

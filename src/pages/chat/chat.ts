@@ -45,11 +45,13 @@ import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Auth } from '../../providers/auth';
 import { Camera } from '../../providers/camera';
+import { Settings } from '../../providers/settings';
 import { Chat } from '../../providers/chat';
 import { NetworkProvider } from '../../providers/networkservice';
 import { Gps } from '../../providers/gps';
 import { Social } from '../../providers/social';
 import { Places } from '../../providers/places';
+
 import { VideoService } from '../../providers/videoservice';
 import { FeedbackService } from '../../providers/feedback.service';
 
@@ -223,6 +225,7 @@ export class ChatPage implements DoCheck {
     private alertCtrl: AlertController,
     private cameraPreview: CameraPreview,
     private keyboard: Keyboard,
+    public settings: Settings,
     private renderer: Renderer,
     public config: Config,
     public events: Events,
@@ -1166,7 +1169,9 @@ export class ChatPage implements DoCheck {
   private changeZipCallback(params?: any) {
     if (params) {
       this.isUndercover = this.undercoverPrvd.setUndercover(params.undercover);
-      if (this.isUndercover) this.goUndercover();
+      if (this.isUndercover) {
+          this.goUndercover();
+      }
     }
   }
 
@@ -1334,8 +1339,9 @@ export class ChatPage implements DoCheck {
         this.isUndercover = this.undercoverPrvd
         .setUndercover(this.chatPrvd.getState() == 'undercover');
       } else {
-        this.chatPrvd.setState('undercover');
-        this.isUndercover = true;
+          this.isUndercover = true;
+          this.chatPrvd.setState('undercover');
+
       }
 
       this.flipHover = this.isUndercover ? true : false;
@@ -1488,53 +1494,58 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForPinned(message:any):void {
-    this.toolsPrvd.showLoader();
-    this.chatPrvd.isMainBtnDisabled = true;
-    this.txtIn.value = '';
-    this.chatPrvd.appendContainer.hidden = true;
-    this.cameraPrvd.takenPictures = [];
-    this.setMainBtnStateRelativeToEvents();
-    this.placeholderText = 'What would you like to say?';
-    this.chatPrvd.openLobbyForPinned(message).then(() => {
-      this.chatPrvd.allowUndercoverUpdate = false;
-      clearTimeout(this.messIntObject);
-      this.chatPrvd.toggleLobbyChatMode();
-      this.chatPrvd.isMainBtnDisabled = false;
-      this.toolsPrvd.hideLoader();
-    }, err => {
-      console.error(err);
-      this.placeholderText = 'Tap to hang anything here';
-      this.chatPrvd.isMainBtnDisabled = false;
-      this.startMessageUpdateTimer();
-      this.chatPrvd.allowUndercoverUpdate = true;
-      this.toolsPrvd.hideLoader();
-    });
-  }
-
-  public handleMainBtnClick(event:any):void {
-    this.chatPrvd.isMainBtnDisabled = true;
-    if (this.chatPrvd.isLobbyChat) {
+      this.chatPrvd.isLanding.setState(false);
       this.toolsPrvd.showLoader();
+      this.chatPrvd.isMainBtnDisabled = true;
       this.txtIn.value = '';
       this.chatPrvd.appendContainer.hidden = true;
       this.cameraPrvd.takenPictures = [];
-      this.chatPrvd.postMessages = [];
-      this.placeholderText = 'Tap to hang anything here';
       this.setMainBtnStateRelativeToEvents();
-      this.refreshChat(false, true).then(res => {
-        this.chatPrvd.allowUndercoverUpdate = true;
-        this.startMessageUpdateTimer();
-        this.chatPrvd.toggleLobbyChatMode();
-        this.chatPrvd.isMainBtnDisabled = false;
-        this.toolsPrvd.hideLoader();
+      this.placeholderText = 'What would you like to say?';
+      this.chatPrvd.openLobbyForPinned(message).then(() => {
+          this.chatPrvd.allowUndercoverUpdate = false;
+          clearTimeout(this.messIntObject);
+          this.chatPrvd.toggleLobbyChatMode();
+          this.chatPrvd.isMainBtnDisabled = false;
+          this.toolsPrvd.hideLoader();
       }, err => {
-        this.chatPrvd.isMainBtnDisabled = false;
-        this.toolsPrvd.hideLoader();
-        console.error(err);
+          console.error(err);
+          this.placeholderText = 'Tap to hang anything here';
+          this.chatPrvd.isMainBtnDisabled = false;
+          this.startMessageUpdateTimer();
+          this.chatPrvd.allowUndercoverUpdate = true;
+          this.toolsPrvd.hideLoader();
       });
-    } else {
-      this.goUndercover(event);
-    }
+  }
+
+  public handleMainBtnClick(event:any):void {
+      if(this.chatPrvd.isLanding.getState()){
+          this.chatPrvd.isLanding.setState(false)
+      }else{
+          this.chatPrvd.isMainBtnDisabled = true;
+          if (this.chatPrvd.isLobbyChat) {
+              this.toolsPrvd.showLoader();
+              this.txtIn.value = '';
+              this.chatPrvd.appendContainer.hidden = true;
+              this.cameraPrvd.takenPictures = [];
+              this.chatPrvd.postMessages = [];
+              this.placeholderText = 'Tap to hang anything here';
+              this.setMainBtnStateRelativeToEvents();
+              this.refreshChat(false, true).then(res => {
+                  this.chatPrvd.allowUndercoverUpdate = true;
+                  this.startMessageUpdateTimer();
+                  this.chatPrvd.toggleLobbyChatMode();
+                  this.chatPrvd.isMainBtnDisabled = false;
+                  this.toolsPrvd.hideLoader();
+              }, err => {
+                  this.chatPrvd.isMainBtnDisabled = false;
+                  this.toolsPrvd.hideLoader();
+                  console.error(err);
+              });
+          } else {
+              this.goUndercover(event);
+          }
+      }
   }
 
   private onEnter():void {

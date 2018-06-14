@@ -25,10 +25,10 @@
     <ion-row>
         <ion-col>
             <ion-list>
-                <ion-item class="item-line" *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)"
+                <ion-item class="item-line" *ngIf="netwrkLineList.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)"
                 class="no-data-message abs">There are no networks near you.</ion-item>
 
-                <ion-item class="item-line" *ngFor="let message of chatPrvd.postMessages"  [ngClass]="{ 'isFollowed' : message.isFollowed }">
+                <ion-item class="item-line" *ngFor="let message of netwrkLineList"  [ngClass]="{ 'isFollowed' : message.isFollowed }">
                     <ion-avatar item-start>
                         <img *ngIf="message.user" (press)="chatPrvd.goToProfile(message.user_id, message.public)"
                         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">

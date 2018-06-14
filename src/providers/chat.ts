@@ -36,6 +36,7 @@ export class Chat {
 
   public appendContainer = new Toggleable('off', true);
   public mainBtn = new Toggleable('normal', false);
+  public isLanding = new Toggleable(true);
   public postBtn = new Toggleable(false);
   public bgState = new Toggleable('compressed');
   public plusBtn = new Toggleable('default');

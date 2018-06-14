@@ -50,9 +50,10 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
     ]
 })
 export class NetwrklistModal {
-  private netwrklist:Array<any> = [];
+
   public isUndercover: boolean;
   public user: any = {};
+  public netwrkLineList: any = [];
 
   constructor(
     private viewCtrl: ViewController,
@@ -75,8 +76,8 @@ export class NetwrklistModal {
      this.getAndUpdateUndercoverMessages()
   }
     private getAndUpdateUndercoverMessages() {
-        this.chatPrvd.getNearByMessages(this.isUndercover, this.chatPrvd.postMessages, null, true).subscribe(res => {
-            this.chatPrvd.postMessages=res.messages;
+        this.chatPrvd.getNearByMessages(this.isUndercover, this.netwrkLineList, null, true).subscribe(res => {
+            this.netwrkLineList=res.messages;
         }, err => {
             this.toolsPrvd.hideLoader();
         });
@@ -101,11 +102,11 @@ export class NetwrklistModal {
 
     private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
         return new Promise((resolve, reject) => {
-            this.chatPrvd.getNearByMessages(true, this.chatPrvd.postMessages, null, true)
+            this.chatPrvd.getNearByMessages(true, this.netwrkLineList, null, true)
                 .subscribe(res => {
                     res = this.chatPrvd.organizeMessages(res.messages);
-                    for (let i in res) this.chatPrvd.postMessages.push(res[i]);
-                    this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
+                    for (let i in res) this.netwrkLineList.push(res[i]);
+                    this.chatPrvd.messageDateTimer.start(this.netwrkLineList);
                     this.chatPrvd.isCleared = false;
                     if (refresher) refresher.complete();
                     resolve();

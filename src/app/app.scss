@@ -1442,3 +1442,19 @@ modal-netwrklist {
   }
 }
 
+.netwrk-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 13px;
+  padding: 0 5px;
+  z-index: 3;
+  margin-bottom: 15px;
+  .icon {
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    display: block;
+    z-index: 3;
+  }
+}
+

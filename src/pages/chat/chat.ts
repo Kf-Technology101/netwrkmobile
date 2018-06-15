@@ -798,6 +798,7 @@ export class ChatPage implements DoCheck {
     // Disable main button on view load
     this.chatPrvd.isMainBtnDisabled = true;
     this.toolsPrvd.showLoader();
+
     if (event) {
       console.log('_event:', event);
       event.stopPropagation();
@@ -1228,8 +1229,7 @@ export class ChatPage implements DoCheck {
   }
 
   private setMainBtnStateRelativeToEvents():void {
-    if (this.shareContainer.getState() == 'on' ||
-        this.emojiContainer.getState() == 'on') {
+    if (this.shareContainer.getState() == 'on' || this.emojiContainer.getState() == 'on') {
       this.chatPrvd.mainBtn.setState('moved-n-scaled');
     } else if (this.chatPrvd.appendContainer.getState() == 'on'){
       this.chatPrvd.mainBtn.setState('above_append');
@@ -1494,7 +1494,6 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForPinned(message:any):void {
-      this.chatPrvd.isLanding.setState(false);
       this.toolsPrvd.showLoader();
       this.chatPrvd.isMainBtnDisabled = true;
       this.txtIn.value = '';
@@ -1503,6 +1502,7 @@ export class ChatPage implements DoCheck {
       this.setMainBtnStateRelativeToEvents();
       this.placeholderText = 'What would you like to say?';
       this.chatPrvd.openLobbyForPinned(message).then(() => {
+          console.log('What would you like to say?');
           this.chatPrvd.allowUndercoverUpdate = false;
           clearTimeout(this.messIntObject);
           this.chatPrvd.toggleLobbyChatMode();
@@ -1510,6 +1510,7 @@ export class ChatPage implements DoCheck {
           this.toolsPrvd.hideLoader();
       }, err => {
           console.error(err);
+          console.log('Tap to hang anything here');
           this.placeholderText = 'Tap to hang anything here';
           this.chatPrvd.isMainBtnDisabled = false;
           this.startMessageUpdateTimer();

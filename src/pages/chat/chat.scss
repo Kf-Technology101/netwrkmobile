@@ -40,6 +40,21 @@ page-chat,page-hold {
   #mapElement {
     height: 100%;
   }
+  .close-map {
+    width: 25px;
+    height: 25px;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 2px;
+    color: #757575;
+    text-align: center;
+    line-height: 25px;
+    position: absolute;
+    z-index: 99;
+    top: 45px;
+    left: 14px;
+    font-size: 15px;
+  }
   .lobby-header {
     width: 100%;
     overflow-y: auto;

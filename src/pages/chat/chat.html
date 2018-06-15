@@ -1,5 +1,9 @@
 
-<div id="mapElement" #mapElement></div>
+<div *ngIf="chatPrvd.isLanding.getState()" id="mapElement" #mapElement></div>
+
+<!--<button (click)="landingPage()" class="close-map" *ngIf="!chatPrvd.isLanding.getState()">-->
+    <!--<ion-icon ios="ios-arrow-back" md="md-arrow-back"></ion-icon>-->
+<!--</button>-->
 
         <!--Header -->
 <ion-header class="incognito-header" isScrolling="false"
@@ -208,7 +212,7 @@ class="no-data-message abs">There are no posts yet</p>
           [src]="toolsPrvd.defaultAvatar"
           class="chat-avatar"
           (error)="chatPrvd.updateAvatarUrl($event)">
-        <p class="message-container" (tap)="openLobbyForPinned(message)">
+        <p class="message-container">
           <span class="username" *ngIf="message.user">
             <ng-container *ngIf="message.public">
               {{ message.user.name }}

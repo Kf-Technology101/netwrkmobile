@@ -910,7 +910,19 @@ page-network-no {
         height: 26px;
         width: 42px;
         border-radius: 13px;
+        margin: 8px 35px !important;
         background: color($colors, bk-red);
+      }
+      &.back-btn {
+        left: 4px;
+        padding: 0;
+        font-size: 14px;
+        color: #fff;
+        height: 26px;
+        width: 42px;
+        border-radius: 13px;
+        margin: 10px !important;
+        background: color($colors, bk-active-blue);
       }
       // &.active {
       //   .icon {

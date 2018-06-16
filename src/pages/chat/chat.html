@@ -1,9 +1,6 @@
 
 <div *ngIf="chatPrvd.isLanding.getState()" id="mapElement" #mapElement></div>
 
-<!--<button (click)="landingPage()" class="close-map" *ngIf="!chatPrvd.isLanding.getState()">-->
-    <!--<ion-icon ios="ios-arrow-back" md="md-arrow-back"></ion-icon>-->
-<!--</button>-->
 
         <!--Header -->
 <ion-header class="incognito-header" isScrolling="false"
@@ -33,6 +30,10 @@
             [hidden]="!canRefresh" ion-button
             [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
       <ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>
+    </button>
+
+    <button ion-button class="side back-btn" (click)="backNavigation()">
+        Back
     </button>
 
     <button ion-button class="side clear-btn" (tap)="clearMessages()"

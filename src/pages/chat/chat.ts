@@ -30,6 +30,7 @@ import { ProfilePage } from '../profile/profile';
 import { NetworkNoPage } from '../network-no/network-no';
 import { LogInPage } from '../log-in/log-in';
 import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
+import { HoldScreenPage } from '../hold-screen/hold-screen';
 
 // Custom libs
 import { Toggleable } from '../../includes/toggleable';
@@ -751,6 +752,19 @@ export class ChatPage implements DoCheck {
   //     });
   //   })
   // }
+  //
+
+  private backNavigation(event:any):void {
+      if(this.chatPrvd.localStorage.get('chat_state')=="undercover" && !this.chatPrvd.isLanding.getState()){
+          this.chatPrvd.isLanding.setState(true);
+          this.initLpMap();
+      }else if(this.chatPrvd.localStorage.get('chat_state')=="area" && !this.chatPrvd.isLanding.getState()){
+          this.chatPrvd.isLanding.setState(false);
+          this.goUndercover(event);
+      }else  if(this.chatPrvd.localStorage.get('chat_state')=="undercover" && this.chatPrvd.isLanding.getState()){
+          this.toolsPrvd.pushPage(HoldScreenPage);
+      }
+  }
 
   private goArea():void {
     console.log('_going to area...');
@@ -1496,7 +1510,7 @@ export class ChatPage implements DoCheck {
   public openLobbyForPinned(message:any):void {
       this.toolsPrvd.showLoader();
       this.chatPrvd.isMainBtnDisabled = true;
-      this.txtIn.value = '';
+      //this.txtIn.value = '';
       this.chatPrvd.appendContainer.hidden = true;
       this.cameraPrvd.takenPictures = [];
       this.setMainBtnStateRelativeToEvents();
@@ -1506,10 +1520,12 @@ export class ChatPage implements DoCheck {
           this.chatPrvd.allowUndercoverUpdate = false;
           clearTimeout(this.messIntObject);
           this.chatPrvd.toggleLobbyChatMode();
+          this.chatPrvd.isLanding.setState(false);
           this.chatPrvd.isMainBtnDisabled = false;
           this.toolsPrvd.hideLoader();
       }, err => {
           console.error(err);
+          this.chatPrvd.isLanding.setState(false);
           console.log('Tap to hang anything here');
           this.placeholderText = 'Tap to hang anything here';
           this.chatPrvd.isMainBtnDisabled = false;

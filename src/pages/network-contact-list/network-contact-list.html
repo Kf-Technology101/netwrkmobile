@@ -56,12 +56,12 @@
       <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline">
       </ion-icon>
   </button>
-  <button ion-button class="footer-back-button"
+  <button ion-button class="back-nav-btn"
           [ngClass]="{'left' : showShareDialog}" (tap)="goBack()">
-    <span ion-text color="bk">back</span>
+    <span ion-text>back</span>
   </button>
-  <button ion-button class="footer-skip-button right"
+  <button ion-button class="back-nav-btn right"
           (tap)="showShareQuestion(true)" *ngIf="showShareDialog">
-    <span ion-text color="bk">skip</span>
+    <span ion-text>skip</span>
   </button>
 </ion-footer>

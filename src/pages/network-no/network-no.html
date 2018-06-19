@@ -1,78 +1,79 @@
-<ion-header class="chat-header">
-  <div class="netwrk-header">
-    <ion-toolbar class="area-head">
-      <img [src]="user.avatar_url ? user.avatar_url : tools.defaultAvatar"
-        (tap)="chatPrvd.goToProfile(null, true)" class="ic user-icon"
-         (error)="chatPrvd.updateAvatarUrl($event)">
-    </ion-toolbar>
-    <ion-toolbar class="no-network-toolbar">
-      <!-- <ion-slides slidesPerView="4" class="netwrk-slider">
-        <ion-slide class="netwrk-slide"
-          (click)="joinNetwork()">
-          <div class="avatar add-to-netwrk">
-            <img src="assets/images/netwrk_plus.svg">
+<div id="mapElement" #mapElement></div>
+    <ion-header class="chat-header">
+      <div class="netwrk-header">
+        <ion-toolbar class="area-head">
+          <img [src]="user.avatar_url ? user.avatar_url : tools.defaultAvatar"
+            (tap)="chatPrvd.goToProfile(null, true)" class="ic user-icon"
+             (error)="chatPrvd.updateAvatarUrl($event)">
+        </ion-toolbar>
+        <ion-toolbar class="no-network-toolbar">
+          <!-- <ion-slides slidesPerView="4" class="netwrk-slider">
+            <ion-slide class="netwrk-slide"
+              (click)="joinNetwork()">
+              <div class="avatar add-to-netwrk">
+                <img src="assets/images/netwrk_plus.svg">
+              </div>
+            </ion-slide>
+          </ion-slides> -->
+          <div class="no-network-head">
+            <div class="connect-to-network">
+              <img src="assets/images/netwrk_plus.svg"
+                (tap)="goContactList()">
+              <p>Connect</p>
+            </div>
+            <div>
+              <p ion-text color="bk" text-center no-margin
+                class="fs-20 no-network-head">Broadcast locally</p>
+              <p ion-text color="bk" class="no-network-info" no-margin>
+                Generally, at least 10 people have to connect for broadcast netwrk to grow.
+              </p>
+            </div>
           </div>
-        </ion-slide>
-      </ion-slides> -->
-      <div class="no-network-head">
-        <div class="connect-to-network">
-          <img src="assets/images/netwrk_plus.svg"
-            (tap)="goContactList()">
-          <p>Connect</p>
-        </div>
-        <div>
-          <p ion-text color="bk" text-center no-margin
-            class="fs-20 no-network-head">Broadcast locally</p>
-          <p ion-text color="bk" class="no-network-info" no-margin>
-            Generally, at least 10 people have to connect for broadcast netwrk to grow.
-          </p>
-        </div>
+        </ion-toolbar>
+        <p ion-text color="bk" class="area-subhead-tip">
+          <span class="subhead-container">
+            <div class="flex-ch netwrk-name">netwrk</div>
+            <div class="flex-ch">
+              <ion-icon ios="md-person" md="md-person"></ion-icon> <span class="netwrk-users">{{uniqueUsers}}</span>
+            </div>
+          </span>
+        </p>
       </div>
-    </ion-toolbar>
-    <p ion-text color="bk" class="area-subhead-tip">
-      <span class="subhead-container">
-        <div class="flex-ch netwrk-name">netwrk</div>
-        <div class="flex-ch">
-          <ion-icon ios="md-person" md="md-person"></ion-icon> <span class="netwrk-users">{{uniqueUsers}}</span>
-        </div>
-      </span>
-    </p>
-  </div>
-</ion-header>
+    </ion-header>
 
-<ion-content>
-  <ion-row class="count-people" *ngIf="networkUsers.length > 0 && networkUsers.length <= 10">
-    <ion-col text-center>
-      <span ion-text color="bk">{{ networkUsers.length }}/10</span>
-    </ion-col>
-  </ion-row>
-  <ion-row *ngIf="networkUsers && networkUsers.length > 0">
-    <ion-col>
-      <ion-list>
-        <ion-item (click)="goToProfile(user)" *ngFor="let user of networkUsers">
-          <ion-avatar item-left>
-            <img [src]="user.avatar_url">
-          </ion-avatar>
-          <h2 ion-text color="bk" *ngIf="user.name">{{ user.name }}</h2>
-          <h2 ion-text color="bk" *ngIf="!user.name">{{ user.email }}</h2>
-        </ion-item>
-      </ion-list>
-    </ion-col>
-  </ion-row>
-</ion-content>
+    <ion-content>
+      <ion-row class="count-people" *ngIf="networkUsers.length > 0 && networkUsers.length <= 10">
+        <ion-col text-center>
+          <span ion-text color="bk">{{ networkUsers.length }}/10</span>
+        </ion-col>
+      </ion-row>
+      <ion-row *ngIf="networkUsers && networkUsers.length > 0">
+        <ion-col>
+          <ion-list>
+            <ion-item (click)="goToProfile(user)" *ngFor="let user of networkUsers">
+              <ion-avatar item-left>
+                <img [src]="user.avatar_url">
+              </ion-avatar>
+              <h2 ion-text color="bk" *ngIf="user.name">{{ user.name }}</h2>
+              <h2 ion-text color="bk" *ngIf="!user.name">{{ user.email }}</h2>
+            </ion-item>
+          </ion-list>
+        </ion-col>
+      </ion-row>
+    </ion-content>
 
-<ion-footer>
-  <div class="tip tail-bottom"
-  *ngIf="chatPrvd.localStorage.get('first_time_noarea') === null">
-    Continue to get your area started
-  </div>
-  <button ion-button color="bk" [@mainBtnState]="chatPrvd.mainBtn.getState()"
-    class="main-action-btn medium has-label" outline (tap)="goContactList()">
-    <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline">
-    </ion-icon>
-  </button>
+    <ion-footer>
+      <div class="tip tail-bottom"
+      *ngIf="chatPrvd.localStorage.get('first_time_noarea') === null">
+        Continue to get your area started
+      </div>
+      <button ion-button color="bk" [@mainBtnState]="chatPrvd.mainBtn.getState()"
+        class="main-action-btn medium has-label" outline (tap)="goContactList()">
+        <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline">
+        </ion-icon>
+      </button>
 
-  <button ion-button class="footer-back-button" (tap)="goUndercover()" clear>
-    <span ion-text color="bk">Back</span>
-  </button>
-</ion-footer>
+      <button ion-button class="back-nav-btn" (tap)="goUndercover()" clear>
+        <span ion-text>Back</span>
+      </button>
+    </ion-footer>

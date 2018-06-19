@@ -1,5 +1,6 @@
-import { Component } from '@angular/core';
+import { Component,ElementRef,ViewChild } from '@angular/core';
 import { NavController, NavParams, AlertController } from 'ionic-angular';
+import { GoogleMapsService } from 'google-maps-angular2';
 
 // Pages
 import { ChatPage } from '../chat/chat';
@@ -31,6 +32,9 @@ export class NetworkNoPage {
   private user:any;
   private networkUsers:any = [];
   public uniqueUsers:number = 0;
+  public map: any;
+
+  @ViewChild('mapElement') mapElement: ElementRef;
 
   constructor(
     public navCtrl: NavController,
@@ -39,12 +43,14 @@ export class NetworkNoPage {
     public undercoverPrvd: UndercoverProvider,
     public chatPrvd: Chat,
     public gps: Gps,
+    public gapi: GoogleMapsService,
     public authPrvd: Auth,
     public networkPrvd: NetworkProvider,
     public alertCtrl: AlertController
   ) {
     this.chatPrvd.removeNetwork();
     this.user = this.authPrvd.getAuthData();
+    this.initLpMap();
   }
 
   doFounder() {
@@ -56,6 +62,65 @@ export class NetworkNoPage {
 
     this.tools.pushPage(NetworkPage, params);
   }
+
+
+    private initLpMap():void {
+        this.gapi.init.then((google_maps: any) => {
+            let loc = { lat: this.gps.coords.lat, lng: this.gps.coords.lng };
+
+            this.map = new google_maps.Map(this.mapElement.nativeElement, {
+                zoom: 16,
+                center: loc,
+                scrollwheel: false,
+                panControl: false,
+                mapTypeControl: false,
+                zoomControl: true,
+                streetViewControl: true,
+                scaleControl: true,
+                zoomControlOptions: {
+                    style: google_maps.ZoomControlStyle.LARGE,
+                    position: google_maps.ControlPosition.RIGHT_BOTTOM
+                }
+            });
+
+            let marker = new google_maps.Marker({
+                map: this.map,
+                position: loc,
+                icon: 'assets/icon/wi-fi.png'
+            });
+
+            this.map.setCenter(loc);
+        });
+    }
+
+    private viewMyLocation(message):void {
+        this.gapi.init.then((google_maps: any) => {
+            let loc = new google_maps.LatLng(message.lat, message.lng);
+
+            this.map = new google_maps.Map(this.mapElement.nativeElement, {
+                zoom: 18,
+                center: loc,
+                scrollwheel: true,
+                panControl: true,
+                mapTypeControl: true,
+                zoomControl: true,
+                streetViewControl: true,
+                scaleControl: true,
+                zoomControlOptions: {
+                    style: google_maps.ZoomControlStyle.LARGE,
+                    position: google_maps.ControlPosition.RIGHT_BOTTOM
+                }
+            });
+
+            let marker = new google_maps.Marker({
+                map: this.map,
+                position: loc,
+                icon: 'assets/icon/wi-fi.png'
+            });
+
+            this.map.setCenter(loc);
+        });
+    }
 
   private goContactList():void {
     let alert = this.alertCtrl.create({

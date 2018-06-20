@@ -145,9 +145,9 @@ export class ChatPage implements DoCheck {
 
   public shareCheckbox: any = {
     facebook: true,
-    twitter: false,
-    linkedin: false,
-    instagram: false
+    twitter: true,
+    linkedin: true,
+    instagram: true
   };
 
   private postLoaded:boolean = false;
@@ -755,14 +755,19 @@ export class ChatPage implements DoCheck {
   //
 
   private backNavigation(event:any):void {
+      this.toolsPrvd.showLoader();
+
       if(this.chatPrvd.localStorage.get('chat_state')=="undercover" && !this.chatPrvd.isLanding.getState()){
           this.chatPrvd.isLanding.setState(true);
           this.initLpMap();
+          this.toolsPrvd.hideLoader();
       }else if(this.chatPrvd.localStorage.get('chat_state')=="area" && !this.chatPrvd.isLanding.getState()){
           this.chatPrvd.isLanding.setState(false);
+          this.toolsPrvd.hideLoader();
           this.goUndercover(event);
       }else  if(this.chatPrvd.localStorage.get('chat_state')=="undercover" && this.chatPrvd.isLanding.getState()){
           this.toolsPrvd.pushPage(HoldScreenPage);
+          this.toolsPrvd.hideLoader();
       }
   }
 
@@ -1537,7 +1542,9 @@ export class ChatPage implements DoCheck {
 
   public handleMainBtnClick(event:any):void {
       if(this.chatPrvd.isLanding.getState()){
+          this.toolsPrvd.showLoader();
           this.chatPrvd.isLanding.setState(false)
+          this.toolsPrvd.hideLoader();
       }else{
           this.chatPrvd.isMainBtnDisabled = true;
           if (this.chatPrvd.isLobbyChat) {

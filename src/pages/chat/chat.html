@@ -3,7 +3,7 @@
 <div id="mapElement" #mapElement></div>
 
 
-        <!--Header -->
+<!--Header -->
 <ion-header class="incognito-header" isScrolling="false"
   [ngClass]="{'chat-header': !isUndercover,
               'fully-disabled': chatPrvd.isLobbyChat }">
@@ -76,8 +76,7 @@
     <button (tap)="setPostTimer(5)">1 year</button>
   </ion-toolbar>
 
-  <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state"
-  class="post-lock">
+  <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state" class="post-lock">
     <form (submit)="unlockPost($event, unlockForm)" #unlockForm="ngForm">
       <input type="hidden" value="">
       <ion-item>
@@ -455,6 +454,7 @@ class="no-data-message abs">There are no posts yet</p>
   <div class="tip tail-bottom" *ngIf="chatPrvd.networkAvailable == true">
     You're in a new area
   </div>
+
   <!-- <div class="tip tail-bottom" *ngIf="chatPrvd.networkAvailable == false">
     There's no one here yet
   </div> -->

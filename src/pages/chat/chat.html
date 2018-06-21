@@ -145,6 +145,11 @@
         </div>
       </span>
     </p>
+    <button ion-button class="side clear-btn" (tap)="clearMessages()"
+    *ngIf="!isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state &&
+    !chatPrvd.isLobbyChat">
+    Clear
+    </button>
   </div>
 </ion-header>
 

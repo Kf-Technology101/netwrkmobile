@@ -33,9 +33,6 @@
       <ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>
     </button>
 
-    <button ion-button class="side back-btn" (click)="backNavigation()">
-        Back
-    </button>
 
     <button ion-button class="side clear-btn" (tap)="clearMessages()"
             *ngIf="isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state &&
@@ -396,7 +393,6 @@ class="no-data-message abs">There are no posts yet</p>
           <input type="checkbox" [checked]="shareCheckbox.instagram">
         </div>
       </div>
-
     </ion-toolbar>
 
     <div class="share-content">
@@ -464,12 +460,12 @@ class="no-data-message abs">There are no posts yet</p>
     There's no one here yet
   </div> -->
 
+
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
     class="main-action-btn big has-footer transparent chatMainBtn"
     (click)="handleMainBtnClick($event)" [disabled]="chatPrvd.isMainBtnDisabled"
-    [ngClass]="{ 'anim-glow' : chatPrvd.networkAvailable &&
-                  chatPrvd.localStorage.get('firstTimeAreaChange') === null}">
+  [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null}">
       <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"
         *ngIf="chatPrvd.mainBtn.getState() == 'minimised'"
         class="small"></ion-icon>
@@ -524,7 +520,6 @@ class="no-data-message abs">There are no posts yet</p>
         (tap)="hideTopSlider(activeTopForm);"
         (focus)="inputOnFocus()">
       </ion-input>
-    <!-- <div #textInput id="textInput" type="textShortMessage" contenteditable=""></div> -->
 
       <button ion-button item-right clear
         [ngClass]="{ 'post-button' : chatPrvd.postBtn.state,

@@ -864,13 +864,14 @@ export class ChatPage implements DoCheck {
             this.content.resize();
           }, 1);
         }
-        // Enable main button after view loaded
         this.chatPrvd.isMainBtnDisabled = false;
       }, err => console.error(err));
+
     } else if (this.chatPrvd.getState() == 'area') {
       this.chatPrvd.setState('undercover');
       this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
-      this.chatPrvd.alreadyScolledToBottom = false;
+
+        this.chatPrvd.alreadyScolledToBottom = false;
       // this.cameraPrvd.toggleCameraBg();
       this.runUndecoverSlider(this.pageTag);
       this.startMessageUpdateTimer();

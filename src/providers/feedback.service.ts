@@ -44,14 +44,15 @@ export class FeedbackService {
       this.facebook.api('/me/feed?message=autopost', ['publish_actions']).then(res => {
         console.log('fb api res:', res);
         this.facebook.getAccessToken().then(token => {
-          console.log('fb access token:', token);
+          console.log(token);
           let headers = new Headers();
           let options = new RequestOptions();
           headers.append('Authorization', 'OAuth ' + token);
           options.headers = headers;
           this.api.http.post('https://graph.facebook.com/v2.9/me/feed', {
             'message': shareParams.message,
-            'link': shareParams.url
+            'link': shareParams.url,
+            'access_token': token
           }, options).subscribe(succ => {
             console.log('fb POST success:', succ);
             success(res);

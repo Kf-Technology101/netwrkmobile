@@ -472,7 +472,7 @@ page-network-no {
       left: 0;
       top: 0;
       padding: 0;
-      background: #e0e0e0;
+      background: transparent;
       &.no-events {
         pointer-events: none;
       }
@@ -927,7 +927,7 @@ page-network-no {
     }
   }
   .chat-header {
-    background: color($colors, white);
+    background: transparent;
     .netwrk-header {
       // padding-bottom: 16px;
       height: 150px;
@@ -967,7 +967,7 @@ page-network-no {
         padding-left: 0;
         padding-right: 0;
         padding-bottom: 10px;
-        background: #fff;
+        background: transparent;
         &.area-head {
           background: url('../assets/icon/logo.png') no-repeat center;
           background-size: auto 26px;

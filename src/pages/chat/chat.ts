@@ -412,6 +412,9 @@ export class ChatPage implements DoCheck {
   private toggleContainer(container, visibility?: string, name?: string):void {
     if (visibility && visibility == 'hide') {
       this.updateContainer(container);
+        if(this.chatPrvd.plusBtn.getState() == 'spined'){
+            this.chatPrvd.mainBtn.setState('back-to-hold');
+        }
     }
 
     if (!visibility) {
@@ -435,23 +438,11 @@ export class ChatPage implements DoCheck {
             }, chatAnim / 2);
           }
         }
-
         if (name && name == 'shareContainer') this.getSocialPosts();
       } else {
         this.updateContainer(container);
       }
     }
-
-      if(this.chatPrvd.plusBtn.getState() == 'spined'){
-          this.chatPrvd.mainBtn.setState('back-to-hold');
-
-          //setTimeout(() => {
-          //    let mainBtn = <HTMLElement>document.querySelector('.chatMainBtn');
-          //    mainBtn.style.bottom = '30px';
-          //},100);
-      }else{
-          this.chatPrvd.mainBtn.setState('normal');
-      }
 
   }
 

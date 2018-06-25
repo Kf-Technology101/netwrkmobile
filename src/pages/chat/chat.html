@@ -467,7 +467,7 @@ class="no-data-message abs">There are no posts yet</p>
     (click)="handleMainBtnClick($event)" [disabled]="chatPrvd.isMainBtnDisabled"
   [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null}">
       <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"
-        *ngIf="chatPrvd.mainBtn.getState() == 'minimised'"
+        *ngIf="chatPrvd.mainBtn.getState() == 'minimised' || chatPrvd.mainBtn.getState() == 'moved-n-scaled'"
         class="small"></ion-icon>
   </button>
 

@@ -833,6 +833,7 @@ export class ChatPage implements DoCheck {
           this.setMainBtnStateRelativeToEvents();
         }, 300);
       } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled') {
+        this.toolsPrvd.pushPage(HoldScreenPage);
         this.toggleContainer(this.emojiContainer, 'hide');
         this.toggleContainer(this.shareContainer, 'hide');
         this.keyboard.close();
@@ -1522,7 +1523,6 @@ export class ChatPage implements DoCheck {
       this.setMainBtnStateRelativeToEvents();
       this.placeholderText = 'What would you like to say?';
       this.chatPrvd.openLobbyForPinned(message).then(() => {
-          console.log('What would you like to say?');
           this.chatPrvd.allowUndercoverUpdate = false;
           clearTimeout(this.messIntObject);
           this.chatPrvd.toggleLobbyChatMode();

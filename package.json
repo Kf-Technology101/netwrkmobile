@@ -82,8 +82,7 @@
     "rxjs": "5.4.2",
     "sw-toolbox": "3.6.0",
     "twitter-connect-plugin": "git+https://github.com/ManifestWebDesign/twitter-connect-plugin.git",
-    "zone.js": "0.8.26",
-    "cordova-browser": "~5.0.3"
+    "zone.js": "0.8.26"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.1.9",
@@ -126,8 +125,6 @@
         "FABRIC_KEY": "0b15d44d213d573ac860629f837562b2bf37ce9f"
       }
     },
-    "platforms": [
-      "browser"
-    ]
+    "platforms": []
   }
 }

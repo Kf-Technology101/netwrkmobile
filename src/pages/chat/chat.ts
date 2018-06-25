@@ -284,11 +284,29 @@ export class ChatPage implements DoCheck {
             }
         });
 
-        let marker = new google_maps.Marker({
-            map: this.map,
-            position: loc,
-            icon: 'assets/icon/wi-fi.png'
-        });
+        this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
+            .map(res => res.json()).subscribe(res => {
+                console.log('[google address] res:', res);
+                let infowindow = new google_maps.InfoWindow();
+
+                console.log('my map results', res);
+
+                for (let result of res.results) {
+                    let marker = new google_maps.Marker({
+                        map: this.map,
+                        position: result.geometry.location,
+                        icon: 'assets/icon/wi-fi.png'
+                    });
+
+                    google_maps.event.addListener(marker, 'click', () => {
+                        infowindow.setContent(result.formatted_address);
+                        infowindow.open(this.map, this);
+                    });
+                }
+
+            }, err => {
+                console.log('[google address] error:', err);
+            });
 
         this.map.setCenter(loc);
     });
@@ -299,7 +317,7 @@ export class ChatPage implements DoCheck {
         let loc = new google_maps.LatLng(message.lat, message.lng);
 
         this.map = new google_maps.Map(this.mapElement.nativeElement, {
-            zoom: 18,
+            zoom: 16,
             center: loc,
             scrollwheel: true,
             panControl: true,
@@ -313,11 +331,29 @@ export class ChatPage implements DoCheck {
             }
         });
 
-        let marker = new google_maps.Marker({
-            map: this.map,
-            position: loc,
-            icon: 'assets/icon/wi-fi.png'
-        });
+        this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
+            .map(res => res.json()).subscribe(res => {
+                console.log('[google address] res:', res);
+                let infowindow = new google_maps.InfoWindow();
+
+                console.log('my map results', res);
+
+                for (let result of res.results) {
+                    let marker = new google_maps.Marker({
+                        map: this.map,
+                        position: result.geometry.location,
+                        icon: 'assets/icon/wi-fi.png'
+                    });
+
+                    google_maps.event.addListener(marker, 'click', () => {
+                        infowindow.setContent(result.formatted_address);
+                        infowindow.open(this.map, this);
+                    });
+                }
+
+            }, err => {
+                console.log('[google address] error:', err);
+            });
 
         this.map.setCenter(loc);
     });

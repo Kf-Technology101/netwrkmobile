@@ -33,6 +33,7 @@ export class NetworkNoPage {
   private networkUsers:any = [];
   public uniqueUsers:number = 0;
   public map: any;
+  private networkParams: any = {};
 
   @ViewChild('mapElement') mapElement: ElementRef;
 
@@ -122,28 +123,39 @@ export class NetworkNoPage {
         });
     }
 
-  private goContactList():void {
-    let alert = this.alertCtrl.create({
-      subTitle: 'Become a part of the local broadcast?',
-      buttons: [{
-        text: 'Not now',
-        role: 'cancel'
-      }, {
-        cssClass: 'active',
-        text: 'Sure',
-        handler: () => {
-          console.log('joinNetwork handler');
-          alert.dismiss();
-          this.tools.pushPage(NetworkContactListPage, {
-            type: 'emails',
-            show_share_dialog: true
-          });
-          return false;
-        }
-      }]
-    });
-    alert.present();
-  }
+    private goContactList():void {
+        let alert = this.alertCtrl.create({
+            subTitle: 'Become a part of the local broadcast?',
+            buttons: [{
+                text: 'Not now',
+                role: 'cancel'
+            }, {
+                cssClass: 'active',
+                text: 'Sure',
+                handler: () => {
+                    console.log('joinNetwork handler');
+                    alert.dismiss();
+                    //this.tools.pushPage(NetworkContactListPage, {
+                    //    type: 'emails',
+                    //    show_share_dialog: true
+                    //});
+                    this.networkParams = {
+                        post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+                    };
+
+                    this.networkPrvd.join(this.networkParams).subscribe(res => {
+                        this.getUsers();
+                    }, err => {
+                        console.log(err);
+                    });
+                    return false;
+                }
+            }]
+        });
+        alert.present();
+
+
+    }
 
   goUndercover() {
     let params: any = {

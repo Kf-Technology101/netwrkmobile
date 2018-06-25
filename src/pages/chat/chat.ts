@@ -851,6 +851,8 @@ export class ChatPage implements DoCheck {
         this.keyboard.close();
       }else if(this.chatPrvd.mainBtn.getState() == 'back-to-hold'){
           this.toolsPrvd.pushPage(HoldScreenPage);
+          this.toggleContainer(this.emojiContainer, 'hide');
+          this.toggleContainer(this.shareContainer, 'hide');
       }
       this.chatPrvd.isMessagesVisible = false;
       this.chatPrvd.postMessages = [];

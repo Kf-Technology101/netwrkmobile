@@ -336,6 +336,7 @@ export class ChatPage implements DoCheck {
   }
 
   private toggleChatOptions():void {
+
     this.chatPrvd.plusBtn.setState((this.chatPrvd.plusBtn.getState() == 'spined') ? 'default' : 'spined');
     this.chatPrvd.bgState.setState((this.chatPrvd.bgState.getState() == 'stretched') ? 'compressed' : 'stretched');
 
@@ -440,6 +441,18 @@ export class ChatPage implements DoCheck {
         this.updateContainer(container);
       }
     }
+
+      if(this.chatPrvd.plusBtn.getState() == 'spined'){
+          this.chatPrvd.mainBtn.setState('back-to-hold');
+
+          //setTimeout(() => {
+          //    let mainBtn = <HTMLElement>document.querySelector('.chatMainBtn');
+          //    mainBtn.style.bottom = '30px';
+          //},100);
+      }else{
+          this.chatPrvd.mainBtn.setState('normal');
+      }
+
   }
 
   private insertEmoji(emoji):void {
@@ -833,10 +846,11 @@ export class ChatPage implements DoCheck {
           this.setMainBtnStateRelativeToEvents();
         }, 300);
       } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled') {
-        this.toolsPrvd.pushPage(HoldScreenPage);
         this.toggleContainer(this.emojiContainer, 'hide');
         this.toggleContainer(this.shareContainer, 'hide');
         this.keyboard.close();
+      }else if(this.chatPrvd.mainBtn.getState() == 'back-to-hold'){
+          this.toolsPrvd.pushPage(HoldScreenPage);
       }
       this.chatPrvd.isMessagesVisible = false;
       this.chatPrvd.postMessages = [];

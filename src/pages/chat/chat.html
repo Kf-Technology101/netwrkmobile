@@ -34,7 +34,7 @@
     </button>
 
 
-    <button ion-button class="side clear-btn" (tap)="clearMessages()"
+    <button ion-button class="side clear-btn" (tap)="clearMessages(chatPrvd.postMessages)"
             *ngIf="isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state &&
             !chatPrvd.isLobbyChat">
       Clear
@@ -166,7 +166,7 @@
 
 <ion-content has-main-btn has-main-btn-label no-bounce
   (ionScrollEnd)="listenForScrollEnd($event)"
-  [ngClass]="{'netwrk-content': !isUndercover,
+  [ngClass]="{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': !isUndercover,
   'white-undercover': isUndercover &&
   (chatPrvd.localStorage.get('enable_uc_camera') == false ||
     chatPrvd.localStorage.get('enable_uc_camera') === null ||

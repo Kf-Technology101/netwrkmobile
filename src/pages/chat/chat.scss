@@ -148,6 +148,9 @@ page-network-no {
     }
   }
 
+  .content.no-height {
+    height:0 !important;
+  }
   .content {
     background: transparent;
     .no-legendary {

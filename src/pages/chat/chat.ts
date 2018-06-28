@@ -580,7 +580,7 @@ export class ChatPage implements DoCheck {
 
   public inputOnFocus():void {
     if (!this.chatPrvd.isLobbyChat) this.setDefaultTimer();
-  };
+  }
 
   private postMessage(emoji?: string, params?: any):void {
     try {
@@ -1267,11 +1267,17 @@ export class ChatPage implements DoCheck {
     });
   }
 
-  private clearMessages():void {
+  private clearMessages(postMessage):void {
     this.messagesInterval = false;
     clearTimeout(this.messIntObject);
     this.chatPrvd.postMessages = [];
     this.chatPrvd.isCleared = true;
+    let messageArray=this.getMessagesIds(postMessage);
+    this.chatPrvd.deleteMessages(messageArray).subscribe( res => {
+       this.canRefresh = true;
+    }, err => {
+       this.canRefresh = true;
+    });
   }
 
   private flipInput():void {

@@ -463,9 +463,9 @@ class="no-data-message abs">There are no posts yet</p>
 
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
-    class="main-action-btn big has-footer transparent chatMainBtn"
+    class="main-action-btn has-footer transparent chatMainBtn"
     (click)="handleMainBtnClick($event)" [disabled]="chatPrvd.isMainBtnDisabled"
-  [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null}">
+  [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
       <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"
         *ngIf="chatPrvd.mainBtn.getState() == 'minimised' || chatPrvd.mainBtn.getState() == 'back-to-hold'"
         class="small"></ion-icon>

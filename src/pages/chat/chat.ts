@@ -1095,10 +1095,21 @@ export class ChatPage implements DoCheck {
         handler: () => {
           console.log('joinNetwork handler');
           alert.dismiss();
-          this.toolsPrvd.pushPage(NetworkContactListPage, {
-            type: 'emails',
-            show_share_dialog: true
-          });
+            this.toolsPrvd.pushPage(NetworkContactListPage, {
+                type: 'emails',
+                show_share_dialog: true
+            });
+
+            this.networkParams = {
+                post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+            };
+            this.networkPrvd.join(this.networkParams).subscribe(res => {
+
+            }, err => {
+                console.log(err);
+            });
+            this.goUndercover();
+
           return false;
         }
       }]

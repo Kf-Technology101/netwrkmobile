@@ -171,26 +171,25 @@ export class NetworkNoPage {
                 handler: () => {
                     console.log('joinNetwork handler');
                     alert.dismiss();
-                    //this.tools.pushPage(NetworkContactListPage, {
-                    //    type: 'emails',
-                    //    show_share_dialog: true
-                    //});
+                    this.tools.pushPage(NetworkContactListPage, {
+                        type: 'emails',
+                        show_share_dialog: true
+                    });
+
                     this.networkParams = {
                         post_code: this.chatPrvd.localStorage.get('chat_zip_code')
                     };
-
                     this.networkPrvd.join(this.networkParams).subscribe(res => {
-                        this.getUsers();
+
                     }, err => {
                         console.log(err);
                     });
+
                     return false;
                 }
             }]
         });
         alert.present();
-
-
     }
 
   goUndercover() {
@@ -221,7 +220,21 @@ export class NetworkNoPage {
   }
 
   ionViewDidEnter() {
-    this.getUsers();
+      this.gps.createNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
+          if(res){
+              this.networkParams = {
+                  post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+              };
+              this.networkPrvd.join(this.networkParams).subscribe(res => {
+                  this.getUsers();
+              }, err => {
+                  console.log(err);
+              });
+          }
+      }, err => {
+          console.log(err);
+      });
+      this.getUsers();
   }
 
   ionViewWillLeave() {

@@ -97,6 +97,7 @@ export class NetwrklistModal {
     }
 
     public goToLanding() {
+        this.viewCtrl.dismiss();
         this.toolsPrvd.pushPage(ChatPage);
     }
 
@@ -132,5 +133,6 @@ export class NetwrklistModal {
 
   public closeModal():void {
     this.viewCtrl.dismiss();
+      this.toolsPrvd.pushPage(ChatPage);
   }
 }

@@ -9,6 +9,9 @@ import { Api } from './api';
 import { BlacklistModal } from '../modals/blacklist/blacklist';
 import { ArealistModal } from '../modals/arealist/arealist';
 import { NetwrklistModal } from '../modals/netwrklist/netwrklist';
+import { LinelistModal } from '../modals/linelist/linelist';
+
+
 
 @Injectable()
 export class Settings {
@@ -51,7 +54,13 @@ export class Settings {
         netwrklistModal.present();
   }
 
+  public openLinelistModal():void {
+    let linelistModal = this.modalCtrl.create(LinelistModal);
+      linelistModal.present();
+  }
+
   public sendDeactivationRequest():any {
+
     let seq = this.api.delete('profiles').share();
     let seqMap = seq.map(res => res.json());
     return seqMap;

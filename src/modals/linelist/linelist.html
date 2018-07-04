@@ -1,0 +1,420 @@
+<!--Header -->
+<ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
+    <ion-toolbar *ngIf="isUndercover">
+        <div class="drag-container" [@sliderState]="topSlider.getState()">
+            <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic)">
+                <span class="info">
+                    <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
+                        {{ user.name }}
+                    </span>
+                    <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
+                    {{ user.role_name }}
+                    </span>
+                </span>
+                <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon">
+                <img class="draggable-element" [src]="slideAvatarPrvd.sliderPosition == 'right' ? user.hero_avatar_url : user.avatar_url" (error)="chatPrvd.updateAvatarUrl($event)">
+            </div>
+        </div>
+
+        <button *ngIf="chatPrvd.postMessages.length == 0 && !chatPrvd.postBtn.state"
+        class="side refresh-btn top-icon" (tap)="refreshChat()"
+        [hidden]="!canRefresh" ion-button
+        [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
+        <ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>
+        </button>
+
+        <button ion-button class="side clear-btn" (tap)="clearMessages(chatPrvd.postMessages)"
+        *ngIf="isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state &&
+        !chatPrvd.isLobbyChat">
+        Clear
+        </button>
+
+        <button ion-button *ngIf="chatPrvd.postBtn.state"
+        class="side lock-btn top-icon" (click)="toggleTopSlider('lock');
+        textInput.setFocus();"
+        [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
+        <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
+        </button>
+
+        <div *ngIf="postLockData.password && postLockData.hint && chatPrvd.postBtn.state && isUndercover" class="lock-status"></div>
+
+        <button ion-button *ngIf="chatPrvd.postBtn.state"
+        class="side left timer-btn top-icon" (click)="toggleTopSlider('timer');
+        textInput.setFocus();"
+        [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
+        <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
+        </button>
+
+        <ion-badge *ngIf="postTimerObj.time && chatPrvd.postBtn.state && isUndercover">
+        {{ postTimerObj.time }}
+        </ion-badge>
+    </ion-toolbar>
+
+
+    <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state" class="post-lock">
+        <form (submit)="unlockPost($event, unlockForm)" #unlockForm="ngForm">
+            <input type="hidden" value="">
+            <ion-item>
+                <ion-input type="password" placeholder="Password" name="password"
+                [(ngModel)]="postUnlockData.password" required></ion-input>
+            </ion-item>
+            <p ion-text color="bk">Hint: {{ currentHint }}</p>
+            <button ion-button type="submit" class="submit" *ngIf="postUnlockData.password">Unlock it</button>
+        </form>
+    </ion-toolbar>
+
+    <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state" class="post-lock">
+        <form (submit)="sendLockInfo($event, lockForm)" #lockForm="ngForm">
+            <ion-item>
+                <ion-input type="password" placeholder="Password" name="password"
+                [(ngModel)]="postLockData.password" required></ion-input>
+            </ion-item>
+            <ion-item>
+                <ion-input type="text" placeholder="Hint" name="hint"
+                [(ngModel)]="postLockData.hint" required></ion-input>
+            </ion-item>
+            <button ion-button type="submit" class="submit" *ngIf="postLockData.password && postLockData.hint">Lock it</button>
+        </form>
+    </ion-toolbar>
+</ion-header>
+
+
+<ion-content has-main-btn has-main-btn-label no-bounce (ionScrollEnd)="listenForScrollEnd($event)"
+[ngClass]="{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': !isUndercover, 'white-undercover': isUndercover &&
+(chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': isUndercover}"
+[ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin}">
+
+<ion-refresher (ionRefresh)="refreshChat($event)">
+<ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
+</ion-refresher>
+
+<div id="places"></div>
+
+<div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat }">
+
+<p *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)" class="no-data-message abs">There are no lines yet</p>
+
+
+
+<div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
+<ng-container *ngIf="!message.has_expired">
+
+<img *ngIf="message.user"
+[src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
+(error)="chatPrvd.updateAvatarUrl($event)">
+
+<img *ngIf="!message.user"
+[src]="toolsPrvd.defaultAvatar" class="chat-avatar"
+(error)="chatPrvd.updateAvatarUrl($event)">
+
+<p class="message-container">
+    <span class="username" *ngIf="message.user">
+    <ng-container *ngIf="message.public">
+    {{ message.user.name }}
+    </ng-container>
+    <ng-container *ngIf="!message.public">
+    {{ message.user.role_name }}
+    </ng-container>
+    </span>
+
+    <span class="message-date">{{ message.dateStr }}</span>
+
+    <span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
+    <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post">
+    <ion-icon ios="ios-open-outline" md="ios-open-outline"></ion-icon>
+    </a>
+    </span>
+
+    <span *ngIf="message.expire_at && !chatPrvd.isLobbyChat" class="visible-for">
+    Expires in {{ message.expire_at }}
+    </span>
+
+    <ng-container *ngIf="message.expire_at && !message.has_expired && !chatPrvd.isLobbyChat">
+    <ion-icon ios="ios-timer-outline" md="ios-timer-outline"  class="will-expire info-icon"></ion-icon>
+    </ng-container>
+
+    <ng-container *ngIf="message.locked">
+    <ion-icon ios="ios-lock" md="ios-lock"
+              class="locked-by-you info-icon"></ion-icon>
+    </ng-container>
+
+    <ng-container *ngIf="!message.locked_by_user || (message.locked_by_user && user.id == message.user_id)">
+    <span *ngIf="message.text_with_links" class="text"
+    [ngClass]="{ 'emoji' : message.is_emoji }"
+    [innerHTML]="message.text_with_links"></span>
+    </ng-container>
+
+    <ng-container *ngIf="message.locked_by_user && user.id != message.user_id">
+    <span *ngIf="message.text_with_links" class="text"
+    [ngClass]="{ 'emoji' : message.is_emoji }">
+    <i>[Message locked]</i>
+    </span>
+    </ng-container>
+</p>
+
+<button class="feedback-button" (tap)="feedbackService.toggleLikes(message.id, user.id, $event)"
+[ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced,
+'active' : message.like_by_user}"
+*ngIf="!message.locked_by_user || user.id == message.user_id"
+(press)="openFeedbackModal(message, i)">
+<div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
+</button>
+
+
+<button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}"
+(press)="feedbackService.initNativeShare(message)"
+(tap)="shareMessageToFacebook(message)">
+  Share
+</button>
+
+<ng-container *ngIf="user.id != message.user_id && message.locked_by_user">
+<button class="feedback-button lock" (tap)="showUnlockPostForm(message.id, message.hint)">
+<ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
+</button>
+</ng-container>
+
+<ng-container *ngIf="message.locked_by_user && user.id == message.user_id ||
+!message.locked_by_user">
+<ion-slides *ngIf="message.image_urls.length +
+message.video_urls.length > 1" pager="true"
+(ionSlideDidChange)="videoservice.messageSliderChange($event, pageTag)">
+<ion-slide *ngFor="let img of message.image_urls">
+<img [src]="img" (load)="chatPrvd.calcLoadedImages()"/>
+</ion-slide>
+<ion-slide *ngFor="let vid of message.video_urls"
+(tap)="videoservice.toggleVideoVolume($event)"
+class="video-container">
+<ion-icon class="volume"
+          ios="ios-volume-off-outline" md="ios-volume-off-outline"></ion-icon>
+<video [poster]="vid.poster" loop playsinline muted>
+<source [src]="vid.url">
+</video>
+</ion-slide>
+</ion-slides>
+<ng-container *ngIf="message.image_urls.length +
+message.video_urls.length <= 1">
+<ng-container *ngIf="message.image_urls.length > 0">
+<img *ngFor="let j of message.image_urls" src="{{j}}"
+(load)="chatPrvd.calcLoadedImages()"/>
+</ng-container>
+<ng-container *ngIf="message.video_urls.length > 0">
+<div class="video-container" (tap)="videoservice.toggleVideoVolume($event)">
+<ion-icon class="volume"
+          ios="ios-volume-off-outline" md="ios-volume-off-outline"></ion-icon>
+<video *ngFor="let vid of message.video_urls" loop playsinline muted
+[poster]="vid.poster">
+<source [src]="vid.url">
+</video>
+</div>
+</ng-container>
+</ng-container>
+</ng-container>
+</ng-container>
+</div>
+</div>
+
+<ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+<ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>
+</ion-content>
+
+
+<!--Footer-->
+<ion-footer class="has-input chatFooter">
+<div item-content class="appended-pictures-container"
+[hidden]="chatPrvd.appendContainer.hidden"
+[@containerState]="chatPrvd.appendContainer.state"
+[ngClass]="{ 'netwrk' : !isUndercover }"
+*ngIf="cameraPrvd.takenPictures && cameraPrvd.takenPictures.length > 0">
+<div class="img-container" *ngFor="let i of cameraPrvd.takenPictures; let indx = index" >
+<img class="img-preview" [src]="i"/>
+<button (click)="removeAppendedImage(indx)">
+<ion-icon ios="ios-close" md="ios-close"></ion-icon>
+</button>
+</div>
+</div>
+
+<div #emojiCont item-content class="gallery-container emoji-container"
+[hidden]="emojiContainer.hidden" [@containerState]="emojiContainer.state">
+<span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)"
+class="emoji-item">{{ convertEmoji(emoji) }}</span>
+</div>
+
+<div #shareCont item-content class="gallery-container share-container"
+[hidden]="shareContainer.hidden" [@containerState]="shareContainer.state">
+<ion-toolbar [ngClass]="{ 'no-events' : !socialLoaderHidden }">
+<div class="slide-container sl-facebook">
+    <div #slfb [ngClass]="{'active': shareCheckbox.facebook}" class="toggle-el"
+    (click)="toggleShareSlider('facebook')">
+    <span class="toggle-state" *ngIf="shareCheckbox.facebook">on</span>
+    <span class="toggle-state" *ngIf="!shareCheckbox.facebook">off</span>
+    <div [ngClass]="{ 'right' : shareCheckbox.facebook }" class="toggleable">
+    <ion-icon ios="logo-facebook" md="logo-facebook"
+              color="facebook"></ion-icon>
+</div>
+<input type="checkbox" [checked]="shareCheckbox.facebook">
+</div>
+</div>
+
+<div class="slide-container sl-twitter" *ngIf="socialPrvd.connect.twitter">
+<div #sltw [ngClass]="{'active': shareCheckbox.twitter}" class="toggle-el"
+(click)="toggleShareSlider('twitter')">
+<span class="toggle-state" *ngIf="shareCheckbox.twitter">on</span>
+<span class="toggle-state" *ngIf="!shareCheckbox.twitter">off</span>
+<div [ngClass]="{'right': shareCheckbox.twitter}" class="toggleable">
+<ion-icon ios="logo-twitter" md="logo-twitter"
+          color="twitter"></ion-icon>
+</div>
+<input type="checkbox" [checked]="shareCheckbox.twitter">
+</div>
+</div>
+
+<div class="slide-container sl-instagram"
+*ngIf="socialPrvd.connect.instagram">
+<div #slln [ngClass]="{'active': shareCheckbox.instagram}" class="toggle-el"
+(click)="toggleShareSlider('instagram')">
+<span class="toggle-state" *ngIf="shareCheckbox.instagram">on</span>
+<span class="toggle-state" *ngIf="!shareCheckbox.instagram">off</span>
+<div [ngClass]="{'right': shareCheckbox.instagram}" class="toggleable">
+<ion-icon ios="logo-instagram" md="logo-instagram"
+          color="instagram"></ion-icon>
+</div>
+<input type="checkbox" [checked]="shareCheckbox.instagram">
+</div>
+</div>
+</ion-toolbar>
+
+<div class="share-content">
+    <ion-spinner name="ios" class="share-spinner"
+    [hidden]="socialLoaderHidden"></ion-spinner>
+    <ng-container *ngFor="let post of socialPosts">
+    <ng-container *ngIf="post.text_with_links || post.image_urls.length > 0">
+    <div (click)="postMessageFromSocial(post)" class="img-container">
+    <ng-container *ngIf="post.social == 'facebook'">
+    <ion-icon ios="logo-facebook" md="logo-facebook"
+              class="social-ico" color="facebook"></ion-icon>
+    </ng-container>
+    <ng-container *ngIf="post.social == 'twitter'">
+    <ion-icon ios="logo-twitter" md="logo-twitter"
+              class="social-ico" color="twitter"></ion-icon>
+    </ng-container>
+    <ng-container *ngIf="post.social == 'instagram'">
+    <ion-icon ios="logo-instagram" md="logo-instagram"
+              class="social-ico" color="instagram"></ion-icon>
+    </ng-container>
+    <p *ngIf="post.text_with_links" class="message {{ post.social }}"
+    [innerHTML]="post.text_with_links"
+    [ngClass]="{'with-media': post.image_urls.length > 0 ||
+    (post.video_urls && post.video_urls.length > 0)}"></p>
+    <ion-slides *ngIf="post.image_urls.length +
+    post.video_urls.length > 1" pager="true"
+    (ionSlideDidChange)="videoservice.messageSliderChange($event, pageTag)">
+    <ion-slide *ngFor="let img of post.image_urls">
+    <img [src]="img" (load)="chatPrvd.calcLoadedImages()"/>
+    </ion-slide>
+    <ion-slide *ngFor="let vid of post.video_urls">
+    <video [poster]="vid.poster" loop muted playsinline>
+    <source [src]="vid.url">
+    </video>
+    </ion-slide>
+    </ion-slides>
+    <ng-container *ngIf="post.image_urls.length +
+    post.video_urls.length <= 1">
+    <ng-container *ngIf="post.image_urls.length > 0">
+    <img *ngFor="let j of post.image_urls" [src]="j"
+    (load)="chatPrvd.calcLoadedImages()"/>
+    </ng-container>
+    <ng-container *ngFor="let vid of post.video_urls">
+    <video [poster]="vid.poster" loop muted playsinline>
+    <source [src]="vid.url">
+    </video>
+    </ng-container>
+    </ng-container>
+</div>
+</ng-container>
+<ng-container *ngIf="!post.image_urls && post.text_with_links">
+<p (click)="postMessageFromSocial(post)"
+class="message {{ post.social }}"
+[innerHTML]="post.text_with_links"></p>
+</ng-container>
+</ng-container>
+</div>
+</div>
+
+<button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
+[@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
+class="main-action-btn has-footer transparent chatMainBtn"
+(click)="goBackOnLanding($event)" [disabled]="chatPrvd.isMainBtnDisabled"
+[ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
+<ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"
+*ngIf="chatPrvd.mainBtn.getState() == 'minimised' || chatPrvd.mainBtn.getState() == 'back-to-hold'"
+class="small"></ion-icon>
+</button>
+
+<div class="flip-container" [ngClass]="{'hover' : flipHover}" *ngIf="chatPrvd.getState() == 'undercover'">
+<ion-item class="text front" #inputItem
+*ngIf="(chatPrvd.currentLobby.currentUserPresent &&
+chatPrvd.isLobbyChat) || !mainInput.hidden"
+[@fadeState]="mainInput.state"
+[ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state}">
+<div item-content id="textInpBtns" [@bgState]="chatPrvd.bgState.state">
+<button ion-button [@inputState]="chatPrvd.chatBtns.state[0]"
+(click)="openCamera();
+toggleContainer(emojiContainer, 'hide');
+toggleContainer(shareContainer, 'hide')">
+<ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
+</button>
+<button ion-button [@inputState]="chatPrvd.chatBtns.state[1]"
+(click)="chatPrvd.openGallery();
+toggleContainer(emojiContainer, 'hide');
+toggleContainer(shareContainer, 'hide')">
+<ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
+</button>
+<button ion-button [@inputState]="chatPrvd.chatBtns.state[2]"
+(click)="toggleContainer(shareContainer, null, 'shareContainer');">
+<ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
+</button>
+<button ion-button [@inputState]="chatPrvd.chatBtns.state[3]"
+(click)="toggleContainer(emojiContainer);">
+<ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
+</button>
+<button ion-button [@inputState]="chatPrvd.chatBtns.state[4]"></button>
+</div>
+
+<button ion-button
+(click)="toggleChatOptions();
+toggleContainer(emojiContainer, 'hide');
+toggleContainer(shareContainer, 'hide')"
+[@rotState]="chatPrvd.plusBtn.state" ion-button item-left clear
+id="plus-btn">
+<ion-icon ios="ios-add" md="ios-add"></ion-icon>
+</button>
+
+<ion-input #textInput id="textInput" type="text"
+[placeholder]="placeholderText"
+(keyup)="getCaretPos(textInput); calculateInputChar(textInput)"
+(tap)="hideTopSlider(activeTopForm);"
+(focus)="inputOnFocus()">
+</ion-input>
+
+<button ion-button item-right clear
+[ngClass]="{ 'post-button' : chatPrvd.postBtn.state,
+'disabled' : chatPrvd.postBtn.disabled }"
+(tap)="postMessage()" class="post-message">
+<img *ngIf="!chatPrvd.postBtn.state && !isUndercover"
+src="assets/icon/netwrk-chat.svg">
+<ng-container *ngIf="!chatPrvd.isLobbyChat">
+<span *ngIf="chatPrvd.postBtn.state
+&& !isUndercover && chatPrvd.bgState.state != 'stretched'">Post</span>
+<span *ngIf="chatPrvd.postBtn.state
+&& isUndercover && chatPrvd.bgState.state != 'stretched'">Hang</span>
+</ng-container>
+<span *ngIf="chatPrvd.isLobbyChat && chatPrvd.postBtn.state"
+class="lobby-bubble">
+<ion-icon ios="ios-text" md="ios-text"></ion-icon>
+</span>
+<ion-icon *ngIf="!chatPrvd.postBtn.state && isUndercover" ios="ios-text-outline" md="ios-text-outline"></ion-icon>
+</button>
+</ion-item>
+</div>
+</ion-footer>

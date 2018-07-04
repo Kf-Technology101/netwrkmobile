@@ -102,7 +102,6 @@ export class HoldScreenPage {
 
     public goToLanding() {
         this.chatPrvd.setState('landing');
-        this.chatPrvd.isLanding.setState(true);
         this.toolsPrvd.pushPage(ChatPage);
     }
 

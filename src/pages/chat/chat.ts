@@ -794,22 +794,6 @@ export class ChatPage implements DoCheck {
   // }
   //
 
-  private backNavigation(event:any):void {
-      this.toolsPrvd.showLoader();
-
-      if(this.chatPrvd.localStorage.get('chat_state')=="undercover" && !this.chatPrvd.isLanding.getState()){
-          this.chatPrvd.isLanding.setState(true);
-          this.initLpMap();
-          this.toolsPrvd.hideLoader();
-      }else if(this.chatPrvd.localStorage.get('chat_state')=="area" && !this.chatPrvd.isLanding.getState()){
-          this.chatPrvd.isLanding.setState(false);
-          this.toolsPrvd.hideLoader();
-          this.goUndercover(event);
-      }else  if(this.chatPrvd.localStorage.get('chat_state')=="undercover" && this.chatPrvd.isLanding.getState()){
-          this.toolsPrvd.pushPage(HoldScreenPage);
-          this.toolsPrvd.hideLoader();
-      }
-  }
 
   private goArea():void {
     console.log('_going to area...');
@@ -1083,45 +1067,34 @@ export class ChatPage implements DoCheck {
     this.hideTopSlider('timer');
   }
 
-  public joinNetwork():void {
-    let alert = this.alertCtrl.create({
-      subTitle: 'Become a part of the local broadcast?',
-      buttons: [{
-        text: 'Not now',
-        role: 'cancel'
-      }, {
-        cssClass: 'active',
-        text: 'Sure',
-        handler: () => {
-          console.log('joinNetwork handler');
-          alert.dismiss();
-            this.toolsPrvd.pushPage(NetworkContactListPage, {
-                type: 'emails',
-                show_share_dialog: true
-            });
+    public joinNetwork():void {
+        let alert = this.alertCtrl.create({
+            subTitle: 'Become a part of the local broadcast?',
+            buttons: [{
+                text: 'Not now',
+                role: 'cancel'
+            }, {
+                cssClass: 'active',
+                text: 'Sure',
+                handler: () => {
+                    console.log('joinNetwork handler');
+                    alert.dismiss();
+                    this.toolsPrvd.pushPage(NetworkContactListPage, {
+                        type: 'emails',
+                        show_share_dialog: true
+                    });
+                    return false;
+                }
+            }]
+        });
+        alert.present();
 
-            this.networkParams = {
-                post_code: this.chatPrvd.localStorage.get('chat_zip_code')
-            };
-            this.networkPrvd.join(this.networkParams).subscribe(res => {
-
-            }, err => {
-                console.log(err);
-            });
-            this.goUndercover();
-
-          return false;
-        }
-      }]
-    });
-    alert.present();
-
-    this.networkPrvd.join(this.networkParams).subscribe(res => {
-       this.getUsers();
-    }, err => {
-       console.log(err);
-    });
-  }
+        this.networkPrvd.join(this.networkParams).subscribe(res => {
+            this.getUsers();
+        }, err => {
+            console.log(err);
+        });
+    }
 
   private getUsers():Promise<any> {
     return new Promise((resolve, reject) => {
@@ -1586,12 +1559,10 @@ export class ChatPage implements DoCheck {
           this.chatPrvd.allowUndercoverUpdate = false;
           clearTimeout(this.messIntObject);
           this.chatPrvd.toggleLobbyChatMode();
-          this.chatPrvd.isLanding.setState(false);
           this.chatPrvd.isMainBtnDisabled = false;
           this.toolsPrvd.hideLoader();
       }, err => {
           console.error(err);
-          this.chatPrvd.isLanding.setState(false);
           console.log('Tap to hang anything here');
           this.placeholderText = 'Tap to hang anything here';
           this.chatPrvd.isMainBtnDisabled = false;
@@ -1602,34 +1573,28 @@ export class ChatPage implements DoCheck {
   }
 
   public handleMainBtnClick(event:any):void {
-      if(this.chatPrvd.isLanding.getState()){
+      this.chatPrvd.isMainBtnDisabled = true;
+      if (this.chatPrvd.isLobbyChat) {
           this.toolsPrvd.showLoader();
-          this.chatPrvd.isLanding.setState(false)
-          this.toolsPrvd.hideLoader();
-      }else{
-          this.chatPrvd.isMainBtnDisabled = true;
-          if (this.chatPrvd.isLobbyChat) {
-              this.toolsPrvd.showLoader();
-              this.txtIn.value = '';
-              this.chatPrvd.appendContainer.hidden = true;
-              this.cameraPrvd.takenPictures = [];
-              this.chatPrvd.postMessages = [];
-              this.placeholderText = 'Tap to hang anything here';
-              this.setMainBtnStateRelativeToEvents();
-              this.refreshChat(false, true).then(res => {
-                  this.chatPrvd.allowUndercoverUpdate = true;
-                  this.startMessageUpdateTimer();
-                  this.chatPrvd.toggleLobbyChatMode();
-                  this.chatPrvd.isMainBtnDisabled = false;
-                  this.toolsPrvd.hideLoader();
-              }, err => {
-                  this.chatPrvd.isMainBtnDisabled = false;
-                  this.toolsPrvd.hideLoader();
-                  console.error(err);
-              });
-          } else {
-              this.goUndercover(event);
-          }
+          this.txtIn.value = '';
+          this.chatPrvd.appendContainer.hidden = true;
+          this.cameraPrvd.takenPictures = [];
+          this.chatPrvd.postMessages = [];
+          this.placeholderText = 'Tap to hang anything here';
+          this.setMainBtnStateRelativeToEvents();
+          this.refreshChat(false, true).then(res => {
+              this.chatPrvd.allowUndercoverUpdate = true;
+              this.startMessageUpdateTimer();
+              this.chatPrvd.toggleLobbyChatMode();
+              this.chatPrvd.isMainBtnDisabled = false;
+              this.toolsPrvd.hideLoader();
+          }, err => {
+              this.chatPrvd.isMainBtnDisabled = false;
+              this.toolsPrvd.hideLoader();
+              console.error(err);
+          });
+      } else {
+          this.goUndercover(event);
       }
   }
 

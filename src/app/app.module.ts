@@ -43,6 +43,7 @@ import { FeedbackModal } from '../modals/feedback/feedback';
 import { BlacklistModal } from '../modals/blacklist/blacklist';
 import { ArealistModal } from '../modals/arealist/arealist';
 import { NetwrklistModal } from '../modals/netwrklist/netwrklist';
+import { LinelistModal } from '../modals/linelist/linelist';
 import { MapsModal } from '../modals/maps/maps';
 
 // Services
@@ -116,6 +117,7 @@ let pages = [
   MapsModal,
   BlacklistModal,
   ArealistModal,
+  LinelistModal,
   NetwrklistModal,
 
   ChatPage,

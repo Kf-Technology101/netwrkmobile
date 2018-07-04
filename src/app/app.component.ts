@@ -72,9 +72,10 @@ export class MyApp {
       });
     };
 
-    init();
+
 
     platform.ready().then(() => {
+        init();
       permission.checkCameraPermissions().then(permissionOk => {
         this.storage.set('enable_uc_camera', permissionOk ? true : false);
 

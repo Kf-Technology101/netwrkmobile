@@ -33,22 +33,18 @@ export class UndercoverProvider {
       let updateObj: any = {
         role_name: person.name,
         role_description: person.description,
-        role_image_url: person.imageUrl,
+        role_image_url: person.imageUrl
       }
 
-      this.tools.showLoader();
-      this.user.update(
-        this.auth.getAuthData().id,
-        { user: updateObj },
-        this.auth.getAuthType()
-      ).map(res => res.json()).subscribe(res => {
-        this.tools.hideLoader();
-        resolve(res);
-      }, err => {
-        this.tools.hideLoader();
-        this.tools.showToast(JSON.stringify(err));
-        reject(err);
-      });
+        this.tools.showLoader();
+        this.user.update(this.auth.getAuthData().id, { user: updateObj }, this.auth.getAuthType(),'update').map(res => res.json()).subscribe(res => {
+            this.tools.hideLoader();
+            resolve(res);
+        }, err => {
+            this.tools.hideLoader();
+            this.tools.showToast(JSON.stringify(err));
+            reject(err);
+        });
     });
   }
 

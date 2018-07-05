@@ -4,9 +4,9 @@
 s
 <!--Header -->
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
-  <ion-toolbar *ngIf="isUndercover">
+  <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover'">
     <div class="drag-container" [@sliderState]="topSlider.getState()">
-      <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic)">
+      <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">
         <span class="info">
           <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
             {{ user.name }}
@@ -98,7 +98,7 @@ s
   <div *ngIf="!isUndercover" class="netwrk-header">
     <ion-toolbar class="area-head">
       <img [src]="user.avatar_url ? user.avatar_url : toolsPrvd.defaultAvatar"
-        (click)="goToProfile(null, true)" class="ic user-icon"
+        (click)="goToProfile(null, true, user.role_name)" class="ic user-icon"
          (error)="chatPrvd.updateAvatarUrl($event)">
 
       <img class="ic legendary-icon" src="assets/images/sun_icon.png"
@@ -114,7 +114,7 @@ s
           <span class="username">Connect</span>
         </ion-slide>
         <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
-          <div class="avatar" (tap)="goToProfile(user.id)">
+          <div class="avatar" (tap)="goToProfile(user.id,user.profileTypePublic, user.role_name)">
             <img [src]="chatPrvd.users[user.id].avatar_url"
             (error)="chatPrvd.updateAvatarUrl($event)">
           </div>
@@ -148,7 +148,7 @@ s
 <ion-header *ngIf="chatPrvd.isLobbyChat" class="lobby-header">
   <ion-toolbar>
     <img *ngFor="let user of chatPrvd.currentLobby.users; let i = index"
-    (click)="goToProfile(user.id, user.public)"
+    (click)="goToProfile(user.id, user.public, user.role_name)"
     [ngClass]="{'host' : i == 0}"
     [src]="user.avatar_url"
     class="lobby-user-avatar"
@@ -183,12 +183,12 @@ s
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
       <ng-container *ngIf="!message.has_expired">
 
-        <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public)"
+        <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
           (tap)="openLobbyForPinned(message)"
           [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
           (error)="chatPrvd.updateAvatarUrl($event)">
 
-        <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public)"
+        <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
           (tap)="openLobbyForPinned(message)"
           [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
           (error)="chatPrvd.updateAvatarUrl($event)">
@@ -429,12 +429,24 @@ s
     </div>
   </div>
 
-  <div class="tip tail-bottom" *ngIf="chatPrvd.networkAvailable == true">
+  <div class="tip tail-bottom" *ngIf="chatPrvd.networkAvailable == true && !settings.isNewlineScope">
     You're in a new area
   </div>
 
+  <div class="tip tail-bottom" *ngIf="settings.isNewlineScope == true">
+        Move to wherever you want to build
+  </div>
 
-  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden"
+
+  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope"
+    [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
+    class="main-action-btn has-footer transparent chatMainBtn"
+    (click)="settings.openLinelistModal()" [disabled]="chatPrvd.isMainBtnDisabled"
+  [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
+  <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
+  </button>
+
+  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="!settings.isNewlineScope"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
     class="main-action-btn has-footer transparent chatMainBtn"
     (click)="handleMainBtnClick($event)" [disabled]="chatPrvd.isMainBtnDisabled"
@@ -444,7 +456,7 @@ s
         class="small"></ion-icon>
   </button>
 
-  <button class="netwrk-button" (press)="settings.openLinelistModal()" *ngIf="isUndercover && !chatPrvd.isLobbyChat">
+  <button class="netwrk-button" (click)="eventClickTrigger()" *ngIf="isUndercover && !chatPrvd.isLobbyChat && !settings.isNewlineScope && chatPrvd.getState() == 'undercover'">
         <img src="assets/icon/wifi.png"/>
   </button>
 

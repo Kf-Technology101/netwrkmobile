@@ -125,8 +125,6 @@
         "FABRIC_KEY": "0b15d44d213d573ac860629f837562b2bf37ce9f"
       }
     },
-    "platforms": [
-      "ios"
-    ]
+    "platforms": []
   }
 }

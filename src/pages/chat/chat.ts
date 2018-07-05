@@ -31,6 +31,7 @@ import { NetworkNoPage } from '../network-no/network-no';
 import { LogInPage } from '../log-in/log-in';
 import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 import { HoldScreenPage } from '../hold-screen/hold-screen';
+import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 
 // Custom libs
 import { Toggleable } from '../../includes/toggleable';
@@ -235,6 +236,7 @@ export class ChatPage implements DoCheck {
     public videoservice: VideoService,
     public feedbackService: FeedbackService
   ) {
+      this.user = this.authPrvd.getAuthData();
     console.log('%c [CHAT] CONSTRUCTOR ', 'background: #1287a8;color: #ffffff');
     this.initLpMap();
   }
@@ -794,6 +796,13 @@ export class ChatPage implements DoCheck {
   // }
   //
 
+    public eventClickTrigger():void {
+        this.messagesInterval = false;
+        clearTimeout(this.messIntObject);
+        this.chatPrvd.postMessages = [];
+        this.chatPrvd.isCleared = true;
+        this.settings.isNewlineScope=true;
+    }
 
   private goArea():void {
     console.log('_going to area...');
@@ -1266,12 +1275,19 @@ export class ChatPage implements DoCheck {
     }
   }
 
-  private goToProfile(profileId?: number, profileTypePublic?: boolean):void {
+  private goToProfile(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
     this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
-      // res['post_code'] = this.chatPrvd.localStorage.get('chat_zip_code');
-      // console.log('GO TO PROFILE res:', res);
       this.chatPrvd.isLobbyChat = false;
-      this.toolsPrvd.pushPage(ProfilePage, res);
+        if(this.user.id==profileId){
+            if(userRoleName){
+                this.toolsPrvd.pushPage(ProfilePage, res);
+            }else{
+                this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
+            }
+        }else{
+            this.toolsPrvd.pushPage(ProfilePage, res);
+        }
+
     }, err => {
       console.error('goToProfile err:', err);
     });

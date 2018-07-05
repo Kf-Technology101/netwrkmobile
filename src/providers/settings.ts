@@ -16,12 +16,16 @@ import { LinelistModal } from '../modals/linelist/linelist';
 @Injectable()
 export class Settings {
     public ucCameraState: string;
+    public isNewlineScope=false;
 
     constructor(
     private storage: LocalStorage,
     private modalCtrl: ModalController,
     private api: Api
-  ) {}
+  ) {
+
+    }
+
 
   public toggleCameraOnUC():void {
     if (this.storage.get('enable_uc_camera') !== null) {
@@ -55,9 +59,11 @@ export class Settings {
   }
 
   public openLinelistModal():void {
+      this.isNewlineScope=false;
     let linelistModal = this.modalCtrl.create(LinelistModal);
       linelistModal.present();
   }
+
 
   public sendDeactivationRequest():any {
 

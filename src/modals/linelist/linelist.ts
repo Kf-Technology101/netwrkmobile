@@ -43,6 +43,7 @@ import { ChatPage } from '../../pages/chat/chat';
 import { ProfilePage } from '../../pages/profile/profile';
 import { LogInPage } from '../../pages/log-in/log-in';
 import { NetworkContactListPage } from '../../pages/network-contact-list/network-contact-list';
+import { UndercoverCharacterPage } from '../../pages/undercover-character/undercover-character';
 
 // Providers
 import { Tools } from '../../providers/tools';
@@ -284,7 +285,7 @@ export class LinelistModal {
     }
 
     private changePlaceholderText():void {
-        this.placeholderText = this.isUndercover ? 'Tap to hang anything here' : 'Broadcast to your area';
+        this.placeholderText = 'Describe your line';
     }
 
     private generateEmoticons():void {
@@ -472,6 +473,29 @@ export class LinelistModal {
     }
 
     private postMessage(emoji?: string, params?: any):void {
+
+        //let alert = this.alertCtrl.create({
+        //    subTitle: 'Become a part of the local broadcast?',
+        //    buttons: [{
+        //        text: 'Not now',
+        //        role: 'cancel'
+        //    }, {
+        //        cssClass: 'active',
+        //        text: 'Sure',
+        //        handler: () => {
+        //            console.log('New Line create handler');
+        //            alert.dismiss();
+        //            this.toolsPrvd.pushPage(NetworkContactListPage, {
+        //                type: 'emails',
+        //                show_share_dialog: true
+        //            });
+        //            return false;
+        //        }
+        //    }]
+        //});
+        //alert.present();
+
+
         try {
             let publicUser: boolean;
             let images = [];
@@ -914,6 +938,131 @@ export class LinelistModal {
         }
     }
 
+    private goUndercover(event?:any):any {
+        console.log('============= goUndercover =============');
+        this.messagesInterval = false;
+        clearTimeout(this.messIntObject);
+        // Disable main button on view load
+        this.chatPrvd.isMainBtnDisabled = true;
+        this.toolsPrvd.showLoader();
+
+        if (event) {
+            console.log('_event:', event);
+            event.stopPropagation();
+            if (this.chatPrvd.mainBtn.getState() == 'minimised') {
+                if (this.activeTopForm) {
+                    console.log('txtIn:', this.txtIn);
+                    this.txtIn.value = '';
+                    this.hideTopSlider(this.activeTopForm);
+                    this.chatPrvd.postBtn.setState(false);
+                }
+                this.keyboard.close();
+                setTimeout(() => {
+                    this.setMainBtnStateRelativeToEvents();
+                }, 300);
+            } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled') {
+                this.toggleContainer(this.emojiContainer, 'hide');
+                this.toggleContainer(this.shareContainer, 'hide');
+                this.keyboard.close();
+            }else if(this.chatPrvd.mainBtn.getState() == 'back-to-hold'){
+                this.toggleContainer(this.emojiContainer, 'hide');
+                this.toggleContainer(this.shareContainer, 'hide');
+            }
+            this.chatPrvd.isMessagesVisible = false;
+            this.chatPrvd.postMessages = [];
+        }
+
+        if (this.chatPrvd.getState() == 'undercover') {
+            this.chatPrvd.detectNetwork().then(res => {
+                console.log('[goUndercover] detectNetwork res:', res);
+                if (res.network)
+                    this.chatPrvd.saveNetwork(res.network);
+                console.log('DETECT NETWORK [goUndercover]')
+                if (res.message == 'Network not found') {
+                    console.log('_no network found');
+                    this.toolsPrvd.pushPage(NetworkNoPage, {
+                        action: 'create'
+                    });
+                    this.toolsPrvd.hideLoader();
+                    return;
+                } else {
+                    console.log('_network exists');
+                    this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
+                    this.flipInput();
+                    this.changePlaceholderText();
+                    setTimeout(() => {
+                        this.goArea();
+                        this.content.resize();
+                    }, 1);
+                }
+                this.chatPrvd.isMainBtnDisabled = false;
+            }, err => console.error(err));
+
+        } else if (this.chatPrvd.getState() == 'area') {
+            this.chatPrvd.setState('undercover');
+            this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
+
+            this.chatPrvd.alreadyScolledToBottom = false;
+            // this.cameraPrvd.toggleCameraBg();
+            this.runUndecoverSlider(this.pageTag);
+            this.startMessageUpdateTimer();
+            this.flipInput();
+            this.changePlaceholderText();
+            this.messagesInterval = true;
+            setTimeout(() => {
+                this.content.resize();
+            }, 1);
+            setTimeout(() => {
+                this.toolsPrvd.hideLoader();
+            }, 1000);
+        }
+
+        setTimeout(() => {
+            this.chatPrvd.isMainBtnDisabled = false;
+            this.toolsPrvd.hideLoader();
+            console.log('========= end of goUndercover =========');
+        }, 2);
+    }
+
+    private goArea():void {
+        console.log('_going to area...');
+        // remove directions container from area pages
+        if (this.nearestPlace) this.nearestPlace = undefined;
+
+        this.messagesInterval = false;
+        this.chatPrvd.networkAvailable = null;
+        clearTimeout(this.messIntObject);
+        if (this.chatPrvd.localStorage.get('areaChange_triggered') !== null) {
+            this.chatPrvd.localStorage.rm('areaChange_triggered');
+        }
+
+        this.postLockData.hint = null;
+        this.postLockData.password = null;
+        this.postTimerObj.expireDate = null;
+        this.postTimerObj.time = null;
+        this.slideAvatarPrvd.sliderPosition = 'left';
+
+        // this.cameraPrvd.toggleCameraBg({ isArea: true });
+
+        this.hideTopSlider(this.activeTopForm);
+
+        this.getUsers().then(res => {
+            this.chatPrvd.setState('area');
+            this.updateMessages().then(res => {
+                this.chatPrvd.isMainBtnDisabled = false;
+                this.toolsPrvd.hideLoader();
+            }, err => {
+                console.error(err);
+                this.chatPrvd.isMainBtnDisabled = false;
+                this.toolsPrvd.hideLoader();
+            });
+        }, err => {
+            console.error(err);
+            this.chatPrvd.isMainBtnDisabled = false;
+            this.toolsPrvd.hideLoader();
+        });
+    }
+
     private changeZipCallback(params?: any) {
         if (params) {
             this.isUndercover = this.undercoverPrvd.setUndercover(params.undercover);
@@ -965,12 +1114,20 @@ export class LinelistModal {
         }
     }
 
-    private goToProfile(profileId?: number, profileTypePublic?: boolean):void {
+    private goToProfile(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
         this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
             // res['post_code'] = this.chatPrvd.localStorage.get('chat_zip_code');
             // console.log('GO TO PROFILE res:', res);
             this.chatPrvd.isLobbyChat = false;
-            this.toolsPrvd.pushPage(ProfilePage, res);
+            if(this.user.id==profileId){
+                if(userRoleName){
+                    this.toolsPrvd.pushPage(ProfilePage, res);
+                }else{
+                    this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
+                }
+            }else{
+                this.toolsPrvd.pushPage(ProfilePage, res);
+            }
         }, err => {
             console.error('goToProfile err:', err);
         });
@@ -1231,7 +1388,6 @@ export class LinelistModal {
 
     public goBackOnLanding(event:any):void {
         this.viewCtrl.dismiss();
-        this.toolsPrvd.pushPage(ChatPage);
     }
 
     private onEnter():void {

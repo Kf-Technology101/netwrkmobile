@@ -2,7 +2,7 @@
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
     <ion-toolbar *ngIf="isUndercover">
         <div class="drag-container" [@sliderState]="topSlider.getState()">
-            <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic)">
+            <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">
                 <span class="info">
                     <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
                         {{ user.name }}
@@ -50,6 +50,15 @@
         </ion-badge>
     </ion-toolbar>
 
+    <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state"
+        class="post-timer">
+        <button (tap)="setPostTimer(0)">Timeless</button>
+        <button (tap)="setPostTimer(1)">1 hour</button>
+        <button (tap)="setPostTimer(2)">1 day</button>
+        <button (tap)="setPostTimer(3)">1 week</button>
+        <button (tap)="setPostTimer(4)">1 month</button>
+        <button (tap)="setPostTimer(5)">1 year</button>
+    </ion-toolbar>
 
     <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state" class="post-lock">
         <form (submit)="unlockPost($event, unlockForm)" #unlockForm="ngForm">
@@ -352,33 +361,27 @@ class="small"></ion-icon>
 </button>
 
 <div class="flip-container" [ngClass]="{'hover' : flipHover}" *ngIf="chatPrvd.getState() == 'undercover'">
-<ion-item class="text front" #inputItem
-*ngIf="(chatPrvd.currentLobby.currentUserPresent &&
-chatPrvd.isLobbyChat) || !mainInput.hidden"
-[@fadeState]="mainInput.state"
-[ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state}">
+<ion-item class="text front" #inputItem *ngIf="(chatPrvd.currentLobby.currentUserPresent && chatPrvd.isLobbyChat) || !mainInput.hidden" [@fadeState]="mainInput.state" [ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state}">
+
 <div item-content id="textInpBtns" [@bgState]="chatPrvd.bgState.state">
-<button ion-button [@inputState]="chatPrvd.chatBtns.state[0]"
-(click)="openCamera();
-toggleContainer(emojiContainer, 'hide');
-toggleContainer(shareContainer, 'hide')">
-<ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
-</button>
-<button ion-button [@inputState]="chatPrvd.chatBtns.state[1]"
-(click)="chatPrvd.openGallery();
-toggleContainer(emojiContainer, 'hide');
-toggleContainer(shareContainer, 'hide')">
-<ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
-</button>
-<button ion-button [@inputState]="chatPrvd.chatBtns.state[2]"
-(click)="toggleContainer(shareContainer, null, 'shareContainer');">
-<ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
-</button>
-<button ion-button [@inputState]="chatPrvd.chatBtns.state[3]"
-(click)="toggleContainer(emojiContainer);">
-<ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
-</button>
-<button ion-button [@inputState]="chatPrvd.chatBtns.state[4]"></button>
+
+    <button ion-button [@inputState]="chatPrvd.chatBtns.state[0]">
+        <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
+    </button>
+
+    <button ion-button [@inputState]="chatPrvd.chatBtns.state[1]" (click)="chatPrvd.openGallery(); toggleContainer(emojiContainer, 'hide'); toggleContainer(shareContainer, 'hide')">
+        <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
+    </button>
+
+    <button ion-button [@inputState]="chatPrvd.chatBtns.state[2]" (click)="toggleContainer(shareContainer, null, 'shareContainer');">
+        <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
+    </button>
+
+    <button ion-button [@inputState]="chatPrvd.chatBtns.state[3]" (click)="toggleContainer(emojiContainer);">
+        <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
+    </button>
+
+    <button ion-button [@inputState]="chatPrvd.chatBtns.state[4]"></button>
 </div>
 
 <button ion-button
@@ -401,19 +404,10 @@ id="plus-btn">
 [ngClass]="{ 'post-button' : chatPrvd.postBtn.state,
 'disabled' : chatPrvd.postBtn.disabled }"
 (tap)="postMessage()" class="post-message">
-<img *ngIf="!chatPrvd.postBtn.state && !isUndercover"
-src="assets/icon/netwrk-chat.svg">
-<ng-container *ngIf="!chatPrvd.isLobbyChat">
-<span *ngIf="chatPrvd.postBtn.state
-&& !isUndercover && chatPrvd.bgState.state != 'stretched'">Post</span>
-<span *ngIf="chatPrvd.postBtn.state
-&& isUndercover && chatPrvd.bgState.state != 'stretched'">Hang</span>
-</ng-container>
+<img src="assets/icon/wifi.png">
 <span *ngIf="chatPrvd.isLobbyChat && chatPrvd.postBtn.state"
 class="lobby-bubble">
-<ion-icon ios="ios-text" md="ios-text"></ion-icon>
 </span>
-<ion-icon *ngIf="!chatPrvd.postBtn.state && isUndercover" ios="ios-text-outline" md="ios-text-outline"></ion-icon>
 </button>
 </ion-item>
 </div>

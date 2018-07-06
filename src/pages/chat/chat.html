@@ -1,7 +1,7 @@
 
 <!--<div *ngIf="chatPrvd.isLanding.getState()" id="mapElement" #mapElement></div>-->
 <div id="mapElement" #mapElement></div>
-s
+
 <!--Header -->
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
   <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover'">
@@ -436,7 +436,6 @@ s
   <div class="tip tail-bottom" *ngIf="settings.isNewlineScope == true">
         Move to wherever you want to build
   </div>
-
 
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"

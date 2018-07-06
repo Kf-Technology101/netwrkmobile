@@ -20,7 +20,7 @@
 
     <div class="chat-container visible">
         <div class="visible item-line" *ngFor="let message of netwrkLineList; let i = index">
-            <ng-container *ngIf="!message.has_expired">
+            <ng-container *ngIf="!message.has_expired && user.id != message.user_id">
                 <img *ngIf="message.user" [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
                 <img *ngIf="!message.user" [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
 
@@ -44,7 +44,7 @@
 
                     <span class="message-date">{{ message.dateStr }}</span>
 
-                    <span *ngIf="message.expire_at && !chatPrvd.isLobbyChat" class="visible-for">
+                    <span *ngIf="message.expire_at" class="visible-for">
                         Expires in {{ message.expire_at }}
                     </span>
 

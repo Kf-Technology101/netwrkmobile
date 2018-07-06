@@ -1,5 +1,5 @@
 import { Component, NgZone, ViewChild, ElementRef } from '@angular/core';
-import { ViewController,NavController, NavParams, Platform } from 'ionic-angular';
+import { ViewController,NavController, NavParams, Platform, App } from 'ionic-angular';
 
 import { Api } from '../../providers/api';
 import { Chat } from '../../providers/chat';
@@ -8,6 +8,7 @@ import { NetworkFindPage } from '../../pages/network-find/network-find';
 import { NetworkNoPage } from '../../pages/network-no/network-no';
 import { NetworkPage } from '../../pages/network/network';
 import { ChatPage } from '../../pages/chat/chat';
+
 // Providers
 import { Gps } from '../../providers/gps';
 import { UndercoverProvider } from '../../providers/undercover';
@@ -58,6 +59,7 @@ export class NetwrklistModal {
   constructor(
     private viewCtrl: ViewController,
     private api: Api,
+    public app: App,
     private chatPrvd: Chat,
     public platform: Platform,
     public navCtrl: NavController,
@@ -132,7 +134,16 @@ export class NetwrklistModal {
     }
 
   public closeModal():void {
-    this.viewCtrl.dismiss();
-      this.toolsPrvd.pushPage(ChatPage);
+      this.viewCtrl.dismiss();
+
+      let pageIndex = this.navCtrl.length() - 1;
+
+      this.app.getRootNav().push(ChatPage).then(() => {
+          if(pageIndex){
+              this.navCtrl.remove(pageIndex);
+          }
+      });
+
+      //this.toolsPrvd.popPage(ChatPage);
   }
 }

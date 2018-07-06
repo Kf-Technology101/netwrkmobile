@@ -1,8 +1,5 @@
-<ion-header>
-  <p ion-text text-center color="white">Netwrk</p>
-</ion-header>
 
-<ion-content class="connect arealist">
+<ion-content class="connect arealist content">
 
     <!--Loader on swap-->
     <ion-refresher (ionRefresh)="refreshChat($event)">
@@ -21,37 +18,62 @@
         </ion-col>
     </ion-row>
 
-    <!--Network Line List-->
-    <ion-row>
-        <ion-col>
-            <ion-list>
-                <ion-item class="item-line" *ngIf="netwrkLineList.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)"
-                class="no-data-message abs">There are no networks near you.</ion-item>
+    <div class="chat-container visible">
+        <div class="visible item-line" *ngFor="let message of netwrkLineList; let i = index">
+            <ng-container *ngIf="!message.has_expired">
+                <img *ngIf="message.user" [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
+                <img *ngIf="!message.user" [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
 
-                <ion-item class="item-line" *ngFor="let message of netwrkLineList"  [ngClass]="{ 'isFollowed' : message.isFollowed }">
-                    <ion-avatar item-start>
-                        <img *ngIf="message.user" (press)="chatPrvd.goToProfile(message.user_id, message.public)"
-                        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
+                <p class="message-container">
+                    <span class="" [ngClass]="{ 'isFollowed' : message.isFollowed }">
+                        <ng-container class="total-line-point"><span>Point: {{message.points}}</span>, <span> <span *ngIf="message.users_count">{{message.users_count}}</span> <span *ngIf="!message.users_count">0</span> Number of people in net</span></ng-container>
+                    </span>
 
-                        <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public)" (tap)="openLobbyForPinned(message)"
-                        [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
-                    </ion-avatar>
+                    <ng-container>
+                        <div>{{ message.text }}</div>
+                    </ng-container>
 
-                    <h2 class="total-line-point"><span>Point: {{message.points}}</span>, <span> <span *ngIf="message.users_count">{{message.users_count}}</span> <span *ngIf="!message.users_count">0</span> Number of people in net</span></h2>
-                    <p class="line-name">{{message.text}}</p>
-                    <p class="line-area">{{message.post_code}}</p>
-                    <button ion-button class="ion-netwrk-btn" color="bk" item-end (click)="followNearByNetwork(message)" *ngIf="chatPrvd.currentLobby.isAddButtonAvailable">
-                        <ion-icon ios="ios-add" md="md-add"></ion-icon>
-                    </button>
-                </ion-item>
-            </ion-list>
-        </ion-col>
-    </ion-row>
+                    <ng-container class="username" *ngIf="message.user">
+                        <div *ngIf="message.public">
+                        {{ message.user.name }}
+                        </div>
+                        <div *ngIf="!message.public">
+                        {{ message.user.role_name }}
+                        </div>
+                    </ng-container>
+
+                    <span class="message-date">{{ message.dateStr }}</span>
+
+                    <span *ngIf="message.expire_at && !chatPrvd.isLobbyChat" class="visible-for">
+                        Expires in {{ message.expire_at }}
+                    </span>
+
+                    <ng-container *ngIf="!message.locked_by_user || (message.locked_by_user && user.id == message.user_id)">
+                    <span *ngIf="message.text_with_links" class="text" [ngClass]="{ 'emoji' : message.is_emoji }" [innerHTML]="message.text_with_links"
+                    (click)="toolsPrvd.handleLinkClick($event)" (tap)="viewMyLocation(message)"></span>
+                    </ng-container>
+
+                    <ng-container *ngIf="message.locked_by_user && user.id != message.user_id">
+                        <span *ngIf="message.text_with_links" class="text"
+                        [ngClass]="{ 'emoji' : message.is_emoji }"
+                        (click)="toolsPrvd.handleLinkClick($event)">
+                        <i>[Message locked]</i>
+                        </span>
+                    </ng-container>
+                </p>
+
+                <button ion-button class="feedback-button" color="bk" item-end (click)="followNearByNetwork(message)" [ngClass]="{ 'isFollowed' : message.isFollowed }">
+                    <ion-icon ios="ios-add" md="md-add"></ion-icon>
+                </button>
+            </ng-container>
+        </div>
+    </div>
 
     <!--Infinite Loader on bottom scroll-->
     <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
     </ion-infinite-scroll>
+
 </ion-content>
 
 

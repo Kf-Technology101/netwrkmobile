@@ -29,7 +29,7 @@
         Clear
         </button>
 
-        <button ion-button *ngIf="chatPrvd.postBtn.state"
+        <button ion-button
             class="side lock-btn top-icon" (click)="toggleTopSlider('lock');
             textInput.setFocus();"
             [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
@@ -38,7 +38,7 @@
 
         <div *ngIf="postLockData.password && postLockData.hint && chatPrvd.postBtn.state && isUndercover" class="lock-status"></div>
 
-        <button ion-button *ngIf="chatPrvd.postBtn.state"
+        <button ion-button
             class="side left timer-btn top-icon" (click)="toggleTopSlider('timer');
             textInput.setFocus();"
             [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">

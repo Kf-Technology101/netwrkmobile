@@ -13,15 +13,13 @@
           </span>
           <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon">
           <img class="draggable-element"
-            [src]="slideAvatarPrvd.sliderPosition == 'right' ?
-              profile.user.hero_avatar_url : profile.user.avatar_url"
+            [src]="slideAvatarPrvd.sliderPosition == 'right' ? profile.user.hero_avatar_url : profile.user.avatar_url"
             (error)="chatPrvd.updateAvatarUrl($event)">
         </div>
       </div>
 
       <ion-buttons end>
-        <button *ngIf="ownProfile"
-                ion-button icon-only clear class="setting" (tap)="openSettings()">
+        <button *ngIf="ownProfile" ion-button icon-only clear class="setting" (tap)="openSettings()">
           <ion-icon name="settings" color="dark"></ion-icon>
         </button>
       </ion-buttons>

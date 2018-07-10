@@ -11,9 +11,8 @@
               {{ profile.user.name }}
             </span>
           </span>
-          <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon">
-          <img class="draggable-element"
-            [src]="slideAvatarPrvd.sliderPosition == 'right' ? profile.user.hero_avatar_url : profile.user.avatar_url"
+          <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon left">
+          <img class="draggable-element left" [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.hero_avatar_url : profile.user.avatar_url"
             (error)="chatPrvd.updateAvatarUrl($event)">
         </div>
       </div>

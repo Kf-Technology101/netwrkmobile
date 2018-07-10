@@ -329,7 +329,7 @@ export class ProfilePage {
         user_id: this.user.id,
         offset: this.posts.length,
         undercover: undercover,
-        public: this.profileTypePublic,
+        public: this.profileTypePublic
       };
 
       console.log('[Profile](showMessages) params:', params);

@@ -34,6 +34,8 @@ export class Chat {
 
   public oldMessages:any = [];
 
+  public isLandingPage: boolean;
+
   public appendContainer = new Toggleable('off', true);
   public mainBtn = new Toggleable('normal', false);
   public isLanding = new Toggleable(true);
@@ -458,6 +460,7 @@ export class Chat {
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       offset: offset,
+      is_landing_page: this.isLandingPage ? this.isLandingPage : false,
       limit: 20
     };
 

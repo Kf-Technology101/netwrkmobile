@@ -241,6 +241,8 @@ export class LinelistModal {
         public videoservice: VideoService,
         public feedbackService: FeedbackService
         ) {
+
+        this.chatPrvd.isLandingPage = false;
         this.user = this.authPrvd.getAuthData();
     }
 
@@ -1387,6 +1389,7 @@ export class LinelistModal {
     }
 
     public goBackOnLanding(event:any):void {
+        this.chatPrvd.isLandingPage = true;
         this.viewCtrl.dismiss();
     }
 

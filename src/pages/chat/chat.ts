@@ -237,8 +237,10 @@ export class ChatPage implements DoCheck {
     public feedbackService: FeedbackService
   ) {
       this.user = this.authPrvd.getAuthData();
+      this.chatPrvd.isLandingPage = true;
     console.log('%c [CHAT] CONSTRUCTOR ', 'background: #1287a8;color: #ffffff');
     this.initLpMap();
+
   }
 
   public shareMessageToFacebook(message):void {

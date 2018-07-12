@@ -153,6 +153,26 @@ page-network-no {
   }
   .content {
     background: transparent;
+    .message-count {
+      position: absolute;
+      top: 25px;
+      left: 35px;
+      background: #f95e64;
+      width: 20px;
+      height: 20px;
+      padding: 1px 6px;
+      z-index: 5;
+      border-radius: 50%;
+      color: #fff;
+    }
+    .message-box {
+      position: absolute;
+      bottom: 8px;
+      left: 14px;
+      z-index: 5;
+      color: grey;
+      font-size: 27px;
+    }
     .no-legendary {
       position: absolute;
       top: 0;
@@ -601,6 +621,22 @@ page-network-no {
       &.lobby {
         padding-top: 62px;
       }
+      .message.conversation-post{
+        border-radius: 13px;
+        background: color($colors, white);
+        margin: 0;
+        margin-left: 32px;
+        padding: 6px;
+        padding-left: 32px;
+        padding-right: 25px;
+        margin-right: 58px;
+        position: relative;
+        z-index: 3;
+        border: 1px solid #f9f9f9;
+      }
+      .message.hideLines,.message.hideConversation,.message.finalHide, {
+          display:none !important;
+      }
       .message {
         padding: 0;
         margin: 0;
@@ -669,6 +705,14 @@ page-network-no {
               color: color($colors, bk);
             }
           }
+
+          .message-container.false {
+            padding: 6px;
+            margin-left: 0;
+            .text {
+              margin-left:0 !important;
+            }
+          }
           .feedback-button {
             background: url('../assets/icon/map.svg') no-repeat center;
             background-size: 75%;
@@ -687,6 +731,21 @@ page-network-no {
           background: #fff;
           object-fit: cover;
         }
+        .chat-avatar.conversation {
+          top: 6px !important;
+          left: -6px;
+        }
+        .message-container.false {
+          margin-left: 12px !important;
+          padding: 6px;
+          padding-left: 60px !important;
+          padding-right: 15px !important;
+          margin-right: 12px !important;
+          .text {
+            margin-left:0 !important;
+          }
+        }
+
         .message-container {
           border-radius: 13px;
           background: color($colors, white);

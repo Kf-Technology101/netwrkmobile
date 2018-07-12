@@ -4,12 +4,12 @@
       <div class="drag-container">
         <div class="dragline">
           <span class="info">
-            <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
-              {{ profile.user.role_name }}
-            </span>
-            <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
-              {{ profile.user.name }}
-            </span>
+                <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
+                  {{ profile.user.role_name }}
+                </span>
+                <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
+                  {{ profile.user.name }}
+                </span>
           </span>
           <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon left">
           <img class="draggable-element left" [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.hero_avatar_url : profile.user.avatar_url"

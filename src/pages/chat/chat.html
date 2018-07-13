@@ -312,27 +312,27 @@
     </div>
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      <div class="{{message.undercover}}" *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' || !isUndercover && !message.has_expired || chatPrvd.isLobbyChat && !message.has_expired"   [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && !message.undercover  }">
+      <div class="{{message.undercover}}" *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' || !isUndercover && !message.has_expired || chatPrvd.isLobbyChat && !message.has_expired"   [ngClass]="{ 'message-container' : !message.undercover  }">
 
         <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         (tap)="openLobbyForPinned(message)"
-        [ngClass]="{ 'conversation' : !message.undercover && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area' }"
+        [ngClass]="{ 'conversation' : !message.undercover && !chatPrvd.isLobbyChat }"
         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
         <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         (tap)="openLobbyForPinned(message)"
-        [ngClass]="{ 'conversation' : !message.undercover && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area' }"
+        [ngClass]="{ 'conversation' : !message.undercover && !chatPrvd.isLobbyChat }"
         [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
         <span class="message-count" *ngIf="message.undercover && !chatPrvd.isLobbyChat">1</span>
 
-        <span *ngIf="chatPrvd.getState() == 'undercover' && !message.undercover" class="message-box">
+        <span *ngIf="!message.undercover" class="message-box">
             <ion-icon ios="ios-mail-outline" md="ios-mail-outline"></ion-icon>
         </span>
 
-        <p [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && message.undercover || chatPrvd.isLobbyChat || chatPrvd.getState() == 'area' && !message.undercover }">
+        <p [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && message.undercover || chatPrvd.isLobbyChat}">
 
           <span class="username" *ngIf="message.user">
             <!--<ng-container *ngIf="message.public">-->

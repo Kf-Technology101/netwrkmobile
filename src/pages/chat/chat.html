@@ -196,7 +196,7 @@
         [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
-        <span class="message-count" *ngIf="message.undercover && !chatPrvd.isLobbyChat">1</span>
+        <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span>
 
         <span *ngIf="chatPrvd.getState() == 'undercover' && !message.undercover" class="message-box">
             <ion-icon ios="ios-mail-outline" md="ios-mail-outline"></ion-icon>
@@ -326,7 +326,7 @@
         [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
-        <span class="message-count" *ngIf="message.undercover && !chatPrvd.isLobbyChat">1</span>
+        <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span>
 
         <span *ngIf="!message.undercover" class="message-box">
             <ion-icon ios="ios-mail-outline" md="ios-mail-outline"></ion-icon>

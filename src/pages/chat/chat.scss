@@ -153,6 +153,9 @@ page-network-no {
   }
   .content {
     background: transparent;
+    .message-container .message-item {
+      margin: 0 0px 9px 0 !important;
+    }
     .message-count {
       position: absolute;
       top: 30px;
@@ -167,7 +170,7 @@ page-network-no {
     }
     .message-box {
       position: absolute;
-      bottom: 8px;
+      bottom: -10px;
       left: 14px;
       z-index: 5;
       color: grey;
@@ -641,7 +644,7 @@ page-network-no {
         padding: 0;
         margin: 0;
         position: relative;
-        margin-top: 24px;
+        margin-top: 15px;
         opacity: 0;
         .slides {
           .swiper-pagination {

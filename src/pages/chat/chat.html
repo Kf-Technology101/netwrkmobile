@@ -202,7 +202,7 @@
             <ion-icon ios="ios-mail-outline" md="ios-mail-outline"></ion-icon>
         </span>
 
-        <p [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && message.undercover || chatPrvd.isLobbyChat || chatPrvd.getState() == 'area' && !message.undercover }">
+        <p class="message-item" [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && message.undercover || chatPrvd.isLobbyChat || chatPrvd.getState() == 'area' && !message.undercover }">
 
           <span class="username" *ngIf="message.user">
             <!--<ng-container *ngIf="message.public">-->
@@ -332,7 +332,7 @@
             <ion-icon ios="ios-mail-outline" md="ios-mail-outline"></ion-icon>
         </span>
 
-        <p [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && message.undercover || chatPrvd.isLobbyChat}">
+        <p class="message-item" [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && message.undercover || chatPrvd.isLobbyChat}">
 
           <span class="username" *ngIf="message.user">
             <!--<ng-container *ngIf="message.public">-->

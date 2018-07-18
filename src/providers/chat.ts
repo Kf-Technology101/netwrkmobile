@@ -74,6 +74,8 @@ export class Chat {
     isAddButtonAvailable: true
   };
 
+  public currentLobbyMessage:any;
+
   public allowUndercoverUpdate:boolean = true;
 
   constructor(
@@ -236,6 +238,7 @@ export class Chat {
 
   public isCurrentUserBelongsToChat(users:Array<any>):any {
     let isInside:boolean = false;
+      this.user=this.authPrvd.getAuthData();
     for (let i = 0; i < users.length; i++) {
       if (users[i].id == this.user.id) { isInside = true; break; }
     }
@@ -259,6 +262,7 @@ export class Chat {
           if (res && res.messages && res.room_id) {
             this.postMessages = res.messages;
             this.currentLobby.id = res.room_id;
+            this.currentLobbyMessage = message;
             this.startLobbySocket(res.room_id);
             this.getLocationLobbyUsers(message.id).subscribe(res => {
               console.log('getLocationLobbyUsers:', res);

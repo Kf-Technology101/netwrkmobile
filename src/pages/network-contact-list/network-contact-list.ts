@@ -144,6 +144,31 @@ export class NetworkContactListPage {
     });
   }
 
+  private openLobbyForPinned(message:any):Promise<any> {
+    return new Promise ((resolve, reject) => {
+        this.app.getRootNav().setRoot(ChatPage, {
+            action: 'undercover'
+        });
+        if (this.chatPrvd.currentLobby.id) {
+            this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(() => {
+            }, err => console.error(err));
+        } else console.error('[handleUserChatJoinRequest] Lobby object does not contain {id} property');
+
+        this.chatPrvd.isMainBtnDisabled = true;
+        this.chatPrvd.currentLobbyMessage=message;
+        this.chatPrvd.appendContainer.hidden = true;
+        this.chatPrvd.openLobbyForPinned(message).then(() => {
+            this.chatPrvd.allowUndercoverUpdate = false;
+            this.chatPrvd.toggleLobbyChatMode();
+            this.chatPrvd.isMainBtnDisabled = false;
+        }, err => {
+            console.error(err);
+            this.chatPrvd.isMainBtnDisabled = false;
+            this.chatPrvd.allowUndercoverUpdate = true;
+        });
+    });
+  }
+
   private showShareQuestion(forced?:boolean):any {
     if (this.showShareDialog || forced) {
       let alert = this.alertCtrl.create({
@@ -159,20 +184,22 @@ export class NetworkContactListPage {
                   this.contacts[c].checked = false;
                 }
               }
-              this.goToArea().then(res => {
-                this.tools.hideLoader();
-                alert.dismiss();
-              }, err => alert.dismiss());
+
+              this.openLobbyForPinned(this.chatPrvd.currentLobbyMessage);
+              this.tools.hideLoader();
+              alert.dismiss();
               return false;
             }
-          }, {
+          },
+
+            {
             cssClass: 'active',
             text: 'Sure!',
             handler: () => {
-                this.goToArea().then(res => {
-                    this.tools.hideLoader();
-                    alert.dismiss();
-                }, err => alert.dismiss());
+
+                this.openLobbyForPinned(this.chatPrvd.currentLobbyMessage);
+                this.tools.hideLoader();
+                alert.dismiss();
 
               console.log('runing handler for [Sure!]');
               this.feedbackService.autoPostToFacebook({
@@ -180,10 +207,10 @@ export class NetworkContactListPage {
                 url: 'http://18.188.223.201:3000'
               }).then(res => {
                 this.tools.showToast('App successfully shared');
-                this.goToArea().then(res => {
+
+                  this.openLobbyForPinned(this.chatPrvd.currentLobbyMessage);
                   this.tools.hideLoader();
                   alert.dismiss();
-                }, err => alert.dismiss());
               }, err => {
                 this.tools.showToast('Something went wrong :(');
                 this.tools.hideLoader();

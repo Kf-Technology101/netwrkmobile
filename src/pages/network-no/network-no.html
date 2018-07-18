@@ -52,7 +52,7 @@
           <ion-list>
             <ion-item (click)="goToProfile(user)" *ngFor="let user of networkUsers">
               <ion-avatar item-left>
-                <img [src]="user.avatar_url">
+                <img [src]="user.avatar_url ? user.avatar_url : tools.defaultAvatar">
               </ion-avatar>
               <h2 ion-text color="bk" *ngIf="user.name">{{ user.name }}</h2>
               <h2 ion-text color="bk" *ngIf="!user.name">{{ user.email }}</h2>
@@ -63,8 +63,7 @@
     </ion-content>
 
     <ion-footer>
-      <div class="tip tail-bottom"
-      *ngIf="chatPrvd.localStorage.get('first_time_noarea') === null">
+      <div class="tip tail-bottom" *ngIf="chatPrvd.localStorage.get('first_time_noarea') === null">
         Continue to get your area started
       </div>
       <button ion-button color="bk" [@mainBtnState]="chatPrvd.mainBtn.getState()"

@@ -141,6 +141,7 @@ export class ChatPage implements DoCheck {
   contentBlock: any = undefined;
 
   public chatUsers: any = [];
+  public networkUsers: any = [];
 
   public user: any;
 
@@ -238,6 +239,7 @@ export class ChatPage implements DoCheck {
   ) {
       this.user = this.authPrvd.getAuthData();
       this.chatPrvd.isLandingPage = true;
+
     console.log('%c [CHAT] CONSTRUCTOR ', 'background: #1287a8;color: #ffffff');
     this.initLpMap();
 
@@ -363,6 +365,30 @@ export class ChatPage implements DoCheck {
     });
   }
 
+    public lineJoinRequest():void {
+        let alert = this.alertCtrl.create({
+            subTitle: 'Become a part of the local broadcast?',
+            buttons: [{
+                text: 'Not now',
+                role: 'cancel'
+            }, {
+                cssClass: 'active',
+                text: 'Sure',
+                handler: () => {
+                    console.log('joinNetwork handler');
+                    alert.dismiss();
+                    this.toolsPrvd.pushPage(NetworkContactListPage, {
+                        type: 'emails',
+                        show_share_dialog: true
+                    });
+
+                    return false;
+                }
+            }]
+        });
+        alert.present();
+    }
+
   private setCustomTransitions():void {
     this.config.setTransition('modal-slide-left', ModalRTLEnterAnimation);
     this.config.setTransition('modal-slide-right', ModalRTLLeaveAnimation);
@@ -399,7 +425,7 @@ export class ChatPage implements DoCheck {
   }
 
   private changePlaceholderText():void {
-    this.placeholderText = this.isUndercover ? 'Tap to hang anything here' : 'Broadcast to your area';
+      this.placeholderText = this.isUndercover ? 'Tap to hang anything here' : 'What would you like to say?';
   }
 
   private generateEmoticons():void {
@@ -845,6 +871,19 @@ export class ChatPage implements DoCheck {
     });
   }
 
+
+    private getNetworkUsers():void {
+        let netPar:any = {
+            post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+        };
+        this.networkPrvd.getUsers(netPar).subscribe(res => {
+            if (res) {
+                this.networkUsers = res.users;
+                this.uniqueUsers = res.unique_users;
+            }
+        }, err => console.error(err));
+    }
+
   private goUndercover(event?:any):any {
     console.log('============= goUndercover =============');
     this.messagesInterval = false;
@@ -886,11 +925,28 @@ export class ChatPage implements DoCheck {
         if (res.network)
           this.chatPrvd.saveNetwork(res.network);
         console.log('DETECT NETWORK [goUndercover]')
+
         if (res.message == 'Network not found') {
-          console.log('_no network found');
-          this.toolsPrvd.pushPage(NetworkNoPage, {
-            action: 'create'
-          });
+
+            this.gpsPrvd.createNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
+                if(res){
+                    this.networkParams = {
+                        post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+                    };
+                    this.networkPrvd.join(this.networkParams).subscribe(res => {
+                        this.getNetworkUsers();
+                    }, err => {
+                        console.log(err);
+                    });
+                }
+            }, err => {
+                console.log(err);
+            });
+
+          //console.log('_no network found');
+          //this.toolsPrvd.pushPage(NetworkNoPage, {
+          //  action: 'create'
+          //});
           this.toolsPrvd.hideLoader();
           return;
         } else {
@@ -1078,6 +1134,7 @@ export class ChatPage implements DoCheck {
     this.hideTopSlider('timer');
   }
 
+
     public joinNetwork():void {
         let alert = this.alertCtrl.create({
             subTitle: 'Become a part of the local broadcast?',
@@ -1094,17 +1151,21 @@ export class ChatPage implements DoCheck {
                         type: 'emails',
                         show_share_dialog: true
                     });
+
+                    this.networkParams = {
+                        post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+                    };
+                    this.networkPrvd.join(this.networkParams).subscribe(res => {
+
+                    }, err => {
+                        console.log(err);
+                    });
+
                     return false;
                 }
             }]
         });
         alert.present();
-
-        this.networkPrvd.join(this.networkParams).subscribe(res => {
-            this.getUsers();
-        }, err => {
-            console.log(err);
-        });
     }
 
   private getUsers():Promise<any> {
@@ -1569,6 +1630,8 @@ export class ChatPage implements DoCheck {
       this.toolsPrvd.showLoader();
       this.chatPrvd.isMainBtnDisabled = true;
       //this.txtIn.value = '';
+
+      this.chatPrvd.currentLobbyMessage=message;
       this.chatPrvd.appendContainer.hidden = true;
       this.cameraPrvd.takenPictures = [];
       this.setMainBtnStateRelativeToEvents();

@@ -8,13 +8,24 @@ modal-legendaryhistory {
   .content {
     &.netwrk-content.content-md {
       .scroll-content {
-        margin-top: 150px !important;
+        margin-top: 70px !important;
         // margin-bottom: 70px;
       }
     }
     &.netwrk-content.content-ios {
       .scroll-content {
-        margin-top: 165px!important;
+        margin-top: 75px!important;
+      }
+    }
+    &.lobby-content.content-md {
+      .scroll-content {
+        margin-top: 25px !important;
+        // margin-bottom: 70px;
+      }
+    }
+    &.lobby-content.content-ios {
+      .scroll-content {
+        margin-top: 30px!important;
       }
     }
 
@@ -57,7 +68,9 @@ page-chat,page-hold {
   }
   .lobby-header {
     width: 100%;
-    overflow-y: auto;
+    background: #fff;
+    height: 84px;
+
     ion-toolbar {
       padding: 0;
       .toolbar-content {
@@ -72,11 +85,12 @@ page-chat,page-hold {
           width: 42px;
           height: 42px;
           border-radius: 50%;
-          margin: 0 5px;
+          margin: 10px 5px;
           display: block;
           &.host {
             width: 64px;
             height: 64px;
+            margin: 0 5px !important;
           }
         }
         .join-chat {
@@ -88,7 +102,90 @@ page-chat,page-hold {
           background: color($colors, bk);
           font-size: 24px;
           color: #fff;
-          margin: 0 5px;
+          margin: 10px 5px;
+        }
+      }
+    }
+
+    .toolbar {
+      border-bottom: 1px solid color($colors, bk);
+      padding-left: 0;
+      padding-right: 0;
+      padding-bottom: 0;
+      background: transparent;
+        &.no-bg {
+          background: #fff;
+          span {
+            display: block;
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            line-height: 43px;
+            pointer-events: none;
+            color: color($colors, bk-unactive-blue);
+          }
+        }
+        .ic {
+          display: block;
+          width: 26px;
+          height: 26px;
+          border-radius: 50%;
+
+          &.user-icon {
+            float: left;
+            margin-left: 12px;
+            display: block;
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            margin-top:10px !important;
+            &.host {
+              width: 64px;
+              height: 64px;
+              margin-top:0 !important;
+            }
+          }
+
+          &.legendary-icon {
+            float: right;
+            margin-right: 12px;
+          }
+        }
+    }
+
+    .netwrk-slider {
+      width: 100%;
+      // height: 0;
+      .netwrk-slide {
+        font-size: 12px;
+        opacity: 0;
+        animation-name: fadeIn;
+        animation-duration: 1s;
+        animation-delay: .5s;
+        animation-fill-mode: forwards;
+        button.add-to-netwrk {
+          display: block;
+          margin: auto;
+          height: 68px;
+          width: 68px;
+          border-radius: 50%;
+          font-size: 30px;
+          background-color: #5b87aa;
+        }
+        .avatar {
+          width: 68px;
+          height: 68px;
+          margin: auto;
+        }
+        span.username {
+          display: block;
+          margin-top: 5px;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          white-space: nowrap;
+          color: color($colors, bk-unactive-blue);
         }
       }
     }
@@ -175,6 +272,14 @@ page-network-no {
       z-index: 5;
       color: grey;
       font-size: 27px;
+    }
+    .chat-bubbles-box {
+      position: absolute;
+      bottom: -1px;
+      left: 17px;
+      z-index: 5;
+      color: grey;
+      font-size: 14px;
     }
     .no-legendary {
       position: absolute;
@@ -309,6 +414,19 @@ page-network-no {
     // height: 100%;
     // background: lightseagreen;
   }
+
+//  .greyStyle {
+//    ion-item.text {
+//      #textInput {
+//        input {
+//          background: grey !important;
+//        }
+//      }
+//    }
+//    .input-wrapper,.post-message {
+//      display: none;
+//    }
+//  }
 
   ion-item.text {
     position: absolute;
@@ -709,7 +827,7 @@ page-network-no {
             }
           }
 
-          .message-container.false {
+          .message-container.false,.message-container.isLobby {
             padding: 6px;
             margin-left: 0;
             .text {
@@ -738,7 +856,7 @@ page-network-no {
           top: 6px !important;
           left: -6px;
         }
-        .message-container.false {
+        .message-container.false, .message-container.isLobby {
           margin-left: 12px !important;
           padding: 6px;
           padding-left: 60px !important;
@@ -995,7 +1113,7 @@ page-network-no {
     background: transparent;
     .netwrk-header {
       // padding-bottom: 16px;
-      height: 150px;
+      height: 44px;
       .area-subhead-tip {
         font-size: 10px;
         text-align: center;

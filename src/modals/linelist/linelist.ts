@@ -1390,7 +1390,12 @@ export class LinelistModal {
 
     public goBackOnLanding(event:any):void {
         this.chatPrvd.isLandingPage = true;
+        this.chatPrvd.postMessages = [];
+        this.chatPrvd.isCleared = true;
+        this.canRefresh = true;
+        this.refreshChat();
         this.viewCtrl.dismiss();
+
     }
 
     private onEnter():void {

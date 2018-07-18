@@ -96,13 +96,13 @@
 
   <!--Area Header-->
   <div *ngIf="!isUndercover" class="netwrk-header">
-    <ion-toolbar class="area-head">
-      <img [src]="user.avatar_url ? user.avatar_url : toolsPrvd.defaultAvatar"
-        (click)="goToProfile(null, true, user.role_name)" class="ic user-icon"
-         (error)="chatPrvd.updateAvatarUrl($event)">
+    <!--<ion-toolbar class="area-head">-->
+      <!--<img [src]="user.avatar_url ? user.avatar_url : toolsPrvd.defaultAvatar"-->
+        <!--(click)="goToProfile(null, true, user.role_name)" class="ic user-icon"-->
+         <!--(error)="chatPrvd.updateAvatarUrl($event)">-->
 
-      <img class="ic legendary-icon" src="assets/images/sun_icon.png" (click)="goToLegendaryList()">
-    </ion-toolbar>
+      <!--<img class="ic legendary-icon" src="assets/images/sun_icon.png" (click)="goToLegendaryList()">-->
+    <!--</ion-toolbar>-->
     <!--<ion-toolbar>-->
       <!--<ion-slides slidesPerView="4" class="netwrk-slider">-->
         <!--<ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">-->
@@ -117,7 +117,7 @@
             <!--{{ user.email }}-->
           <!--</span>-->
         <!--</ion-slide>-->
-        <!--&lt;!&ndash;<ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide"&ndash;&gt;-->
+        <!--<!--<ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide"-->-->
         <!--<ion-slide class="netwrk-slide" (click)="joinNetwork()">-->
           <!--<div class="avatar add-to-netwrk">-->
               <!--<img src="assets/images/netwrk_plus.svg">-->
@@ -134,10 +134,8 @@
         <!--</div>-->
       <!--</span>-->
     <!--</p>-->
-    <button ion-button class="side clear-btn" (tap)="clearMessages()"
-    *ngIf="!isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state &&
-    !chatPrvd.isLobbyChat">
-    Clear
+    <button ion-button class="side clear-btn" (tap)="clearMessages()" *ngIf="!isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state && !chatPrvd.isLobbyChat">
+        Clear
     </button>
   </div>
 </ion-header>
@@ -158,9 +156,9 @@
               <div (tap)="goToProfile(user.id,user.public, user.role_name)">
                 <img class="ic user-icon" [src]="user.hero_avatar_url" (error)="chatPrvd.updateAvatarUrl($event)" [ngClass]="{'host' : i == 0}">
               </div>
-          <span class="username">
-          {{ user.email }}
-          </span>
+          <!--<span class="username">-->
+          <!--{{ user.email }}-->
+          <!--</span>-->
           <!--<span *ngIf="!user.name" class="username">-->
           <!--{{ user.email }}-->
           <!--</span>-->

@@ -117,7 +117,7 @@
             <!--{{ user.email }}-->
           <!--</span>-->
         <!--</ion-slide>-->
-        <!--<!--<ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide"-->-->
+        <!--<!--<ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide"-->
         <!--<ion-slide class="netwrk-slide" (click)="joinNetwork()">-->
           <!--<div class="avatar add-to-netwrk">-->
               <!--<img src="assets/images/netwrk_plus.svg">-->
@@ -154,7 +154,7 @@
       <ion-slides slidesPerView="5" class="netwrk-slider">
           <ion-slide *ngFor="let user of chatPrvd.currentLobby.users; let i = index" class="netwrk-slide">
               <div (tap)="goToProfile(user.id,user.public, user.role_name)">
-                <img class="ic user-icon" [src]="user.hero_avatar_url" (error)="chatPrvd.updateAvatarUrl($event)" [ngClass]="{'host' : i == 0}">
+                <img class="ic user-icon" [src]="user.hero_avatar_url" (error)="chatPrvd.updateAvatarUrl($event)">
               </div>
           <!--<span class="username">-->
           <!--{{ user.email }}-->
@@ -197,31 +197,28 @@
 
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      <div class="{{message.undercover}}" *ngIf="!message.has_expired && !message.undercover && chatPrvd.getState() == 'undercover' || chatPrvd.isLobbyChat" [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && !message.undercover || chatPrvd.isLobbyChat, 'isLobby': chatPrvd.isLobbyChat }">
-
+      <div class="message-container {{message.undercover}}" *ngIf="!message.has_expired && !message.undercover || chatPrvd.isLobbyChat && !message.has_expired && message.undercover" [ngClass]="{'isLobby': chatPrvd.isLobbyChat || chatPrvd.getState() == 'area' }">
         <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         (tap)="openLobbyForPinned(message)"
-        [ngClass]="{ 'conversation' :  chatPrvd.isLobbyChat || chatPrvd.getState() != 'area' }"
-        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
+        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar conversation"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
         <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         (tap)="openLobbyForPinned(message)"
-        [ngClass]="{ 'conversation' :  chatPrvd.isLobbyChat || chatPrvd.getState() != 'area' }"
-        [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
+        [src]="toolsPrvd.defaultAvatar" class="chat-avatar conversation"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span>
 
-        <span class="message-box" *ngIf="!chatPrvd.isLobbyChat">
+        <span class="message-box" *ngIf="!chatPrvd.isLobbyChat && !message.is_emoji">
             <ion-icon ios="ios-mail-outline" md="ios-mail-outline"></ion-icon>
         </span>
 
-        <span class="chat-bubbles-box" *ngIf="chatPrvd.isLobbyChat">
+        <span class="chat-bubbles-box" *ngIf="chatPrvd.isLobbyChat && !message.is_emoji">
             <ion-icon ios="ios-chatbubbles-outline" md="ios-chatbubbles-outline"></ion-icon>
         </span>
 
-        <p class="message-item" [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && message.undercover && !chatPrvd.isLobbyChat || chatPrvd.getState() == 'area' && !message.undercover }">
+        <p class="message-item">
 
           <span class="username" *ngIf="message.user">
             <!--<ng-container *ngIf="message.public">-->
@@ -271,8 +268,7 @@
 
         <ng-container *ngIf="chatPrvd.getState() == 'undercover' && message.undercover || chatPrvd.isLobbyChat || chatPrvd.getState() == 'area' && !message.undercover">
             <button class="feedback-button" (tap)="feedbackService.toggleLikes(message.id, user.id, $event)"
-            [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced,
-            'active' : message.like_by_user}"
+            [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}"
             *ngIf="!message.locked_by_user || user.id == message.user_id"
             (press)="openFeedbackModal(message, i)">
             <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
@@ -331,27 +327,20 @@
     </div>
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      <div class="{{message.undercover}}" *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' && !chatPrvd.isLobbyChat || !isUndercover && !message.has_expired && !chatPrvd.isLobbyChat"   [ngClass]="{ 'message-container' : !message.undercover  }">
-
+      <div *ngIf="!message.has_expired && message.undercover && !chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover' && chatPrvd.getState() != 'area'">
         <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         (tap)="openLobbyForPinned(message)"
-        [ngClass]="{ 'conversation' : !message.undercover && !chatPrvd.isLobbyChat }"
         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
         <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         (tap)="openLobbyForPinned(message)"
-        [ngClass]="{ 'conversation' : !message.undercover && !chatPrvd.isLobbyChat }"
         [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span>
 
-        <span *ngIf="!message.undercover" class="message-box">
-            <ion-icon ios="ios-mail-outline" md="ios-mail-outline"></ion-icon>
-        </span>
-
-        <p class="message-item" [ngClass]="{ 'message-container' : chatPrvd.getState() == 'undercover' && message.undercover || chatPrvd.isLobbyChat}">
+        <p class="message-item message-container">
 
           <span class="username" *ngIf="message.user">
             <!--<ng-container *ngIf="message.public">-->
@@ -497,8 +486,7 @@
           <span class="toggle-state" *ngIf="shareCheckbox.facebook">on</span>
           <span class="toggle-state" *ngIf="!shareCheckbox.facebook">off</span>
           <div [ngClass]="{ 'right' : shareCheckbox.facebook }" class="toggleable">
-            <ion-icon ios="logo-facebook" md="logo-facebook"
-            color="facebook"></ion-icon>
+            <ion-icon ios="logo-facebook" md="logo-facebook" color="facebook"></ion-icon>
           </div>
           <input type="checkbox" [checked]="shareCheckbox.facebook">
         </div>
@@ -517,8 +505,7 @@
         </div>
       </div>
 
-      <div class="slide-container sl-instagram"
-      *ngIf="socialPrvd.connect.instagram">
+      <div class="slide-container sl-instagram" *ngIf="socialPrvd.connect.instagram">
         <div #slln [ngClass]="{'active': shareCheckbox.instagram}" class="toggle-el"
           (click)="toggleShareSlider('instagram')">
           <span class="toggle-state" *ngIf="shareCheckbox.instagram">on</span>
@@ -533,8 +520,7 @@
     </ion-toolbar>
 
     <div class="share-content">
-      <ion-spinner name="ios" class="share-spinner"
-      [hidden]="socialLoaderHidden"></ion-spinner>
+      <ion-spinner name="ios" class="share-spinner" [hidden]="socialLoaderHidden"></ion-spinner>
       <ng-container *ngFor="let post of socialPosts">
         <ng-container *ngIf="post.text_with_links || post.image_urls.length > 0">
           <div (click)="postMessageFromSocial(post)" class="img-container">
@@ -620,15 +606,13 @@
         <img src="assets/icon/wifi.png"/>
   </button>
 
-  <div class="flip-container" [ngClass]="{'hover' : flipHover, 'greyStyle' : !chatPrvd.users[user.id]}" *ngIf="chatPrvd.isLobbyChat || chatPrvd.getState() == 'area'">
+  <div class="flip-container" [ngClass]="{'hover' : flipHover, 'greyStyle' : chatPrvd.currentLobby.isAddButtonAvailable && chatPrvd.isLobbyChat }" *ngIf="chatPrvd.isLobbyChat || chatPrvd.getState() == 'area'">
     <ion-item class="text front" #inputItem
               *ngIf="(chatPrvd.currentLobby.currentUserPresent &&
-              chatPrvd.isLobbyChat) || !mainInput.hidden"
-              [@fadeState]="mainInput.state"
+              chatPrvd.isLobbyChat) || !mainInput.hidden" [@fadeState]="mainInput.state"
               [ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state}">
       <div item-content id="textInpBtns" [@bgState]="chatPrvd.bgState.state">
-        <button ion-button [@inputState]="chatPrvd.chatBtns.state[0]"
-          (click)="openCamera();
+        <button ion-button [@inputState]="chatPrvd.chatBtns.state[0]" (click)="openCamera();
                    toggleContainer(emojiContainer, 'hide');
                    toggleContainer(shareContainer, 'hide')">
           <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>

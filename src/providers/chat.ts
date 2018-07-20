@@ -127,6 +127,16 @@ export class Chat {
     return messMap;
   }
 
+  public followUserToLine(messageId:number):any {
+      this.user = this.authPrvd.getAuthData();
+    let mess = this.api.post('user_followed', {
+        message_id: messageId,
+        user_id: this.user.id
+    }).share();
+    let messMap = mess.map(res => res.json());
+    return messMap;
+  }
+
   public checkSocialData(socialName:string):boolean {
     // let socialData = this.localStorage.get('social_auth_data');
     return this.socialPrvd.connect[socialName];
@@ -774,7 +784,7 @@ export class Chat {
       let params = {
         id: profileId,
         public: profileTypePublic,
-        currentUser: currentUser,
+        currentUser: currentUser
       };
       res(params);
     });

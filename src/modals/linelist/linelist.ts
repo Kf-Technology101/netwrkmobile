@@ -1488,6 +1488,7 @@ export class LinelistModal {
 
     ionViewDidEnter() {
         this.onEnter();
+        this.toolsPrvd.hideLoader();
     }
 
     public listenForScrollEnd(event):void {

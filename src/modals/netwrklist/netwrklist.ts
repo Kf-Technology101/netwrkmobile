@@ -87,14 +87,15 @@ export class NetwrklistModal {
 
 
     public followNearByNetwork(message) {
-        message.isFollowed=true;
+
         this.toolsPrvd.showLoader();
-        this.chatPrvd.connectUserToChat(message.room_id).subscribe(res => {
+        this.chatPrvd.followUserToLine(message.id).subscribe(res => {
+            message.is_followed=true;
             this.toolsPrvd.hideLoader();
-            this.toolsPrvd.showToast('User connected successfully');
+            this.toolsPrvd.showToast('Followed Line successfully');
         }, err => {
             this.toolsPrvd.hideLoader();
-            this.toolsPrvd.showToast('User already connected');
+            //this.toolsPrvd.showToast('Something went wrong');
         });
     }
 

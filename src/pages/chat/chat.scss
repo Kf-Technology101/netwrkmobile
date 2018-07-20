@@ -415,18 +415,21 @@ page-network-no {
     // background: lightseagreen;
   }
 
-//  .greyStyle {
-//    ion-item.text {
-//      #textInput {
-//        input {
-//          background: grey !important;
-//        }
-//      }
-//    }
-//    .input-wrapper,.post-message {
-//      display: none;
-//    }
-//  }
+  .greyStyle {
+    ion-item.text {
+      background: #e2e2e2;
+      #textInput {
+        background: #e2e2e2;
+        padding-left: 28px;
+        input {
+          background: #e2e2e2;
+        }
+      }
+    }
+    .post-message,#plus-btn {
+      display: none;
+    }
+  }
 
   ion-item.text {
     position: absolute;
@@ -931,7 +934,8 @@ page-network-no {
             margin-top: 12px;
             margin-left: -10px;
             &.emoji {
-              font-size: 44px;
+              font-size: 35px;
+              margin-top: 0;
             }
           }
         }
@@ -947,8 +951,8 @@ page-network-no {
           top: 0px;
         }
         .feedback-button {
-          width: 42px;
-          height: 42px;
+          width: 37px;
+          height: 37px;
           border-radius: 13px;
           position: absolute;
           right: 12px;
@@ -996,11 +1000,11 @@ page-network-no {
           }
         }
         .recast-button {
-          width: 42px;
+          width: 43px;
           border-radius: 13px;
           position: absolute;
-          right: 12px;
-          top: 47px;
+          right: 9px;
+          top: 42px;
           z-index: 3;
           background-color: #5b87aa;
           color: #fff;

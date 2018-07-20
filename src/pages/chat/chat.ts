@@ -381,7 +381,6 @@ export class ChatPage implements DoCheck {
                         type: 'emails',
                         show_share_dialog: true
                     });
-
                     return false;
                 }
             }]
@@ -1636,7 +1635,13 @@ export class ChatPage implements DoCheck {
       this.cameraPrvd.takenPictures = [];
       this.setMainBtnStateRelativeToEvents();
       this.placeholderText = 'What would you like to say?';
+
       this.chatPrvd.openLobbyForPinned(message).then(() => {
+          if(this.chatPrvd.currentLobby.isAddButtonAvailable){
+              this.placeholderText = 'Become a connector or create/join a network';
+          }else{
+              this.placeholderText = 'What would you like to say?';
+          }
           this.chatPrvd.allowUndercoverUpdate = false;
           clearTimeout(this.messIntObject);
           this.chatPrvd.toggleLobbyChatMode();
@@ -1769,6 +1774,7 @@ export class ChatPage implements DoCheck {
 
   ionViewDidEnter() {
     this.onEnter();
+    this.toolsPrvd.hideLoader();
   }
 
   public viewLocation(params?:any):void {
@@ -1823,6 +1829,8 @@ export class ChatPage implements DoCheck {
         }
       }
     }, err => console.error(err));
+
+    //this.toolsPrvd.hideLoader();
   }
 
   ionViewWillLeave() {

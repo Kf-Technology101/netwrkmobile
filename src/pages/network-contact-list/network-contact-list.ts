@@ -144,30 +144,45 @@ export class NetworkContactListPage {
     });
   }
 
-  private openLobbyForPinned(message:any):Promise<any> {
-    return new Promise ((resolve, reject) => {
-        this.app.getRootNav().setRoot(ChatPage, {
-            action: 'undercover'
+    private initLobbyTransition():Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.sendInvitesToEmails().then(res => {
+                this.app.getRootNav().setRoot(ChatPage, {
+                    action: 'undercover'
+                });
+                resolve();
+            }, err => {
+                this.tools.hideLoader();
+                this.tools.showToast('Something went wrong');
+                reject();
+            });
         });
-        if (this.chatPrvd.currentLobby.id) {
-            this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(() => {
-            }, err => console.error(err));
-        } else console.error('[handleUserChatJoinRequest] Lobby object does not contain {id} property');
+    }
 
-        this.chatPrvd.isMainBtnDisabled = true;
-        this.chatPrvd.currentLobbyMessage=message;
-        this.chatPrvd.appendContainer.hidden = true;
-        this.chatPrvd.openLobbyForPinned(message).then(() => {
-            this.chatPrvd.allowUndercoverUpdate = false;
-            this.chatPrvd.toggleLobbyChatMode();
-            this.chatPrvd.isMainBtnDisabled = false;
-        }, err => {
-            console.error(err);
-            this.chatPrvd.isMainBtnDisabled = false;
-            this.chatPrvd.allowUndercoverUpdate = true;
+    public goToLobby(message:any):Promise<any> {
+        return new Promise((resolve, reject) => {
+            this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
+                this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
+                    console.log('getLocationLobbyUsers:', res);
+                    if (res && res.users && res.host_id) {
+                        console.log('lobby users:', res.users);
+                        this.chatPrvd.currentLobby.users = res.users;
+                        this.chatPrvd.currentLobby.hostId = res.host_id;
+                        this.chatPrvd.currentLobby.isAddButtonAvailable = !this.chatPrvd.isCurrentUserBelongsToChat(this.chatPrvd.currentLobby.users);
+                        this.chatPrvd.sortLobbyUsersByHostId(this.chatPrvd.currentLobby.hostId);
+                        this.initLobbyTransition().then(res => resolve(), err => reject());
+                    } else {
+                        reject('[getLocationLobbyUsers] Server returned no users or host_id');
+                    }
+                }, err => {
+                    console.error(err);
+                    reject(err);
+                });
+            }, err => {
+                this.initLobbyTransition().then(res => resolve(), err => reject());
+            });
         });
-    });
-  }
+    }
 
   private showShareQuestion(forced?:boolean):any {
     if (this.showShareDialog || forced) {
@@ -175,49 +190,47 @@ export class NetworkContactListPage {
         enableBackdropDismiss: false,
         title: '',
         subTitle: 'Share this app with your friends on facebook too?',
-        buttons: [{
-            text: 'Skip',
-            role: 'cancel',
-            handler: () => {
-              if (forced && this.contacts) {
-                for (let c = 0; c < this.contacts.length; c++) {
-                  this.contacts[c].checked = false;
-                }
-              }
+        buttons: [
+          {
+                text: 'Skip',
+                role: 'cancel',
+                handler: () => {
+                  if (forced && this.contacts) {
+                    for (let c = 0; c < this.contacts.length; c++) {
+                      this.contacts[c].checked = false;
+                    }
+                  }
 
-              this.openLobbyForPinned(this.chatPrvd.currentLobbyMessage);
-              this.tools.hideLoader();
-              alert.dismiss();
-              return false;
-            }
+                  this.tools.hideLoader();
+                  this.goToLobby(this.chatPrvd.currentLobbyMessage).then(res => {
+                    alert.dismiss();
+                  }).catch(err => alert.dismiss());
+
+                  return false;
+                }
           },
 
-            {
-            cssClass: 'active',
-            text: 'Sure!',
-            handler: () => {
+          {
+                cssClass: 'active',
+                text: 'Sure!',
+                handler: () => {
+                    this.goToLobby(this.chatPrvd.currentLobbyMessage).then(res => {
+                        this.feedbackService.autoPostToFacebook({
+                            message: 'Become a part of local life! Local people join together in a netwrk to share and choose the best content. Download it to connect to local life wherever you are!',
+                            url: 'http://18.188.223.201:3000'
+                        }).then(res => {
+                            this.tools.showToast('App successfully shared');
+                            alert.dismiss();
+                            this.tools.hideLoader();
+                        }, err => {
+                            //this.tools.showToast('Something went wrong :(');
+                            alert.dismiss();
+                            this.tools.hideLoader();
+                        });
+                    }).catch(err => alert.dismiss());
 
-                this.openLobbyForPinned(this.chatPrvd.currentLobbyMessage);
-                this.tools.hideLoader();
-                alert.dismiss();
-
-              console.log('runing handler for [Sure!]');
-              this.feedbackService.autoPostToFacebook({
-                message: 'Become a part of local life! Local people join together in a netwrk to share and choose the best content. Download it to connect to local life wherever you are!',
-                url: 'http://18.188.223.201:3000'
-              }).then(res => {
-                this.tools.showToast('App successfully shared');
-
-                  this.openLobbyForPinned(this.chatPrvd.currentLobbyMessage);
-                  this.tools.hideLoader();
-                  alert.dismiss();
-              }, err => {
-                this.tools.showToast('Something went wrong :(');
-                this.tools.hideLoader();
-                alert.dismiss();
-              });
-              return false;
-            }
+                  return false;
+                }
           }
         ]
       });

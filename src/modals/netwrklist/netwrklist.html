@@ -25,7 +25,7 @@
                 <img *ngIf="!message.user" [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
 
                 <p class="message-container">
-                    <span class="" [ngClass]="{ 'isFollowed' : message.isFollowed }">
+                    <span class="" [ngClass]="{ 'isFollowed' : message.is_followed }">
                         <ng-container class="total-line-point"><span>Point: {{message.points}}</span>, <span> <span *ngIf="message.users_count">{{message.users_count}}</span> <span *ngIf="!message.users_count">0</span> Number of people in net</span></ng-container>
                     </span>
 
@@ -62,7 +62,7 @@
                     </ng-container>
                 </p>
 
-                <button ion-button class="feedback-button" color="bk" item-end (click)="followNearByNetwork(message)" [ngClass]="{ 'isFollowed' : message.isFollowed }">
+                <button ion-button class="feedback-button" color="bk" item-end (click)="followNearByNetwork(message)" [ngClass]="{ 'isFollowed' : message.is_followed }">
                     <ion-icon ios="ios-add" md="md-add"></ion-icon>
                 </button>
             </ng-container>

@@ -2,9 +2,10 @@
 <!--<div *ngIf="chatPrvd.isLanding.getState()" id="mapElement" #mapElement></div>-->
 <div id="mapElement" #mapElement [ngClass]="{'hide': chatPrvd.isLobbyChat}"></div>
 
-<!--Header -->
-<ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
-  <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover'">
+<!--chat-header !isUndercover-->
+<ion-header class="incognito-header" isScrolling="false" [ngClass]="{'fully-disabled': chatPrvd.isLobbyChat }">
+  <!--<ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover'">-->
+  <ion-toolbar>
     <div class="drag-container" [@sliderState]="topSlider.getState()">
       <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">
         <span class="info">

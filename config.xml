@@ -110,4 +110,5 @@
         <variable name="FABRIC_KEY" value="0b15d44d213d573ac860629f837562b2bf37ce9f" />
     </plugin>
     <engine name="ios" spec="~4.5.4" />
+    <engine name="browser" spec="~5.0.3" />
 </widget>

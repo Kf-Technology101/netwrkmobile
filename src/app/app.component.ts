@@ -53,26 +53,7 @@ export class MyApp {
       return true;
     });
 
-    let init = () => {
-      this.gps.getMyZipCode().then(res => {
-        if (res && res.zip_code)
-          this.storage.set('chat_zip_code', res.zip_code);
-          this.network.networkStatus(); // watch for network status
-        // check if user is authorized
-        this.apiPrvd.checkAuthStatus().subscribe(res => {
-          this.getLogin();
-          this.getSimInfo();
-          this.statusBar.styleDefault();
-        }, err => {
-          if (err.status && err.status == 401) {
-            this.app.getRootNav().setRoot(LogInPage);
-            this.toolsPrvd.hideSplashScreen();
-          }
-        });
-      });
-    };
-
-    init();
+    this.init();
 
     platform.ready().then(() => {
       permission.checkCameraPermissions().then(permissionOk => {
@@ -80,16 +61,36 @@ export class MyApp {
 
         if(platform.is('android')) {
           permission.checkAll().then(res => {
-            init();
+            this.init();
           }, err => console.error(err));
         } else {
-            init();
+            this.init();
         }
       });
     });
   }
 
-  private goToPage(root:any):void {
+  public init = () => {
+    this.gps.getMyZipCode().then(res => {
+        if (res && res.zip_code)
+            this.storage.set('chat_zip_code', res.zip_code);
+        this.network.networkStatus(); // watch for network status
+        // check if user is authorized
+        this.apiPrvd.checkAuthStatus().subscribe(res => {
+            this.getLogin();
+            this.getSimInfo();
+            this.statusBar.styleDefault();
+        }, err => {
+            if (err.status && err.status == 401) {
+                this.app.getRootNav().setRoot(LogInPage);
+                this.toolsPrvd.hideSplashScreen();
+            }
+        });
+    });
+  };
+
+
+    private goToPage(root:any):void {
     if (root == NetworkFindPage) {
       this.toolsPrvd.hideSplashScreen();
       this.app.getRootNav().setRoot(ChatPage, {

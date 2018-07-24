@@ -673,8 +673,6 @@ export class LinelistModal {
     }
 
 
-
-
     private toggleShareSlider(social_network):void {
         this.shareCheckbox[social_network] = !this.shareCheckbox[social_network];
         this.getSocialPosts();

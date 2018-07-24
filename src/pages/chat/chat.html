@@ -3,9 +3,9 @@
 <div id="mapElement" #mapElement [ngClass]="{'hide': chatPrvd.isLobbyChat}"></div>
 
 <!--chat-header !isUndercover-->
-<ion-header class="incognito-header" isScrolling="false" [ngClass]="{'fully-disabled': chatPrvd.isLobbyChat }">
-  <!--<ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover'">-->
-  <ion-toolbar>
+<ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover,'fully-disabled': chatPrvd.isLobbyChat }">
+  <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover'">
+  <!--<ion-toolbar>-->
     <div class="drag-container" [@sliderState]="topSlider.getState()">
       <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">
         <span class="info">
@@ -17,9 +17,7 @@
           </span>
         </span>
         <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon">
-        <img class="draggable-element"
-          [src]="slideAvatarPrvd.sliderPosition == 'right'
-          ? user.hero_avatar_url : user.avatar_url"
+        <img class="draggable-element" [src]="slideAvatarPrvd.sliderPosition == 'right' ? user.hero_avatar_url : user.avatar_url"
           (error)="chatPrvd.updateAvatarUrl($event)">
       </div>
     </div>
@@ -165,7 +163,7 @@
           <!--</span>-->
           </ion-slide>
 
-          <ion-slide class="netwrk-slide" (tap)="lineJoinRequest()"  *ngIf="chatPrvd.currentLobby.isAddButtonAvailable">
+          <ion-slide class="netwrk-slide" (press)="lineJoinRequest()" (click)="shareLineJoinFlow(chatPrvd.currentLobbyMessage)" *ngIf="chatPrvd.currentLobby.isAddButtonAvailable">
             <button class="join-chat">+</button>
           </ion-slide>
       </ion-slides>
@@ -276,9 +274,9 @@
             </button>
 
             <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}"
-            (press)="feedbackService.initNativeShare(message)"
-            (tap)="shareMessageToFacebook(message)">
-            Recast
+            (click)="feedbackService.initNativeShare(message)"
+            (press)="shareMessageToFacebook(message)">
+            Share
             </button>
         </ng-container>
 
@@ -398,10 +396,9 @@
             <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
             </button>
 
-            <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}"
-            (press)="feedbackService.initNativeShare(message)"
+            <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (press)="feedbackService.initNativeShare(message)"
             (tap)="shareMessageToFacebook(message)">
-            Recast
+            Share
             </button>
         </ng-container>
 

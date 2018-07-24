@@ -22,6 +22,7 @@ import { GoogleMapsService } from 'google-maps-angular2';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 import { Keyboard } from '@ionic-native/keyboard';
+import { SocialSharing } from '@ionic-native/social-sharing';
 
 // Pages
 import { CameraPage } from '../camera/camera';
@@ -222,6 +223,7 @@ export class ChatPage implements DoCheck {
     public networkPrvd: NetworkProvider,
     public gpsPrvd: Gps,
     public plt: Platform,
+    public sharing: SocialSharing,
     public socialPrvd: Social,
     public elRef: ElementRef,
     public modalCtrl: ModalController,
@@ -258,7 +260,7 @@ export class ChatPage implements DoCheck {
           alert.dismiss();
           this.feedbackService.autoPostToFacebook({
             message: message.user.name + ' casted via Netwrk: ' + (message.text_with_links ? message.text_with_links : ''),
-            url: message.image_urls && message.image_urls.length > 0 ? message.image_urls[0] : 'http://netwrkapp.com'
+            url:'http://netwrkapp.com'
           }).then(res => {
             this.toolsPrvd.showToast('Message successfully shared');
           }, err => {
@@ -270,6 +272,49 @@ export class ChatPage implements DoCheck {
     });
     alert.present();
   }
+
+
+  public shareLineJoinFlow(message):void {
+    let alert = this.alertCtrl.create({
+      subTitle: 'Are you sure you want to share line with friend?',
+      buttons: [{
+        text: 'Cancel',
+        role: 'cancel'
+      }, {
+        cssClass: 'active',
+        text: 'Share',
+        handler: () => {
+            alert.dismiss();
+            let subject = message.text_with_links ? message.text_with_links : '';
+            let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
+            let url ='http://netwrkapp.com';
+            this.sharing.share(message.text_with_links, 'Netwrk', file, url).then(res => {
+                    this.toolsPrvd.showToast('Message successfully shared');
+                    this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
+                        this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
+                            console.log('getLocationLobbyUsers:', res);
+                            if (res && res.users && res.host_id) {
+                                console.log('lobby users:', res.users);
+                                this.chatPrvd.currentLobby.users = res.users;
+                                this.chatPrvd.currentLobby.hostId = res.host_id;
+                                this.chatPrvd.currentLobby.isAddButtonAvailable = !this.chatPrvd.isCurrentUserBelongsToChat(this.chatPrvd.currentLobby.users);
+                                this.chatPrvd.sortLobbyUsersByHostId(this.chatPrvd.currentLobby.hostId);
+                            }
+                        }, err => {
+                            console.error(err);
+                        });
+                    }, err => {});
+            }, err =>{
+                    this.toolsPrvd.showToast('Unable to share message');
+                }
+            );
+          return false;
+        }
+      }]
+    });
+    alert.present();
+  }
+
 
   private initLpMap():void {
     this.gapi.init.then((google_maps: any) => {

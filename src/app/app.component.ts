@@ -29,7 +29,7 @@ import { UpgradeAdapter } from '@angular/upgrade';
 
 export class MyApp {
 
-  rootPage:any=LogInPage;
+  rootPage;
 
   constructor(
     public platform: Platform,
@@ -90,7 +90,7 @@ export class MyApp {
   };
 
 
-    private goToPage(root:any):void {
+  private goToPage(root:any):void {
     if (root == NetworkFindPage) {
       this.toolsPrvd.hideSplashScreen();
       this.app.getRootNav().setRoot(ChatPage, {
@@ -103,43 +103,54 @@ export class MyApp {
   }
 
   private getLogin() {
-    let authType = this.authPrvd.getAuthType();
-    let authData = this.authPrvd.getAuthData();
+        let authType = this.authPrvd.getAuthType();
+        let authData = this.authPrvd.getAuthData();
 
-    if (authType && authData) {
-      let root:any;
-      switch (authType) {
-        case 'facebook':
-          this.authPrvd.getFbLoginStatus().then(data => {
-            if (data.status && data.status == 'connected') {
-              root = this.undercoverPrvd.getCharacterPerson(
-                  HoldScreenPage, NetworkFindPage, ChatPage)
+        if (authType && authData) {
+            switch (authType) {
+                case 'facebook':
+                    this.authPrvd.getFbLoginStatus().then(data => {
+                        let root:any;
+                        if (data.status && data.status == 'connected') {
+                            root = this.undercoverPrvd.getCharacterPerson(
+                                UndercoverCharacterPage, NetworkFindPage, ChatPage)
+                        }
+                        if (root == NetworkFindPage) {
+                            this.app.getRootNav().setRoot(ChatPage, {
+                                action: 'undercover'
+                            });
+                        } else {
+                            this.rootPage = root;
+                        }
+                        this.splashScreen.hide();
+                    });
+                    break;
+                case 'email':
+                    let fbConnected = this.authPrvd.getFbConnected();
+                    let root:any;
+                    if (fbConnected) {
+                        root = this.undercoverPrvd.getCharacterPerson(
+                            UndercoverCharacterPage, NetworkFindPage, ChatPage)
+                    }
+                    if (root == NetworkFindPage) {
+                        this.app.getRootNav().setRoot(ChatPage, {
+                            action: 'undercover'
+                        });
+                    } else {
+                        this.rootPage = root;
+                    }
+
+                    this.splashScreen.hide();
+                    break;
+                default:
+                    this.rootPage = LogInPage;
             }
-            this.goToPage(root);
-          });
-          break;
-        case 'email':
-          let fbConnected = this.authPrvd.getFbConnected();
-          if (fbConnected) {
-            root = this.undercoverPrvd.getCharacterPerson(
-                HoldScreenPage, NetworkFindPage, ChatPage)
-          }
-          this.goToPage(root);
-          break;
-        default:
-        this.gps.getMyZipCode().then(res => {
-          this.app.getRootNav().setRoot(LogInPage);
-        }, err => this.app.getRootNav().setRoot(LogInPage));
-        this.toolsPrvd.hideSplashScreen();
-        break;
-      }
-    } else {
-      this.gps.getMyZipCode().then(res => {
-        this.app.getRootNav().setRoot(LogInPage);
-      }, err => this.app.getRootNav().setRoot(LogInPage));
-      this.toolsPrvd.hideSplashScreen();
-    }
+        } else {
+            this.rootPage = LogInPage;
+            this.splashScreen.hide();
+        }
   }
+
 
   private getSimInfo() {
     this.sim.getSimInfo().then(info => {

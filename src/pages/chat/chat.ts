@@ -81,6 +81,8 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 
 declare var google;
 
+
+@IonicPage()
 @Component({
   selector: 'page-chat',
   templateUrl: 'chat.html',
@@ -287,8 +289,7 @@ export class ChatPage implements DoCheck {
             alert.dismiss();
             let subject = message.text_with_links ? message.text_with_links : '';
             let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
-            let url ='http://netwrkapp.com';
-            this.sharing.share(message.text_with_links, 'Netwrk', file, url).then(res => {
+            this.sharing.share(message.text_with_links, 'Netwrk', file, 'https://netwrkapp.com').then(res => {
                     this.toolsPrvd.showToast('Message successfully shared');
                     this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
                         this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {

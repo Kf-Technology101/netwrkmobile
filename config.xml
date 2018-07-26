@@ -111,4 +111,9 @@
     </plugin>
     <engine name="ios" spec="~4.5.4" />
     <engine name="browser" spec="~5.0.3" />
+    <plugin name="ionic-plugin-deeplinks" spec="^1.0.17">
+        <variable name="URL_SCHEME" value="netwrkapp" />
+        <variable name="DEEPLINK_SCHEME" value="https" />
+        <variable name="DEEPLINK_HOST" value="netwrkapp.com" />
+    </plugin>
 </widget>

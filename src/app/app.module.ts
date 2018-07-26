@@ -11,7 +11,7 @@ import { Sim } from '@ionic-native/sim';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 // import { Autosize } from 'ng-autosize';
-
+import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
 import { MyApp } from './app.component';
 
@@ -152,6 +152,7 @@ export function providers() {
     Camera,
     Chat,
     Facebook,
+    Deeplinks,
     Geolocation,
     CameraPreview,
     SocialSharing,

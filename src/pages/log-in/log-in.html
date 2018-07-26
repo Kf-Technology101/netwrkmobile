@@ -45,11 +45,6 @@
     (tap)="doFbLogin()" outline id="main-btn">
   </button>
 
-  <!--<button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()"-->
-    <!--ion-button color="bk" class="main-action-btn medium has-label"-->
-    <!--(tap)="toggleLoginForm()" outline id="main-btn">-->
-  <!--</button>-->
-
   <div *ngIf="chatPrvd.mainBtn.getState() == 'centered'" class="tip">Quick login via facebook</div>
 
 </ion-content>

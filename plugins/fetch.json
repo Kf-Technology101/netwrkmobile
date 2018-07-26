@@ -221,5 +221,17 @@
     "variables": {
       "FABRIC_KEY": "0b15d44d213d573ac860629f837562b2bf37ce9f"
     }
+  },
+  "ionic-plugin-deeplinks": {
+    "source": {
+      "type": "registry",
+      "id": "ionic-plugin-deeplinks@^1.0.17"
+    },
+    "is_top_level": true,
+    "variables": {
+      "URL_SCHEME": "netwrkapp",
+      "DEEPLINK_SCHEME": "https",
+      "DEEPLINK_HOST": "netwrkapp.com"
+    }
   }
 }

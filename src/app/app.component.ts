@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
-import { Platform, Events, App } from 'ionic-angular';
+import { Component,ViewChild  } from '@angular/core';
+import { Platform, Events, App, Nav } from 'ionic-angular';
 import { Sim } from '@ionic-native/sim';
 import { StatusBar } from '@ionic-native/status-bar';
 import { CameraPreview } from '@ionic-native/camera-preview';
+import { SplashScreen } from '@ionic-native/splash-screen';
 
+import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
 import { NetworkPage } from '../pages/network/network';
 import { LogInPage } from '../pages/log-in/log-in';
@@ -23,19 +25,24 @@ import { PermissionsService } from '../providers/permissionservice';
 import { NetworkCheck } from '../providers/networkcheck';
 import { UpgradeAdapter } from '@angular/upgrade';
 
+
 @Component({
   templateUrl: 'app.html'
 })
 
 export class MyApp {
 
-  rootPage;
+    rootPage;
+
+    @ViewChild(Nav) navChild:Nav;
 
   constructor(
     public platform: Platform,
     public app: App,
     public events: Events,
     private authPrvd: Auth,
+    public deeplinks: Deeplinks,
+    private  splashScreen: SplashScreen,
     private storage: LocalStorage,
     private toolsPrvd: Tools,
     private undercoverPrvd: UndercoverProvider,
@@ -54,6 +61,15 @@ export class MyApp {
     });
 
     this.init();
+
+    this.deeplinks.routeWithNavController(this.navChild, {
+          '/login': LogInPage,
+          '/landing': ChatPage
+      }).subscribe((match) => {
+          console.log('Successfully routed', match);
+      }, (err) => {
+          console.log('Unmatched Route', err);
+    });
 
     platform.ready().then(() => {
       permission.checkCameraPermissions().then(permissionOk => {
@@ -89,7 +105,6 @@ export class MyApp {
     });
   };
 
-
   private goToPage(root:any):void {
     if (root == NetworkFindPage) {
       this.toolsPrvd.hideSplashScreen();
@@ -103,34 +118,17 @@ export class MyApp {
   }
 
   private getLogin() {
-        let authType = this.authPrvd.getAuthType();
-        let authData = this.authPrvd.getAuthData();
+    let authType = this.authPrvd.getAuthType();
+    let authData = this.authPrvd.getAuthData();
 
-        if (authType && authData) {
-            switch (authType) {
-                case 'facebook':
-                    this.authPrvd.getFbLoginStatus().then(data => {
-                        let root:any;
-                        if (data.status && data.status == 'connected') {
-                            root = this.undercoverPrvd.getCharacterPerson(
-                                UndercoverCharacterPage, NetworkFindPage, ChatPage)
-                        }
-                        if (root == NetworkFindPage) {
-                            this.app.getRootNav().setRoot(ChatPage, {
-                                action: 'undercover'
-                            });
-                        } else {
-                            this.rootPage = root;
-                        }
-                        this.splashScreen.hide();
-                    });
-                    break;
-                case 'email':
-                    let fbConnected = this.authPrvd.getFbConnected();
+    if (authType && authData) {
+        switch (authType) {
+            case 'facebook':
+                this.authPrvd.getFbLoginStatus().then(data => {
                     let root:any;
-                    if (fbConnected) {
+                    if (data.status && data.status == 'connected') {
                         root = this.undercoverPrvd.getCharacterPerson(
-                            UndercoverCharacterPage, NetworkFindPage, ChatPage)
+                            HoldScreenPage, NetworkFindPage, ChatPage)
                     }
                     if (root == NetworkFindPage) {
                         this.app.getRootNav().setRoot(ChatPage, {
@@ -138,17 +136,38 @@ export class MyApp {
                         });
                     } else {
                         this.rootPage = root;
+                        //this.app.getRootNav().setRoot(root);
                     }
-
                     this.splashScreen.hide();
-                    break;
-                default:
-                    this.rootPage = LogInPage;
-            }
-        } else {
-            this.rootPage = LogInPage;
-            this.splashScreen.hide();
+                });
+                break;
+            case 'email':
+                let fbConnected = this.authPrvd.getFbConnected();
+                let root:any;
+                if (fbConnected) {
+                    root = this.undercoverPrvd.getCharacterPerson(
+                        HoldScreenPage, NetworkFindPage, ChatPage)
+                }
+                if (root == NetworkFindPage) {
+                    this.app.getRootNav().setRoot(ChatPage, {
+                        action: 'undercover'
+                    });
+                } else {
+                    //this.app.getRootNav().setRoot(root);
+                    this.rootPage = root;
+                }
+
+                this.splashScreen.hide();
+                break;
+            default:
+                //this.app.getRootNav().setRoot(LogInPage);
+                this.rootPage = LogInPage;
         }
+    } else {
+        //this.app.getRootNav().setRoot(LogInPage);
+        this.rootPage = LogInPage;
+        this.splashScreen.hide();
+    }
   }
 
 

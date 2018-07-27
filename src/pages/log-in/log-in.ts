@@ -259,8 +259,8 @@ export class LogInPage {
     }, 1);
     setTimeout(() => {
       this.storage.rm('facebook_connected');
-      this.storage.rm('auth_data');
-      this.storage.rm('auth_type');
+      //this.storage.rm('auth_data');
+      //this.storage.rm('auth_type');
       this.storage.rm('social_auth_data');
       this.storage.rm('current_network');
       this.controls.hidden = false;

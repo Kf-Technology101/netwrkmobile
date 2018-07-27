@@ -76,7 +76,7 @@ export class FeedbackService {
     let subject = message.text_with_links ? message.text_with_links : '';
     let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
 
-    this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/login').then(res => {
+    this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
 
     }, err => console.error(err));
   }

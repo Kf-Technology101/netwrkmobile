@@ -3,7 +3,6 @@ import { Platform, Events, App, Nav } from 'ionic-angular';
 import { Sim } from '@ionic-native/sim';
 import { StatusBar } from '@ionic-native/status-bar';
 import { CameraPreview } from '@ionic-native/camera-preview';
-import { SplashScreen } from '@ionic-native/splash-screen';
 
 import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
@@ -31,9 +30,9 @@ import { UpgradeAdapter } from '@angular/upgrade';
 
 export class MyApp {
 
-    rootPage:any=LogInPage;
+    rootPage:any;
 
-  @ViewChild(Nav) navChild:Nav;
+   @ViewChild(Nav) navChild:Nav;
 
     constructor(
         public platform: Platform,
@@ -53,6 +52,8 @@ export class MyApp {
         private gps: Gps
         ) {
 
+        this.init();
+
         platform.registerBackButtonAction(() => {
             this.toolsPrvd.doBackButton();
             return true;
@@ -63,45 +64,29 @@ export class MyApp {
             '/landing': ChatPage
         }).subscribe((match) => {
             console.log('Successfully routed', match);
+            this.getLogin();
+            this.getSimInfo();
         }, (err) => {
             console.log('Unmatched Route', err);
         });
+    }
 
-        let init = () => {
-            this.gps.getMyZipCode().then(res => {
-                if (res && res.zip_code)
-                    this.storage.set('chat_zip_code', res.zip_code);
-            });
-
-            this.network.networkStatus(); // watch for network status
-            // check if user is authorized
-            this.apiPrvd.checkAuthStatus().subscribe(res => {
-                this.getLogin();
-                this.getSimInfo();
-                this.statusBar.styleDefault();
-            }, err => {
-                if (err.status && err.status == 401) {
-                    this.app.getRootNav().setRoot(LogInPage);
-                    this.toolsPrvd.hideSplashScreen();
-                }
-            });
-        };
-
-        init();
-
-        platform.ready().then(() => {
-            permission.checkCameraPermissions().then(permissionOk => {
-                this.storage.set('enable_uc_camera', permissionOk ? true : false);
-
-                if(platform.is('android')) {
-                    permission.checkAll().then(res => {
-                        init();
-                    }, err => console.error(err));
-                } else {
-                    init();
-                }
-            });
+    public init () {
+        this.gps.getMyZipCode().then(res => {
+            if (res && res.zip_code)
+                this.storage.set('chat_zip_code', res.zip_code);
         });
+
+        this.network.networkStatus(); // watch for network status
+        // check if user is authorized
+        this.apiPrvd.checkAuthStatus().subscribe(res => {
+        }, err => {
+            this.toolsPrvd.hideSplashScreen();
+        });
+
+        this.getLogin();
+        this.getSimInfo();
+        this.statusBar.styleDefault();
     }
 
     private goToPage(root:any):void {

@@ -25,157 +25,141 @@ import { PermissionsService } from '../providers/permissionservice';
 import { NetworkCheck } from '../providers/networkcheck';
 import { UpgradeAdapter } from '@angular/upgrade';
 
-
 @Component({
-  templateUrl: 'app.html'
+    templateUrl: 'app.html'
 })
 
 export class MyApp {
 
-    rootPage;
+    rootPage:any=LogInPage;
 
-    @ViewChild(Nav) navChild:Nav;
+  @ViewChild(Nav) navChild:Nav;
 
-  constructor(
-    public platform: Platform,
-    public app: App,
-    public events: Events,
-    private authPrvd: Auth,
-    public deeplinks: Deeplinks,
-    private  splashScreen: SplashScreen,
-    private storage: LocalStorage,
-    private toolsPrvd: Tools,
-    private undercoverPrvd: UndercoverProvider,
-    public statusBar: StatusBar,
-    private sim: Sim,
-    private apiPrvd: Api,
-    private cameraPreview: CameraPreview,
-    private permission: PermissionsService,
-    private network: NetworkCheck,
-    private gps: Gps
-  ) {
+    constructor(
+        public platform: Platform,
+        public app: App,
+        public events: Events,
+        private authPrvd: Auth,
+        public deeplinks: Deeplinks,
+        private storage: LocalStorage,
+        private toolsPrvd: Tools,
+        private undercoverPrvd: UndercoverProvider,
+        public statusBar: StatusBar,
+        private sim: Sim,
+        private apiPrvd: Api,
+        private cameraPreview: CameraPreview,
+        private permission: PermissionsService,
+        private network: NetworkCheck,
+        private gps: Gps
+        ) {
 
-    platform.registerBackButtonAction(() => {
-      this.toolsPrvd.doBackButton();
-      return true;
-    });
-
-    this.init();
-
-    this.deeplinks.routeWithNavController(this.navChild, {
-          '/login': LogInPage,
-          '/landing': ChatPage
-      }).subscribe((match) => {
-          console.log('Successfully routed', match);
-      }, (err) => {
-          console.log('Unmatched Route', err);
-    });
-
-    platform.ready().then(() => {
-      permission.checkCameraPermissions().then(permissionOk => {
-        this.storage.set('enable_uc_camera', permissionOk ? true : false);
-
-        if(platform.is('android')) {
-          permission.checkAll().then(res => {
-            this.init();
-          }, err => console.error(err));
-        } else {
-            this.init();
-        }
-      });
-    });
-  }
-
-  public init = () => {
-    this.gps.getMyZipCode().then(res => {
-        if (res && res.zip_code)
-            this.storage.set('chat_zip_code', res.zip_code);
-        this.network.networkStatus(); // watch for network status
-        // check if user is authorized
-        this.apiPrvd.checkAuthStatus().subscribe(res => {
-            this.getLogin();
-            this.getSimInfo();
-            this.statusBar.styleDefault();
-        }, err => {
-            if (err.status && err.status == 401) {
-                this.app.getRootNav().setRoot(LogInPage);
-                this.toolsPrvd.hideSplashScreen();
-            }
+        platform.registerBackButtonAction(() => {
+            this.toolsPrvd.doBackButton();
+            return true;
         });
-    });
-  };
 
-  private goToPage(root:any):void {
-    if (root == NetworkFindPage) {
-      this.toolsPrvd.hideSplashScreen();
-      this.app.getRootNav().setRoot(ChatPage, {
-        action: 'undercover'
-      });
-    } else {
-      this.toolsPrvd.hideSplashScreen();
-      this.app.getRootNav().setRoot(root);
+        this.deeplinks.routeWithNavController(this.navChild, {
+            '/login': LogInPage,
+            '/landing': ChatPage
+        }).subscribe((match) => {
+            console.log('Successfully routed', match);
+        }, (err) => {
+            console.log('Unmatched Route', err);
+        });
+
+        let init = () => {
+            this.gps.getMyZipCode().then(res => {
+                if (res && res.zip_code)
+                    this.storage.set('chat_zip_code', res.zip_code);
+            });
+
+            this.network.networkStatus(); // watch for network status
+            // check if user is authorized
+            this.apiPrvd.checkAuthStatus().subscribe(res => {
+                this.getLogin();
+                this.getSimInfo();
+                this.statusBar.styleDefault();
+            }, err => {
+                if (err.status && err.status == 401) {
+                    this.app.getRootNav().setRoot(LogInPage);
+                    this.toolsPrvd.hideSplashScreen();
+                }
+            });
+        };
+
+        init();
+
+        platform.ready().then(() => {
+            permission.checkCameraPermissions().then(permissionOk => {
+                this.storage.set('enable_uc_camera', permissionOk ? true : false);
+
+                if(platform.is('android')) {
+                    permission.checkAll().then(res => {
+                        init();
+                    }, err => console.error(err));
+                } else {
+                    init();
+                }
+            });
+        });
     }
-  }
 
-  private getLogin() {
-    let authType = this.authPrvd.getAuthType();
-    let authData = this.authPrvd.getAuthData();
+    private goToPage(root:any):void {
+        if (root == NetworkFindPage) {
+            this.toolsPrvd.hideSplashScreen();
+            this.app.getRootNav().setRoot(ChatPage, {
+                action: 'undercover'
+            });
+        } else {
+            this.toolsPrvd.hideSplashScreen();
+            this.app.getRootNav().setRoot(root);
+        }
+    }
 
-    if (authType && authData) {
-        switch (authType) {
-            case 'facebook':
-                this.authPrvd.getFbLoginStatus().then(data => {
-                    let root:any;
-                    if (data.status && data.status == 'connected') {
+    private getLogin() {
+        let authType = this.authPrvd.getAuthType();
+        let authData = this.authPrvd.getAuthData();
+
+        if (authType && authData) {
+            let root:any;
+            switch (authType) {
+                case 'facebook':
+                    this.authPrvd.getFbLoginStatus().then(data => {
+                        if (data.status && data.status == 'connected') {
+                            root = this.undercoverPrvd.getCharacterPerson(
+                                HoldScreenPage, NetworkFindPage, ChatPage)
+                        }
+                        this.goToPage(root);
+                    });
+                    break;
+                case 'email':
+                    let fbConnected = this.authPrvd.getFbConnected();
+                    if (fbConnected) {
                         root = this.undercoverPrvd.getCharacterPerson(
                             HoldScreenPage, NetworkFindPage, ChatPage)
                     }
-                    if (root == NetworkFindPage) {
-                        this.app.getRootNav().setRoot(ChatPage, {
-                            action: 'undercover'
-                        });
-                    } else {
-                        this.rootPage = root;
-                        //this.app.getRootNav().setRoot(root);
-                    }
-                    this.splashScreen.hide();
-                });
-                break;
-            case 'email':
-                let fbConnected = this.authPrvd.getFbConnected();
-                let root:any;
-                if (fbConnected) {
-                    root = this.undercoverPrvd.getCharacterPerson(
-                        HoldScreenPage, NetworkFindPage, ChatPage)
-                }
-                if (root == NetworkFindPage) {
-                    this.app.getRootNav().setRoot(ChatPage, {
-                        action: 'undercover'
-                    });
-                } else {
-                    //this.app.getRootNav().setRoot(root);
-                    this.rootPage = root;
-                }
-
-                this.splashScreen.hide();
-                break;
-            default:
-                //this.app.getRootNav().setRoot(LogInPage);
-                this.rootPage = LogInPage;
+                    this.goToPage(root);
+                    break;
+                default:
+                    this.gps.getMyZipCode().then(res => {
+                        this.app.getRootNav().setRoot(LogInPage);
+                    }, err => this.app.getRootNav().setRoot(LogInPage));
+                    this.toolsPrvd.hideSplashScreen();
+                    break;
+            }
+        } else {
+            this.gps.getMyZipCode().then(res => {
+                this.app.getRootNav().setRoot(LogInPage);
+            }, err => this.app.getRootNav().setRoot(LogInPage));
+            this.toolsPrvd.hideSplashScreen();
         }
-    } else {
-        //this.app.getRootNav().setRoot(LogInPage);
-        this.rootPage = LogInPage;
-        this.splashScreen.hide();
     }
-  }
 
-
-  private getSimInfo() {
-    this.sim.getSimInfo().then(info => {
-      console.log('Sim info: ', info);
-      this.storage.set('country_code', info.countryCode);
-    },
-    err => console.error('Unable to get sim info: ', err));
-  }
+    private getSimInfo() {
+        this.sim.getSimInfo().then(info => {
+            console.log('Sim info: ', info);
+            this.storage.set('country_code', info.countryCode);
+        },
+        err => console.error('Unable to get sim info: ', err));
+    }
 }

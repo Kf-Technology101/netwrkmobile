@@ -28,9 +28,10 @@ import { UpgradeAdapter } from '@angular/upgrade';
     templateUrl: 'app.html'
 })
 
+
 export class MyApp {
 
-    rootPage:any;
+    rootPage:any = LogInPage;
 
    @ViewChild(Nav) navChild:Nav;
 
@@ -77,28 +78,35 @@ export class MyApp {
                 this.storage.set('chat_zip_code', res.zip_code);
         });
 
-        this.network.networkStatus(); // watch for network status
+        //this.network.networkStatus(); // watch for network status
         // check if user is authorized
-        this.apiPrvd.checkAuthStatus().subscribe(res => {
-        }, err => {
-            this.toolsPrvd.hideSplashScreen();
-        });
+        //this.apiPrvd.checkAuthStatus().subscribe(res => {
+        //}, err => {
+        //    this.toolsPrvd.hideSplashScreen();
+        //});
 
         this.getLogin();
         this.getSimInfo();
+        this.toolsPrvd.hideSplashScreen();
         this.statusBar.styleDefault();
     }
 
     private goToPage(root:any):void {
-        if (root == NetworkFindPage) {
-            this.toolsPrvd.hideSplashScreen();
-            this.app.getRootNav().setRoot(ChatPage, {
-                action: 'undercover'
-            });
-        } else {
-            this.toolsPrvd.hideSplashScreen();
-            this.app.getRootNav().setRoot(root);
-        }
+        this.gps.getMyZipCode().then(res => {
+            this.app.getRootNav().setRoot(ChatPage);
+        }, err => this.app.getRootNav().setRoot(ChatPage));
+        this.toolsPrvd.hideSplashScreen();
+
+        //this.toolsPrvd.hideSplashScreen();
+        //if (root == NetworkFindPage) {
+        //    this.toolsPrvd.hideSplashScreen();
+        //    this.app.getRootNav().setRoot(ChatPage, {
+        //        action: 'undercover'
+        //    });
+        //} else {
+        //    this.toolsPrvd.hideSplashScreen();
+        //    this.app.getRootNav().setRoot(root);
+        //}
     }
 
     private getLogin() {

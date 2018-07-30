@@ -55,8 +55,14 @@ export class User {
     seq.map(res => res.json()).subscribe(
       res => {
         console.log(res);
-        let authType = type ? type : 'email';
-        this.auth.saveAuthData(res, authType);
+
+          let authType:any = this.auth.getAuthType();
+          let authData:any = this.auth.getAuthData();
+          if (authType && authData) {
+              let authType = type ? type : 'email';
+              this.auth.saveAuthData(res, authType);
+          }
+
       }, err => console.error('ERROR', err)
     );
     return seq;

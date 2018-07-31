@@ -78,13 +78,6 @@ export class MyApp {
                 this.storage.set('chat_zip_code', res.zip_code);
         });
 
-        //this.network.networkStatus(); // watch for network status
-        // check if user is authorized
-        //this.apiPrvd.checkAuthStatus().subscribe(res => {
-        //}, err => {
-        //    this.toolsPrvd.hideSplashScreen();
-        //});
-
         this.getLogin();
         this.getSimInfo();
         this.toolsPrvd.hideSplashScreen();

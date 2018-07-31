@@ -1,4 +1,5 @@
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { Platform } from 'ionic-angular';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { Facebook } from '@ionic-native/facebook';
 import { Injectable } from '@angular/core';
@@ -10,6 +11,7 @@ import { Api } from './api';
 export class FeedbackService {
   constructor(
     private chatService: Chat,
+    public plt: Platform,
     private toolsService: Tools,
     public sharing: SocialSharing,
     private facebook: Facebook,
@@ -76,9 +78,16 @@ export class FeedbackService {
     let subject = message.text_with_links ? message.text_with_links : '';
     let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
 
-    this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
+      if (this.plt.is('ios')){
+          this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://landing').then(res => {
 
-    }, err => console.error(err));
+          }, err => console.error(err));
+      }else{
+          this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
+
+          }, err => console.error(err));
+      }
+
   }
 
 }

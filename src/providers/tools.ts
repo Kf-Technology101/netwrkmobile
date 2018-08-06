@@ -72,9 +72,9 @@ export class Tools {
   public hideSplashScreen():void {
     this.splash.hide();
   }
-  // // public showSplashScreen():void {
-  // //   this.splash.show();
-  // // }
+  public showSplashScreen():void {
+     this.splash.show();
+  }
 
   public doBackButton() {
     console.log(this.app.getActiveNav());

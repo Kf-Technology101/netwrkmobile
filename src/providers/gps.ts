@@ -24,6 +24,8 @@ export class Gps {
   private watch: any;
   private maxDistance: number = 50;
   public zipInterval: any;
+  public positionTruck: any;
+  public map: any;
 
   constructor(
     public app: App,
@@ -96,7 +98,7 @@ export class Gps {
       }
 
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
-        // console.log('[Gps][getMyZipCode]', resp);
+        console.log('[Gps][getMyZipCode]', resp);
         if (resp.coords) {
           if (!this.coords.lat && !this.coords.lng) {
             if (this.loc.isCustomCoordAvaliable()) {
@@ -118,10 +120,16 @@ export class Gps {
               this.coords.lat = resp.coords.latitude;
               this.coords.lng = resp.coords.longitude;
             }
+            this.getZipCode().then(zip => {
+                  resolve({ zip_code: zip });
+            }).catch(err => reject(err));
           }
         } else reject();
       }, err => {
-        // console.log('[Gps][getMyZipCode]', err);
+          this.getZipCode().then(zip => {
+              resolve({ zip_code: zip });
+          }).catch(err => reject(err));
+        console.log('[Gps][getMyZipCode]', err);
         reject(err);
       });
     });

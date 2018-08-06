@@ -21,6 +21,7 @@ import {
 import { GoogleMapsService } from 'google-maps-angular2';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
+import { Geolocation } from '@ionic-native/geolocation';
 import { Keyboard } from '@ionic-native/keyboard';
 import { SocialSharing } from '@ionic-native/social-sharing';
 
@@ -218,6 +219,7 @@ export class ChatPage implements DoCheck {
     public toolsPrvd: Tools,
     public authPrvd: Auth,
     public cameraPrvd: Camera,
+    public geolocation: Geolocation,
     public gapi: GoogleMapsService,
     public chatPrvd: Chat,
     public networkPrvd: NetworkProvider,
@@ -243,7 +245,7 @@ export class ChatPage implements DoCheck {
       this.chatPrvd.isLandingPage = true;
 
     console.log('%c [CHAT] CONSTRUCTOR ', 'background: #1287a8;color: #ffffff');
-    this.initLpMap();
+    this.initializeMap();
 
   }
 
@@ -338,100 +340,45 @@ export class ChatPage implements DoCheck {
     alert.present();
   }
 
+  public initializeMap() {
+      this.gapi.init.then((google_maps: any) => {
 
-  private initLpMap():void {
-    this.gapi.init.then((google_maps: any) => {
-        let loc = { lat: this.gpsPrvd.coords.lat, lng: this.gpsPrvd.coords.lng };
+       let options = {
+          enableHighAccuracy: true
+       };
 
-        this.map = new google_maps.Map(this.mapElement.nativeElement, {
-            zoom: 16,
-            center: loc,
-            scrollwheel: false,
-            panControl: false,
-            mapTypeControl: false,
-            zoomControl: true,
-            streetViewControl: true,
-            scaleControl: true,
-            zoomControlOptions: {
-                style: google_maps.ZoomControlStyle.LARGE,
-                position: google_maps.ControlPosition.RIGHT_BOTTOM
+        this.geolocation.getCurrentPosition(options).then((position) => {
+            let options = {
+                center: new google_maps.LatLng(position.coords.latitude, position.coords.longitude),
+                zoom: 16,
+                mapTypeId: google_maps.MapTypeId.ROADMAP
             }
-        });
 
-        this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
-            .map(res => res.json()).subscribe(res => {
-                console.log('[google address] res:', res);
-                let infowindow = new google_maps.InfoWindow();
+            /* Show our lcoation */
+            this.map = new google_maps.Map(document.getElementById("mapElement"), options);
 
-                console.log('my map results', res);
-
-                for (let result of res.results) {
-                    let marker = new google_maps.Marker({
-                        map: this.map,
-                        position: result.geometry.location,
-                        icon: 'assets/icon/wi-fi.png'
-                    });
-
-                    google_maps.event.addListener(marker, 'click', () => {
-                        infowindow.setContent(result.formatted_address);
-                        infowindow.open(this.map, this);
-                    });
-                }
-
-            }, err => {
-                console.log('[google address] error:', err);
+            /* We can show our location only if map was previously initialized */
+            let marker = new google_maps.Marker({
+                map: this.map,
+                animation: google_maps.Animation.DROP,
+                position: this.map.getCenter()
             });
 
-        this.map.setCenter(loc);
-    });
-  }
+            let markerInfo = "<h4>You are here!</h4>";
 
-  private viewMyLocation(message):void {
-    this.gapi.init.then((google_maps: any) => {
-        let loc = new google_maps.LatLng(message.lat, message.lng);
-
-        this.map = new google_maps.Map(this.mapElement.nativeElement, {
-            zoom: 16,
-            center: loc,
-            scrollwheel: true,
-            panControl: true,
-            mapTypeControl: true,
-            zoomControl: true,
-            streetViewControl: true,
-            scaleControl: true,
-            zoomControlOptions: {
-                style: google_maps.ZoomControlStyle.LARGE,
-                position: google_maps.ControlPosition.RIGHT_BOTTOM
-            }
-        });
-
-        this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
-            .map(res => res.json()).subscribe(res => {
-                console.log('[google address] res:', res);
-                let infowindow = new google_maps.InfoWindow();
-
-                console.log('my map results', res);
-
-                for (let result of res.results) {
-                    let marker = new google_maps.Marker({
-                        map: this.map,
-                        position: result.geometry.location,
-                        icon: 'assets/icon/wi-fi.png'
-                    });
-
-                    google_maps.event.addListener(marker, 'click', () => {
-                        infowindow.setContent(result.formatted_address);
-                        infowindow.open(this.map, this);
-                    });
-                }
-
-            }, err => {
-                console.log('[google address] error:', err);
+            let infoModal = new google_maps.InfoWindow({
+                content: markerInfo
             });
 
-        this.map.setCenter(loc);
-    });
-  }
+            google_maps.event.addListener(marker, 'click', () => {
+                infoModal.open(this.map, marker);
+            });
+
+        }).catch((error) => {
+            console.log('Error getting location', error);
+        });
+      });
+    }
 
     public lineJoinRequest():void {
         let alert = this.alertCtrl.create({
@@ -1417,7 +1364,6 @@ export class ChatPage implements DoCheck {
         }else{
             this.toolsPrvd.pushPage(ProfilePage, res);
         }
-
     }, err => {
       console.error('goToProfile err:', err);
     });
@@ -1511,7 +1457,7 @@ export class ChatPage implements DoCheck {
           created_at: '2017-04-22T14:59:29.921Z',
           date_of_birthday: '2004-01-01',
           email: 'olbachinskiy2@gmail.com',
-          name: 'Oleksandr Bachynskyi',
+          name: 'Sachin bonzer',
           id: 55,
           invitation_sent: false,
           phone: '1492873128682',

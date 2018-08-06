@@ -253,7 +253,7 @@
             <span *ngIf="message.text_with_links" class="text"
                   [ngClass]="{ 'emoji' : message.is_emoji }"
                   [innerHTML]="message.text_with_links"
-                  (click)="toolsPrvd.handleLinkClick($event)" (tap)="viewMyLocation(message)"></span>
+                  (click)="toolsPrvd.handleLinkClick($event)"></span>
           </ng-container>
 
           <ng-container *ngIf="message.locked_by_user && user.id != message.user_id">
@@ -375,7 +375,7 @@
             <span *ngIf="message.text_with_links" class="text"
                   [ngClass]="{ 'emoji' : message.is_emoji }"
                   [innerHTML]="message.text_with_links"
-                  (click)="toolsPrvd.handleLinkClick($event)" (tap)="viewMyLocation(message)"></span>
+                  (click)="toolsPrvd.handleLinkClick($event)"></span>
           </ng-container>
 
           <ng-container *ngIf="message.locked_by_user && user.id != message.user_id">

@@ -76,8 +76,9 @@ export class MyApp {
         this.gps.getMyZipCode().then(res => {
             if (res && res.zip_code)
                 this.storage.set('chat_zip_code', res.zip_code);
-        });
 
+            console.log('NetworkZipCode:');
+        });
         this.getLogin();
         this.getSimInfo();
         this.toolsPrvd.hideSplashScreen();

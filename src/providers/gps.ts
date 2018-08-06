@@ -191,7 +191,7 @@ export class Gps {
   private getZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.coords.lat && this.coords.lng) {
-        console.log('lat:', this.coords.lat, 'lng:', this.coords.lng);
+        console.log('my lat:', this.coords.lat, 'my lng:', this.coords.lng);
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
           // console.log('[google addres] res:', res);
           // default:

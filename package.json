@@ -147,8 +147,7 @@
       }
     },
     "platforms": [
-      "browser",
-      "ios"
+      "browser"
     ]
   }
 }

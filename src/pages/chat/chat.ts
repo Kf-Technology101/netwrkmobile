@@ -245,7 +245,7 @@ export class ChatPage implements DoCheck {
       this.chatPrvd.isLandingPage = true;
 
     console.log('%c [CHAT] CONSTRUCTOR ', 'background: #1287a8;color: #ffffff');
-    this.initializeMap();
+    this.initLpMap();
 
   }
 
@@ -340,45 +340,95 @@ export class ChatPage implements DoCheck {
     alert.present();
   }
 
-  public initializeMap() {
-      this.gapi.init.then((google_maps: any) => {
+    private initLpMap():void {
+        this.gapi.init.then((google_maps: any) => {
 
-       let options = {
-          enableHighAccuracy: true
-       };
+            let loc = { lat: this.gpsPrvd.coords.lat, lng: this.gpsPrvd.coords.lng };
 
-        this.geolocation.getCurrentPosition(options).then((position) => {
-            let options = {
-                center: new google_maps.LatLng(position.coords.latitude, position.coords.longitude),
+            this.map = new google_maps.Map(this.mapElement.nativeElement, {
                 zoom: 16,
-                mapTypeId: google_maps.MapTypeId.ROADMAP
+                center: loc,
+                scrollwheel: false,
+                panControl: false,
+                mapTypeControl: false,
+                zoomControl: true,
+                streetViewControl: true,
+                scaleControl: true,
+                zoomControlOptions: {
+                    style: google_maps.ZoomControlStyle.LARGE,
+                    position: google_maps.ControlPosition.RIGHT_BOTTOM
+                }
+            });
+
+        this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
+            .map(res => res.json()).subscribe(res => {
+                console.log('[google address] res:', res);
+                let infowindow = new google_maps.InfoWindow();
+
+                console.log('my map results', res);
+
+                let marker = new google_maps.Marker({
+                    map: this.map,
+                    position: res.results[0].geometry.location,
+                    icon: 'assets/icon/wi-fi.png'
+                });
+
+                google_maps.event.addListener(marker, 'click', () => {
+                    infowindow.setContent(res.results[0].formatted_address);
+                    infowindow.open(this.map, this);
+                });
+
+            }, err => {
+                console.log('[google address] error:', err);
+            });
+
+        this.map.setCenter(loc);
+    });
+  }
+
+  private viewMyLocation(message):void {
+    this.gapi.init.then((google_maps: any) => {
+        let loc = new google_maps.LatLng(message.lat, message.lng);
+
+        this.map = new google_maps.Map(this.mapElement.nativeElement, {
+            zoom: 16,
+            center: loc,
+            scrollwheel: true,
+            panControl: true,
+            mapTypeControl: true,
+            zoomControl: true,
+            streetViewControl: true,
+            scaleControl: true,
+            zoomControlOptions: {
+                style: google_maps.ZoomControlStyle.LARGE,
+                position: google_maps.ControlPosition.RIGHT_BOTTOM
             }
-
-            /* Show our lcoation */
-            this.map = new google_maps.Map(document.getElementById("mapElement"), options);
-
-            /* We can show our location only if map was previously initialized */
-            let marker = new google_maps.Marker({
-                map: this.map,
-                animation: google_maps.Animation.DROP,
-                position: this.map.getCenter()
-            });
-
-            let markerInfo = "<h4>You are here!</h4>";
-
-            let infoModal = new google_maps.InfoWindow({
-                content: markerInfo
-            });
-
-            google_maps.event.addListener(marker, 'click', () => {
-                infoModal.open(this.map, marker);
-            });
-
-        }).catch((error) => {
-            console.log('Error getting location', error);
         });
-      });
-    }
+
+        this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
+            .map(res => res.json()).subscribe(res => {
+                console.log('[google address] res:', res);
+                let infowindow = new google_maps.InfoWindow();
+
+                console.log('my map results', res);
+
+                let marker = new google_maps.Marker({
+                    map: this.map,
+                    position: res.result[0].geometry.location,
+                    icon: 'assets/icon/wi-fi.png'
+                });
+
+                google_maps.event.addListener(marker, 'click', () => {
+                    infowindow.setContent(res.results[0].formatted_address);
+                    infowindow.open(this.map, this);
+                });
+            }, err => {
+                console.log('[google address] error:', err);
+            });
+
+        this.map.setCenter(loc);
+    });
+  }
 
     public lineJoinRequest():void {
         let alert = this.alertCtrl.create({

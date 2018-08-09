@@ -10,23 +10,23 @@
         "spec": "latest",
         "type": "tag"
       },
-      "F:\\ionic\\demo"
+      "F:\\netwrkmobile"
     ]
   ],
   "_from": "cordova-plugin-facebook4@latest",
-  "_id": "cordova-plugin-facebook4@2.1.0",
+  "_id": "cordova-plugin-facebook4@2.2.0",
   "_inCache": true,
   "_location": "/cordova-plugin-facebook4",
-  "_nodeVersion": "9.11.1",
+  "_nodeVersion": "10.4.0",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/cordova-plugin-facebook4_2.1.0_1525413252343_0.1030543947282967"
+    "tmp": "tmp/cordova-plugin-facebook4_2.2.0_1530113066114_0.03774063976658715"
   },
   "_npmUser": {
     "name": "peterpeterparker",
     "email": "david.dalbusco@outlook.com"
   },
-  "_npmVersion": "5.8.0",
+  "_npmVersion": "6.1.0",
   "_phantomChildren": {},
   "_requested": {
     "raw": "cordova-plugin-facebook4",
@@ -41,11 +41,11 @@
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/cordova-plugin-facebook4/-/cordova-plugin-facebook4-2.1.0.tgz",
-  "_shasum": "01d527fd60a06b6d9c10563a0f7531938d85f0be",
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-facebook4/-/cordova-plugin-facebook4-2.2.0.tgz",
+  "_shasum": "40f054656618d539b85676b4753d1cc4b4bc2ad0",
   "_shrinkwrap": null,
   "_spec": "cordova-plugin-facebook4",
-  "_where": "F:\\ionic\\demo",
+  "_where": "F:\\netwrkmobile",
   "bugs": {
     "url": "https://github.com/jeduan/cordova-plugin-facebook4/issues"
   },
@@ -62,14 +62,14 @@
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "integrity": "sha512-W2Cr4iDg3EHANbuOqjobJtYhHrptIEJ7mBQZTqp3qh1fSRm2yNcnt8sgmfqbotl2Qh2nCKb3qLVv3v8v3DoRkw==",
-    "shasum": "01d527fd60a06b6d9c10563a0f7531938d85f0be",
-    "tarball": "https://registry.npmjs.org/cordova-plugin-facebook4/-/cordova-plugin-facebook4-2.1.0.tgz",
-    "fileCount": 135,
-    "unpackedSize": 56885292,
-    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa6/WHCRA9TVsSAnZWagAAjt4P+gOq4akMrmoEENd60xmQ\nI7uZtf+LoamhBlW4CrJcRzK8x/OnXaCU8xMJsKGssxn2M0zTA3hLSVYQCk9k\nQw//J48R1JW68BSlrmOeBVUjSkET8j8m463ShLjKw+74i94k/nbpUiMAJ4vG\nFo41+PIvwqptrLaQJOr6pPawoJ5IH8ESNuttIRRL534H+CR8JggL6M4BXhu7\nMyFZpaEpJLVWZjdqOIou5cjzL1MjoMPeM//fh+OjnANvYbCW+lNFWJC/XlxW\nQUkcrSvzAB89l2vYP0lLX0rPgl8pAmrurwy4ZRxC9DQGS/j0QdibdfWzqgMv\n+D8ku4Rd/SUCm6iIbL9ugNvvBAsZObwAY2jjwhJfEkbMvgkCUlPs/HjZs7rh\n0Meo8HSvNxAbwuU7uwy2uWA1RV+HvlmKn8ch1ztc708QOe/AXE9pQldTyC7N\noIxZDVt1q48uIwY+nRG7BnjnEk5yX2yPtvBWq6ilCYg9Hb3hxf77yWl/OAD4\nRxbnNO6vBGKQfxglM9Bt+/y98qY9f38rJV6NNnlIS9UNubL82u+ItBBbHOyV\nY0pspBwJOREsVe7lb+G55qTkwcDM/kmzedCFepz17kh6PZgmpvZnKZ1rYUKC\n/Pxt8n6AIvp/z9aUMqxPUvMNYrVqxT8WBAYdR9BCK1pAzFFD/wCvc45xyRBk\nDTH4\r\n=CRcs\r\n-----END PGP SIGNATURE-----\r\n"
+    "integrity": "sha512-0dW7egUOpcXYASN3FX0fF/5ciDGl4WlkHkZE6WRRLjr7sffLev9sbjLiCN3IianGP7pvpw13af644Zj+Dkugqw==",
+    "shasum": "40f054656618d539b85676b4753d1cc4b4bc2ad0",
+    "tarball": "https://registry.npmjs.org/cordova-plugin-facebook4/-/cordova-plugin-facebook4-2.2.0.tgz",
+    "fileCount": 136,
+    "unpackedSize": 60770400,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJbM6wrCRA9TVsSAnZWagAAOuQP/13IXblgToJie1NPIU6o\n+P5gZuLT7vxcaNgZy/zI462rz4EGGsmpIzsnKtcTStFs4pRs1S/7osieSNbj\nSm48IlPv5tnl4yKHOAtyNiUGMZrRq3gipFEdMTYEiENZfVr7m/DJ3kkeTBA0\nE5dyO6JDaeypEtVnoSxT3V+VuSJl7VUqyLqBc42m9LT6bl7E315UVhpCEfFD\npcdiAlayvQq8o9mf257h3ZL3AeVHiqB5lHhuP8ZEE1l9vyCnUyTor1czKmQ8\ngjXNev5h0rIh7jAAUkFT+NWqRMhnZcYLIckajVxlWVtnu0wAyfLEnWuHf2ku\nd0kpuknXQcrynArlWJZ7fQ5WFnq8+g7GfQYr1qP2lEEtmqtcQ7kBmge42XqD\nefu9E93obv6IHUaW+6jGbvROUxxqQlKT6xfmnm49FOsJYdHMTcSkRhKn5DW2\ni6p99Q1jjSmg0KEw/hJTqcCulfRuK9tEXSTl+KO8+n6Dk50gM7nxKAnZgJmf\n/jZhzSvS1BOFamuhEa7RS3wWQwraxa5PFownwostoc9ry/P5q+PLCK5xU81F\ncE1uYqLCon7XBHZBzo7Wf7LL9zvSAP72dn4N6zIgvvgGWGeoJS7bW1hpvYEk\nDiLBlMNu9oSYw5iz38blk4iWyHeeQy0sUmnkEN8uwolTRMuyu5NlnZt+6wkM\n/gCI\r\n=tdJ8\r\n-----END PGP SIGNATURE-----\r\n"
   },
-  "gitHead": "9535ae7d251b4d2801ac3531ee6fd1f817d3a2c1",
+  "gitHead": "b7963e23eb26222a53dd6ea1117e741206de90d2",
   "homepage": "https://github.com/jeduan/cordova-plugin-facebook4#readme",
   "keywords": [
     "cordova",
@@ -108,5 +108,5 @@
     "type": "git",
     "url": "git+https://github.com/jeduan/cordova-plugin-facebook4.git"
   },
-  "version": "2.1.0"
+  "version": "2.2.0"
 }

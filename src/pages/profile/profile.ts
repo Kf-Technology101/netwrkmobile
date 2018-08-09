@@ -114,15 +114,6 @@ export class ProfilePage {
     console.log('[ProfilePage][constructor]', this.profileTypePublic);
   }
 
-  ngAfterViewInit() {
-    this.socialPrvd.connect.facebook = this.socialPrvd.getFacebookData();
-    this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
-    this.socialPrvd.connect.twitter = this.socialPrvd.getTwitterData();
-    this.socialPrvd.connect.snapchat = false;
-
-    console.log(this.socialPrvd.connect.facebook);
-  }
-
   public removeMessage(messageId:number):void {
     this.toolsPrvd.showLoader();
     this.chatPrvd.deleteMessage(messageId).subscribe(res => {
@@ -190,22 +181,53 @@ export class ProfilePage {
     });
   }
 
-  private goBack():void {
-    if (this.usersQueue.length > 0) {
-      this.backBtnDisabled = true;
-      this.toggleProfilePageAnimation(false);
-      setTimeout(() => {
-        this.usersQueue.pop();
-        this.loadConstructor();
-        this.viewDidEnter({
-          id: this.usersQueue[this.usersQueue.length - 1],
-          public: true
-        });
-        this.toggleProfilePageAnimation(true);
-      }, 400);
-    } else {
-      this.toolsPrvd.popPage();
+    private loadOwnProfile() {
+        console.log('LOAD | OWN PROFILE');
+        this.showUserData(this.authPrvd.getAuthData());
+        //this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+        //this.slideAvatarPrvd.sliderInit(this.pageTag);
+
+        this.user = this.authPrvd.getAuthData();
+        this.setProfileData();
+        //this.authPrvd.getSocialStatus().subscribe(res => {
+        //    let socialArray = [ 'fb', 'twitter', 'instagram' ];
+        //    console.log('get social status:',res);
+        //    // Go through all social networks and toggle their switch if active
+        //    for (let i = 0; i < socialArray.length; i++) {
+        //        if (res[socialArray[i]]) {
+        //            this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
+        //        }
+        //    }
+        //}, err => console.error(err));
     }
+
+    //ngAfterViewInit() {
+    //  this.socialPrvd.connect.facebook = this.socialPrvd.getFacebookData();
+    //  this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
+    //  this.socialPrvd.connect.twitter = this.socialPrvd.getTwitterData();
+    //  this.socialPrvd.connect.snapchat = false;
+    //
+    //  console.log(this.socialPrvd.connect.facebook);
+    //}
+
+  private goBack():void {
+      this.toolsPrvd.popPage();
+
+    //if (this.usersQueue.length > 0) {
+    //  this.backBtnDisabled = true;
+    //  this.toggleProfilePageAnimation(false);
+    //  setTimeout(() => {
+    //    this.usersQueue.pop();
+    //    this.loadConstructor();
+    //    this.viewDidEnter({
+    //      id: this.usersQueue[this.usersQueue.length - 1],
+    //      public: true
+    //    });
+    //    this.toggleProfilePageAnimation(true);
+    //  }, 400);
+    //} else {
+    //  this.toolsPrvd.popPage();
+    //}
   }
 
   private toggleProfilePageAnimation(state:boolean):void {
@@ -260,26 +282,6 @@ export class ProfilePage {
     );
   }
 
-  private loadOwnProfile() {
-    console.log('LOAD | OWN PROFILE');
-    this.showUserData(this.authPrvd.getAuthData());
-    this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    this.slideAvatarPrvd.sliderInit(this.pageTag);
-
-    this.user = this.authPrvd.getAuthData();
-    this.setProfileData();
-    this.authPrvd.getSocialStatus().subscribe(res => {
-      let socialArray = [ 'fb', 'twitter', 'instagram' ];
-      console.log('get social status:',res);
-      // Go through all social networks and toggle their switch if active
-      for (let i = 0; i < socialArray.length; i++) {
-        if (res[socialArray[i]]) {
-          this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
-        }
-      }
-    }, err => console.error(err));
-  }
-
   private loadProfile() {
     this.toolsPrvd.showLoader();
     console.log('stored user id:', this.user.id,
@@ -301,12 +303,14 @@ export class ProfilePage {
 
     this.showMessages(this.undercoverPrvd.isUndercover);
 
-    this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
-      console.log(friends);
-      this.fbFriends = friends.data;
-      console.log('this.fbFriends:', this.fbFriends);
-      console.log('this.user:', this.user);
-    }).catch(err => console.log(err));
+    //  Uncomment for social Intigration
+
+    //this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
+    //  console.log(friends);
+    //  this.fbFriends = friends.data;
+    //  console.log('this.fbFriends:', this.fbFriends);
+    //  console.log('this.user:', this.user);
+    //}).catch(err => console.log(err));
   }
 
   changeCallback(positionLeft?: boolean) {
@@ -377,19 +381,19 @@ export class ProfilePage {
 
   private viewDidEnter(params?:any):void {
     console.log('PROFILE | DIDENTER');
-    console.log('connect:', this.socialPrvd.connect);
+    //console.log('connect:', this.socialPrvd.connect);
     if (params) {
       if (params.id) this.user.id = params.id;
       if (params.public) this.profileTypePublic = params.public;
     }
     this.posts = [];
     this.loadProfile();
-    this.cameraPrvd.toggleCameraBg();
-    if (this.ownProfile) {
-      this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-      this.slideAvatarPrvd.sliderInit(this.pageTag);
-
-    }
+    //this.cameraPrvd.toggleCameraBg();
+    //if (this.ownProfile) {
+    //  this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+    //  this.slideAvatarPrvd.sliderInit(this.pageTag);
+    //
+    //}
     this.user = this.authPrvd.getAuthData();
     this.setProfileData();
   }

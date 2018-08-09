@@ -107,13 +107,9 @@
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
         <ng-container *ngIf="!message.has_expired">
-            <img *ngIf="message.user"
-            [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
-            (error)="chatPrvd.updateAvatarUrl($event)">
+            <img *ngIf="message.user" [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
 
-            <img *ngIf="!message.user"
-            [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
-            (error)="chatPrvd.updateAvatarUrl($event)">
+            <img *ngIf="!message.user" [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
 
 
             <p class="message-container">
@@ -162,8 +158,7 @@
             </p>
 
             <button class="feedback-button" (tap)="feedbackService.toggleLikes(message.id, user.id, $event)"
-            [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced,
-            'active' : message.like_by_user}"
+            [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}"
             *ngIf="!message.locked_by_user || user.id == message.user_id"
             (press)="openFeedbackModal(message, i)">
             <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
@@ -171,8 +166,7 @@
 
 
             <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}"
-            (press)="feedbackService.initNativeShare(message)"
-            (tap)="shareMessageToFacebook(message)">
+            (press)="feedbackService.initNativeShare(message)">
               Share
             </button>
 
@@ -227,7 +221,7 @@
             <img class="img-preview" [src]="i"/>
             <button (click)="removeAppendedImage(indx)">
                 <ion-icon ios="ios-close" md="ios-close"></ion-icon>
-            </button>s
+            </button>
         </div>
     </div>
 

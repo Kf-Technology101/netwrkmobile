@@ -162,8 +162,8 @@
           <!--{{ user.email }}-->
           <!--</span>-->
           </ion-slide>
-
-          <ion-slide class="netwrk-slide" (press)="lineJoinRequest()" (click)="shareLineJoinFlow(chatPrvd.currentLobbyMessage)" *ngIf="chatPrvd.currentLobby.isAddButtonAvailable">
+          <!--(press)="lineJoinRequest()"-->
+          <ion-slide class="netwrk-slide" (click)="shareLineJoinFlow(chatPrvd.currentLobbyMessage)" *ngIf="chatPrvd.currentLobby.isAddButtonAvailable">
             <button class="join-chat">+</button>
           </ion-slide>
       </ion-slides>
@@ -197,13 +197,12 @@
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
       <div class="message-container {{message.undercover}}" *ngIf="!message.has_expired && !message.undercover || chatPrvd.isLobbyChat && !message.has_expired && message.undercover" [ngClass]="{'isLobby': chatPrvd.isLobbyChat || chatPrvd.getState() == 'area' }">
-        <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        (tap)="openLobbyForPinned(message)"
+        <img *ngIf="message.user"
+        (click)="openLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar conversation"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
-        <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        (tap)="openLobbyForPinned(message)"
+        <img *ngIf="!message.user" (click)="openLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         [src]="toolsPrvd.defaultAvatar" class="chat-avatar conversation"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
@@ -273,10 +272,8 @@
             <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
             </button>
 
-            <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}"
-            (click)="feedbackService.initNativeShare(message)"
-            (press)="shareMessageToFacebook(message)">
-            Share
+            <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)">
+                Share
             </button>
         </ng-container>
 
@@ -327,13 +324,13 @@
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
       <div *ngIf="!message.has_expired && message.undercover && !chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover' && chatPrvd.getState() != 'area' && (message.is_followed || message.is_connected)">
-        <img *ngIf="message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        (tap)="openLobbyForPinned(message)"
+        <img *ngIf="message.user"
+        (click)="openLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
-        <img *ngIf="!message.user" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        (tap)="openLobbyForPinned(message)"
+        <img *ngIf="!message.user"
+        (click)="openLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
 
@@ -396,8 +393,7 @@
             <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
             </button>
 
-            <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (press)="feedbackService.initNativeShare(message)"
-            (tap)="shareMessageToFacebook(message)">
+            <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)">
             Share
             </button>
         </ng-container>

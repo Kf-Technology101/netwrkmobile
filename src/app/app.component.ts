@@ -53,7 +53,6 @@ export class MyApp {
         private gps: Gps
         ) {
 
-        this.init();
 
         platform.registerBackButtonAction(() => {
             this.toolsPrvd.doBackButton();
@@ -70,20 +69,34 @@ export class MyApp {
         }, (err) => {
             console.log('Unmatched Route', err);
         });
+
+        this.init();
+
+        platform.ready().then(() => {
+            permission.checkCameraPermissions().then(permissionOk => {
+                this.storage.set('enable_uc_camera', permissionOk ? true : false);
+
+                if(platform.is('android')) {
+                    permission.checkAll().then(res => {
+                        this.init();
+                    }, err => console.error(err));
+                } else {
+                    this.init();
+                }
+            });
+        });
     }
 
-    public init () {
+    public init = () => {
         this.gps.getMyZipCode().then(res => {
             if (res && res.zip_code)
                 this.storage.set('chat_zip_code', res.zip_code);
-
-            console.log('NetworkZipCode:');
+            this.network.networkStatus(); // watch for network status
+            this.getLogin();
+            this.getSimInfo();
+            this.statusBar.styleDefault();
         });
-        this.getLogin();
-        this.getSimInfo();
-        this.toolsPrvd.hideSplashScreen();
-        this.statusBar.styleDefault();
-    }
+    };
 
     private goToPage(root:any):void {
         this.gps.getMyZipCode().then(res => {

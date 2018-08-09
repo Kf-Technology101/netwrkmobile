@@ -448,6 +448,7 @@ export class LinelistModal {
             video_urls: post.video_urls ? post.video_urls : [],
             social_post: true
         }
+
         this.postMessage(null, params);
     }
 
@@ -475,29 +476,6 @@ export class LinelistModal {
     }
 
     private postMessage(emoji?: string, params?: any):void {
-
-        //let alert = this.alertCtrl.create({
-        //    subTitle: 'Become a part of the local broadcast?',
-        //    buttons: [{
-        //        text: 'Not now',
-        //        role: 'cancel'
-        //    }, {
-        //        cssClass: 'active',
-        //        text: 'Sure',
-        //        handler: () => {
-        //            console.log('New Line create handler');
-        //            alert.dismiss();
-        //            this.toolsPrvd.pushPage(NetworkContactListPage, {
-        //                type: 'emails',
-        //                show_share_dialog: true
-        //            });
-        //            return false;
-        //        }
-        //    }]
-        //});
-        //alert.present();
-
-
         try {
             let publicUser: boolean;
             let images = [];
@@ -534,6 +512,7 @@ export class LinelistModal {
             console.log('messageParams:', messageParams);
             console.log('params:', params);
 
+
             if (params) Object.assign(messageParams, params);
 
             message = Object.assign(message, messageParams);
@@ -546,43 +525,65 @@ export class LinelistModal {
             message.temporaryFor = 0;
 
             console.log('[POST MESSAGE] messageParams:', messageParams);
-            if ((message.text && message.text.trim() != '') ||
-                (message.images && message.images.length > 0) ||
-                (message.social_urls && message.social_urls.length > 0)) {
+            if ((message.text && message.text.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
 
-                if (!message.social) {
-                    console.log('this user:', this.user);
-                    message.user_id = this.user.id;
-                    message.user = this.user;
-                    message.image_urls = message.images;
-                    message.is_synced = false;
-                    if (this.chatPrvd.isLobbyChat) message.expire_date = null;
+                let alert = this.alertCtrl.create({
+                    subTitle: 'Become a part of the local broadcast?',
+                    buttons: [{
+                        text: 'Not now',
+                        role: 'cancel'
+                    }, {
+                        cssClass: 'active',
+                        text: 'Sure',
+                        handler: () => {
+                            alert.dismiss();
+                            this.toolsPrvd.pushPage(NetworkContactListPage, {
+                                type: 'emails',
+                                message: message,
+                                show_share_dialog: true
+                            });
 
-                    console.log('message before unshift:', message);
+                            if (!message.social) {
+                                console.log('this user:', this.user);
+                                message.user_id = this.user.id;
+                                message.user = this.user;
+                                message.image_urls = message.images;
+                                message.is_synced = false;
+                                if (this.chatPrvd.isLobbyChat) message.expire_date = null;
 
-                    this.chatPrvd.postMessages.unshift(message);
+                                console.log('message before unshift:', message);
 
-                    this.hideTopSlider(this.activeTopForm);
-                    this.txtIn.value = '';
-                    this.setMainBtnStateRelativeToEvents();
-                } else this.toolsPrvd.showLoader();
+                                this.chatPrvd.postMessages.unshift(message);
 
-                this.chatPrvd.sendMessage(messageParams).then(res => {
-                    this.hideTopSlider(this.activeTopForm);
-                    this.toolsPrvd.hideLoader();
-                    console.log('[sendMessage] res:', res);
-                    this.postLockData.hint = null;
-                    this.postLockData.password = null;
-                    this.postTimerObj.expireDate = null;
-                    this.postTimerObj.label = null;
-                    this.updatePost(res, message, emoji);
-                    this.postTimerObj.time = null;
-                    this.chatPrvd.scrollToTop();
-                }).catch(err => {
-                    this.toolsPrvd.hideLoader();
-                    console.error('sendMessage:', err);
-                    this.updatePost(err, message);
+                                this.hideTopSlider(this.activeTopForm);
+                                this.txtIn.value = '';
+                                this.setMainBtnStateRelativeToEvents();
+                            } else this.toolsPrvd.showLoader();
+
+                            this.chatPrvd.sendMessage(messageParams).then(res => {
+                                this.hideTopSlider(this.activeTopForm);
+                                this.toolsPrvd.hideLoader();
+                                console.log('[sendMessage] res:', res);
+                                this.postLockData.hint = null;
+                                this.postLockData.password = null;
+                                this.postTimerObj.expireDate = null;
+                                this.postTimerObj.label = null;
+                                this.updatePost(res, message, emoji);
+                                this.postTimerObj.time = null;
+                                this.chatPrvd.scrollToTop();
+                            }).catch(err => {
+                                this.toolsPrvd.hideLoader();
+                                console.error('sendMessage:', err);
+                                this.updatePost(err, message);
+                            });
+
+                            return false;
+                        }
+                    }]
                 });
+                alert.present();
+
+
                 if (!emoji) {
                     this.chatPrvd.appendContainer.setState('off');
                     this.chatPrvd.mainBtn.setState('hidden');

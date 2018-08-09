@@ -85,11 +85,11 @@ export class Gps {
   public getMyZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
 
-      let options: GeolocationOptions = {
-        timeout: 10000,
-        enableHighAccuracy: true,
-        maximumAge: 3000
-      }
+        let options: GeolocationOptions = {
+            timeout: 10000,
+            enableHighAccuracy: true,
+            maximumAge: 3000
+        }
 
       if (this.watch) {
         this.coords.lat = null;

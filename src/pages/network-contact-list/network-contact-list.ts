@@ -240,6 +240,66 @@ export class NetworkContactListPage {
     }
   }
 
+  private showShareLineQuestion(forced?:boolean):any {
+    if (this.showShareDialog || forced) {
+      let alert = this.alertCtrl.create({
+        enableBackdropDismiss: false,
+        title: '',
+        subTitle: 'Share this app with your friends on facebook too?',
+        buttons: [
+          {
+                text: 'Skip',
+                role: 'cancel',
+                handler: () => {
+                  if (forced && this.contacts) {
+                    for (let c = 0; c < this.contacts.length; c++) {
+                      this.contacts[c].checked = false;
+                    }
+                  }
+
+                  alert.dismiss();
+                  this.tools.hideLoader();
+                  this.goBack();
+                  return false;
+                }
+          },
+
+          {
+                cssClass: 'active',
+                text: 'Sure!',
+                handler: () => {
+                    this.sendInvitesToEmails().then(res => {
+                        this.feedbackService.autoPostToFacebook({
+                            message: 'Become a part of local life! Local people join together in a netwrk to share and choose the best content. Download it to connect to local life wherever you are!',
+                            url: 'http://18.188.223.201:3000'
+                        }).then(res => {
+                            this.tools.showToast('App successfully shared');
+                            alert.dismiss();
+                            this.goBack();
+                            this.tools.hideLoader();
+                        }, err => {
+                            this.goBack();
+                            this.tools.showToast('Something went wrong :(');
+                            alert.dismiss();
+                            this.tools.hideLoader();
+                        });
+                    }, err => {
+                        this.goBack();
+                        this.tools.hideLoader();
+                        this.tools.showToast('Something went wrong');
+
+                    });
+                    return false;
+                }
+          }
+        ]
+      });
+      alert.present();
+    } else {
+      this.goHome();
+    }
+  }
+
   private setErrorMessages(contacts: Array<any>) {
     let count: number = 0;
     if (contacts.length > count) {

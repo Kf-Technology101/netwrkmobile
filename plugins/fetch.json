@@ -39,17 +39,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "cordova-plugin-facebook4": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-facebook4"
-    },
-    "is_top_level": true,
-    "variables": {
-      "APP_ID": "1647198465596810",
-      "APP_NAME": "netwrk test"
-    }
-  },
   "cordova-plugin-file": {
     "source": {
       "type": "registry",
@@ -232,6 +221,17 @@
       "URL_SCHEME": "netwrkapp",
       "DEEPLINK_SCHEME": "https",
       "DEEPLINK_HOST": "netwrkapp.com"
+    }
+  },
+  "cordova-plugin-facebook4": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-facebook4"
+    },
+    "is_top_level": true,
+    "variables": {
+      "APP_ID": "1647198465596810",
+      "APP_NAME": "netwrk test"
     }
   }
 }

@@ -28,11 +28,11 @@ import { GoogleMapsService } from 'google-maps-angular2';
 import { Toggleable } from '../../includes/toggleable';
 import { CameraPreview } from '@ionic-native/camera-preview';
 import { Keyboard } from '@ionic-native/keyboard';
-
+import { SocialSharing } from '@ionic-native/social-sharing';
 //Modals
-import { LegendaryModal } from '../legendaryhistory/legendaryhistory';
-import { FeedbackModal } from '../feedback/feedback';
-import { MapsModal } from '../maps/maps';
+import { LegendaryModal } from '../../modals/legendaryhistory/legendaryhistory';
+import { FeedbackModal } from '../../modals/feedback/feedback';
+import { MapsModal } from '../../modals/maps/maps';
 
 //Pages
 import { CameraPage } from '../../pages/camera/camera';
@@ -56,6 +56,7 @@ import { NetworkProvider } from '../../providers/networkservice';
 import { Social } from '../../providers/social';
 import { Places } from '../../providers/places';
 import { Gps } from '../../providers/gps';
+import { Settings } from '../../providers/settings';
 
 
 import { VideoService } from '../../providers/videoservice';
@@ -83,7 +84,7 @@ import { ModalRTLEnterAnimation } from '../../includes/rtl-enter.transition';
 import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 
 @Component({
-    selector: 'modal-linelist',
+    selector: 'page-linelist',
     templateUrl: 'linelist.html',
     animations: [
         toggleInputsFade,
@@ -97,7 +98,7 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
         lobbyAnimation
     ]
 })
-export class LinelistModal {
+export class LinePage {
 
     public netwrkLineList: any = [];
 
@@ -222,6 +223,8 @@ export class LinelistModal {
         public cameraPrvd: Camera,
         public zone: NgZone,
         public gpsPrvd: Gps,
+        public setting: Settings,
+        public sharing: SocialSharing,
         public slideAvatarPrvd: SlideAvatar,
         public authPrvd: Auth,
         public elRef: ElementRef,
@@ -287,7 +290,7 @@ export class LinelistModal {
     }
 
     private changePlaceholderText():void {
-        this.placeholderText = 'Describe your line';
+        this.placeholderText = 'Describe your Network';
     }
 
     private generateEmoticons():void {
@@ -528,61 +531,105 @@ export class LinelistModal {
             if ((message.text && message.text.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
 
                 let alert = this.alertCtrl.create({
-                    subTitle: 'Become a part of the local broadcast?',
+                    subTitle: 'Are you sure you want to share line with friend?',
                     buttons: [{
-                        text: 'Not now',
+                        text: 'Cancel',
                         role: 'cancel'
                     }, {
                         cssClass: 'active',
-                        text: 'Sure',
+                        text: 'Share',
                         handler: () => {
                             alert.dismiss();
-                            this.toolsPrvd.pushPage(NetworkContactListPage, {
-                                type: 'emails',
-                                message: message,
-                                show_share_dialog: true
-                            });
+                            let subject = message.text_with_links ? message.text_with_links : '';
+                            let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
+                            if (this.plt.is('ios')){
+                                this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://landing').then(res => {
+                                        this.toolsPrvd.showToast('Message successfully shared');
+                                        if (!message.social) {
+                                            console.log('this user:', this.user);
+                                            message.user_id = this.user.id;
+                                            message.user = this.user;
+                                            message.image_urls = message.images;
+                                            message.is_synced = false;
+                                            if (this.chatPrvd.isLobbyChat) message.expire_date = null;
 
-                            if (!message.social) {
-                                console.log('this user:', this.user);
-                                message.user_id = this.user.id;
-                                message.user = this.user;
-                                message.image_urls = message.images;
-                                message.is_synced = false;
-                                if (this.chatPrvd.isLobbyChat) message.expire_date = null;
+                                            console.log('message before unshift:', message);
 
-                                console.log('message before unshift:', message);
+                                            this.chatPrvd.postMessages.unshift(message);
 
-                                this.chatPrvd.postMessages.unshift(message);
+                                            this.hideTopSlider(this.activeTopForm);
+                                            this.txtIn.value = '';
+                                            this.setMainBtnStateRelativeToEvents();
+                                        } else this.toolsPrvd.showLoader();
 
-                                this.hideTopSlider(this.activeTopForm);
-                                this.txtIn.value = '';
-                                this.setMainBtnStateRelativeToEvents();
-                            } else this.toolsPrvd.showLoader();
+                                        this.chatPrvd.sendMessage(messageParams).then(res => {
+                                            this.hideTopSlider(this.activeTopForm);
+                                            this.toolsPrvd.hideLoader();
+                                            console.log('[sendMessage] res:', res);
+                                            this.postLockData.hint = null;
+                                            this.postLockData.password = null;
+                                            this.postTimerObj.expireDate = null;
+                                            this.postTimerObj.label = null;
+                                            this.updatePost(res, message, emoji);
+                                            this.postTimerObj.time = null;
+                                            this.chatPrvd.scrollToTop();
+                                        }).catch(err => {
+                                            this.toolsPrvd.hideLoader();
+                                            console.error('sendMessage:', err);
+                                            this.updatePost(err, message);
+                                        });
+                                    }, err =>{
+                                        this.toolsPrvd.showToast('Unable to share message');
+                                    }
+                                );
+                            }else{
+                                this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
+                                        this.toolsPrvd.showToast('Message successfully shared');
+                                        if (!message.social) {
+                                            console.log('this user:', this.user);
+                                            message.user_id = this.user.id;
+                                            message.user = this.user;
+                                            message.image_urls = message.images;
+                                            message.is_synced = false;
+                                            if (this.chatPrvd.isLobbyChat) message.expire_date = null;
 
-                            this.chatPrvd.sendMessage(messageParams).then(res => {
-                                this.hideTopSlider(this.activeTopForm);
-                                this.toolsPrvd.hideLoader();
-                                console.log('[sendMessage] res:', res);
-                                this.postLockData.hint = null;
-                                this.postLockData.password = null;
-                                this.postTimerObj.expireDate = null;
-                                this.postTimerObj.label = null;
-                                this.updatePost(res, message, emoji);
-                                this.postTimerObj.time = null;
-                                this.chatPrvd.scrollToTop();
-                            }).catch(err => {
-                                this.toolsPrvd.hideLoader();
-                                console.error('sendMessage:', err);
-                                this.updatePost(err, message);
-                            });
+                                            console.log('message before unshift:', message);
+
+                                            this.chatPrvd.postMessages.unshift(message);
+
+                                            this.hideTopSlider(this.activeTopForm);
+                                            this.txtIn.value = '';
+                                            this.setMainBtnStateRelativeToEvents();
+                                        } else this.toolsPrvd.showLoader();
+
+                                        this.chatPrvd.sendMessage(messageParams).then(res => {
+                                            this.hideTopSlider(this.activeTopForm);
+                                            this.toolsPrvd.hideLoader();
+                                            console.log('[sendMessage] res:', res);
+                                            this.postLockData.hint = null;
+                                            this.postLockData.password = null;
+                                            this.postTimerObj.expireDate = null;
+                                            this.postTimerObj.label = null;
+                                            this.updatePost(res, message, emoji);
+                                            this.postTimerObj.time = null;
+                                            this.chatPrvd.scrollToTop();
+                                        }).catch(err => {
+                                            this.toolsPrvd.hideLoader();
+                                            console.error('sendMessage:', err);
+                                            this.updatePost(err, message);
+                                        });
+                                    }, err =>{
+                                        this.toolsPrvd.showToast('Unable to share message');
+                                    }
+                                );
+                            }
 
                             return false;
                         }
                     }]
                 });
-                alert.present();
 
+                alert.present();
 
                 if (!emoji) {
                     this.chatPrvd.appendContainer.setState('off');
@@ -957,14 +1004,14 @@ export class LinelistModal {
                     this.hideTopSlider(this.activeTopForm);
                     this.chatPrvd.postBtn.setState(false);
                 }
-                this.keyboard.close();
+                //this.keyboard.close();
                 setTimeout(() => {
                     this.setMainBtnStateRelativeToEvents();
                 }, 300);
             } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled') {
                 this.toggleContainer(this.emojiContainer, 'hide');
                 this.toggleContainer(this.shareContainer, 'hide');
-                this.keyboard.close();
+                //this.keyboard.close();
             }else if(this.chatPrvd.mainBtn.getState() == 'back-to-hold'){
                 this.toggleContainer(this.emojiContainer, 'hide');
                 this.toggleContainer(this.shareContainer, 'hide');
@@ -1393,34 +1440,14 @@ export class LinelistModal {
         this.chatPrvd.isCleared = true;
         this.canRefresh = true;
         this.refreshChat();
-        this.viewCtrl.dismiss();
-
+        this.setting.isNewlineScope=false;
+        this.toolsPrvd.popPage();
     }
 
     private onEnter():void {
         console.log('%c [CHAT] ionViewDidEnter ', 'background: #1287a8;color: #ffffff');
 
         this.toolsPrvd.showLoader();
-
-        if (this.chatPrvd.getState() == 'area') {
-            this.zone.run(() => {
-                this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code'))
-                    .subscribe(res => {
-                        if (res.message == 'Network not found') {
-                            this.toolsPrvd.pushPage(NetworkNoPage, {
-                                action: 'create'
-                            });
-                            this.toolsPrvd.hideLoader();
-                        } else {
-                            this.toolsPrvd.hideLoader();
-                        }
-                    }, err => {
-                        console.error(err);
-                        this.toolsPrvd.hideLoader();
-                    });
-            });
-        }
-
         this.chatPrvd.isMessagesVisible = false;
         this.chatPrvd.loadedImages = 0;
         this.chatPrvd.imagesToLoad = 0;

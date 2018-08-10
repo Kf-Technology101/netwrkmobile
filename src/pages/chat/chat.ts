@@ -34,6 +34,7 @@ import { LogInPage } from '../log-in/log-in';
 import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 import { HoldScreenPage } from '../hold-screen/hold-screen';
 import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
+import { LinePage } from '../linelist/linelist';
 
 // Custom libs
 import { Toggleable } from '../../includes/toggleable';
@@ -887,6 +888,10 @@ export class ChatPage implements DoCheck {
   //   })
   // }
   //
+
+    public openLinePage():void {
+        this.toolsPrvd.pushPage(LinePage)
+    }
 
     public eventClickTrigger():void {
         this.messagesInterval = false;

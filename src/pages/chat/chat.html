@@ -1,6 +1,6 @@
 
 <!--<div *ngIf="chatPrvd.isLanding.getState()" id="mapElement" #mapElement></div>-->
-<div id="mapElement" #mapElement [ngClass]="{'hide': chatPrvd.isLobbyChat}"></div>
+<div id="mapElement" #mapElement [ngClass]="{'hide': chatPrvd.isLobbyChat || !isUndercover}"></div>
 
 <!--chat-header !isUndercover-->
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover,'fully-disabled': chatPrvd.isLobbyChat }">
@@ -116,7 +116,7 @@
             <!--{{ user.email }}-->
           <!--</span>-->
         <!--</ion-slide>-->
-        <!--<!--<ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide"-->
+        <!--&lt;!&ndash;<ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide"-->
         <!--<ion-slide class="netwrk-slide" (click)="joinNetwork()">-->
           <!--<div class="avatar add-to-netwrk">-->
               <!--<img src="assets/images/netwrk_plus.svg">-->
@@ -182,7 +182,7 @@
 
   <div id="places"></div>
 
-  <div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat }">
+<div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat }">
 
     <p *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)" class="no-data-message abs">There are no posts yet</p>
 
@@ -581,7 +581,7 @@
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope"
     [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
     class="main-action-btn has-footer transparent chatMainBtn"
-    (click)="settings.openLinelistModal()" [disabled]="chatPrvd.isMainBtnDisabled"
+    (click)="openLinePage()" [disabled]="chatPrvd.isMainBtnDisabled"
   [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
   <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
   </button>

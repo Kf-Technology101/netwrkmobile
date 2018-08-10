@@ -16,12 +16,12 @@
             </div>
         </div>
 
-        <button *ngIf="chatPrvd.postMessages.length == 0 && !chatPrvd.postBtn.state"
-            class="side refresh-btn top-icon" (tap)="refreshChat()"
-            [hidden]="!canRefresh" ion-button
-            [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
-        <ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>
-        </button>
+        <!--<button *ngIf="chatPrvd.postMessages.length == 0 && !chatPrvd.postBtn.state"-->
+            <!--class="side refresh-btn top-icon" (tap)="refreshChat()"-->
+            <!--[hidden]="!canRefresh" ion-button-->
+            <!--[ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">-->
+        <!--<ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>-->
+        <!--</button>-->
 
         <button ion-button class="side clear-btn" (tap)="clearMessages(chatPrvd.postMessages)"
             *ngIf="isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state &&
@@ -87,7 +87,6 @@
     </ion-toolbar>
 </ion-header>
 
-
 <ion-content has-main-btn has-main-btn-label no-bounce (ionScrollEnd)="listenForScrollEnd($event)"
     [ngClass]="{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': !isUndercover, 'white-undercover': isUndercover &&
     (chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': isUndercover}"
@@ -98,6 +97,22 @@
     </ion-refresher>
 
     <div id="places"></div>
+
+<!--Follow line Info-->
+    <ion-row align-items-center class="bg-text">
+        <ion-col text-center>
+            <h1 ion-text color="white">Slide to create a custom network</h1>
+
+            <p  ion-text color="white">
+                Tap &nbsp;
+                <button color="bk" class="ion-netwrk-btn side lock-btn top-icon lockBtn" style="height: 25px;">
+                     <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
+                </button>  &nbsp;
+                to make it private
+            </p>
+
+        </ion-col>
+    </ion-row>
 
 <div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat }">
 
@@ -165,8 +180,7 @@
             </button>
 
 
-            <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}"
-            (press)="feedbackService.initNativeShare(message)">
+            <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (press)="feedbackService.initNativeShare(message)">
               Share
             </button>
 
@@ -315,6 +329,10 @@
                 </ng-container>
             </ng-container>
         </div>
+    </div>
+
+    <div class="tip tail-bottom">
+      Name and create it below
     </div>
 
     <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (click)="goBackOnLanding($event)" [disabled]="chatPrvd.isMainBtnDisabled"

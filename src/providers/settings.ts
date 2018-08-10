@@ -9,7 +9,6 @@ import { Api } from './api';
 import { BlacklistModal } from '../modals/blacklist/blacklist';
 import { ArealistModal } from '../modals/arealist/arealist';
 import { NetwrklistModal } from '../modals/netwrklist/netwrklist';
-import { LinelistModal } from '../modals/linelist/linelist';
 
 
 
@@ -58,11 +57,6 @@ export class Settings {
         netwrklistModal.present();
   }
 
-  public openLinelistModal():void {
-      this.isNewlineScope=false;
-    let linelistModal = this.modalCtrl.create(LinelistModal);
-      linelistModal.present();
-  }
 
 
   public sendDeactivationRequest():any {

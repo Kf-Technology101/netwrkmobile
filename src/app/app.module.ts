@@ -28,6 +28,7 @@ import { ProfilePage } from '../pages/profile/profile';
 import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 
 import { NetworkPage } from '../pages/network/network';
+import { LinePage } from '../pages/linelist/linelist';
 import { NetworkFindPage } from '../pages/network-find/network-find';
 import { NetworkNoPage } from '../pages/network-no/network-no';
 import { NetworkContactListPage } from '../pages/network-contact-list/network-contact-list';
@@ -43,7 +44,6 @@ import { FeedbackModal } from '../modals/feedback/feedback';
 import { BlacklistModal } from '../modals/blacklist/blacklist';
 import { ArealistModal } from '../modals/arealist/arealist';
 import { NetwrklistModal } from '../modals/netwrklist/netwrklist';
-import { LinelistModal } from '../modals/linelist/linelist';
 import { MapsModal } from '../modals/maps/maps';
 
 // Services
@@ -108,6 +108,7 @@ let pages = [
   ProfileSettingPage,
 
   NetworkPage,
+  LinePage,
   NetworkFindPage,
   NetworkNoPage,
   NetworkContactListPage,
@@ -117,7 +118,6 @@ let pages = [
   MapsModal,
   BlacklistModal,
   ArealistModal,
-  LinelistModal,
   NetwrklistModal,
 
   ChatPage,

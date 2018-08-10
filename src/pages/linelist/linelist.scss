@@ -36,7 +36,7 @@ modal-linelist,modal-netwrklist {
   }
 }
 
-modal-linelist,modal-netwrklist {
+page-linelist,modal-netwrklist {
 
   .lobby-header {
     width: 100%;
@@ -78,7 +78,7 @@ modal-linelist,modal-netwrklist {
   }
 }
 
-modal-linelist,modal-netwrklist {
+page-linelist,modal-netwrklist {
 
   .header {
     &.header::after {
@@ -1294,7 +1294,7 @@ modal-linelist,modal-netwrklist {
 
 }
 
-modal-legendaryhistory {
+page-legendaryhistory {
   .chat-container.visible {
     padding-top: 40px;
   }

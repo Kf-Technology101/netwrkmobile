@@ -1,20 +1,25 @@
 
-<ion-content class="connect arealist content">
+
+
+<ion-content class="connect arealist content"  no-bounce>
 
     <!--Loader on swap-->
     <ion-refresher (ionRefresh)="refreshChat($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
     </ion-refresher>
 
-    <!--Follow line Info-->
-    <ion-row align-items-center>
+
+    <ion-row class="loading bg-text" align-items-center>
         <ion-col text-center>
-            <h1 ion-text color="bk">Hello, here are the connectors and networks near you. Tap
+            <h1 ion-text color="white">Hello, here are the connectors and networks near you.</h1>
+
+            <p  ion-text color="white">
+                Tap &nbsp;
                 <button ion-button color="bk" class="ion-netwrk-btn">
                     <ion-icon ios="ios-add" md="md-add"></ion-icon>
-                </button>
+                </button> &nbsp;
                 to follow them.
-            </h1>
+            </p>
         </ion-col>
     </ion-row>
 
@@ -78,7 +83,7 @@
 
 
 <ion-footer>
-  <button ion-button color="bk" class="main-action-btn medium transparent" outline (click)="closeModal()">
+  <button ion-button color="bk" class="main-action-btn medium transparent" outline (click)="goToLanding()">
        <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
   </button>
 </ion-footer>

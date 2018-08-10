@@ -36,7 +36,7 @@ import { ModalRTLEnterAnimation } from '../../includes/rtl-enter.transition';
 import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 
 @Component({
-  selector: 'modal-netwrklist',
+  selector: 'page-netwrklist',
   templateUrl: 'netwrklist.html',
     animations: [
         toggleInputsFade,
@@ -50,7 +50,7 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
         lobbyAnimation
     ]
 })
-export class NetwrklistModal {
+export class NetwrklistPage {
 
   public isUndercover: boolean;
   public user: any = {};
@@ -100,7 +100,7 @@ export class NetwrklistModal {
     }
 
     public goToLanding() {
-        this.viewCtrl.dismiss();
+        //this.toolsPrvd.popPage();
         this.toolsPrvd.pushPage(ChatPage);
     }
 

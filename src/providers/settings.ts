@@ -8,8 +8,6 @@ import { Api } from './api';
 // Modals
 import { BlacklistModal } from '../modals/blacklist/blacklist';
 import { ArealistModal } from '../modals/arealist/arealist';
-import { NetwrklistModal } from '../modals/netwrklist/netwrklist';
-
 
 
 @Injectable()
@@ -51,13 +49,6 @@ export class Settings {
     let arealistModal = this.modalCtrl.create(ArealistModal);
     arealistModal.present();
   }
-
-  public showNetwrklist():void {
-    let netwrklistModal = this.modalCtrl.create(NetwrklistModal);
-        netwrklistModal.present();
-  }
-
-
 
   public sendDeactivationRequest():any {
 

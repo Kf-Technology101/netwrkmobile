@@ -617,6 +617,7 @@ export class LinePage {
                                             this.toolsPrvd.hideLoader();
                                             console.error('sendMessage:', err);
                                             this.updatePost(err, message);
+
                                         });
                                     }, err =>{
                                         this.toolsPrvd.showToast('Unable to share message');
@@ -630,7 +631,6 @@ export class LinePage {
                 });
 
                 alert.present();
-
                 if (!emoji) {
                     this.chatPrvd.appendContainer.setState('off');
                     this.chatPrvd.mainBtn.setState('hidden');
@@ -1004,14 +1004,14 @@ export class LinePage {
                     this.hideTopSlider(this.activeTopForm);
                     this.chatPrvd.postBtn.setState(false);
                 }
-                //this.keyboard.close();
+                this.keyboard.close();
                 setTimeout(() => {
                     this.setMainBtnStateRelativeToEvents();
                 }, 300);
             } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled') {
                 this.toggleContainer(this.emojiContainer, 'hide');
                 this.toggleContainer(this.shareContainer, 'hide');
-                //this.keyboard.close();
+                this.keyboard.close();
             }else if(this.chatPrvd.mainBtn.getState() == 'back-to-hold'){
                 this.toggleContainer(this.emojiContainer, 'hide');
                 this.toggleContainer(this.shareContainer, 'hide');

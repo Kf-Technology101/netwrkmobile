@@ -1,6 +1,6 @@
 
 <!--<div *ngIf="chatPrvd.isLanding.getState()" id="mapElement" #mapElement></div>-->
-<div id="mapElement" #mapElement [ngClass]="{'hide': chatPrvd.isLobbyChat || !isUndercover}"></div>
+<div id="mapElement" #mapElement [ngClass]="{'hide': chatPrvd.isLobbyChat}"></div>
 
 <!--chat-header !isUndercover-->
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover,'fully-disabled': chatPrvd.isLobbyChat }">

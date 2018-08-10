@@ -87,6 +87,8 @@
     </ion-toolbar>
 </ion-header>
 
+
+
 <ion-content has-main-btn has-main-btn-label no-bounce (ionScrollEnd)="listenForScrollEnd($event)"
     [ngClass]="{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': !isUndercover, 'white-undercover': isUndercover &&
     (chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': isUndercover}"
@@ -99,18 +101,17 @@
     <div id="places"></div>
 
 <!--Follow line Info-->
-    <ion-row align-items-center class="bg-text">
+    <ion-row class="bg-text" align-items-center>
         <ion-col text-center>
             <h1 ion-text color="white">Slide to create a custom network</h1>
 
             <p  ion-text color="white">
                 Tap &nbsp;
                 <button color="bk" class="ion-netwrk-btn side lock-btn top-icon lockBtn" style="height: 25px;">
-                     <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
+                    <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
                 </button>  &nbsp;
                 to make it private
             </p>
-
         </ion-col>
     </ion-row>
 

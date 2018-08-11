@@ -515,7 +515,6 @@ export class LinePage {
             console.log('messageParams:', messageParams);
             console.log('params:', params);
 
-
             if (params) Object.assign(messageParams, params);
 
             message = Object.assign(message, messageParams);
@@ -534,7 +533,12 @@ export class LinePage {
                     subTitle: 'Are you sure you want to share line with friend?',
                     buttons: [{
                         text: 'Cancel',
-                        role: 'cancel'
+                        role: 'cancel',
+                        handler: () => {
+                            this.hideTopSlider(this.activeTopForm);
+                            this.txtIn.value = '';
+                            this.setMainBtnStateRelativeToEvents();
+                        }
                     }, {
                         cssClass: 'active',
                         text: 'Share',

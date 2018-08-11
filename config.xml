@@ -131,6 +131,10 @@
         <variable name="APP_ID" value="1647198465596810" />
         <variable name="APP_NAME" value="netwrk test" />
     </plugin>
+    <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
+    <feature name="Keyboard">
+        <param name="ios-package" onload="true" value="IonicKeyboard" />
+    </feature>
     <engine name="ios" spec="~4.5.5" />
 </widget>

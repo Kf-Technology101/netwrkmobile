@@ -890,6 +890,7 @@ export class ChatPage implements DoCheck {
   //
 
     public openLinePage():void {
+        //this.toolsPrvd.popPage();
         this.toolsPrvd.pushPage(LinePage)
     }
 

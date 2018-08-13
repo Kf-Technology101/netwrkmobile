@@ -208,11 +208,11 @@
 
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span>
 
-        <span class="message-box" *ngIf="!chatPrvd.isLobbyChat && !message.is_emoji">
+        <span class="message-box" *ngIf="!chatPrvd.isLobbyChat && !message.is_emoji && chatPrvd.getState() != 'area'">
             <ion-icon ios="ios-mail-outline" md="ios-mail-outline"></ion-icon>
         </span>
 
-        <span class="chat-bubbles-box" *ngIf="chatPrvd.isLobbyChat && !message.is_emoji">
+        <span class="chat-bubbles-box" *ngIf="chatPrvd.isLobbyChat && !message.is_emoji || chatPrvd.getState() == 'area'">
             <ion-icon ios="ios-chatbubbles-outline" md="ios-chatbubbles-outline"></ion-icon>
         </span>
 

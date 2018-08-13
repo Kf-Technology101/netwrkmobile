@@ -181,7 +181,7 @@ page-linelist,page-netwrklist {
       padding: 3px 10px;
       bottom: 190px;
       width: auto;
-      z-index: 2;
+      z-index: 1;
       display: inline;
     &.tail-bottom:before {
         width: 60px;
@@ -411,7 +411,7 @@ page-linelist,page-netwrklist {
   div.gallery-container {
     & {
       position: absolute;
-      z-index: 0;
+      z-index: 2;
       background: color($colors, white);
       width: 100%;
       bottom: 0;

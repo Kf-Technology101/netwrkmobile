@@ -1007,6 +1007,7 @@ export class ChatPage implements DoCheck {
     }
 
     if (this.chatPrvd.getState() == 'undercover') {
+        this.chatPrvd.setState('area');
       this.chatPrvd.detectNetwork().then(res => {
         console.log('[goUndercover] detectNetwork res:', res);
         if (res.network)
@@ -1014,8 +1015,7 @@ export class ChatPage implements DoCheck {
         console.log('DETECT NETWORK [goUndercover]')
 
         if (res.message == 'Network not found') {
-
-            this.gpsPrvd.createNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
+           this.gpsPrvd.createNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
                 if(res){
                     this.networkParams = {
                         post_code: this.chatPrvd.localStorage.get('chat_zip_code')

@@ -279,20 +279,37 @@ export class ChatPage implements DoCheck {
 
   public shareLineJoinFlow(message):void {
     let alert = this.alertCtrl.create({
-      subTitle: 'Are you sure you want to share line with friend?',
+      subTitle: 'Share the line with your friends?',
       buttons: [{
-        text: 'Cancel',
-        role: 'cancel'
+        text: 'No',
+        role: 'cancel',
+          handler:()=>{
+              alert.dismiss();
+              this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
+                  this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
+                      console.log('getLocationLobbyUsers:', res);
+                      if (res && res.users && res.host_id) {
+                          console.log('lobby users:', res.users);
+                          this.chatPrvd.currentLobby.users = res.users;
+                          this.chatPrvd.currentLobby.hostId = res.host_id;
+                          this.chatPrvd.currentLobby.isAddButtonAvailable = !this.chatPrvd.isCurrentUserBelongsToChat(this.chatPrvd.currentLobby.users);
+                          this.chatPrvd.sortLobbyUsersByHostId(this.chatPrvd.currentLobby.hostId);
+                      }
+                  }, err => {
+                      console.error(err);
+                  });
+              }, err => {});
+          }
       }, {
         cssClass: 'active',
-        text: 'Share',
+        text: 'Yes',
         handler: () => {
             alert.dismiss();
             let subject = message.text_with_links ? message.text_with_links : '';
             let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
             if (this.plt.is('ios')){
                 this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://landing').then(res => {
-                        this.toolsPrvd.showToast('Message successfully shared');
+                        this.toolsPrvd.showToast('line shared successfully ');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
                             this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                                 console.log('getLocationLobbyUsers:', res);
@@ -313,7 +330,7 @@ export class ChatPage implements DoCheck {
                 );
             }else{
                 this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
-                        this.toolsPrvd.showToast('Message successfully shared');
+                        this.toolsPrvd.showToast('line shared successfully');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
                             this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                                 console.log('getLocationLobbyUsers:', res);

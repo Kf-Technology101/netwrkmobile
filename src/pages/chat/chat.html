@@ -216,7 +216,7 @@
             <ion-icon ios="ios-chatbubbles-outline" md="ios-chatbubbles-outline"></ion-icon>
         </span>
 
-        <p class="message-item">
+        <p class="message-item" (click)="openLobbyForPinned(message)">
 
           <span class="username" *ngIf="message.user">
             <!--<ng-container *ngIf="message.public">-->
@@ -336,7 +336,7 @@
 
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span>
 
-        <p class="message-item message-container">
+        <p class="message-item message-container" (click)="openLobbyForPinned(message)">
 
           <span class="username" *ngIf="message.user">
             <!--<ng-container *ngIf="message.public">-->
@@ -591,9 +591,7 @@
     class="main-action-btn has-footer transparent chatMainBtn"
     (click)="handleMainBtnClick($event)" [disabled]="chatPrvd.isMainBtnDisabled"
   [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
-      <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"
-        *ngIf="chatPrvd.mainBtn.getState() == 'minimised' || chatPrvd.mainBtn.getState() == 'back-to-hold'"
-        class="small"></ion-icon>
+      <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline" *ngIf="chatPrvd.isLobbyChat || !isUndercover" class="small"></ion-icon>
   </button>
 
   <button class="netwrk-button" (click)="eventClickTrigger()" *ngIf="isUndercover && !chatPrvd.isLobbyChat && !settings.isNewlineScope && chatPrvd.getState() == 'undercover'">

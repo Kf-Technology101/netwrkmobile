@@ -551,12 +551,6 @@ export class LinePage {
                                 this.toolsPrvd.showLoader();
                                 this.chatPrvd.isMainBtnDisabled = true;
                                 //this.txtIn.value = '';
-                                this.chatPrvd.isLandingPage = true;
-                                this.chatPrvd.postMessages = [];
-                                this.chatPrvd.isCleared = true;
-                                this.canRefresh = true;
-                                this.refreshChat();
-                                this.setting.isNewlineScope=false;
                                 this.toolsPrvd.popPage();
 
                                 this.chatPrvd.currentLobbyMessage=res;
@@ -566,6 +560,10 @@ export class LinePage {
                                 this.placeholderText = 'What would you like to say?';
 
                                 this.chatPrvd.openLobbyForPinned(res).then(() => {
+                                    this.chatPrvd.isLandingPage = true;
+                                    this.chatPrvd.postMessages = [];
+                                    this.chatPrvd.isCleared = true;
+                                    this.setting.isNewlineScope=false;
                                     if(this.chatPrvd.currentLobby.isAddButtonAvailable){
                                         this.placeholderText = 'Become a connector or create/join a network';
                                     }else{
@@ -613,13 +611,7 @@ export class LinePage {
 
                                         this.toolsPrvd.showLoader();
                                         this.chatPrvd.isMainBtnDisabled = true;
-                                        //this.txtIn.value = '';
-                                        this.chatPrvd.isLandingPage = true;
-                                        this.chatPrvd.postMessages = [];
-                                        this.chatPrvd.isCleared = true;
-                                        this.canRefresh = true;
-                                        this.refreshChat();
-                                        this.setting.isNewlineScope=false;
+
                                         this.toolsPrvd.popPage();
 
                                         this.chatPrvd.currentLobbyMessage=res;
@@ -629,6 +621,10 @@ export class LinePage {
                                         this.placeholderText = 'What would you like to say?';
 
                                         this.chatPrvd.openLobbyForPinned(res).then(() => {
+                                            this.chatPrvd.isLandingPage = true;
+                                            this.chatPrvd.postMessages = [];
+                                            this.chatPrvd.isCleared = true;
+                                            this.setting.isNewlineScope=false;
                                             if(this.chatPrvd.currentLobby.isAddButtonAvailable){
                                                 this.placeholderText = 'Become a connector or create/join a network';
                                             }else{

@@ -95,27 +95,27 @@
 
   <!--Area Header-->
   <div *ngIf="!isUndercover" class="netwrk-header">
-    <!--<ion-toolbar class="area-head">-->
-      <!--<img [src]="user.avatar_url ? user.avatar_url : toolsPrvd.defaultAvatar"-->
-        <!--(click)="goToProfile(null, true, user.role_name)" class="ic user-icon"-->
-         <!--(error)="chatPrvd.updateAvatarUrl($event)">-->
+    <ion-toolbar class="area-head">
+      <img [src]="user.avatar_url ? user.avatar_url : toolsPrvd.defaultAvatar"
+        (click)="goToProfile(null, true, user.role_name)" class="ic user-icon"
+         (error)="chatPrvd.updateAvatarUrl($event)">
 
-      <!--<img class="ic legendary-icon" src="assets/images/sun_icon.png" (click)="goToLegendaryList()">-->
-    <!--</ion-toolbar>-->
-    <!--<ion-toolbar>-->
-      <!--<ion-slides slidesPerView="4" class="netwrk-slider">-->
-        <!--<ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">-->
-          <!--<div class="avatar" (tap)="goToProfile(user.id,user.profileTypePublic, user.role_name)">-->
-            <!--<img [src]="chatPrvd.users[user.id].avatar_url"-->
-            <!--(error)="chatPrvd.updateAvatarUrl($event)">-->
-          <!--</div>-->
-          <!--<span *ngIf="user.name" class="username">-->
-            <!--{{ user.name }}-->
-          <!--</span>-->
-          <!--<span *ngIf="!user.name" class="username">-->
-            <!--{{ user.email }}-->
-          <!--</span>-->
-        <!--</ion-slide>-->
+      <img class="ic legendary-icon" src="assets/images/sun_icon.png" (click)="goToLegendaryList()">
+    </ion-toolbar>
+    <ion-toolbar>
+      <ion-slides slidesPerView="4" class="netwrk-slider">
+        <ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">
+          <div class="avatar" (tap)="goToProfile(user.id,user.profileTypePublic, user.role_name)">
+            <img [src]="chatPrvd.users[user.id].avatar_url"
+            (error)="chatPrvd.updateAvatarUrl($event)">
+          </div>
+          <span *ngIf="user.name" class="username">
+            {{ user.name }}
+          </span>
+          <span *ngIf="!user.name" class="username">
+            {{ user.email }}
+          </span>
+        </ion-slide>
         <!--&lt;!&ndash;<ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide"-->
         <!--<ion-slide class="netwrk-slide" (click)="joinNetwork()">-->
           <!--<div class="avatar add-to-netwrk">-->
@@ -123,16 +123,16 @@
           <!--</div>-->
           <!--<span class="username">Connect</span>-->
         <!--</ion-slide>-->
-      <!--</ion-slides>-->
-    <!--</ion-toolbar>-->
-    <!--<p ion-text color="bk" class="area-subhead-tip">-->
-      <!--<span class="subhead-container">-->
-        <!--<div class="flex-ch netwrk-name">netwrk</div>-->
-        <!--<div class="flex-ch">-->
-          <!--<ion-icon ios="md-person" md="md-person"></ion-icon> <span class="netwrk-users">{{uniqueUsers}}</span>-->
-        <!--</div>-->
-      <!--</span>-->
-    <!--</p>-->
+      </ion-slides>
+    </ion-toolbar>
+    <p ion-text color="bk" class="area-subhead-tip">
+      <span class="subhead-container">
+        <div class="flex-ch netwrk-name">netwrk</div>
+        <div class="flex-ch">
+          <ion-icon ios="md-person" md="md-person"></ion-icon> <span class="netwrk-users">{{uniqueUsers}}</span>
+        </div>
+      </span>
+    </p>
     <button ion-button class="side clear-btn" (tap)="clearMessages()" *ngIf="!isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state && !chatPrvd.isLobbyChat">
         Clear
     </button>

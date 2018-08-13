@@ -338,7 +338,7 @@
 
     <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (click)="goBackOnLanding($event)" [disabled]="chatPrvd.isMainBtnDisabled"
         [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
-        <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline" *ngIf="chatPrvd.mainBtn.getState() == 'minimised' || chatPrvd.mainBtn.getState() == 'back-to-hold'" class="small"></ion-icon>
+        <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline" class="small"></ion-icon>
     </button>
 
     <div class="flip-container" [ngClass]="{'hover' : flipHover}" *ngIf="chatPrvd.getState() == 'undercover'">

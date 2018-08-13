@@ -23,13 +23,13 @@ modal-legendaryhistory {
   .content {
     &.netwrk-content.content-md {
       .scroll-content {
-        margin-top: 35px !important;
+        margin-top: 150px !important;
         // margin-bottom: 70px;
       }
     }
     &.netwrk-content.content-ios {
       .scroll-content {
-        margin-top: 40px !important;
+        margin-top: 155px !important;
       }
     }
     &.lobby-content.content-md {
@@ -1129,10 +1129,11 @@ page-network-no {
     }
   }
   .chat-header {
-    background: transparent;
+    background: #fff;
     .netwrk-header {
       // padding-bottom: 16px;
       height: 44px;
+//      background: #fff;
       .area-subhead-tip {
         font-size: 10px;
         text-align: center;

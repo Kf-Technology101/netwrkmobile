@@ -530,18 +530,48 @@ export class LinePage {
             if ((message.text && message.text.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
 
                 let alert = this.alertCtrl.create({
-                    subTitle: 'Are you sure you want to share line with friend?',
+                    subTitle: 'Share the line with your friends?',
                     buttons: [{
-                        text: 'Cancel',
+                        text: 'No',
                         role: 'cancel',
                         handler: () => {
-                            this.hideTopSlider(this.activeTopForm);
-                            this.txtIn.value = '';
-                            this.setMainBtnStateRelativeToEvents();
+                            if (!message.social) {
+                                console.log('this user:', this.user);
+                                message.user_id = this.user.id;
+                                message.user = this.user;
+                                message.image_urls = message.images;
+                                message.is_synced = false;
+                                if (this.chatPrvd.isLobbyChat) message.expire_date = null;
+
+                                console.log('message before unshift:', message);
+
+                                this.chatPrvd.postMessages.unshift(message);
+
+                                this.hideTopSlider(this.activeTopForm);
+                                this.txtIn.value = '';
+                                this.setMainBtnStateRelativeToEvents();
+                            } else this.toolsPrvd.showLoader();
+
+                            this.chatPrvd.sendMessage(messageParams).then(res => {
+                                this.hideTopSlider(this.activeTopForm);
+                                this.toolsPrvd.hideLoader();
+                                console.log('[sendMessage] res:', res);
+                                this.postLockData.hint = null;
+                                this.postLockData.password = null;
+                                this.postTimerObj.expireDate = null;
+                                this.postTimerObj.label = null;
+                                this.updatePost(res, message, emoji);
+                                this.postTimerObj.time = null;
+                                this.chatPrvd.scrollToTop();
+                            }).catch(err => {
+                                this.toolsPrvd.hideLoader();
+                                console.error('sendMessage:', err);
+                                this.updatePost(err, message);
+                            });
                         }
                     }, {
                         cssClass: 'active',
-                        text: 'Share',
+                        text: 'Yes',
                         handler: () => {
                             alert.dismiss();
                             let subject = message.text_with_links ? message.text_with_links : '';

@@ -546,48 +546,7 @@ export class LinePage {
                                 this.chatPrvd.postMessages.unshift(message);
                             } else this.toolsPrvd.showLoader();
 
-
-                            this.chatPrvd.sendMessage(messageParams).then(res => {
-                                this.toolsPrvd.showLoader();
-                                this.chatPrvd.isMainBtnDisabled = true;
-                                //this.txtIn.value = '';
-                                this.toolsPrvd.popPage();
-
-                                this.chatPrvd.currentLobbyMessage=res;
-                                this.chatPrvd.appendContainer.hidden = true;
-                                this.cameraPrvd.takenPictures = [];
-                                this.setMainBtnStateRelativeToEvents();
-                                this.placeholderText = 'What would you like to say?';
-
-                                this.chatPrvd.openLobbyForPinned(res).then(() => {
-                                    this.chatPrvd.isLandingPage = true;
-                                    this.chatPrvd.postMessages = [];
-                                    this.chatPrvd.isCleared = true;
-                                    this.setting.isNewlineScope=false;
-                                    if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-                                        this.placeholderText = 'Become a connector or create/join a network';
-                                    }else{
-                                        this.placeholderText = 'What would you like to say?';
-                                    }
-                                    this.chatPrvd.allowUndercoverUpdate = false;
-                                    clearTimeout(this.messIntObject);
-                                    this.chatPrvd.toggleLobbyChatMode();
-                                    this.chatPrvd.isMainBtnDisabled = false;
-                                    this.toolsPrvd.hideLoader();
-                                }, err => {
-                                    console.error(err);
-                                    console.log('Tap to hang anything here');
-                                    this.placeholderText = 'Tap to hang anything here';
-                                    this.chatPrvd.isMainBtnDisabled = false;
-                                    this.startMessageUpdateTimer();
-                                    this.chatPrvd.allowUndercoverUpdate = true;
-                                    this.toolsPrvd.hideLoader();
-                                });
-                            }).catch(err => {
-                                this.toolsPrvd.hideLoader();
-                                console.error('sendMessage:', err);
-                                this.updatePost(err, message);
-                            });
+                            this.goToLobby(messageParams);
                         }
                     }, {
                         cssClass: 'active',
@@ -609,41 +568,7 @@ export class LinePage {
                                             this.chatPrvd.postMessages.unshift(message);
                                         } else this.toolsPrvd.showLoader();
 
-                                        this.toolsPrvd.showLoader();
-                                        this.chatPrvd.isMainBtnDisabled = true;
-
-                                        this.toolsPrvd.popPage();
-
-                                        this.chatPrvd.currentLobbyMessage=res;
-                                        this.chatPrvd.appendContainer.hidden = true;
-                                        this.cameraPrvd.takenPictures = [];
-                                        this.setMainBtnStateRelativeToEvents();
-                                        this.placeholderText = 'What would you like to say?';
-
-                                        this.chatPrvd.openLobbyForPinned(res).then(() => {
-                                            this.chatPrvd.isLandingPage = true;
-                                            this.chatPrvd.postMessages = [];
-                                            this.chatPrvd.isCleared = true;
-                                            this.setting.isNewlineScope=false;
-                                            if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-                                                this.placeholderText = 'Become a connector or create/join a network';
-                                            }else{
-                                                this.placeholderText = 'What would you like to say?';
-                                            }
-                                            this.chatPrvd.allowUndercoverUpdate = false;
-                                            clearTimeout(this.messIntObject);
-                                            this.chatPrvd.toggleLobbyChatMode();
-                                            this.chatPrvd.isMainBtnDisabled = false;
-                                            this.toolsPrvd.hideLoader();
-                                        }, err => {
-                                            console.error(err);
-                                            console.log('Tap to hang anything here');
-                                            this.placeholderText = 'Tap to hang anything here';
-                                            this.chatPrvd.isMainBtnDisabled = false;
-                                            this.startMessageUpdateTimer();
-                                            this.chatPrvd.allowUndercoverUpdate = true;
-                                            this.toolsPrvd.hideLoader();
-                                        });
+                                        this.goToLobby(messageParams);
                                     }, err =>{
                                         this.toolsPrvd.showToast('Unable to share message');
                                     }
@@ -658,33 +583,10 @@ export class LinePage {
                                             message.image_urls = message.images;
                                             message.is_synced = false;
                                             if (this.chatPrvd.isLobbyChat) message.expire_date = null;
-
-                                            console.log('message before unshift:', message);
-
                                             this.chatPrvd.postMessages.unshift(message);
-
-                                            this.hideTopSlider(this.activeTopForm);
-                                            this.txtIn.value = '';
-                                            this.setMainBtnStateRelativeToEvents();
                                         } else this.toolsPrvd.showLoader();
 
-                                        this.chatPrvd.sendMessage(messageParams).then(res => {
-                                            this.hideTopSlider(this.activeTopForm);
-                                            this.toolsPrvd.hideLoader();
-                                            console.log('[sendMessage] res:', res);
-                                            this.postLockData.hint = null;
-                                            this.postLockData.password = null;
-                                            this.postTimerObj.expireDate = null;
-                                            this.postTimerObj.label = null;
-                                            this.updatePost(res, message, emoji);
-                                            this.postTimerObj.time = null;
-                                            this.chatPrvd.scrollToTop();
-                                        }).catch(err => {
-                                            this.toolsPrvd.hideLoader();
-                                            console.error('sendMessage:', err);
-                                            this.updatePost(err, message);
-
-                                        });
+                                        this.goToLobby(messageParams);
                                     }, err =>{
                                         this.toolsPrvd.showToast('Unable to share message');
                                     }
@@ -740,6 +642,47 @@ export class LinePage {
                 reject();
             });
         })
+    }
+
+
+    private goToLobby(messageParams:any){
+        this.chatPrvd.sendMessage(messageParams).then(res => {
+            this.toolsPrvd.showLoader();
+            this.chatPrvd.isMainBtnDisabled = true;
+            //this.txtIn.value = '';
+            this.toolsPrvd.popPage();
+
+            this.chatPrvd.currentLobbyMessage=res;
+            this.chatPrvd.appendContainer.hidden = true;
+            this.cameraPrvd.takenPictures = [];
+            this.placeholderText = 'What would you like to say?';
+
+            this.chatPrvd.openLobbyForPinned(res).then(() => {
+                this.chatPrvd.isLandingPage = true;
+                this.chatPrvd.postMessages = [];
+                this.chatPrvd.isCleared = true;
+                this.setting.isNewlineScope=false;
+                if(this.chatPrvd.currentLobby.isAddButtonAvailable){
+                    this.placeholderText = 'Become a connector or create/join a network';
+                }else{
+                    this.placeholderText = 'What would you like to say?';
+                }
+                this.chatPrvd.allowUndercoverUpdate = false;
+                clearTimeout(this.messIntObject);
+                this.chatPrvd.toggleLobbyChatMode();
+                this.chatPrvd.isMainBtnDisabled = false;
+                this.toolsPrvd.hideLoader();
+            }, err => {
+                console.error(err);
+                console.log('Tap to hang anything here');
+                this.placeholderText = 'Tap to hang anything here';
+                this.chatPrvd.isMainBtnDisabled = false;
+                this.chatPrvd.allowUndercoverUpdate = true;
+                this.toolsPrvd.hideLoader();
+            });
+        }).catch(err => {
+            this.toolsPrvd.hideLoader();
+        });
     }
 
     private openFeedbackModal(messageData: any, mIndex: number):void {

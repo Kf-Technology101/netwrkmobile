@@ -96,7 +96,6 @@ export class Auth {
   }
 
   public signUpFacebook(): Promise<any> {
-
     return new Promise((resolve, reject) => {
       this.facebook.getLoginStatus().then((data: FacebookLoginResponse) => {
 

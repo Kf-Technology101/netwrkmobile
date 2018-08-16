@@ -138,7 +138,7 @@
 
         <div class="slide-container sl-facebook">
           <div [ngClass]="{'active': socialPrvd.connect.facebook}" class="toggle-el"
-            (click)="connectToFacebook()">
+            (click)="socialPrvd.connectToFacebook()">
             <span class="toggle-state" *ngIf="socialPrvd.connect.facebook">Facebook</span>
             <span class="toggle-state" *ngIf="!socialPrvd.connect.facebook">Connect</span>
             <div [ngClass]="{'right': socialPrvd.connect.facebook}" class="toggleable">

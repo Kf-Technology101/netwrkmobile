@@ -189,26 +189,26 @@ export class ProfilePage {
 
         this.user = this.authPrvd.getAuthData();
         this.setProfileData();
-        //this.authPrvd.getSocialStatus().subscribe(res => {
-        //    let socialArray = [ 'fb', 'twitter', 'instagram' ];
-        //    console.log('get social status:',res);
-        //    // Go through all social networks and toggle their switch if active
-        //    for (let i = 0; i < socialArray.length; i++) {
-        //        if (res[socialArray[i]]) {
-        //            this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
-        //        }
-        //    }
-        //}, err => console.error(err));
+        this.authPrvd.getSocialStatus().subscribe(res => {
+            let socialArray = [ 'fb', 'twitter', 'instagram' ];
+            console.log('get social status:',res);
+            // Go through all social networks and toggle their switch if active
+            for (let i = 0; i < socialArray.length; i++) {
+                if (res[socialArray[i]]) {
+                    this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
+                }
+            }
+        }, err => console.error(err));
     }
 
-    //ngAfterViewInit() {
-    //  this.socialPrvd.connect.facebook = this.socialPrvd.getFacebookData();
-    //  this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
-    //  this.socialPrvd.connect.twitter = this.socialPrvd.getTwitterData();
-    //  this.socialPrvd.connect.snapchat = false;
-    //
-    //  console.log(this.socialPrvd.connect.facebook);
-    //}
+    ngAfterViewInit() {
+      this.socialPrvd.connect.facebook = this.socialPrvd.getFacebookData();
+      this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
+      this.socialPrvd.connect.twitter = this.socialPrvd.getTwitterData();
+      this.socialPrvd.connect.snapchat = false;
+
+      console.log(this.socialPrvd.connect.facebook);
+    }
 
   private goBack():void {
       this.toolsPrvd.popPage();

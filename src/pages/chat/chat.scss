@@ -282,7 +282,7 @@ page-network-no {
     }
     .message-box {
       position: absolute;
-      bottom: -10px;
+      top: 50px;
       left: 14px;
       z-index: 5;
       color: grey;
@@ -957,7 +957,7 @@ page-network-no {
         img, video {
           position: relative;
           z-index: 1;
-          top: -18px;
+          top: -2px;
           background: color($colors, white);
           width: 100%;
         }

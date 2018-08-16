@@ -123,7 +123,6 @@ export class Social {
     //   });
     //   alert.present();
     // });
-
   }
 
   private getAccessToken(res:any) {

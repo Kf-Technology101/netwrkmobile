@@ -360,11 +360,19 @@ export class ChatPage implements DoCheck {
 
     private initLpMap():void {
         this.gapi.init.then((google_maps: any) => {
-
+            let zoomScale:number;
             let loc = { lat: this.gpsPrvd.coords.lat, lng: this.gpsPrvd.coords.lng };
 
+            if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
+                zoomScale=14
+            }else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
+                zoomScale=13
+            }else if(this.chatPrvd.isLobbyChat){
+                zoomScale=12
+            }
+
             this.map = new google_maps.Map(this.mapElement.nativeElement, {
-                zoom: 16,
+                zoom: zoomScale,
                 center: loc,
                 scrollwheel: false,
                 panControl: false,
@@ -377,6 +385,7 @@ export class ChatPage implements DoCheck {
                     position: google_maps.ControlPosition.RIGHT_BOTTOM
                 }
             });
+
 
         this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
             .map(res => res.json()).subscribe(res => {
@@ -1008,7 +1017,8 @@ export class ChatPage implements DoCheck {
 
     if (this.chatPrvd.getState() == 'undercover') {
         this.chatPrvd.setState('area');
-      this.chatPrvd.detectNetwork().then(res => {
+        this.initLpMap();
+        this.chatPrvd.detectNetwork().then(res => {
         console.log('[goUndercover] detectNetwork res:', res);
         if (res.network)
           this.chatPrvd.saveNetwork(res.network);
@@ -1051,6 +1061,7 @@ export class ChatPage implements DoCheck {
 
     } else if (this.chatPrvd.getState() == 'area') {
       this.chatPrvd.setState('undercover');
+      this.initLpMap();
       this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
 
         this.chatPrvd.alreadyScolledToBottom = false;
@@ -1713,6 +1724,7 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForPinned(message:any):void {
+
       this.toolsPrvd.showLoader();
       this.chatPrvd.isMainBtnDisabled = true;
       //this.txtIn.value = '';
@@ -1729,11 +1741,14 @@ export class ChatPage implements DoCheck {
           }else{
               this.placeholderText = 'What would you like to say?';
           }
+
           this.chatPrvd.allowUndercoverUpdate = false;
           clearTimeout(this.messIntObject);
           this.chatPrvd.toggleLobbyChatMode();
           this.chatPrvd.isMainBtnDisabled = false;
+          this.initLpMap();
           this.toolsPrvd.hideLoader();
+
       }, err => {
           console.error(err);
           console.log('Tap to hang anything here');
@@ -1743,6 +1758,7 @@ export class ChatPage implements DoCheck {
           this.chatPrvd.allowUndercoverUpdate = true;
           this.toolsPrvd.hideLoader();
       });
+
   }
 
   public handleMainBtnClick(event:any):void {
@@ -1760,6 +1776,7 @@ export class ChatPage implements DoCheck {
               this.startMessageUpdateTimer();
               this.chatPrvd.toggleLobbyChatMode();
               this.chatPrvd.isMainBtnDisabled = false;
+              this.initLpMap();
               this.toolsPrvd.hideLoader();
           }, err => {
               this.chatPrvd.isMainBtnDisabled = false;

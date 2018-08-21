@@ -286,7 +286,7 @@
 
 <ion-footer>
   <button [disabled]="backBtnDisabled" ion-button color="bk"
-    class="main-action-btn medium transparent" outline (click)="goBack()">
+    class="main-action-btn medium transparent" outline (click)="goBack()" (press)="goToHoldScreen()">
     <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
   </button>
 </ion-footer>

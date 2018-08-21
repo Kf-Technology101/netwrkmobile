@@ -23,13 +23,13 @@ modal-legendaryhistory {
   .content {
     &.netwrk-content.content-md {
       .scroll-content {
-        margin-top: 150px !important;
+        margin-top: 45px !important;
         // margin-bottom: 70px;
       }
     }
     &.netwrk-content.content-ios {
       .scroll-content {
-        margin-top: 155px !important;
+        margin-top: 50px !important;
       }
     }
     &.lobby-content.content-md {
@@ -83,7 +83,7 @@ page-chat,page-hold {
   }
   .lobby-header {
     width: 100%;
-    background: #fff;
+    background: transparent;
     height: 84px;
 
     ion-toolbar {
@@ -123,7 +123,7 @@ page-chat,page-hold {
     }
 
     .toolbar {
-      border-bottom: 1px solid color($colors, bk);
+//      border-bottom: 1px solid color($colors, bk);
       padding-left: 0;
       padding-right: 0;
       padding-bottom: 0;
@@ -282,7 +282,7 @@ page-network-no {
     }
     .message-box {
       position: absolute;
-      top: 50px;
+      top: 42px;
       left: 14px;
       z-index: 5;
       color: grey;
@@ -440,6 +440,9 @@ page-network-no {
           background: #e2e2e2;
         }
       }
+    }
+    .noBtn {
+      display:none !important;
     }
     .post-message,#plus-btn {
       display: none;
@@ -1059,6 +1062,7 @@ page-network-no {
       top: 24px;
       z-index: 50;
     }
+
     button.side {
       position: absolute;
       top: 0;
@@ -1070,9 +1074,7 @@ page-network-no {
         width: 32px;
         border-radius: 50%;
         padding: 0;
-        background-color: transparent;
-        background: color($colors, bk);
-        border: 1px solid #fff;
+        background: #5b87aa;
         box-sizing: content-box;
         &.refresh-btn {
           font-size: 30px;
@@ -1112,8 +1114,8 @@ page-network-no {
         height: 26px;
         width: 42px;
         border-radius: 13px;
-        margin: 8px 35px !important;
-        background: color($colors, bk-red);
+        margin: 8px 8px !important;
+        background:red;
       }
       &.back-btn {
         left: 4px;
@@ -1129,10 +1131,10 @@ page-network-no {
     }
   }
   .chat-header {
-    background: #fff;
+    background: tranasparent;
     .netwrk-header {
       // padding-bottom: 16px;
-      height: 44px;
+//      height: 44px;
 //      background: #fff;
       .area-subhead-tip {
         font-size: 10px;
@@ -1166,16 +1168,16 @@ page-network-no {
         }
       }
       .toolbar {
-        border-bottom: 1px solid color($colors, bk);
+//        border-bottom: 1px solid color($colors, bk);
         padding-left: 0;
         padding-right: 0;
         padding-bottom: 10px;
         background: transparent;
         &.area-head {
-          background: url('../assets/icon/logo.png') no-repeat center;
-          background-size: auto 26px;
+//          background: url('../assets/icon/logo.png') no-repeat center;
+//          background-size: auto 26px;
           &.no-bg {
-            background: #fff;
+            background: transparent;
             span {
               display: block;
               position: absolute;
@@ -1187,6 +1189,15 @@ page-network-no {
               pointer-events: none;
               color: color($colors, bk-unactive-blue);
             }
+          }
+          .zip {
+            color: #5b87aa;
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            top: 0px;
+            position: relative;
+            left: -23px;
           }
           .ic {
             display: block;

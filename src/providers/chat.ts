@@ -37,7 +37,9 @@ export class Chat {
   public isLandingPage: boolean;
 
   public appendContainer = new Toggleable('off', true);
+  public appendLineContainer = new Toggleable('off', true);
   public mainBtn = new Toggleable('normal', false);
+  public mainLineBtn = new Toggleable('normal', false);
   public isLanding = new Toggleable(true);
   public postBtn = new Toggleable(false);
   public bgState = new Toggleable('compressed');
@@ -266,7 +268,7 @@ export class Chat {
   public openLobbyForPinned(message:any):Promise<any> {
     return new Promise ((resolve, reject) => {
       console.log('openLobbyForPinned:', message);
-      if (!this.isLobbyChat && this.getState() == 'undercover') {
+      if (!this.isLobbyChat) {
         this.getLocationLobby(message.id).subscribe(res => {
           console.log('getLocationLobby:', res);
           if (res && res.messages && res.room_id) {
@@ -699,7 +701,6 @@ export class Chat {
   }
 
   public updateAppendContainer() {
-    // console.log('[chatPrvd] updateAppendContainer()...');
     let pictures = this.cameraPrvd.takenPictures;
     if (pictures && pictures.length > 0) {
       this.events.publish('image:pushed', {
@@ -717,6 +718,26 @@ export class Chat {
       if (this.mainBtn.getState() != 'moved-n-scaled')
         this.mainBtn.setState('above_append');
     }
+  }
+
+  public updateAppendLineContainer() {
+        let pictures = this.cameraPrvd.takenPictures;
+        if (pictures && pictures.length > 0) {
+          this.events.publish('image:pushed', {
+            picturesLen: pictures.length
+          });
+
+          this.plusBtn.setState('default');
+          this.bgState.setState('compressed');
+          for (let i = 0; i < this.chatBtns.state.length; i++) {
+            this.chatBtns.state[i] = 'btnHidden';
+          }
+          this.postBtn.setState(true);
+          this.appendLineContainer.show();
+          this.appendLineContainer.setState('on_append');
+          if (this.mainLineBtn.getState() != 'moved-n-scaled')
+            this.mainLineBtn.setState('above_append');
+        }
   }
 
   public openGallery() {

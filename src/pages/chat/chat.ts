@@ -516,7 +516,7 @@ export class ChatPage implements DoCheck {
   }
 
   private changePlaceholderText():void {
-      this.placeholderText = this.isUndercover ? 'Tap to hang anything here' : 'What would you like to say?';
+      this.placeholderText = 'What do you want to talk about?';
   }
 
   private generateEmoticons():void {
@@ -776,6 +776,7 @@ export class ChatPage implements DoCheck {
         this.chatPrvd.sendMessage(messageParams).then(res => {
           this.hideTopSlider(this.activeTopForm);
           this.toolsPrvd.hideLoader();
+          message.id=res.id;
           console.log('[sendMessage] res:', res);
           this.postLockData.hint = null;
           this.postLockData.password = null;
@@ -967,7 +968,6 @@ export class ChatPage implements DoCheck {
     });
   }
 
-
     private getNetworkUsers():void {
         let netPar:any = {
             post_code: this.chatPrvd.localStorage.get('chat_zip_code')
@@ -1007,9 +1007,9 @@ export class ChatPage implements DoCheck {
         this.toggleContainer(this.shareContainer, 'hide');
         this.keyboard.close();
       }else if(this.chatPrvd.mainBtn.getState() == 'back-to-hold'){
-          this.toolsPrvd.pushPage(HoldScreenPage);
           this.toggleContainer(this.emojiContainer, 'hide');
           this.toggleContainer(this.shareContainer, 'hide');
+          this.keyboard.close();
       }
       this.chatPrvd.isMessagesVisible = false;
       this.chatPrvd.postMessages = [];
@@ -1017,7 +1017,6 @@ export class ChatPage implements DoCheck {
 
     if (this.chatPrvd.getState() == 'undercover') {
         this.chatPrvd.setState('area');
-        this.initLpMap();
         this.chatPrvd.detectNetwork().then(res => {
         console.log('[goUndercover] detectNetwork res:', res);
         if (res.network)
@@ -1031,24 +1030,29 @@ export class ChatPage implements DoCheck {
                         post_code: this.chatPrvd.localStorage.get('chat_zip_code')
                     };
                     this.networkPrvd.join(this.networkParams).subscribe(res => {
-                        this.getNetworkUsers();
+                        //this.getNetworkUsers();
+                        this.undercoverPrvd.setUndercover(!this.isUndercover);
+                        this.isUndercover = false;
+                        this.flipInput();
+                        this.changePlaceholderText();
+                        setTimeout(() => {
+                            this.goArea();
+                            this.content.resize();
+                        }, 1);
                     }, err => {
                         console.log(err);
                     });
+
                 }
             }, err => {
                 console.log(err);
             });
-
-          //console.log('_no network found');
-          //this.toolsPrvd.pushPage(NetworkNoPage, {
-          //  action: 'create'
-          //});
           this.toolsPrvd.hideLoader();
           return;
         } else {
           console.log('_network exists');
-          this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
+          this.undercoverPrvd.setUndercover(!this.isUndercover);
+          this.isUndercover = false;
           this.flipInput();
           this.changePlaceholderText();
           setTimeout(() => {
@@ -1061,11 +1065,10 @@ export class ChatPage implements DoCheck {
 
     } else if (this.chatPrvd.getState() == 'area') {
       this.chatPrvd.setState('undercover');
-      this.initLpMap();
-      this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
-
-        this.chatPrvd.alreadyScolledToBottom = false;
-      // this.cameraPrvd.toggleCameraBg();
+      this.undercoverPrvd.setUndercover(!this.isUndercover);
+      this.isUndercover = true;
+      this.chatPrvd.alreadyScolledToBottom = false;
+      //this.cameraPrvd.toggleCameraBg();
       this.runUndecoverSlider(this.pageTag);
       this.startMessageUpdateTimer();
       this.flipInput();
@@ -1089,6 +1092,10 @@ export class ChatPage implements DoCheck {
   private toggleShareSlider(social_network):void {
     this.shareCheckbox[social_network] = !this.shareCheckbox[social_network];
     this.getSocialPosts();
+  }
+
+  private goToHoldScreen():void {
+      this.navCtrl.setRoot(HoldScreenPage);
   }
 
   private getSocialPosts():void {
@@ -1474,13 +1481,12 @@ export class ChatPage implements DoCheck {
       this.keyboard.disableScroll(true);
 
       this.setCustomTransitions();
-
       this.keyboard.onKeyboardShow().subscribe(res => {
         this.topSlider.setState('slideUp');
         this.chatPrvd.postBtn.setState(true);
         if (this.plt.is('ios')) {
           try {
-            let footerEl = <HTMLElement>document.querySelector(this.pageTag + ' .chatFooter');
+            let footerEl = <HTMLElement>document.querySelector(this.pageTag + ' .chatChatFooter');
             let scrollEl = <HTMLElement>document.querySelector(this.pageTag + ' .scroll-content');
             if (footerEl)
               footerEl.style.bottom = res.keyboardHeight + 'px';
@@ -1501,12 +1507,12 @@ export class ChatPage implements DoCheck {
         this.topSlider.setState('slideDown');
         if (this.plt.is('ios')) {
           try {
-            let footerEl = <HTMLElement>document.querySelector(this.pageTag + ' .chatFooter');
+            let footerEl = <HTMLElement>document.querySelector(this.pageTag + ' .chatChatFooter');
             let scrollEl = <HTMLElement>document.querySelector(this.pageTag + ' .scroll-content');
             if (footerEl)
-              footerEl.style.bottom = '0';
+              footerEl.style.bottom = 0 + 'px';
             if (scrollEl)
-              scrollEl.style.bottom = '0';
+              scrollEl.style.bottom = 0 + 'px';
 
             this.contentMargin = null;
             this.isFeedbackClickable = true;
@@ -1514,18 +1520,17 @@ export class ChatPage implements DoCheck {
             console.error('on-keyboard-hide error:', e);
           }
         }
+
         if (!this.chatPrvd.appendContainer.hidden) {
           this.chatPrvd.mainBtn.setState('above_append');
+            console.log('above append');
         }
         if (this.chatPrvd.appendContainer.hidden) {
           this.chatPrvd.mainBtn.setState('normal');
         }
-        if (this.txtIn.value.trim() == '' &&
-            !this.chatPrvd.appendContainer.isVisible() &&
-            !this.activeTopForm) {
+        if (this.txtIn.value.trim() == '' && !this.chatPrvd.appendContainer.isVisible() && !this.activeTopForm) {
           this.chatPrvd.postBtn.setState(false);
-        } else if (this.txtIn.value.trim() == '' &&
-                   this.activeTopForm) {
+        } else if (this.txtIn.value.trim() == '' && this.activeTopForm) {
           this.chatPrvd.mainBtn.setState('minimised');
         }
       }, err =>  console.error(err));
@@ -1724,10 +1729,11 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForPinned(message:any):void {
-
+      console.log(message)
       this.toolsPrvd.showLoader();
       this.chatPrvd.isMainBtnDisabled = true;
       //this.txtIn.value = '';
+      this.isUndercover=true;
 
       this.chatPrvd.currentLobbyMessage=message;
       this.chatPrvd.appendContainer.hidden = true;
@@ -1751,8 +1757,7 @@ export class ChatPage implements DoCheck {
 
       }, err => {
           console.error(err);
-          console.log('Tap to hang anything here');
-          this.placeholderText = 'Tap to hang anything here';
+          this.placeholderText = 'What do you want to talk about?';
           this.chatPrvd.isMainBtnDisabled = false;
           this.startMessageUpdateTimer();
           this.chatPrvd.allowUndercoverUpdate = true;
@@ -1769,7 +1774,7 @@ export class ChatPage implements DoCheck {
           this.chatPrvd.appendContainer.hidden = true;
           this.cameraPrvd.takenPictures = [];
           this.chatPrvd.postMessages = [];
-          this.placeholderText = 'Tap to hang anything here';
+          this.placeholderText = 'What do you want to talk about?';
           this.setMainBtnStateRelativeToEvents();
           this.refreshChat(false, true).then(res => {
               this.chatPrvd.allowUndercoverUpdate = true;

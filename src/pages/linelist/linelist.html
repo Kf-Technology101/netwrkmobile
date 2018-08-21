@@ -45,7 +45,7 @@
         <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
         </button>
 
-        <ion-badge *ngIf="postTimerObj.time && chatPrvd.postBtn.state && isUndercover">
+        <ion-badge *ngIf="postTimerObj.time && isUndercover">
             {{ postTimerObj.time }}
         </ion-badge>
     </ion-toolbar>
@@ -229,8 +229,8 @@
 
 
 <!--Footer-->
-<ion-footer class="has-input chatFooter">
-    <div item-content class="appended-pictures-container" [hidden]="chatPrvd.appendContainer.hidden" [@containerState]="chatPrvd.appendContainer.state"
+<ion-footer class="has-input chatFooter lineChatFooter">
+    <div item-content class="appended-pictures-container" [hidden]="chatPrvd.appendLineContainer.hidden" [@containerState]="chatPrvd.appendLineContainer.state"
     [ngClass]="{ 'netwrk' : !isUndercover }" *ngIf="cameraPrvd.takenPictures && cameraPrvd.takenPictures.length > 0">
         <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures; let indx = index" >
             <img class="img-preview" [src]="i"/>
@@ -240,11 +240,11 @@
         </div>
     </div>
 
-    <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="emojiContainer.hidden" [@containerState]="emojiContainer.state">
+    <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="emojiLineContainer.hidden" [@containerState]="emojiLineContainer.state">
         <span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)" class="emoji-item">{{ convertEmoji(emoji) }}</span>
     </div>
 
-<div #shareCont item-content class="gallery-container share-container" [hidden]="shareContainer.hidden" [@containerState]="shareContainer.state">
+<div #shareCont item-content class="gallery-container share-container" [hidden]="shareLineContainer.hidden" [@containerState]="shareLineContainer.state">
     <ion-toolbar [ngClass]="{ 'no-events' : !socialLoaderHidden }">
         <div class="slide-container sl-facebook">
             <div #slfb [ngClass]="{'active': shareCheckbox.facebook}" class="toggle-el" (click)="toggleShareSlider('facebook')">
@@ -336,8 +336,8 @@
       Name and create it below
     </div>
 
-    <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (click)="goBackOnLanding($event)" [disabled]="chatPrvd.isMainBtnDisabled"
-        [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
+    <button isScrolling="false" [hidden]="chatPrvd.mainLineBtn.hidden" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (click)="goBackOnLanding($event)"
+        [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainLineBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainLineBtn.getState() != 'back-to-hold'}" (press)="goToHoldScreen()">
         <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline" class="small"></ion-icon>
     </button>
 
@@ -350,15 +350,15 @@
                     <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
                 </button>
 
-                <button ion-button [@inputState]="chatPrvd.chatBtns.state[1]" (click)="chatPrvd.openGallery(); toggleContainer(emojiContainer, 'hide'); toggleContainer(shareContainer, 'hide')">
+                <button ion-button [@inputState]="chatPrvd.chatBtns.state[1]" (click)="chatPrvd.openGallery(); toggleLineContainer(emojiLineContainer, 'hide'); toggleLineContainer(shareLineContainer, 'hide')">
                     <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
                 </button>
 
-                <button ion-button [@inputState]="chatPrvd.chatBtns.state[2]" (click)="toggleContainer(shareContainer, null, 'shareContainer');">
+                <button ion-button [@inputState]="chatPrvd.chatBtns.state[2]" (click)="toggleLineContainer(shareLineContainer, null, 'shareLineContainer');">
                     <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
                 </button>
 
-                <button ion-button [@inputState]="chatPrvd.chatBtns.state[3]" (click)="toggleContainer(emojiContainer);">
+                <button ion-button [@inputState]="chatPrvd.chatBtns.state[3]" (click)="toggleLineContainer(emojiLineContainer);">
                     <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
                 </button>
 
@@ -367,8 +367,8 @@
 
             <button ion-button
             (click)="toggleChatOptions();
-            toggleContainer(emojiContainer, 'hide');
-            toggleContainer(shareContainer, 'hide')"
+            toggleLineContainer(emojiLineContainer, 'hide');
+            toggleLineContainer(shareLineContainer, 'hide')"
             [@rotState]="chatPrvd.plusBtn.state" ion-button item-left clear
             id="plus-btn">
             <ion-icon ios="ios-add" md="ios-add"></ion-icon>

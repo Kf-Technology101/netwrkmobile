@@ -90,6 +90,13 @@ page-linelist,page-netwrklist {
       background: #302f2f;
     }
 
+    .post-timer {
+      .toolbar-background {
+        border: none;
+        background: #5b87aa !important;
+      }
+    }
+
     .toolbar-content {
       text-align: center;
     }
@@ -1101,7 +1108,7 @@ page-linelist,page-netwrklist {
         }
       }
       &.clear-btn {
-        right: 20px;
+        right: 10px;
         padding: 0;
         font-size: 14px;
         color: #fff;
@@ -1240,8 +1247,6 @@ page-linelist,page-netwrklist {
 
   // flip animation
   .flip-container {
-    -webkit-perspective: 1000;
-    perspective: 1000;
     .text {
       border: 1px solid color($colors, dark);
     }

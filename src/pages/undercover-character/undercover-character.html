@@ -3,22 +3,23 @@
     <div class="drag-container" style="pointer-events: none">
       <div class="dragline">
         <span class="info">
-          <span class="username" ion-text color="bk">Choose a Category</span>
+          <span class="username" ion-text color="bk">Choose a new name</span>
         </span>
         <img class="draggable-element" src="assets/icon/netwrk-chat.svg" *ngIf="!activePerson.imageUrl" style="left: 129px">
         <img class="draggable-element" *ngIf="activePerson.imageUrl" [src]="activePerson.imageUrl" style="left: 129px">
       </div>
     </div>
   </ion-toolbar>
-  <div class="warning" text-center>
-    Don't worry, you can change this later
-  </div>
+
 </ion-header>
 
 <ion-content has-main-btn>
   <ion-row align-items-center>
     <ion-col text-center>
-      <h1 ion-text color="bk">Start out invisible and anonymous.</h1>
+        <h3 ion-text color="bk">Choose a new network or superhero name</h3>
+        <div class="text text-md text-md-bk" text-center color="bk">
+            (Don't worry, you can change this later)
+        </div>
       <ion-slides slidesPerView="3" initialSlide="1" spaceBetween="10">
         <ion-slide></ion-slide>
         <ion-slide [ngClass]="{'transition': sliderLoaded}" *ngFor="let p of persons"

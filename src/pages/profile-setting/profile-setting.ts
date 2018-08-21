@@ -1,8 +1,9 @@
 import { Component } from '@angular/core';
-import { App, AlertController } from 'ionic-angular';
+import { App, AlertController,NavController } from 'ionic-angular';
 
 // Pages
 import { LogInPage } from '../log-in/log-in';
+import { HoldScreenPage } from '../hold-screen/hold-screen';
 
 // Providers
 import { Auth } from '../../providers/auth';
@@ -12,13 +13,15 @@ import { Settings } from '../../providers/settings';
 import { LocationChange } from '../../providers/locationchange';
 import { LocalStorage } from '../../providers/local-storage';
 
+
 @Component({
   selector: 'page-profile-setting',
-  templateUrl: 'profile-setting.html',
+  templateUrl: 'profile-setting.html'
 })
 export class ProfileSettingPage {
 
   constructor(
+    public navCtrl: NavController,
     public tools: Tools,
     public slideAvatarPrvd: SlideAvatar,
     public auth: Auth,
@@ -70,6 +73,10 @@ export class ProfileSettingPage {
       }]
     });
     alert.present();
+  }
+
+  private goToHoldScreen():void {
+     this.navCtrl.setRoot(HoldScreenPage);
   }
 
   ionViewWillLeave() {

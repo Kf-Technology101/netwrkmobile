@@ -40,6 +40,7 @@ import { NetworkFindPage } from '../../pages/network-find/network-find';
 import { NetworkNoPage } from '../../pages/network-no/network-no';
 import { NetworkPage } from '../../pages/network/network';
 import { ChatPage } from '../../pages/chat/chat';
+import { HoldScreenPage } from '../../pages/hold-screen/hold-screen';
 import { ProfilePage } from '../../pages/profile/profile';
 import { LogInPage } from '../../pages/log-in/log-in';
 import { NetworkContactListPage } from '../../pages/network-contact-list/network-contact-list';
@@ -115,8 +116,8 @@ export class LinePage {
   @ViewChild('directions') directionCont;
   @ViewChild('mapElement') mapElement: ElementRef;
 
-    shareContainer = new Toggleable('off', true);
-    emojiContainer = new Toggleable('off', true);
+    shareLineContainer = new Toggleable('off', true);
+    emojiLineContainer = new Toggleable('off', true);
     mainInput = new Toggleable('fadeIn', false);
     postTimer = new Toggleable('slideUp', true);
     postLock = new Toggleable('slideUp', true);
@@ -127,9 +128,9 @@ export class LinePage {
 
     flipHover: boolean;
 
-    toggContainers: any = [
-        this.emojiContainer,
-        this.shareContainer
+    toggLineContainers: any = [
+        this.emojiLineContainer,
+        this.shareLineContainer
     ];
     private messagesInterval:boolean;
     private messIntObject:any;
@@ -302,14 +303,14 @@ export class LinePage {
     }
 
     private openCamera():void {
-        this.toggleContainer(this.emojiContainer, 'hide');
-        this.toggleContainer(this.shareContainer, 'hide');
+        this.toggleLineContainer(this.emojiLineContainer, 'hide');
+        this.toggleLineContainer(this.shareLineContainer, 'hide');
         this.mainInput.setState('fadeOutfast');
         setTimeout(() => {
             this.mainInput.hide();
-            this.chatPrvd.mainBtn.setState('minimisedForCamera');
+            this.chatPrvd.mainLineBtn.setState('minimisedForCamera');
             setTimeout(() => {
-                this.chatPrvd.mainBtn.hide();
+                this.chatPrvd.mainLineBtn.hide();
                 this.toolsPrvd.pushPage(CameraPage);
             }, chatAnim/2);
         }, animSpeed.fadeIn/2);
@@ -328,9 +329,9 @@ export class LinePage {
     }
 
     private updateContainer(container:any) {
-        if (this.chatPrvd.appendContainer.hidden)
-            this.chatPrvd.mainBtn.setState('normal');
-        else this.chatPrvd.mainBtn.setState('above_append');
+        if (this.chatPrvd.appendLineContainer.hidden)
+            this.chatPrvd.mainLineBtn.setState('normal');
+        else this.chatPrvd.mainLineBtn.setState('above_append');
 
         container.setState('off');
         this.setContentPadding(false);
@@ -340,36 +341,36 @@ export class LinePage {
         }, chatAnim / 2);
     }
 
-    private toggleContainer(container, visibility?: string, name?: string):void {
+    private toggleLineContainer(container, visibility?: string, name?: string):void {
         if (visibility && visibility == 'hide') {
             this.updateContainer(container);
             if(this.chatPrvd.plusBtn.getState() == 'spined'){
-                this.chatPrvd.mainBtn.setState('back-to-hold');
+                this.chatPrvd.mainLineBtn.setState('back-to-hold');
             }
         }
 
         if (!visibility) {
             if (container.hidden) {
-                this.chatPrvd.mainBtn.setState('moved-n-scaled');
+                this.chatPrvd.mainLineBtn.setState('moved-n-scaled');
 
                 container.show();
                 container.setState('on');
                 this.setContentPadding(true);
 
-                if (container == this.emojiContainer) {
+                if (container == this.emojiLineContainer) {
                     this.setDefaultTimer();
                 }
 
-                for (let i = 0; i < this.toggContainers.length; i++) {
-                    if (!this.toggContainers[i].hidden &&
-                        container != this.toggContainers[i]) {
-                        this.toggContainers[i].setState('off');
+                for (let i = 0; i < this.toggLineContainers.length; i++) {
+                    if (!this.toggLineContainers[i].hidden &&
+                        container != this.toggLineContainers[i]) {
+                        this.toggLineContainers[i].setState('off');
                         setTimeout(() => {
-                            this.toggContainers[i].hide();
+                            this.toggLineContainers[i].hide();
                         }, chatAnim / 2);
                     }
                 }
-                if (name && name == 'shareContainer') this.getSocialPosts();
+                if (name && name == 'shareLineContainer') this.getSocialPosts();
             } else {
                 this.updateContainer(container);
             }
@@ -600,10 +601,10 @@ export class LinePage {
 
                 alert.present();
                 if (!emoji) {
-                    this.chatPrvd.appendContainer.setState('off');
-                    this.chatPrvd.mainBtn.setState('hidden');
+                    this.chatPrvd.appendLineContainer.setState('off');
+                    this.chatPrvd.mainLineBtn.setState('hidden');
                     setTimeout(() => {
-                        this.chatPrvd.appendContainer.hide();
+                        this.chatPrvd.appendLineContainer.hide();
                     }, chatAnim/2);
                     this.cameraPrvd.takenPictures = [];
                 }
@@ -611,6 +612,10 @@ export class LinePage {
         } catch (e) {
             console.error('Error in postMessage:', e);
         }
+    }
+
+    private goToHoldScreen():void {
+        this.navCtrl.setRoot(HoldScreenPage);
     }
 
     private calculateInputChar(inputEl:any):void {
@@ -644,23 +649,20 @@ export class LinePage {
         })
     }
 
-
     private goToLobby(messageParams:any){
         this.chatPrvd.sendMessage(messageParams).then(res => {
             this.toolsPrvd.showLoader();
-            this.chatPrvd.isMainBtnDisabled = true;
-            //this.txtIn.value = '';
-            this.toolsPrvd.popPage();
+
+            this.app.getRootNav().setRoot(ChatPage);
 
             this.chatPrvd.currentLobbyMessage=res;
-            this.chatPrvd.appendContainer.hidden = true;
+            this.chatPrvd.appendLineContainer.hidden = true;
             this.cameraPrvd.takenPictures = [];
             this.placeholderText = 'What would you like to say?';
 
             this.chatPrvd.openLobbyForPinned(res).then(() => {
                 this.chatPrvd.isLandingPage = true;
                 this.chatPrvd.postMessages = [];
-                this.chatPrvd.isCleared = true;
                 this.setting.isNewlineScope=false;
                 if(this.chatPrvd.currentLobby.isAddButtonAvailable){
                     this.placeholderText = 'Become a connector or create/join a network';
@@ -765,12 +767,12 @@ export class LinePage {
     private removeAppendedImage(ind:number):void {
         this.cameraPrvd.takenPictures.splice(ind, 1);
         if (this.cameraPrvd.takenPictures.length == 0) {
-            this.chatPrvd.mainBtn.setState('normal');
-            this.chatPrvd.appendContainer.setState('off');
+            this.chatPrvd.mainLineBtn.setState('normal');
+            this.chatPrvd.appendLineContainer.setState('off');
             if (this.txtIn.value.trim().length == 0)
                 this.chatPrvd.postBtn.setState(false);
             setTimeout(() => {
-                this.chatPrvd.appendContainer.hide();
+                this.chatPrvd.appendLineContainer.hide();
             }, chatAnim/2);
         }
     }
@@ -995,140 +997,6 @@ export class LinePage {
         }
     }
 
-    private goUndercover(event?:any):any {
-        console.log('============= goUndercover =============');
-        this.messagesInterval = false;
-        clearTimeout(this.messIntObject);
-        // Disable main button on view load
-        this.chatPrvd.isMainBtnDisabled = true;
-        this.toolsPrvd.showLoader();
-
-        if (event) {
-            console.log('_event:', event);
-            event.stopPropagation();
-            if (this.chatPrvd.mainBtn.getState() == 'minimised') {
-                if (this.activeTopForm) {
-                    console.log('txtIn:', this.txtIn);
-                    this.txtIn.value = '';
-                    this.hideTopSlider(this.activeTopForm);
-                    this.chatPrvd.postBtn.setState(false);
-                }
-                this.keyboard.close();
-                setTimeout(() => {
-                    this.setMainBtnStateRelativeToEvents();
-                }, 300);
-            } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled') {
-                this.toggleContainer(this.emojiContainer, 'hide');
-                this.toggleContainer(this.shareContainer, 'hide');
-                this.keyboard.close();
-            }else if(this.chatPrvd.mainBtn.getState() == 'back-to-hold'){
-                this.toggleContainer(this.emojiContainer, 'hide');
-                this.toggleContainer(this.shareContainer, 'hide');
-            }
-            this.chatPrvd.isMessagesVisible = false;
-            this.chatPrvd.postMessages = [];
-        }
-
-        if (this.chatPrvd.getState() == 'undercover') {
-            this.chatPrvd.detectNetwork().then(res => {
-                console.log('[goUndercover] detectNetwork res:', res);
-                if (res.network)
-                    this.chatPrvd.saveNetwork(res.network);
-                console.log('DETECT NETWORK [goUndercover]')
-                if (res.message == 'Network not found') {
-                    console.log('_no network found');
-                    this.toolsPrvd.pushPage(NetworkNoPage, {
-                        action: 'create'
-                    });
-                    this.toolsPrvd.hideLoader();
-                    return;
-                } else {
-                    console.log('_network exists');
-                    this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
-                    this.flipInput();
-                    this.changePlaceholderText();
-                    setTimeout(() => {
-                        this.goArea();
-                        this.content.resize();
-                    }, 1);
-                }
-                this.chatPrvd.isMainBtnDisabled = false;
-            }, err => console.error(err));
-
-        } else if (this.chatPrvd.getState() == 'area') {
-            this.chatPrvd.setState('undercover');
-            this.isUndercover = this.undercoverPrvd.setUndercover(!this.isUndercover);
-
-            this.chatPrvd.alreadyScolledToBottom = false;
-            // this.cameraPrvd.toggleCameraBg();
-            this.runUndecoverSlider(this.pageTag);
-            this.startMessageUpdateTimer();
-            this.flipInput();
-            this.changePlaceholderText();
-            this.messagesInterval = true;
-            setTimeout(() => {
-                this.content.resize();
-            }, 1);
-            setTimeout(() => {
-                this.toolsPrvd.hideLoader();
-            }, 1000);
-        }
-
-        setTimeout(() => {
-            this.chatPrvd.isMainBtnDisabled = false;
-            this.toolsPrvd.hideLoader();
-            console.log('========= end of goUndercover =========');
-        }, 2);
-    }
-
-    private goArea():void {
-        console.log('_going to area...');
-        // remove directions container from area pages
-        if (this.nearestPlace) this.nearestPlace = undefined;
-
-        this.messagesInterval = false;
-        this.chatPrvd.networkAvailable = null;
-        clearTimeout(this.messIntObject);
-        if (this.chatPrvd.localStorage.get('areaChange_triggered') !== null) {
-            this.chatPrvd.localStorage.rm('areaChange_triggered');
-        }
-
-        this.postLockData.hint = null;
-        this.postLockData.password = null;
-        this.postTimerObj.expireDate = null;
-        this.postTimerObj.time = null;
-        this.slideAvatarPrvd.sliderPosition = 'left';
-
-        // this.cameraPrvd.toggleCameraBg({ isArea: true });
-
-        this.hideTopSlider(this.activeTopForm);
-
-        this.getUsers().then(res => {
-            this.chatPrvd.setState('area');
-            this.updateMessages().then(res => {
-                this.chatPrvd.isMainBtnDisabled = false;
-                this.toolsPrvd.hideLoader();
-            }, err => {
-                console.error(err);
-                this.chatPrvd.isMainBtnDisabled = false;
-                this.toolsPrvd.hideLoader();
-            });
-        }, err => {
-            console.error(err);
-            this.chatPrvd.isMainBtnDisabled = false;
-            this.toolsPrvd.hideLoader();
-        });
-    }
-
-    private changeZipCallback(params?: any) {
-        if (params) {
-            this.isUndercover = this.undercoverPrvd.setUndercover(params.undercover);
-            if (this.isUndercover) {
-                this.goUndercover();
-            }
-        }
-    }
-
     private getMessagesIds(messageArray: any):Array<number> {
         let idList:Array<number> = [];
         for (let m in messageArray) {
@@ -1196,12 +1064,12 @@ export class LinePage {
     }
 
     private setMainBtnStateRelativeToEvents():void {
-        if (this.shareContainer.getState() == 'on' || this.emojiContainer.getState() == 'on') {
-            this.chatPrvd.mainBtn.setState('moved-n-scaled');
-        } else if (this.chatPrvd.appendContainer.getState() == 'on'){
-            this.chatPrvd.mainBtn.setState('above_append');
+        if (this.shareLineContainer.getState() == 'on' || this.emojiLineContainer.getState() == 'on') {
+            this.chatPrvd.mainLineBtn.setState('moved-n-scaled');
+        } else if (this.chatPrvd.appendLineContainer.getState() == 'on'){
+            this.chatPrvd.mainLineBtn.setState('above_append');
         } else {
-            this.chatPrvd.mainBtn.setState('normal');
+            this.chatPrvd.mainLineBtn.setState('normal');
         }
     }
 
@@ -1217,7 +1085,7 @@ export class LinePage {
                 this.chatPrvd.postBtn.setState(true);
                 if (this.plt.is('ios')) {
                     try {
-                        let footerEl = <HTMLElement>document.querySelector(this.pageTag + ' .chatFooter');
+                        let footerEl = <HTMLElement>document.querySelector(this.pageTag + ' .lineChatFooter');
                         let scrollEl = <HTMLElement>document.querySelector(this.pageTag + ' .scroll-content');
                         if (footerEl)
                             footerEl.style.bottom = res.keyboardHeight + 'px';
@@ -1228,9 +1096,9 @@ export class LinePage {
                         console.error('on-keyboard-show error:', e);
                     }
                 }
-                this.chatPrvd.mainBtn.setState('minimised');
-                if (!this.chatPrvd.appendContainer.hidden) {
-                    this.chatPrvd.mainBtn.setState('above_append');
+                this.chatPrvd.mainLineBtn.setState('minimised');
+                if (!this.chatPrvd.appendLineContainer.hidden) {
+                    this.chatPrvd.mainLineBtn.setState('above_append');
                 }
             }, err => console.error(err));
 
@@ -1238,7 +1106,7 @@ export class LinePage {
                 this.topSlider.setState('slideDown');
                 if (this.plt.is('ios')) {
                     try {
-                        let footerEl = <HTMLElement>document.querySelector(this.pageTag + ' .chatFooter');
+                        let footerEl = <HTMLElement>document.querySelector(this.pageTag + ' .lineChatFooter');
                         let scrollEl = <HTMLElement>document.querySelector(this.pageTag + ' .scroll-content');
                         if (footerEl)
                             footerEl.style.bottom = '0';
@@ -1251,19 +1119,19 @@ export class LinePage {
                         console.error('on-keyboard-hide error:', e);
                     }
                 }
-                if (!this.chatPrvd.appendContainer.hidden) {
-                    this.chatPrvd.mainBtn.setState('above_append');
+                if (!this.chatPrvd.appendLineContainer.hidden) {
+                    this.chatPrvd.mainLineBtn.setState('above_append');
                 }
-                if (this.chatPrvd.appendContainer.hidden) {
-                    this.chatPrvd.mainBtn.setState('normal');
+                if (this.chatPrvd.appendLineContainer.hidden) {
+                    this.chatPrvd.mainLineBtn.setState('normal');
                 }
                 if (this.txtIn.value.trim() == '' &&
-                    !this.chatPrvd.appendContainer.isVisible() &&
+                    !this.chatPrvd.appendLineContainer.isVisible() &&
                     !this.activeTopForm) {
                     this.chatPrvd.postBtn.setState(false);
                 } else if (this.txtIn.value.trim() == '' &&
                     this.activeTopForm) {
-                    this.chatPrvd.mainBtn.setState('minimised');
+                    this.chatPrvd.mainLineBtn.setState('minimised');
                 }
             }, err =>  console.error(err));
 
@@ -1294,59 +1162,10 @@ export class LinePage {
             if (!this.user.role_image_url)
                 this.user.role_image_url = this.toolsPrvd.defaultAvatar;
 
-            this.textStrings.sendError = 'Error sending message';
-            this.textStrings.noNetwork = 'Netwrk not found';
-            this.textStrings.require = 'Please fill all fields';
 
-            this.action = this.navParams.get('action');
-            // console.log('navParams:', this.navParams);
-            // console.log('chat action:', this.action);
-            if (this.action) {
-                this.chatPrvd.setState(this.action);
-                this.isUndercover = this.undercoverPrvd
-                    .setUndercover(this.chatPrvd.getState() == 'undercover');
-            } else {
-                this.isUndercover = true;
-                this.chatPrvd.setState('undercover');
-
-            }
-
-            this.flipHover = this.isUndercover ? true : false;
-
+            this.isUndercover = true;
+            this.chatPrvd.setState('undercover');
             this.changePlaceholderText();
-
-            this.networkParams = {
-                post_code: this.chatPrvd.localStorage.get('chat_zip_code')
-            };
-            this.hostUrl = this.chatPrvd.hostUrl;
-
-            this.gpsPrvd.changeZipCallback = this.changeZipCallback.bind(this);
-            if (this.chatPrvd.getState() == 'undercover') {
-                this.chatPrvd.detectNetwork().then(res => {
-                    this.network = res;
-                    console.log('DETECT NETWORK [constructorLoad]');
-                    let firstTimeInChat:any = this.chatPrvd.localStorage.get('first_time_undercover');
-                    if (res.network) {
-                        if (firstTimeInChat) {
-                            this.chatPrvd.networkAvailable = true;
-                            this.runClickListener();
-                        } else {
-                            this.chatPrvd.networkAvailable = null;
-                        }
-                    } else {
-                        if (firstTimeInChat) {
-                            this.chatPrvd.networkAvailable = false;
-                            this.runClickListener();
-                        } else {
-                            this.chatPrvd.networkAvailable = null;
-                        }
-                    }
-                    resolve('ok');
-                }, err => {
-                    console.error('[NETWORK DETECTION ERROR]:', err);
-                    resolve('err');
-                });
-            }
         });
     }
 
@@ -1447,10 +1266,15 @@ export class LinePage {
         this.chatPrvd.isLandingPage = true;
         this.chatPrvd.postMessages = [];
         this.chatPrvd.isCleared = true;
-        this.canRefresh = true;
-        this.refreshChat();
         this.setting.isNewlineScope=false;
-        this.toolsPrvd.popPage();
+
+        this.app.getRootNav().setRoot(ChatPage);
+
+        //this.navCtrl.setRoot(ChatPage, {
+        //    action: 'undercover'
+        //}).then(() =>{
+        //    this.navCtrl.popToRoot();
+        //});
     }
 
     private onEnter():void {
@@ -1463,8 +1287,8 @@ export class LinePage {
 
         this.mainInput.setState('fadeIn');
         this.mainInput.show();
-        this.chatPrvd.mainBtn.setState('normal');
-        this.chatPrvd.mainBtn.show();
+        this.chatPrvd.mainLineBtn.setState('normal');
+        this.chatPrvd.mainLineBtn.show();
 
         // this.chatPrvd.postMessages = [];
         this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
@@ -1515,7 +1339,7 @@ export class LinePage {
         });
 
         setTimeout(() => {
-            this.chatPrvd.updateAppendContainer();
+            this.chatPrvd.updateAppendLineContainer();
         }, 1);
 
         this.user = this.authPrvd.getAuthData();
@@ -1560,8 +1384,8 @@ export class LinePage {
         this.componentLoaded = false;
         this.chatPrvd.closeSockets();                                               // unsubscribe from sockets events
         if (this.global) this.global();                                             // stop click event listener
-        this.toggleContainer(this.emojiContainer, 'hide');                          // hide emojiContainer
-        this.toggleContainer(this.shareContainer, 'hide');                          // hide shareContainer
+        this.toggleLineContainer(this.emojiLineContainer, 'hide');                          // hide
+        this.toggleLineContainer(this.shareLineContainer, 'hide');
         this.chatPrvd.messageDateTimer.stop();                                      // stop date timer for messages
         clearInterval(this.chatPrvd.scrollTimer.interval);                          // stop scroll to bottom interval
         this.messagesInterval = false;                                              // clear message update bool

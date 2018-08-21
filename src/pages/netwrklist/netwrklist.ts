@@ -100,8 +100,12 @@ export class NetwrklistPage {
     }
 
     public goToLanding() {
-        //this.toolsPrvd.popPage();
-        this.toolsPrvd.pushPage(ChatPage);
+        this.app.getRootNav().setRoot(ChatPage);
+        //this.navCtrl.setRoot(ChatPage, {
+        //    action: 'undercover'
+        //}).then(() =>{
+        //    this.navCtrl.popToRoot();
+        //});
     }
 
     private refreshChat(refresher?:any, forced?:boolean):Promise<any> {

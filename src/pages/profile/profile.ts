@@ -6,6 +6,7 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
+import { HoldScreenPage } from '../../pages/hold-screen/hold-screen';
 
 // Providers
 import { Profile } from '../../providers/profile';
@@ -181,7 +182,7 @@ export class ProfilePage {
     });
   }
 
-    private loadOwnProfile() {
+  private loadOwnProfile() {
         console.log('LOAD | OWN PROFILE');
         this.showUserData(this.authPrvd.getAuthData());
         //this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
@@ -201,7 +202,7 @@ export class ProfilePage {
         }, err => console.error(err));
     }
 
-    ngAfterViewInit() {
+  ngAfterViewInit() {
       this.socialPrvd.connect.facebook = this.socialPrvd.getFacebookData();
       this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
       this.socialPrvd.connect.twitter = this.socialPrvd.getTwitterData();
@@ -209,6 +210,10 @@ export class ProfilePage {
 
       console.log(this.socialPrvd.connect.facebook);
     }
+
+  private goToHoldScreen():void {
+     this.navCtrl.setRoot(HoldScreenPage);
+  }
 
   private goBack():void {
       this.toolsPrvd.popPage();

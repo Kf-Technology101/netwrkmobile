@@ -5,7 +5,6 @@ import { Slides } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LocalStorage } from '../../providers/local-storage';
 // Pages
-import { NetworkFindPage } from '../network-find/network-find';
 import { ChatPage } from '../chat/chat';
 // Providers
 import { UndercoverProvider } from '../../providers/undercover';
@@ -61,7 +60,7 @@ export class UndercoverCharacterPage {
         this.firstTimeHero = false;
         this.storage.set('first_time_hero', this.firstTimeHero);
       }
-      this.toolsPrvd.pushPage(NetworkFindPage, {
+      this.toolsPrvd.pushPage(ChatPage, {
         action: 'undercover'
       });
     }, err => {

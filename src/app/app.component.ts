@@ -6,9 +6,9 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
-import { NetworkPage } from '../pages/network/network';
+//import { NetworkPage } from '../pages/network/network';
 import { LogInPage } from '../pages/log-in/log-in';
-import { NetworkFindPage } from '../pages/network-find/network-find';
+//import { NetworkFindPage } from '../pages/network-find/network-find';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 import { ChatPage } from '../pages/chat/chat';
 import { HoldScreenPage } from '../pages/hold-screen/hold-screen';
@@ -52,7 +52,6 @@ export class MyApp {
         private network: NetworkCheck,
         private gps: Gps
         ) {
-
 
         platform.registerBackButtonAction(() => {
             this.toolsPrvd.doBackButton();
@@ -127,7 +126,7 @@ export class MyApp {
                     this.authPrvd.getFbLoginStatus().then(data => {
                         if (data.status && data.status == 'connected') {
                             root = this.undercoverPrvd.getCharacterPerson(
-                                HoldScreenPage, NetworkFindPage, ChatPage)
+                                HoldScreenPage, ChatPage)
                         }
                         this.goToPage(root);
                     });
@@ -136,7 +135,7 @@ export class MyApp {
                     let fbConnected = this.authPrvd.getFbConnected();
                     if (fbConnected) {
                         root = this.undercoverPrvd.getCharacterPerson(
-                            HoldScreenPage, NetworkFindPage, ChatPage)
+                            HoldScreenPage, ChatPage)
                     }
                     this.goToPage(root);
                     break;

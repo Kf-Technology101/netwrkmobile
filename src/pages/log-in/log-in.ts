@@ -6,8 +6,8 @@ import { IonicPage, NavController, NavParams,Events,AlertController } from 'ioni
 // Pages
 import { SignUpPage } from '../sign-up/sign-up';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
-import { NetworkFindPage } from '../network-find/network-find';
-import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
+//import { NetworkFindPage } from '../network-find/network-find';
+//import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 import { SignUpFacebookPage } from '../sign-up-facebook/sign-up-facebook';
 import { HoldScreenPage } from '../hold-screen/hold-screen';
 
@@ -92,19 +92,6 @@ export class LogInPage {
     }
   }
 
-  private skipNetworkFindPage():Promise<any> {
-    return new Promise((resolve, reject) => {
-      this.chatPrvd.detectNetwork().then(res => {
-        this.navCtrl.setRoot(NetworkFindPage, {
-          action: 'undercover'
-        });
-        resolve('ok');
-      }, err => {
-        console.error(err);
-        reject();
-      });
-    })
-  }
 
   /*
     Toggle user terms of use status, providing user id.
@@ -131,8 +118,7 @@ export class LogInPage {
     this.authPrvd.login(this.account).map(res => res.json()).subscribe(resp => {
       console.log('login resp:', resp);
       if (resp.tou_accepted) {
-        let page = resp.fb_connected ?
-          this.undercoverPrvd.getCharacterPerson(HoldScreenPage, NetworkFindPage) : SignUpFacebookPage;
+        //let page = resp.fb_connected ? this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage) : SignUpFacebookPage;
         //if (page == NetworkFindPage) {
         //  this.skipNetworkFindPage();
         //} else {
@@ -162,15 +148,8 @@ export class LogInPage {
             let date = new Date(res.date_of_birthday);
             if (typeof date == 'object') {
               this.authPrvd.setFbConnected();
-              let page = this.undercoverPrvd.getCharacterPerson(
-                  HoldScreenPage, NetworkFindPage);
-              if (page == NetworkFindPage) {
-                  this.skipNetworkFindPage();
-              } else {
                 this.chatPrvd.detectNetwork()
-                .then(res => this.tools.pushPage(page),
-                      err => console.error('Detect network err:', err));
-              }
+                this.tools.pushPage(HoldScreenPage)
             }
           } else {
             this.tools.hideLoader();

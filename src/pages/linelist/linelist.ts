@@ -982,11 +982,11 @@ export class LinePage {
                     }
                 }
                 this.toolsPrvd.hideLoader();
-                this.checkUCInterval();
+                //this.checkUCInterval();
             }, err => {
                 // console.error('getAndUpdateUndercoverMessages() err:', err);
                 this.toolsPrvd.hideLoader();
-                this.checkUCInterval();
+                //this.checkUCInterval();
             });
     }
 

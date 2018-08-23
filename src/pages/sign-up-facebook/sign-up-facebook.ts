@@ -2,8 +2,7 @@ import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 // Pages
-import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
-
+import { ChatPage } from '../chat/chat';
 // Providers
 import { Social } from '../../providers/social';
 import { Tools } from '../../providers/tools';
@@ -53,7 +52,7 @@ export class SignUpFacebookPage {
           // ###################################################################
 
           this.toolsPrvd.showToast('Facebook successfully connected');
-          this.toolsPrvd.pushPage(UndercoverCharacterPage);
+          this.toolsPrvd.pushPage(ChatPage);
         }, err => {
           console.log(err);
           // this.toolsPrvd.showToast(JSON.stringify(err));

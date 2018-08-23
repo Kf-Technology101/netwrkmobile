@@ -5,8 +5,9 @@ import {
 } from 'ionic-angular';
 
 // Pages
-import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
-import { NetworkFindPage } from '../network-find/network-find';
+
+import { ChatPage } from '../chat/chat';
+import { HoldScreenPage } from '../hold-screen/hold-screen';
 
 // Providers
 import { Auth } from '../../providers/auth';
@@ -52,7 +53,7 @@ export class SignUpAfterFbPage {
         .map(res => res.json()).subscribe(res => {
           // this.tools.hideLoader();
           this.tools.pushPage(
-            this.undercoverPrvd.getCharacterPerson(UndercoverCharacterPage, NetworkFindPage)
+            this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage)
           );
         }, err => {
           // this.tools.hideLoader();

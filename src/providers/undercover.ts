@@ -48,15 +48,11 @@ export class UndercoverProvider {
     });
   }
 
-  public getCharacterPerson(HSPage: any, NFPage: any, ChatPage?: any): any {
+  public getCharacterPerson(HSPage: any, ChatPage?: any): any {
     let authData = this.auth.getAuthData();
     if (authData && authData.role_name
       && authData.role_description && authData.role_image_url) {
-      // if (ChatPage && this.localStorage.get('chat_zip_code')) {
-      //   return ChatPage;
-      // } else {
-        return NFPage;
-      // }
+        return ChatPage;
     } else {
       return HSPage;
     }

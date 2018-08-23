@@ -91,7 +91,7 @@ export class Gps {
             maximumAge: 3000
         }
 
-      if (this.watch) {
+      if(this.watch) {
         this.coords.lat = null;
         this.coords.lng = null;
         this.watch.unsubscribe();
@@ -101,28 +101,18 @@ export class Gps {
         console.log('[Gps][getMyZipCode]', resp);
         if (resp.coords) {
           if (!this.coords.lat && !this.coords.lng) {
-            if (this.loc.isCustomCoordAvaliable()) {
-              this.coords = this.loc.getCoordObject();
-            } else {
-              this.coords.lat = resp.coords.latitude;
-              this.coords.lng = resp.coords.longitude;
-            }
-            this.getZipCode().then(zip => {
-              resolve({ zip_code: zip });
-            }).catch(err => reject(err));
-            this.zipInterval = setInterval(() => {
-              this.getZipCode();
-            }, 60000);
-          } else {
-            if (this.loc.isCustomCoordAvaliable()) {
-              this.coords = this.loc.getCoordObject();
-            } else {
-              this.coords.lat = resp.coords.latitude;
-              this.coords.lng = resp.coords.longitude;
-            }
-            this.getZipCode().then(zip => {
-                  resolve({ zip_code: zip });
-            }).catch(err => reject(err));
+              if (this.loc.isCustomCoordAvaliable()) {
+                  this.coords = this.loc.getCoordObject();
+              } else {
+                  this.coords.lat = resp.coords.latitude;
+                  this.coords.lng = resp.coords.longitude;
+              }
+              this.getZipCode().then(zip => {
+                  resolve({zip_code: zip});
+              }).catch(err => reject(err));
+              this.zipInterval = setInterval(() => {
+                  this.getZipCode();
+              }, 60000);
           }
         } else reject();
       }, err => {
@@ -132,6 +122,7 @@ export class Gps {
         console.log('[Gps][getMyZipCode]', err);
         reject(err);
       });
+
     });
   }
 

@@ -35,6 +35,7 @@ export class Chat {
   public oldMessages:any = [];
 
   public isLandingPage: boolean;
+  public areaLobby: boolean = false;
 
   public appendContainer = new Toggleable('off', true);
   public appendLineContainer = new Toggleable('off', true);

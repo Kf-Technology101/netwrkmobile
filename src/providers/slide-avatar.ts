@@ -77,7 +77,7 @@ export class SlideAvatar {
             intervalCleared = true;
             if (!this.heroDisabled) {
               if (this.storage.get('slider_position') === null) {
-                this.sliderPosition = 'right';
+                this.sliderPosition = 'left';
                 this.setSliderDimentions();
                 this.setSliderPosition(this.sliderPosition);
               } else {

@@ -106,6 +106,7 @@ export class ChatPage implements DoCheck {
   @HostBinding('class') colorClass = 'transparent-background';
 
   public isUndercover: boolean;
+
   public map: any;
 
   @ViewChild(Content) content: Content;
@@ -777,6 +778,49 @@ export class ChatPage implements DoCheck {
           this.hideTopSlider(this.activeTopForm);
           this.toolsPrvd.hideLoader();
           message.id=res.id;
+
+          if (!this.isUndercover) {
+              this.chatPrvd.areaLobby=true;
+              let alert = this.alertCtrl.create({
+                  subTitle: 'Share the line with your friends?',
+                  buttons: [{
+                      text: 'No',
+                      role: 'cancel',
+                      handler: () => {
+                          this.openConversationLobbyForPinned(message);
+                      }
+                  }, {
+                      cssClass: 'active',
+                      text: 'Yes',
+                      handler: () => {
+                          alert.dismiss();
+                          let subject = message.text_with_links ? message.text_with_links : '';
+                          let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
+                          if (this.plt.is('ios')){
+                              this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://landing').then(res => {
+                                      this.toolsPrvd.showToast('Message successfully shared');
+                                      this.openConversationLobbyForPinned(message);
+                                  }, err =>{
+                                      this.toolsPrvd.showToast('Unable to share message');
+                                  }
+                              );
+                          }else{
+                              this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
+                                      this.toolsPrvd.showToast('Message successfully shared');
+                                      this.openConversationLobbyForPinned(message);
+                                  }, err =>{
+                                      this.toolsPrvd.showToast('Unable to share message');
+                                  }
+                              );
+                          }
+
+                          return false;
+                      }
+                  }]
+              });
+
+              alert.present();
+          }
           console.log('[sendMessage] res:', res);
           this.postLockData.hint = null;
           this.postLockData.password = null;
@@ -1763,12 +1807,52 @@ export class ChatPage implements DoCheck {
           this.chatPrvd.allowUndercoverUpdate = true;
           this.toolsPrvd.hideLoader();
       });
+  }
+
+    public openConversationLobbyForPinned(message:any):void {
+      this.toolsPrvd.showLoader();
+      this.chatPrvd.isMainBtnDisabled = true;
+      //this.txtIn.value = '';
+      this.isUndercover=true;
+      this.chatPrvd.areaLobby=true;
+
+      this.chatPrvd.currentLobbyMessage=message;
+      this.chatPrvd.appendContainer.hidden = true;
+      this.cameraPrvd.takenPictures = [];
+      this.setMainBtnStateRelativeToEvents();
+      this.placeholderText = 'What would you like to say?';
+
+      this.chatPrvd.openLobbyForPinned(message).then(() => {
+          if(this.chatPrvd.currentLobby.isAddButtonAvailable){
+              this.placeholderText = 'Become a connector or create/join a network';
+          }else{
+              this.placeholderText = 'What would you like to say?';
+          }
+
+          this.chatPrvd.allowUndercoverUpdate = false;
+          clearTimeout(this.messIntObject);
+          this.chatPrvd.toggleLobbyChatMode();
+          this.chatPrvd.isMainBtnDisabled = false;
+          this.initLpMap();
+          this.chatPrvd.areaLobby=true;
+          this.toolsPrvd.hideLoader();
+
+      }, err => {
+          console.error(err);
+          this.chatPrvd.areaLobby=true;
+          this.placeholderText = 'What do you want to talk about?';
+          this.chatPrvd.isMainBtnDisabled = false;
+          this.startMessageUpdateTimer();
+          this.chatPrvd.allowUndercoverUpdate = true;
+          this.toolsPrvd.hideLoader();
+      });
 
   }
 
   public handleMainBtnClick(event:any):void {
       this.chatPrvd.isMainBtnDisabled = true;
       if (this.chatPrvd.isLobbyChat) {
+          this.chatPrvd.areaLobby=false;
           this.toolsPrvd.showLoader();
           this.txtIn.value = '';
           this.chatPrvd.appendContainer.hidden = true;
@@ -1789,6 +1873,7 @@ export class ChatPage implements DoCheck {
               console.error(err);
           });
       } else {
+          this.chatPrvd.areaLobby=false;
           this.goUndercover(event);
       }
   }

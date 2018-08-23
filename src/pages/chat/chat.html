@@ -193,7 +193,7 @@
 
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      <div class="message-container {{message.undercover}}" *ngIf="!message.has_expired && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.user_id==user.id || chatPrvd.getState() == 'area' && !isUndercover && !message.has_expired && !message.undercover || chatPrvd.areaLobby" [ngClass]="{'isLobby': chatPrvd.getState() == 'area' || chatPrvd.areaLobby }">
+      <div class="message-container {{message.undercover}}" *ngIf="!message.has_expired && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.user_id==user.id || chatPrvd.getState() == 'area' && !message.has_expired && !message.undercover || chatPrvd.areaLobby" [ngClass]="{'isLobby': chatPrvd.getState() == 'area' || chatPrvd.areaLobby }">
         <img *ngIf="message.user"
         (click)="openConversationLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar conversation"

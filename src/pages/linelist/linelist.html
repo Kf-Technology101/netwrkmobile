@@ -122,7 +122,7 @@
 
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-        <ng-container *ngIf="!message.has_expired">
+        <ng-container *ngIf="!message.has_expired && message.user_id==user.id ">
             <img *ngIf="message.user" [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
 
             <img *ngIf="!message.user" [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">

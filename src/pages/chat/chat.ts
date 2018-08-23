@@ -362,14 +362,17 @@ export class ChatPage implements DoCheck {
     private initLpMap():void {
         this.gapi.init.then((google_maps: any) => {
             let zoomScale:number;
-            let loc = { lat: this.gpsPrvd.coords.lat, lng: this.gpsPrvd.coords.lng };
+            let loc: any = {
+                lat: this.gpsPrvd.coords.lat,
+                lng: this.gpsPrvd.coords.lng
+            };
 
             if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
-                zoomScale=14
+                zoomScale=14;
             }else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
-                zoomScale=13
+                zoomScale=13;
             }else if(this.chatPrvd.isLobbyChat){
-                zoomScale=12
+                zoomScale=12;
             }
 
             this.map = new google_maps.Map(this.mapElement.nativeElement, {
@@ -779,8 +782,7 @@ export class ChatPage implements DoCheck {
           this.toolsPrvd.hideLoader();
           message.id=res.id;
 
-          if (!this.isUndercover) {
-              this.chatPrvd.areaLobby=true;
+          if (!this.isUndercover || !this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
               let alert = this.alertCtrl.create({
                   subTitle: 'Share the line with your friends?',
                   buttons: [{
@@ -1813,6 +1815,7 @@ export class ChatPage implements DoCheck {
       this.toolsPrvd.showLoader();
       this.chatPrvd.isMainBtnDisabled = true;
       //this.txtIn.value = '';
+      this.chatPrvd.setState('area');
       this.isUndercover=true;
       this.chatPrvd.areaLobby=true;
 

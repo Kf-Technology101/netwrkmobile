@@ -94,9 +94,9 @@
     (chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': isUndercover}"
     [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin}">
 
-    <!--<ion-refresher (ionRefresh)="refreshChat($event)">-->
-    <!--<ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>-->
-    <!--</ion-refresher>-->
+    <ion-refresher (ionRefresh)="refreshChat($event)">
+    <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
+    </ion-refresher>
 
     <div id="places"></div>
 
@@ -222,10 +222,10 @@
     </div>
 </div>
 
-<!--<ion-infinite-scroll (ionInfinite)="doInfinite($event)">-->
-<!--<ion-infinite-scroll-content></ion-infinite-scroll-content>-->
-<!--</ion-infinite-scroll>-->
-<!--</ion-content>-->
+<ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+<ion-infinite-scroll-content></ion-infinite-scroll-content>
+</ion-infinite-scroll>
+</ion-content>
 
 
 <!--Footer-->

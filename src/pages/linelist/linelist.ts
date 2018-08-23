@@ -662,7 +662,6 @@ export class LinePage {
 
             this.chatPrvd.openLobbyForPinned(res).then(() => {
                 this.chatPrvd.isLandingPage = true;
-                this.chatPrvd.postMessages = [];
                 this.setting.isNewlineScope=false;
                 if(this.chatPrvd.currentLobby.isAddButtonAvailable){
                     this.placeholderText = 'Become a connector or create/join a network';

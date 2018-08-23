@@ -274,6 +274,7 @@ export class Chat {
           console.log('getLocationLobby:', res);
           if (res && res.messages && res.room_id) {
             this.postMessages = res.messages;
+            this.postMessages.unshift(message);
             this.currentLobby.id = res.room_id;
             this.currentLobbyMessage = message;
             this.startLobbySocket(res.room_id);

@@ -96,7 +96,7 @@
 
         <span class="legendary-icon zip" style="color: #5b87aa;font-size: 20px;">{{ chatPrvd.localStorage.get('chat_zip_code')}}</span>
 
-        <button ion-button class="side clear-btn legendary-icon" (tap)="clearMessages(chatPrvd.postMessages)" *ngIf="!isUndercover && chatPrvd.postMessages.length > 0">
+        <button ion-button class="side clear-btn legendary-icon" (tap)="clearMessages(chatPrvd.postMessages)" *ngIf="!chatPrvd.areaLobby">
            Clear
         </button>
     </ion-toolbar>

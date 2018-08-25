@@ -1267,14 +1267,9 @@ export class LinePage {
         this.chatPrvd.postMessages = [];
         this.chatPrvd.isCleared = true;
         this.setting.isNewlineScope=false;
-
+        this.canRefresh=true;
+        this.refreshChat();
         this.app.getRootNav().setRoot(ChatPage);
-
-        //this.navCtrl.setRoot(ChatPage, {
-        //    action: 'undercover'
-        //}).then(() =>{
-        //    this.navCtrl.popToRoot();
-        //});
     }
 
     private onEnter():void {

@@ -191,6 +191,7 @@ export class LinePage {
         time: null
     };
 
+
     private socialLoaderHidden:boolean = false;
 
     private postUnlockData:any = {
@@ -263,7 +264,7 @@ export class LinePage {
     private setDefaultTimer(forced?:boolean):void {
         if (this.chatPrvd.getState() == 'undercover' &&
             !this.postTimerObj.time) {
-            this.setPostTimer(1);
+            this.setPostTimer(0);
         }
     }
 

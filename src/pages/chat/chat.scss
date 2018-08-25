@@ -55,7 +55,7 @@ modal-legendaryhistory {
 
     .scroll-content {
       margin-top: 0px!important;
-      // margin-bottom: 70px;
+      height: auto;
       padding-bottom: inherit;
       border-top: none;
     }
@@ -725,6 +725,7 @@ page-network-no {
     position: absolute;
     top: 0;
     background: transparent !important;
+    height:auto;
     .refresher-pulling-icon,
     .refresher-refreshing-icon {
       padding: 5px;

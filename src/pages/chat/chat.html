@@ -192,7 +192,7 @@
 
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      <div class="message-container {{message.undercover}}" *ngIf="!message.has_expired && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.user_id==user.id || chatPrvd.getState() == 'area' && !message.has_expired && !message.undercover || chatPrvd.areaLobby" [ngClass]="{'isLobby': chatPrvd.getState() == 'area' || chatPrvd.areaLobby }">
+      <div class="message-container {{message.undercover}}" *ngIf="!message.social && !message.has_expired && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.user_id==user.id || chatPrvd.getState() == 'area' && !message.has_expired && !message.undercover && !message.social || chatPrvd.areaLobby && !message.social" [ngClass]="{'isLobby': chatPrvd.getState() == 'area' || chatPrvd.areaLobby }">
         <img *ngIf="message.user"
         (click)="openConversationLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar conversation"
@@ -204,17 +204,17 @@
 
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span>
 
-        <span class="message-box" *ngIf="!chatPrvd.isLobbyChat && !message.is_emoji && chatPrvd.getState() != 'area'">
+        <span class="message-box" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() != 'area' ||  chatPrvd.areaLobby">
             <ion-icon ios="ios-mail-outline" md="ios-mail-outline"></ion-icon>
         </span>
 
-        <span class="chat-bubbles-box" *ngIf="chatPrvd.isLobbyChat && !message.is_emoji || chatPrvd.getState() == 'area'">
-            <ion-icon ios="ios-chatbubbles-outline" md="ios-chatbubbles-outline"></ion-icon>
+        <span class="chat-bubbles-box" *ngIf="!chatPrvd.areaLobby && chatPrvd.getState() == 'area'">
+            <ion-icon ios="ios-chatbubbles-outline" md="ios-chatbubbles-outline"></ion-icon> : 8
         </span>
 
-        <p class="message-item" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">
+        <p class="message-item">
 
-          <span class="username" *ngIf="message.user">
+          <span class="username" *ngIf="message.user" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">
             <!--<ng-container *ngIf="message.public">-->
               <!--{{ message.user.name }}-->
             <!--</ng-container>-->
@@ -223,7 +223,7 @@
             </ng-container>
           </span>
 
-          <span class="message-date">{{ message.dateStr }}</span>
+          <span class="message-date" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">{{ message.dateStr }}</span>
 
           <span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
             <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post">
@@ -251,27 +251,22 @@
                   (click)="toolsPrvd.handleLinkClick($event)"></span>
           </ng-container>
 
-          <ng-container *ngIf="message.locked_by_user && user.id != message.user_id">
-            <span *ngIf="message.text_with_links" class="text"
-                  [ngClass]="{ 'emoji' : message.is_emoji }"
-                  (click)="toolsPrvd.handleLinkClick($event)">
-              <i>[Message locked]</i>
-            </span>
-          </ng-container>
+           <img src="assets/icon/slider_arrow.svg" class="conversation_right_ico" *ngIf="chatPrvd.getState() != 'undercover'" (click)="feedbackService.initNativeShare(message)">
+
         </p>
 
-        <ng-container *ngIf="chatPrvd.getState() == 'undercover' && message.undercover || chatPrvd.isLobbyChat || chatPrvd.getState() == 'area' && !message.undercover">
-            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message.id, user.id, $event)"
-            [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}"
-            *ngIf="!message.locked_by_user || user.id == message.user_id"
-            (press)="openFeedbackModal(message, i)">
-            <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
-            </button>
+        <!--<ng-container *ngIf="chatPrvd.getState() == 'area' && !message.undercover">-->
+            <!--<button class="feedback-button" (tap)="feedbackService.toggleLikes(message.id, user.id, $event)"-->
+            <!--[ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}"-->
+            <!--*ngIf="!message.locked_by_user || user.id == message.user_id"-->
+            <!--(press)="openFeedbackModal(message, i)">-->
+            <!--<div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>-->
+            <!--</button>-->
 
-            <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)">
-                Share
-            </button>
-        </ng-container>
+            <!--<button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)">-->
+                <!--Share-->
+            <!--</button>-->
+        <!--</ng-container>-->
 
         <ng-container *ngIf="user.id != message.user_id && message.locked_by_user">
           <button class="feedback-button lock" (tap)="showUnlockPostForm(message.id, message.hint)">
@@ -319,7 +314,7 @@
     </div>
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      <div *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' && !chatPrvd.areaLobby && (message.is_followed || message.is_connected) || chatPrvd.isLobbyChat && !message.has_expired && isUndercover && !chatPrvd.areaLobby">
+      <div *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' && !chatPrvd.areaLobby && (message.is_followed || message.is_connected) || chatPrvd.isLobbyChat && !message.has_expired && isUndercover && !chatPrvd.areaLobby || message.social && chatPrvd.getState() == 'area'">
         <img *ngIf="message.user"
         (click)="openLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
@@ -332,9 +327,9 @@
 
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span>
 
-        <p class="message-item message-container" (click)="openLobbyForPinned(message)" (tap)="openLobbyForPinned(message)">
+        <p class="message-item message-container">
 
-          <span class="username" *ngIf="message.user">
+          <span class="username" *ngIf="message.user" (click)="openLobbyForPinned(message)" (tap)="openLobbyForPinned(message)">
             <!--<ng-container *ngIf="message.public">-->
               <!--{{ message.user.name }}-->
             <!--</ng-container>-->
@@ -343,7 +338,7 @@
             </ng-container>
           </span>
 
-          <span class="message-date">{{ message.dateStr }}</span>
+          <span class="message-date" (click)="openLobbyForPinned(message)" (tap)="openLobbyForPinned(message)">{{ message.dateStr }}</span>
 
           <span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
             <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post">
@@ -360,14 +355,11 @@
           </ng-container>
 
           <ng-container *ngIf="message.locked">
-            <ion-icon ios="ios-lock" md="ios-lock"
-            class="locked-by-you info-icon"></ion-icon>
+            <ion-icon ios="ios-lock" md="ios-lock" class="locked-by-you info-icon"></ion-icon>
           </ng-container>
 
           <ng-container *ngIf="!message.locked_by_user || (message.locked_by_user && user.id == message.user_id)">
-            <span *ngIf="message.text_with_links" class="text"
-                  [ngClass]="{ 'emoji' : message.is_emoji }"
-                  [innerHTML]="message.text_with_links"
+            <span *ngIf="message.text_with_links" class="text" [ngClass]="{ 'emoji' : message.is_emoji }" [innerHTML]="message.text_with_links"
                   (click)="toolsPrvd.handleLinkClick($event)"></span>
           </ng-container>
 

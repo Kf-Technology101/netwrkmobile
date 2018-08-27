@@ -656,6 +656,7 @@ export class LinePage {
 
             this.app.getRootNav().setRoot(ChatPage);
 
+            this.setting.isNewlineScope=false;
             this.chatPrvd.currentLobbyMessage=res;
             this.chatPrvd.appendLineContainer.hidden = true;
             this.cameraPrvd.takenPictures = [];

@@ -415,7 +415,6 @@ export class ChatPage implements DoCheck {
                     if(this.chatPrvd.postMessages[i].expire_date!=null){
                         let icon1 = {
                             url: 'assets/icon/broadcast.png',
-                            scaledSize: new google_maps.Size(35,35),
                             origin: new google_maps.Point(0,0),
                             anchor: new google_maps.Point(0, 0)
                         };
@@ -441,6 +440,7 @@ export class ChatPage implements DoCheck {
                                     origin: new google_maps.Point(0,0),
                                     anchor: new google_maps.Point(0, 0)
                                 };
+
                                 let markers = new google_maps.Marker({
                                     map: this.map,
                                     animation: google_maps.Animation.DROP,
@@ -460,6 +460,7 @@ export class ChatPage implements DoCheck {
                                     origin: new google_maps.Point(0,0),
                                     anchor: new google_maps.Point(0, 0)
                                 };
+
                                 let markers = new google_maps.Marker({
                                     map: this.map,
                                     animation: google_maps.Animation.DROP,
@@ -1022,6 +1023,7 @@ export class ChatPage implements DoCheck {
 
     public openLinePage():void {
         //this.toolsPrvd.popPage();
+        this.settings.isNewlineScope=false;
         this.toolsPrvd.pushPage(LinePage)
     }
 
@@ -1029,7 +1031,7 @@ export class ChatPage implements DoCheck {
         this.messagesInterval = false;
         clearTimeout(this.messIntObject);
         this.chatPrvd.postMessages = [];
-        this.chatPrvd.isCleared = true;
+        //this.chatPrvd.isCleared = true;
         this.settings.isNewlineScope=true;
     }
 
@@ -1840,6 +1842,7 @@ export class ChatPage implements DoCheck {
       //this.txtIn.value = '';
       this.isUndercover=true;
 
+      this.settings.isNewlineScope=false;
       this.chatPrvd.currentLobbyMessage=message;
       this.chatPrvd.appendContainer.hidden = true;
       this.cameraPrvd.takenPictures = [];
@@ -1877,7 +1880,7 @@ export class ChatPage implements DoCheck {
       this.chatPrvd.setState('area');
       this.isUndercover=true;
       this.chatPrvd.areaLobby=true;
-
+        this.settings.isNewlineScope=false;
       this.chatPrvd.currentLobbyMessage=message;
       this.chatPrvd.appendContainer.hidden = true;
       this.cameraPrvd.takenPictures = [];

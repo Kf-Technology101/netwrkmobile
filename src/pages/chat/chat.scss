@@ -19,6 +19,20 @@ modal-legendaryhistory {
     text-align: center;
     width: 100%;
   }
+  .conversation_right_ico {
+    right: -9px;
+    left: auto;
+    width: 30px !important;
+    height: 20px;
+    -webkit-transform: rotate(180deg);
+    transform: rotate(180deg);
+    position: absolute !important;
+    top: 24px !important;
+    border: 1px solid #3a78c2;
+    border-radius: 9px;
+    padding: 0px 4px;
+    cursor: pointer;
+  }
 
   .content {
     &.netwrk-content.content-md {
@@ -55,7 +69,6 @@ modal-legendaryhistory {
 
     .scroll-content {
       margin-top: 0px!important;
-      height: auto;
       padding-bottom: inherit;
       border-top: none;
     }
@@ -290,8 +303,8 @@ page-network-no {
     }
     .chat-bubbles-box {
       position: absolute;
-      bottom: -1px;
-      left: 17px;
+      top: 50px;
+      left: 10px;
       z-index: 5;
       color: grey;
       font-size: 14px;
@@ -725,7 +738,6 @@ page-network-no {
     position: absolute;
     top: 0;
     background: transparent !important;
-    height:auto;
     .refresher-pulling-icon,
     .refresher-refreshing-icon {
       padding: 5px;

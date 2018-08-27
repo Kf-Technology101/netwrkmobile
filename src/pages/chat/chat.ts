@@ -432,12 +432,12 @@ export class ChatPage implements DoCheck {
                         });
                     }else{
                         if(this.chatPrvd.postMessages[i].locked){
-                            if(this.chatPrvd.postMessages[i].undercover){
+                            if(this.chatPrvd.postMessages[i].undercover) {
                                 let icon1 = {
                                     url: this.chatPrvd.postMessages[i].user.avatar_url,
-                                    title:this.chatPrvd.postMessages[i],
-                                    scaledSize: new google_maps.Size(35,35),
-                                    origin: new google_maps.Point(0,0),
+                                    title: this.chatPrvd.postMessages[i],
+                                    scaledSize: new google_maps.Size(35, 35),
+                                    origin: new google_maps.Point(0, 0),
                                     anchor: new google_maps.Point(0, 0)
                                 };
 
@@ -452,27 +452,28 @@ export class ChatPage implements DoCheck {
                                 google_maps.event.addListener(markers, 'click', () => {
                                     this.openLobbyForPinned(markers.id);
                                 });
-                            }else{
-                                let icon1 = {
-                                    url: this.chatPrvd.postMessages[i].user.avatar_url,
-                                    title:this.chatPrvd.postMessages[i],
-                                    scaledSize: new google_maps.Size(35,35),
-                                    origin: new google_maps.Point(0,0),
-                                    anchor: new google_maps.Point(0, 0)
-                                };
-
-                                let markers = new google_maps.Marker({
-                                    map: this.map,
-                                    animation: google_maps.Animation.DROP,
-                                    position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                                    icon: icon1,
-                                    id: this.chatPrvd.postMessages[i]
-                                });
-
-                                google_maps.event.addListener(markers, 'click', () => {
-                                    this.openConversationLobbyForPinned(markers.id);
-                                });
                             }
+                            //}else{
+                            //    let icon1 = {
+                            //        url: this.chatPrvd.postMessages[i].user.avatar_url,
+                            //        title:this.chatPrvd.postMessages[i],
+                            //        scaledSize: new google_maps.Size(35,35),
+                            //        origin: new google_maps.Point(0,0),
+                            //        anchor: new google_maps.Point(0, 0)
+                            //    };
+                            //
+                            //    let markers = new google_maps.Marker({
+                            //        map: this.map,
+                            //        animation: google_maps.Animation.DROP,
+                            //        position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
+                            //        icon: icon1,
+                            //        id: this.chatPrvd.postMessages[i]
+                            //    });
+                            //
+                            //    google_maps.event.addListener(markers, 'click', () => {
+                            //        this.openConversationLobbyForPinned(markers.id);
+                            //    });
+                            //}
                         }else{
                             if(this.chatPrvd.postMessages[i].undercover){
                                 let icon2 = {
@@ -491,24 +492,25 @@ export class ChatPage implements DoCheck {
                                 google_maps.event.addListener(markers, 'click', () => {
                                     this.openLobbyForPinned(markers.id);
                                 });
-                            }else{
-                                let icon2 = {
-                                    url: 'assets/icon/wi-fi.png'
-                                };
-
-                                let markers = new google_maps.Marker({
-                                    map: this.map,
-                                    animation: google_maps.Animation.DROP,
-                                    title:this.chatPrvd.postMessages[i],
-                                    position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                                    icon: icon2,
-                                    id: this.chatPrvd.postMessages[i]
-                                });
-
-                                google_maps.event.addListener(markers, 'click', () => {
-                                    this.openConversationLobbyForPinned(markers.id);
-                                });
                             }
+                            //else{
+                            //    let icon2 = {
+                            //        url: 'assets/icon/wi-fi.png'
+                            //    };
+                            //
+                            //    let markers = new google_maps.Marker({
+                            //        map: this.map,
+                            //        animation: google_maps.Animation.DROP,
+                            //        title:this.chatPrvd.postMessages[i],
+                            //        position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
+                            //        icon: icon2,
+                            //        id: this.chatPrvd.postMessages[i]
+                            //    });
+                            //
+                            //    google_maps.event.addListener(markers, 'click', () => {
+                            //        this.openConversationLobbyForPinned(markers.id);
+                            //    });
+                            //}
                         }
                     }
                 }

@@ -95,6 +95,16 @@ page-linelist,page-netwrklist {
         border: none;
         background: #5b87aa !important;
       }
+      button {
+        display: block;
+        background-color: transparent;
+        width: 100%;
+        color: #fff;
+        font-size: 22px;
+        padding: 5px;
+        margin: 0;
+        border-bottom: 1px solid #5da5d8;
+      }
     }
 
     .toolbar-content {

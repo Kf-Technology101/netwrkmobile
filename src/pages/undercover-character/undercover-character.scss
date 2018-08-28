@@ -83,6 +83,11 @@ page-undercover-character {
   .content {
     background: #fff;
 
+    .tip {
+      width: auto !important;
+      max-width: 338px;
+    }
+
     .row {
       height: 100%;
 

@@ -292,7 +292,7 @@ export class LinePage {
     }
 
     private changePlaceholderText():void {
-        this.placeholderText = 'Describe your Network';
+        this.placeholderText = 'What should people know?';
     }
 
     private generateEmoticons():void {

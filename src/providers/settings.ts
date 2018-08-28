@@ -14,6 +14,7 @@ import { ArealistModal } from '../modals/arealist/arealist';
 export class Settings {
     public ucCameraState: string;
     public isNewlineScope=false;
+    public isCreateLine=false;
 
     constructor(
     private storage: LocalStorage,

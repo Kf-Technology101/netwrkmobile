@@ -4,8 +4,11 @@ import { NavController, NavParams, Platform } from 'ionic-angular';
 import { Slides } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LocalStorage } from '../../providers/local-storage';
+import { Settings } from '../../providers/settings';
+
 // Pages
 import { ChatPage } from '../chat/chat';
+import { LinePage } from '../linelist/linelist';
 // Providers
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
@@ -38,6 +41,7 @@ export class UndercoverCharacterPage {
     public platform: Platform,
     public navCtrl: NavController,
     public navParams: NavParams,
+    public settings: Settings,
     public undercoverPrvd: UndercoverProvider,
     public toolsPrvd: Tools,
     public slideAvatarPrvd: SlideAvatar,
@@ -60,9 +64,14 @@ export class UndercoverCharacterPage {
         this.firstTimeHero = false;
         this.storage.set('first_time_hero', this.firstTimeHero);
       }
-      this.toolsPrvd.pushPage(ChatPage, {
-        action: 'undercover'
-      });
+        if(this.settings.isCreateLine){
+            this.settings.isCreateLine=false;
+            this.toolsPrvd.pushPage(LinePage);
+        }else{
+            this.toolsPrvd.pushPage(ChatPage, {
+                action: 'undercover'
+            });
+        }
     }, err => {
       this.toolsPrvd.showToast(this.textError);
     });

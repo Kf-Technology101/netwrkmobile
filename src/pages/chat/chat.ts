@@ -122,7 +122,7 @@ export class ChatPage implements DoCheck {
   shareContainer = new Toggleable('off', true);
   emojiContainer = new Toggleable('off', true);
   mainInput = new Toggleable('fadeIn', false);
-  postTimer = new Toggleable('slideUp', true);
+  postTimer = new Toggleable('slideUp', false);
   postLock = new Toggleable('slideUp', true);
   topSlider = new Toggleable('slideDown', false);
   postUnlock  = new Toggleable('slideUp', true);
@@ -1026,7 +1026,9 @@ export class ChatPage implements DoCheck {
     public openLinePage():void {
         //this.toolsPrvd.popPage();
         this.settings.isNewlineScope=false;
-        this.toolsPrvd.pushPage(LinePage)
+        this.settings.isCreateLine=true;
+        this.toolsPrvd.pushPage(UndercoverCharacterPage);
+        //this.toolsPrvd.pushPage(LinePage)
     }
 
     public eventClickTrigger():void {
@@ -1826,12 +1828,8 @@ export class ChatPage implements DoCheck {
           this.isUndercover = true;
           this.chatPrvd.setState('undercover');
         } else if (providedStateFromGps == 'area') {
-          if (res.message == 'Network not found') {
-            this.toolsPrvd.pushPage(NetworkNoPage, {
-              action: 'create'
-            });
+           this.goArea();
             reject();
-          } else { this.goArea(); reject();}
         }
       });
     });

@@ -734,7 +734,10 @@ page-network-no {
     }
   }
 
-  ion-content.content {
+  .areaLobby {
+    width:95%;
+  }
+  .content {
     position: absolute;
     top: 0;
     background: transparent !important;

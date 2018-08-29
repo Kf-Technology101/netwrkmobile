@@ -1025,6 +1025,7 @@ export class ChatPage implements DoCheck {
   //
 
     public goBack():void {
+        this.chatPrvd.postMessages = [];
         this.settings.isNewlineScope=false;
         this.settings.isCreateLine=false;
         this.chatPrvd.isCleared = true;

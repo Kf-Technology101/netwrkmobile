@@ -30,19 +30,14 @@
         </button>
 
         <button ion-button
-            class="side lock-btn top-icon" (click)="toggleTopSlider('lock');
-            textInput.setFocus();"
-            [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
+            class="side lock-btn top-icon white" (click)="toggleTopSlider('lock');">
         <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
         </button>
 
         <div *ngIf="postLockData.password && postLockData.hint && chatPrvd.postBtn.state && isUndercover" class="lock-status"></div>
 
-        <button ion-button
-            class="side left timer-btn top-icon" (click)="toggleTopSlider('timer');
-            textInput.setFocus();"
-            [ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">
-        <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
+        <button ion-button class="side left timer-btn top-icon white" (click)="toggleTopSlider('timer')">
+            <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
         </button>
 
         <ion-badge *ngIf="postTimerObj.time && isUndercover">
@@ -50,8 +45,7 @@
         </ion-badge>
     </ion-toolbar>
 
-    <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state"
-        class="post-timer">
+    <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state" class="post-timer">
         <button (tap)="setPostTimer(0)">Timeless</button>
         <button (tap)="setPostTimer(1)">1 hour</button>
         <button (tap)="setPostTimer(2)">1 day</button>

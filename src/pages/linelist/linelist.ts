@@ -262,8 +262,7 @@ export class LinePage {
     }
 
     private setDefaultTimer(forced?:boolean):void {
-        if (this.chatPrvd.getState() == 'undercover' &&
-            !this.postTimerObj.time) {
+        if (this.chatPrvd.getState() == 'undercover' && !this.postTimerObj.time) {
             this.setPostTimer(0);
         }
     }
@@ -806,6 +805,7 @@ export class LinePage {
     }
 
     private toggleTopSlider(container:string):void {
+        this.inputOnFocus();
         if (this.plt.is('ios'))
             this.keyboard.show();
         // if ((container == 'lock' || container == 'timer')
@@ -817,6 +817,7 @@ export class LinePage {
         let cont = this.getTopSlider(container);
         if (this.activeTopForm)
             this.hideTopSlider(this.activeTopForm);
+
         if (cont.isVisible()) {
             cont.setState('slideUp');
             this.activeTopForm = null;

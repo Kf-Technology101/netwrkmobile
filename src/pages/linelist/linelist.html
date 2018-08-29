@@ -103,7 +103,7 @@
 <!--Follow line Info-->
     <ion-row class="bg-text" align-items-center>
         <ion-col text-center>
-            <h1 ion-text color="white">Slide to create a custom network</h1>
+            <h1 ion-text color="white">Tap to change the name and picture</h1>
 
             <p  ion-text color="white">
                 Tap &nbsp;
@@ -130,11 +130,11 @@
 
             <p class="message-container">
                 <span class="username" *ngIf="message.user">
-                <ng-container *ngIf="message.public">
+                <ng-container *ngIf="!message.role_name">
                 {{ message.user.name }}
                 </ng-container>
-                <ng-container *ngIf="!message.public">
-                {{ message.user.role_name }}
+                <ng-container *ngIf="message.role_name">
+                {{ message.role_name }}
                 </ng-container>
                 </span>
 

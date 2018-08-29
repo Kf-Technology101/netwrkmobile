@@ -349,6 +349,22 @@ page-network-no {
 
   .footer {
     background: transparent;
+
+    .back-nav-btn {
+      right: 10px;
+      padding: 0;
+      font-size: 14px;
+      color: white !important;
+      height: 26px;
+      width: 42px;
+      border-radius: 13px;
+      margin: 10px !important;
+      background: #5b87aa !important;
+      position: absolute;
+      bottom: 20px;
+
+    }
+
     .main-action-btn {
       bottom: 68px;
       border: 5px solid #5b87aa;

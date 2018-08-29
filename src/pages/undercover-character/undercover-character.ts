@@ -16,6 +16,7 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 import { Auth } from '../../providers/auth';
 
 import { heroes } from '../../includes/heroes';
+import { heroesLines } from '../../includes/heroesLines';
 import * as moment from 'moment';
 
 @Component({
@@ -73,10 +74,14 @@ export class UndercoverCharacterPage {
             });
         }
     }, err => {
+      this.settings.isCreateLine=false;
       this.toolsPrvd.showToast(this.textError);
     });
   }
 
+  private goBack() {
+    this.toolsPrvd.popPage();
+  }
   private getPersons() {
     let age = moment().diff(this.user.date_of_birthday, 'years');
     console.log('[UndercoverCharacterPage][getPersons] age ', age);
@@ -87,10 +92,19 @@ export class UndercoverCharacterPage {
     } else {
       age = 40;
     }
-    this.persons.push(heroes.default);
-    for (let i = 0; i < heroes[age].length; i++) {
-      this.persons.push(heroes[age][i]);
+
+    if(this.settings.isCreateLine){
+       this.persons.push(heroesLines.default);
+       for (let i = 0; i < heroesLines[age].length; i++) {
+          this.persons.push(heroesLines[age][i]);
+       }
+    }else{
+       this.persons.push(heroes.default);
+       for (let i = 0; i < heroes[age].length; i++) {
+          this.persons.push(heroes[age][i]);
+       }
     }
+
     let defaultHero = this.persons[0];
     let secondHero = this.persons[1];
     this.persons[0] = secondHero;

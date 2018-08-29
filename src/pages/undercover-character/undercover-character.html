@@ -3,7 +3,8 @@
     <div class="drag-container" style="pointer-events: none">
       <div class="dragline">
         <span class="info">
-          <span class="username" ion-text color="bk">Choose a new name</span>
+          <span class="username" ion-text color="bk" *ngIf="!settings.isCreateLine">Choose a new name</span>
+          <span class="username" ion-text color="bk" *ngIf="settings.isCreateLine">Choose a category</span>
         </span>
         <img class="draggable-element" src="assets/icon/netwrk-chat.svg" *ngIf="!activePerson.imageUrl" style="left: 129px">
         <img class="draggable-element" *ngIf="activePerson.imageUrl" [src]="activePerson.imageUrl" style="left: 129px">
@@ -16,16 +17,20 @@
 <ion-content has-main-btn>
   <ion-row align-items-center>
     <ion-col text-center>
-        <h3 ion-text color="bk">Choose a new network or superhero name</h3>
-        <div class="text text-md text-md-bk" text-center color="bk">
+        <h3 ion-text color="bk" *ngIf="!settings.isCreateLine">Choose a new network or superhero name</h3>
+        <h3 ion-text color="bk" *ngIf="settings.isCreateLine">What kind of line are you trying to build?</h3>
+        <div class="text text-md text-md-bk" text-center color="bk" *ngIf="!settings.isCreateLine">
             (Don't worry, you can change this later)
+        </div>
+        <div class="text text-md text-md-bk" text-center color="bk" *ngIf="settings.isCreateLine">
+            if it isn't here you can always make it however you want
         </div>
       <ion-slides slidesPerView="3" initialSlide="1" spaceBetween="10">
         <ion-slide></ion-slide>
         <ion-slide [ngClass]="{'transition': sliderLoaded}" *ngFor="let p of persons"
         (click)="choosePerson()">
           <h4 class="title" ion-text color="bk">{{ p.name }}</h4>
-          <div class="avatar">
+          <div class="avatar" [ngClass]="{'avatar': !settings.isCreateLine, 'avatarLine' : settings.isCreateLine }">
             <img class="sun-icon" src="{{ p.imageUrl }}">
           </div>
         </ion-slide>
@@ -39,7 +44,11 @@
   </ion-row>
 </ion-content>
 
-<!--<ion-footer>-->
+<ion-footer *ngIf="settings.isCreateLine">
   <!--<button ion-button color="bk" class="main-action-btn medium transparent" outline-->
-    <!--(click)="choosePerson()"></button>-->
-<!--</ion-footer>-->
+    <!--(click)="goBack()"></button>-->
+
+    <!--<button ion-button class="back-nav-btn" (tap)="goBack()" clear>-->
+        <!--<span ion-text>Back</span>-->
+    <!--</button>-->
+</ion-footer>

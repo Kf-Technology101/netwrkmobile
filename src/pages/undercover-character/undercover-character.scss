@@ -77,16 +77,35 @@ page-undercover-character {
         padding: 20px;
         border: 1px solid #5b87aa;
       }
+
+      .avatarLine {
+        width: 110px;
+        height: 110px;
+        border-radius: 50%;
+        overflow: hidden;
+        margin: auto;
+//        padding: 20px;
+      }
     }
+  }
+
+  .back-nav-btn {
+    right: 10px;
+    padding: 0;
+    font-size: 14px;
+    color: white !important;
+    height: 26px;
+    width: 42px;
+    border-radius: 13px;
+    margin: 10px !important;
+    background: #5b87aa !important;
+    position: absolute;
+    bottom: 20px;
   }
 
   .content {
     background: #fff;
 
-    .tip {
-      width: auto !important;
-      max-width: 338px;
-    }
 
     .row {
       height: 100%;

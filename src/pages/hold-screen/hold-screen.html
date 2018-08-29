@@ -1,18 +1,22 @@
 
 
-<ion-content no-bounce>
-<ion-row class="loading" align-items-center>
-<ion-col text-center>
-      <span ion-text color="bk">
-         Hold for net to look for networks nearby
-      </span>
-</ion-col>
-</ion-row>
-</ion-content>
+<!--<ion-content no-bounce>-->
+<!--<ion-row class="loading" align-items-center>-->
+<!--<ion-col text-center>-->
+      <!--<span ion-text color="bk">-->
+         <!--Hold for net to look for networks nearby-->
+      <!--</span>-->
+<!--</ion-col>-->
+<!--</ion-row>-->
+<!--</ion-content>-->
 
 
 <ion-footer>
-    <button ion-button color="bk" class="main-action-btn medium transparent" outline (click)="showNetwrklist()">
-        <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
+    <div class="tip tail-bottom">
+        Hold for net to look for networks nearby
+    </div>
+
+    <button ion-button color="bk" class="main-action-btn medium transparent" outline (press)="showNetwrklist()">
+        <!--<ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>-->
     </button>
 </ion-footer>

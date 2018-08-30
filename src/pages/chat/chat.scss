@@ -1236,7 +1236,7 @@ page-network-no {
     position: relative;
     top: -10px;
     z-index: 99;
-    width: 120px;
+    width: 150px;
     margin: 0 auto;
     &.text-ios {
       top: -7px;
@@ -1244,7 +1244,7 @@ page-network-no {
     }
     .subhead-container {
       display: flex;
-      width: 120px;
+      width: 150px;
       border-radius: 20px;
       border: 1px solid color($colors, bk);
       margin: auto;

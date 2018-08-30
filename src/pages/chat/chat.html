@@ -93,7 +93,19 @@
     <ion-toolbar class="area-head">
         <img class="ic user-icon" src="assets/images/sun_icon.png" (click)="goToLegendaryList()" style="float:left;width:34px;height:34px;">
 
-        <span class="legendary-icon zip" style="color: #5b87aa;font-size: 20px;">{{ chatPrvd.localStorage.get('chat_zip_code')}}</span>
+        <div ion-text color="bk" class="area-subhead-tip">
+          <span class="subhead-container">
+            <div class="flex-ch netwrk-name">{{ chatPrvd.localStorage.get('chat_zip_code')}}</div>
+            <div class="flex-ch">
+                <div class="netwrk-icon" style="width: 40px;height: 40px;position: absolute;border: 1px solid #5b87aa;top: -7px;left: 58px;">
+                    <img class="netwrk-img" src="assets/icon/netwrk-chat.svg" style="width:35px;height: 35px;">
+                </div>
+            </div>
+            <div class="flex-ch">
+                <span class="netwrk-users">{{uniqueUsers}} </span>  <span class="lobby-icon"></span>
+            </div>
+          </span>
+        </div>
 
         <button ion-button class="side clear-btn legendary-icon" (tap)="clearMessages(chatPrvd.postMessages)" *ngIf="!chatPrvd.areaLobby">
            Clear
@@ -123,14 +135,7 @@
        <!--</ion-slide>-->
       <!--</ion-slides>-->
     <!--</ion-toolbar>-->
-    <!--<p ion-text color="bk" class="area-subhead-tip">-->
-      <!--<span class="subhead-container">-->
-        <!--<div class="flex-ch netwrk-name">netwrk</div>-->
-        <!--<div class="flex-ch">-->
-          <!--<ion-icon ios="md-person" md="md-person"></ion-icon> <span class="netwrk-users">{{uniqueUsers}}</span>-->
-        <!--</div>-->
-      <!--</span>-->
-    <!--</p>-->
+
 
   </div>
 
@@ -214,6 +219,19 @@
           </ion-slide>
       </ion-slides>
   </ion-toolbar>
+
+    <ion-toolbar  class="area-head">
+          <div ion-text color="bk" class="lines-subhead-tip">
+              <span class="subhead-container">
+                <div class="flex-ch netwrk-name">
+                    <span *ngIf="chatPrvd.currentLobbyMessage.text_with_links" class="text" [ngClass]="{ 'emoji' : chatPrvd.currentLobbyMessage.is_emoji }" [innerHTML]="chatPrvd.currentLobbyMessage.text_with_links"></span>
+                </div>
+                <div class="flex-ch">
+                    <span class="lobby-icon"></span>  <span class="netwrk-users"> {{chatPrvd.currentLobby.users.length}} </span>
+                </div>
+              </span>
+          </div>
+    </ion-toolbar>
 
 </ion-header>
 
@@ -640,7 +658,7 @@
   </button>
 
     <!--'greyStyle' : chatPrvd.currentLobby.isAddButtonAvailable && chatPrvd.isLobbyChat-->
-  <div class="flip-container" [ngClass]="{'hover' : flipHover }" *ngIf="chatPrvd.isLobbyChat || chatPrvd.getState() == 'area'">
+  <div class="flip-container hover" [ngClass]="{'hover' : flipHover }" *ngIf="chatPrvd.isLobbyChat || chatPrvd.getState() == 'area'">
     <ion-item class="text front" #inputItem *ngIf="(chatPrvd.currentLobby.currentUserPresent && chatPrvd.isLobbyChat) || !mainInput.hidden" [@fadeState]="mainInput.state" [ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state}">
       <div item-content id="textInpBtns" [@bgState]="chatPrvd.bgState.state">
         <button class="noBtn" ion-button [@inputState]="chatPrvd.chatBtns.state[0]" (click)="openCamera();

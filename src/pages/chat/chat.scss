@@ -1162,6 +1162,139 @@ page-network-no {
       }
     }
   }
+
+  .area-subhead-tip {
+    font-size: 10px;
+    text-align: center;
+    position: relative;
+    top: 5px;
+    z-index: 99;
+    width: 150px;
+    margin: 0 auto;
+    &.text-ios {
+      top: -7px;
+      height: 7px;
+    }
+    .subhead-container {
+      display: flex;
+      width: 150px;
+      border-radius: 20px;
+      border: 1px solid color($colors, bk);
+      margin: auto;
+      padding: 5px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      .flex-ch {
+        width: 30%;
+        white-space: nowrap;
+        overflow:hidden;
+        font-weight: bold;
+        font-size: 12px;
+        text-overflow: ellipsis;
+        .md-person-icon {
+          background: #5b87aa;
+        }
+
+        .lobby-icon{
+          -webkit-mask: url("../assets/icon/like.svg") no-repeat 75%;
+          background: #5b87aa;
+          width: 13px;
+          height: 13px;
+          border-radius: 13px;
+          position: absolute;
+          right: 4px;
+          padding: 0;
+          top: 7px;
+          z-index: 3;
+        }
+
+        .netwrk-icon {
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          position: absolute;
+          border: 1px solid #5b87aa;
+          top: -7px;
+          left: 58px;
+          background: #fff;
+          padding: 2px 5px 2px 5px;
+          .netwrk-img {
+            width: 35px;
+            height: 35px;
+          }
+        }
+      }
+    }
+  }
+
+
+  .lines-subhead-tip {
+    font-size: 10px;
+    text-align: center;
+    position: relative;
+    top: -10px;
+    z-index: 99;
+    width: 120px;
+    margin: 0 auto;
+    &.text-ios {
+      top: -7px;
+      height: 7px;
+    }
+    .subhead-container {
+      display: flex;
+      width: 120px;
+      border-radius: 20px;
+      border: 1px solid color($colors, bk);
+      margin: auto;
+      padding: 2px;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      background-color: #fff;
+      .flex-ch {
+        width: 50%;
+        white-space: nowrap;
+        overflow:hidden;
+        font-weight: bold;
+        font-size: 12px;
+        text-overflow: ellipsis;
+        .md-person-icon {
+          background: #5b87aa;
+        }
+        .lobby-icon{
+          -webkit-mask: url("../assets/icon/lobby-icon.svg") no-repeat 75%;
+          background: #5b87aa;
+          width: 13px;
+          height: 13px;
+          border-radius: 13px;
+          position: absolute;
+          right: 4px;
+          padding: 0;
+          top: 4px;
+          z-index: 3;
+        }
+
+        .netwrk-icon {
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          position: absolute;
+          border: 1px solid #5b87aa;
+          top: -7px;
+          left: 58px;
+          background: #fff;
+          padding: 2px 5px 2px 5px;
+          .netwrk-img {
+            width: 35px;
+            height: 35px;
+          }
+        }
+      }
+    }
+  }
+
   .chat-header {
     background: tranasparent;
     .netwrk-header {
@@ -1171,31 +1304,52 @@ page-network-no {
       .area-subhead-tip {
         font-size: 10px;
         text-align: center;
-        margin-top: 0;
-        margin-bottom: 0;
         position: relative;
-        top: -10px;
+        top: 5px;
         z-index: 99;
+        width: 150px;
+        margin: 0 auto;
         &.text-ios {
           top: -7px;
           height: 7px;
         }
         .subhead-container {
           display: flex;
-          width: 120px;
+          width: 150px;
           border-radius: 20px;
           border: 1px solid color($colors, bk);
           margin: auto;
-          padding: 2px;
+          padding: 5px;
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
           background-color: #fff;
           .flex-ch {
-            width: 50%;
+            width: 30%;
             white-space: nowrap;
             overflow:hidden;
+            font-weight: bold;
+            font-size: 12px;
             text-overflow: ellipsis;
+            .md-person-icon {
+              background: #5b87aa;
+            }
+
+            .netwrk-icon {
+              border-radius: 50%;
+              width: 40px;
+              height: 40px;
+              position: absolute;
+              border: 1px solid #5b87aa;
+              top: -7px;
+              left: 58px;
+              background: #fff;
+              padding: 2px 5px 2px 5px;
+              .netwrk-img {
+                width: 35px;
+                height: 35px;
+              }
+            }
           }
         }
       }
@@ -1295,6 +1449,24 @@ page-network-no {
       border: 1px solid color($colors, dark);
     }
     &:not(.hover) {
+      #textInput {
+        input::-webkit-input-placeholder {
+          color: color($colors, bk);
+        }
+      }
+
+      .button {
+        .icon {
+          color: color($colors, bk);
+        }
+      }
+
+      .front {
+        box-sizing: content-box;
+        border: 1px solid color($colors, bk);
+      }
+    }
+    &.hover {
       #textInput {
         input::-webkit-input-placeholder {
           color: color($colors, bk);

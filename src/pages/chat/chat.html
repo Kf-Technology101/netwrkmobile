@@ -97,8 +97,8 @@
           <span class="subhead-container">
             <div class="flex-ch netwrk-name">{{ chatPrvd.localStorage.get('chat_zip_code')}}</div>
             <div class="flex-ch">
-                <div class="netwrk-icon" style="width: 40px;height: 40px;position: absolute;border: 1px solid #5b87aa;top: -7px;left: 58px;">
-                    <img class="netwrk-img" src="assets/icon/netwrk-chat.svg" style="width:35px;height: 35px;">
+                <div class="netwrk-icon">
+                    <img class="netwrk-img" src="assets/icon/netwrk-chat.svg">
                 </div>
             </div>
             <div class="flex-ch">
@@ -227,12 +227,11 @@
                     <span *ngIf="chatPrvd.currentLobbyMessage.text_with_links" class="text" [ngClass]="{ 'emoji' : chatPrvd.currentLobbyMessage.is_emoji }" [innerHTML]="chatPrvd.currentLobbyMessage.text_with_links"></span>
                 </div>
                 <div class="flex-ch">
-                    <span class="lobby-icon"></span>  <span class="netwrk-users"> {{chatPrvd.currentLobby.users.length}} </span>
+                    <span class="lobby-icon"></span>  <span class="netwrk-users"> {{chatPrvd.currentLobbyMessage.points}} </span>
                 </div>
               </span>
           </div>
     </ion-toolbar>
-
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label no-bounce (ionScrollEnd)="listenForScrollEnd($event)"

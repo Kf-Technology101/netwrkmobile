@@ -793,7 +793,7 @@ page-network-no {
         background: #fff;
       }
       &.lobby {
-        padding-top: 62px;
+        padding-top: 80px;
       }
       .message.conversation-post{
         border-radius: 13px;
@@ -1169,15 +1169,17 @@ page-network-no {
     position: relative;
     top: 5px;
     z-index: 99;
-    width: 150px;
+    width: 170px;
+    min-width: 170px;
     margin: 0 auto;
     &.text-ios {
-      top: -7px;
+      top: 7px;
       height: 7px;
     }
     .subhead-container {
       display: flex;
-      width: 150px;
+      width: 170px;
+      min-width: 170px;
       border-radius: 20px;
       border: 1px solid color($colors, bk);
       margin: auto;
@@ -1208,6 +1210,11 @@ page-network-no {
           padding: 0;
           top: 7px;
           z-index: 3;
+          float: right;
+        }
+        .netwrk-users {
+          float: right;
+          margin-right: 17px;
         }
 
         .netwrk-icon {
@@ -1217,7 +1224,7 @@ page-network-no {
           position: absolute;
           border: 1px solid #5b87aa;
           top: -7px;
-          left: 58px;
+          left: 65px;
           background: #fff;
           padding: 2px 5px 2px 5px;
           .netwrk-img {
@@ -1239,7 +1246,7 @@ page-network-no {
     width: 150px;
     margin: 0 auto;
     &.text-ios {
-      top: -7px;
+      top: -16px;
       height: 7px;
     }
     .subhead-container {
@@ -1270,19 +1277,23 @@ page-network-no {
           height: 13px;
           border-radius: 13px;
           position: absolute;
-          right: 4px;
+//          right: 4px;
           padding: 0;
           top: 4px;
           z-index: 3;
+          float: right;
         }
-
+        .netwrk-users {
+           float: right;
+           margin-right: 17px;
+         }
         .netwrk-icon {
           border-radius: 50%;
           width: 40px;
           height: 40px;
           position: absolute;
           border: 1px solid #5b87aa;
-          top: -7px;
+          top: -5px;
           left: 58px;
           background: #fff;
           padding: 2px 5px 2px 5px;
@@ -1301,58 +1312,7 @@ page-network-no {
       // padding-bottom: 16px;
 //      height: 44px;
 //      background: #fff;
-      .area-subhead-tip {
-        font-size: 10px;
-        text-align: center;
-        position: relative;
-        top: 5px;
-        z-index: 99;
-        width: 150px;
-        margin: 0 auto;
-        &.text-ios {
-          top: -7px;
-          height: 7px;
-        }
-        .subhead-container {
-          display: flex;
-          width: 150px;
-          border-radius: 20px;
-          border: 1px solid color($colors, bk);
-          margin: auto;
-          padding: 5px;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          background-color: #fff;
-          .flex-ch {
-            width: 30%;
-            white-space: nowrap;
-            overflow:hidden;
-            font-weight: bold;
-            font-size: 12px;
-            text-overflow: ellipsis;
-            .md-person-icon {
-              background: #5b87aa;
-            }
 
-            .netwrk-icon {
-              border-radius: 50%;
-              width: 40px;
-              height: 40px;
-              position: absolute;
-              border: 1px solid #5b87aa;
-              top: -7px;
-              left: 58px;
-              background: #fff;
-              padding: 2px 5px 2px 5px;
-              .netwrk-img {
-                width: 35px;
-                height: 35px;
-              }
-            }
-          }
-        }
-      }
       .toolbar {
 //        border-bottom: 1px solid color($colors, bk);
         padding-left: 0;

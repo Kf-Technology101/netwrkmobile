@@ -58,6 +58,11 @@ export class ProfilePage {
   private postLoading: boolean = false;
 
   private usersQueue: Array<any> = [];
+    public activePerson: any = {
+        name: '',
+        description: '',
+        imageUrl: ''
+    };
 
   constructor(
     public navCtrl: NavController,
@@ -133,6 +138,21 @@ export class ProfilePage {
       console.error('removeMessage err:', err);
     });
   }
+
+    choosePerson(post) {
+        this.activePerson.name=post.role_name ? post.role_name:post.user.name;
+        this.activePerson.imageUrl=post.public ? post.user.avatar_url : post.user.hero_avatar_url;
+        this.activePerson.description=post.description;
+        this.profile.user.hero_avatar_url=post.public ? post.user.avatar_url : post.user.hero_avatar_url;
+        this.profile.user.avatar_url=post.public ? post.user.avatar_url : post.user.hero_avatar_url;
+        this.profile.user.role_name=post.role_name ? post.role_name:post.user.name;
+        this.profile.user.description=post.description;
+        this.undercoverPrvd.setPerson(this.activePerson).then(data => {
+            this.loadOwnProfile();
+        }, err => {
+
+        });
+    }
 
   private toggleUserBlock():any {
     this.toolsPrvd.showLoader();

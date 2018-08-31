@@ -59,7 +59,11 @@ export class UndercoverCharacterPage {
     this.getPersons();
   }
 
-  choosePerson() {
+  choosePerson(avatar) {
+     this.activePerson.name=avatar.name;
+     this.activePerson.imageUrl=avatar.imageUrl;
+     this.activePerson.description=avatar.description;
+
     this.undercoverPrvd.setPerson(this.activePerson).then(data => {
       if (this.storage.get('first_time_hero') === null) {
         this.firstTimeHero = false;
@@ -94,15 +98,15 @@ export class UndercoverCharacterPage {
     }
 
     if(this.settings.isCreateLine){
-       this.persons.push(heroesLines.default);
-       for (let i = 0; i < heroesLines[age].length; i++) {
-          this.persons.push(heroesLines[age][i]);
-       }
+        this.persons.push(heroes.default);
+        for (let i = 0; i < heroes[age].length; i++) {
+            this.persons.push(heroes[age][i]);
+        }
     }else{
-       this.persons.push(heroes.default);
-       for (let i = 0; i < heroes[age].length; i++) {
-          this.persons.push(heroes[age][i]);
-       }
+        this.persons.push(heroesLines.default);
+        for (let i = 0; i < heroesLines[age].length; i++) {
+            this.persons.push(heroesLines[age][i]);
+        }
     }
 
     let defaultHero = this.persons[0];

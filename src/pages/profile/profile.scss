@@ -92,6 +92,27 @@ page-arealist {
 
   .content {
     background: #302f2f;
+    .row.feed {
+      .card {
+        margin-top: 0;
+        border-radius: 16px;
+        max-width: 75%;
+      }
+    }
+    .chat-avatar{
+      border-radius: 50%;
+      width: 42px !important;
+      height: 42px;
+      margin: 0;
+      top: -7px;
+      z-index: 4;
+      background: #fff;
+      -o-object-fit: cover;
+      object-fit: cover;
+      left: -9px;
+      position: relative;
+      float: left;
+    }
     .broadcast-central-head {
       font-size: 22px;
       width: 100%;

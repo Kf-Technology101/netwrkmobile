@@ -372,9 +372,9 @@ export class ChatPage implements DoCheck {
             };
 
             if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
-                zoomScale=18;
-            }else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
                 zoomScale=13;
+            }else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
+                zoomScale=14;
             }else if(this.chatPrvd.isLobbyChat){
                 zoomScale=14;
             }

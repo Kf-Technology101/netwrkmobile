@@ -159,12 +159,12 @@
 
                     <p class="message-item">
                         <span class="username" *ngIf="message.user" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">
-                        <ng-container *ngIf="!message.role_name">
-                        {{ message.user.name }}
-                        </ng-container>
-                        <ng-container *ngIf="message.role_name">
-                        {{ message.role_name }}
-                        </ng-container>
+                            <ng-container *ngIf="!message.role_name">
+                                {{ message.user.name }}
+                            </ng-container>
+                            <ng-container *ngIf="message.role_name">
+                                {{ message.role_name }}
+                            </ng-container>
                         </span>
 
                         <span class="message-date" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">{{ message.dateStr }}</span>
@@ -204,7 +204,7 @@
       <ion-slides slidesPerView="5" class="netwrk-slider">
           <ion-slide *ngFor="let user of chatPrvd.currentLobby.users; let i = index" class="netwrk-slide">
               <div (tap)="goToProfile(user.id,user.public, user.role_name)">
-                <img class="ic user-icon" [src]="user.hero_avatar_url" (error)="chatPrvd.updateAvatarUrl($event)">
+                <img class="ic user-icon" [src]="user.hero_avatar_url ? user.hero_avatar_url : user.role_image_url" (error)="chatPrvd.updateAvatarUrl($event)">
               </div>
           <!--<span class="username">-->
           <!--{{ user.email }}-->
@@ -224,7 +224,7 @@
           <div ion-text color="bk" class="lines-subhead-tip">
               <span class="subhead-container">
                 <div class="flex-ch netwrk-name">
-                    <span *ngIf="chatPrvd.currentLobbyMessage.text_with_links" class="text" [ngClass]="{ 'emoji' : chatPrvd.currentLobbyMessage.is_emoji }" [innerHTML]="chatPrvd.currentLobbyMessage.text_with_links"></span>
+                    <span class="text" [innerHTML]="chatPrvd.currentLobbyMessage.role_name"></span>
                 </div>
                 <div class="flex-ch">
                     <span class="lobby-icon"></span>  <span class="netwrk-users"> {{chatPrvd.currentLobbyMessage.points}} </span>
@@ -633,7 +633,7 @@
   </div>
 
   <button ion-button class="back-nav-btn" (tap)="goBack()" clear *ngIf="settings.isNewlineScope == true">
-        <span ion-text>Back</span>
+        <span ion-text>No, I’ll move elsewhere</span>
   </button>
 
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope"

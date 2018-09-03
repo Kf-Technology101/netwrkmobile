@@ -29,9 +29,8 @@
         Clear
         </button>
 
-        <button ion-button
-            class="side lock-btn top-icon white" (click)="toggleTopSlider('lock');">
-        <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
+        <button ion-button class="side lock-btn top-icon white" (click)="toggleTopSlider('lock');">
+            <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
         </button>
 
         <div *ngIf="postLockData.password && postLockData.hint && chatPrvd.postBtn.state && isUndercover" class="lock-status"></div>

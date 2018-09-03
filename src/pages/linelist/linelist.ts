@@ -806,8 +806,8 @@ export class LinePage {
 
     private toggleTopSlider(container:string):void {
         this.inputOnFocus();
-        if (this.plt.is('ios'))
-            this.keyboard.show();
+        //if (this.plt.is('ios'))
+        //    this.keyboard.show();
         // if ((container == 'lock' || container == 'timer')
         //     && this.txtIn.value.trim() == '') {
         //   this.toolsPrvd.showToast('What do you want to hang?');

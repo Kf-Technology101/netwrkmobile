@@ -925,15 +925,13 @@ ion-header.incognito-header {
     overflow: hidden;
     z-index: 51;
     position: absolute;
-    width: 100%;
-    min-height: 0;
     padding: 0;
     width: 140px;
     left: 13px;
     margin: auto;
     border-radius: 13px;
     background: color($colors, bk);
-    height: auto;
+    height: auto !important;
     .toolbar-content {
       padding: 5px 0;
     }

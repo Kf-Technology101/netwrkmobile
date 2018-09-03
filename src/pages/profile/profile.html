@@ -247,6 +247,7 @@
                     </button>
                 </ion-card-content>
               </ion-card>
+
               <ion-slides *ngIf="post.image_urls.length + post.video_urls.length > 1" pager="true"
                 (ionSlideDidChange)="videoservice.messageSliderChange($event, pageTag)">
                 <ion-slide *ngFor="let img of post.image_urls">

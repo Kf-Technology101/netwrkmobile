@@ -1106,6 +1106,7 @@ export class ChatPage implements DoCheck {
     // Disable main button on view load
     this.chatPrvd.isMainBtnDisabled = true;
     this.toolsPrvd.showLoader();
+    //this.refreshChat();
 
     if (event) {
       console.log('_event:', event);

@@ -655,7 +655,7 @@ export class LinePage {
             this.toolsPrvd.showLoader();
 
             this.app.getRootNav().setRoot(ChatPage);
-
+            //this.refreshChat();
             this.setting.isNewlineScope=false;
             this.chatPrvd.currentLobbyMessage=res;
             this.chatPrvd.appendLineContainer.hidden = true;

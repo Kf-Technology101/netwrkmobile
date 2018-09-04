@@ -240,14 +240,16 @@ export class Chat {
   public sortLobbyUsersByHostId(hostId:number):void {
     let hostIndex:number;
     let hostUser:any;
-    this.currentLobby.users.forEach((u, index) => {
-      if (u.id == hostId) {
-        hostIndex = index;
-        hostUser = u;
+      if(this.currentLobby.users.length){
+          this.currentLobby.users.forEach((u, index) => {
+              if (u.id == hostId) {
+                  hostIndex = index;
+                  hostUser = u;
+              }
+          });
+          this.currentLobby.users.splice(hostIndex, 1);
+          this.currentLobby.users.unshift(hostUser);
       }
-    });
-    this.currentLobby.users.splice(hostIndex, 1);
-    this.currentLobby.users.unshift(hostUser);
   }
 
   public isCurrentUserBelongsToChat(users:Array<any>):any {

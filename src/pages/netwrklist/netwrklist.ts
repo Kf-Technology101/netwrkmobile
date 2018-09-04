@@ -101,28 +101,26 @@ export class NetwrklistPage {
 
     public goToLanding() {
         this.app.getRootNav().setRoot(ChatPage);
-        //this.navCtrl.setRoot(ChatPage, {
-        //    action: 'undercover'
-        //}).then(() =>{
-        //    this.navCtrl.popToRoot();
-        //});
+        this.refreshChat();
     }
 
     private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
         return new Promise((resolve, reject) => {
-            this.chatPrvd.getNearByMessages(true, this.netwrkLineList, null, true)
-                .subscribe(res => {
-                    res = this.chatPrvd.organizeMessages(res.messages);
-                    for (let i in res) this.netwrkLineList.push(res[i]);
-                    this.chatPrvd.messageDateTimer.start(this.netwrkLineList);
-                    this.chatPrvd.isCleared = false;
-                    if (refresher) refresher.complete();
-                    resolve();
-                }, err => {
-                    console.error(err);
-                    if (refresher) refresher.complete();
-                    reject();
-                });
+            if (!this.chatPrvd.isLobbyChat || forced) {
+                this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
+                    .subscribe(res => {
+                        res = this.chatPrvd.organizeMessages(res.messages);
+                        for (let i in res) this.chatPrvd.postMessages.push(res[i]);
+                        this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
+                        this.chatPrvd.isCleared = false;
+                        if (refresher) refresher.complete();
+                        resolve();
+                    }, err => {
+                        console.error(err);
+                        if (refresher) refresher.complete();
+                        reject();
+                    });
+            } else { if (refresher) refresher.complete(); reject(); }
         });
     }
 

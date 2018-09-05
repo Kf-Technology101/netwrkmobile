@@ -4,6 +4,7 @@ import { App, AlertController,NavController } from 'ionic-angular';
 // Pages
 import { LogInPage } from '../log-in/log-in';
 import { HoldScreenPage } from '../hold-screen/hold-screen';
+import { NetwrklistPage } from '../netwrklist/netwrklist';
 
 // Providers
 import { Auth } from '../../providers/auth';
@@ -12,6 +13,7 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 import { Settings } from '../../providers/settings';
 import { LocationChange } from '../../providers/locationchange';
 import { LocalStorage } from '../../providers/local-storage';
+
 
 
 @Component({
@@ -76,7 +78,7 @@ export class ProfileSettingPage {
   }
 
   private goToHoldScreen():void {
-     this.navCtrl.setRoot(HoldScreenPage);
+      this.tools.pushPage(NetwrklistPage);
   }
 
   ionViewWillLeave() {

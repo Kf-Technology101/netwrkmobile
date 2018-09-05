@@ -33,6 +33,7 @@ import { NetworkNoPage } from '../network-no/network-no';
 import { LogInPage } from '../log-in/log-in';
 import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 import { HoldScreenPage } from '../hold-screen/hold-screen';
+import { NetwrklistPage } from '../netwrklist/netwrklist';
 import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 import { LinePage } from '../linelist/linelist';
 
@@ -1215,7 +1216,7 @@ export class ChatPage implements DoCheck {
   }
 
   private goToHoldScreen():void {
-      this.navCtrl.setRoot(HoldScreenPage);
+      this.toolsPrvd.pushPage(NetwrklistPage);
   }
 
   private getSocialPosts():void {

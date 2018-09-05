@@ -147,8 +147,6 @@
         "ANDROID_SDK_VERSION": "4.+"
       }
     },
-    "platforms": [
-      "ios"
-    ]
+    "platforms": []
   }
 }

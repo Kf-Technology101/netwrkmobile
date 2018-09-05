@@ -87,7 +87,6 @@ export class HoldScreenPage {
     }
 
     public showNetwrklist():void {
-
         this.toolsPrvd.pushPage(NetwrklistPage);
     }
 

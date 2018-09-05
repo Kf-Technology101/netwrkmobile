@@ -43,6 +43,7 @@ import { ChatPage } from '../../pages/chat/chat';
 import { HoldScreenPage } from '../../pages/hold-screen/hold-screen';
 import { ProfilePage } from '../../pages/profile/profile';
 import { LogInPage } from '../../pages/log-in/log-in';
+import { NetwrklistPage } from '../netwrklist/netwrklist';
 import { NetworkContactListPage } from '../../pages/network-contact-list/network-contact-list';
 import { UndercoverCharacterPage } from '../../pages/undercover-character/undercover-character';
 
@@ -616,7 +617,7 @@ export class LinePage {
     }
 
     private goToHoldScreen():void {
-        this.navCtrl.setRoot(HoldScreenPage);
+        this.toolsPrvd.pushPage(NetwrklistPage);
     }
 
     private calculateInputChar(inputEl:any):void {

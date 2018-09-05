@@ -7,6 +7,7 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
 import { HoldScreenPage } from '../../pages/hold-screen/hold-screen';
+import { NetwrklistPage } from '../netwrklist/netwrklist';
 
 // Providers
 import { Profile } from '../../providers/profile';
@@ -232,7 +233,7 @@ export class ProfilePage {
     }
 
   private goToHoldScreen():void {
-     this.navCtrl.setRoot(HoldScreenPage);
+      this.toolsPrvd.pushPage(NetwrklistPage);
   }
 
   private goBack():void {

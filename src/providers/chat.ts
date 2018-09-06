@@ -276,6 +276,7 @@ export class Chat {
         this.getLocationLobby(message.id).subscribe(res => {
           console.log('getLocationLobby:', res);
           if (res && res.messages && res.room_id) {
+            this.postMessages = [];
             this.postMessages = res.messages;
             this.postAreaMessages = [];
             if(this.areaLobby){

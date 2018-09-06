@@ -1142,7 +1142,7 @@ export class ChatPage implements DoCheck {
         console.log('[goUndercover] detectNetwork res:', res);
         if (res.network)
           this.chatPrvd.saveNetwork(res.network);
-        console.log('DETECT NETWORK [goUndercover]')
+        console.log('DETECT NETWORK [goUndercover]');
 
         if (res.message == 'Network not found') {
            this.gpsPrvd.createNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
@@ -1173,7 +1173,6 @@ export class ChatPage implements DoCheck {
         } else {
           console.log('_network exists');
           this.undercoverPrvd.setUndercover(!this.isUndercover);
-          this.isUndercover = false;
           this.flipInput();
           this.changePlaceholderText();
           setTimeout(() => {
@@ -1187,7 +1186,6 @@ export class ChatPage implements DoCheck {
     } else if (this.chatPrvd.getState() == 'area') {
       this.chatPrvd.setState('undercover');
       this.undercoverPrvd.setUndercover(!this.isUndercover);
-      this.isUndercover = true;
       this.chatPrvd.alreadyScolledToBottom = false;
       //this.cameraPrvd.toggleCameraBg();
       this.runUndecoverSlider(this.pageTag);
@@ -1531,6 +1529,16 @@ export class ChatPage implements DoCheck {
     return idList;
   }
 
+  private getMessagesIdByUndercover(messageArray: any):Array<number> {
+    let idList:Array<number> = [];
+    for (let m in messageArray) {
+        if(this.isUndercover || this.isUndercover == messageArray[m].undercover){
+            idList.push(messageArray[m].id);
+        }
+    }
+    return idList;
+  }
+
   private sendDeletedMessages() {
     this.chatPrvd.deleteMessages(this.idList).subscribe( res => {
       this.canRefresh = true;
@@ -1544,7 +1552,7 @@ export class ChatPage implements DoCheck {
     clearTimeout(this.messIntObject);
     this.chatPrvd.postMessages = [];
     this.chatPrvd.isCleared = true;
-    let messageArray=this.getMessagesIds(postMessage);
+    let messageArray=this.getMessagesIdByUndercover(postMessage);
     this.chatPrvd.deleteMessages(messageArray).subscribe( res => {
        this.canRefresh = true;
     }, err => {
@@ -1862,7 +1870,7 @@ export class ChatPage implements DoCheck {
 
       this.chatPrvd.openLobbyForPinned(message).then(() => {
           if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-              this.placeholderText = 'Become a connector or create/join a network';
+              this.placeholderText = 'What do you want to talk about?';
           }else{
               this.placeholderText = 'What would you like to say?';
           }
@@ -1900,7 +1908,7 @@ export class ChatPage implements DoCheck {
 
       this.chatPrvd.openLobbyForPinned(message).then(() => {
           if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-              this.placeholderText = 'Become a connector or create/join a network';
+              this.placeholderText = 'What do you want to talk about?';
           }else{
               this.placeholderText = 'What would you like to say?';
           }

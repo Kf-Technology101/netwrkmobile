@@ -101,18 +101,15 @@ export class NetwrklistPage {
 
     public goToLanding() {
         this.app.getRootNav().setRoot(ChatPage);
-        this.refreshChat();
     }
 
     private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
         return new Promise((resolve, reject) => {
             if (!this.chatPrvd.isLobbyChat || forced) {
-                this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
+                this.chatPrvd.getNearByMessages(this.isUndercover, this.netwrkLineList, null, true)
                     .subscribe(res => {
                         res = this.chatPrvd.organizeMessages(res.messages);
-                        for (let i in res) this.chatPrvd.postMessages.push(res[i]);
-                        this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
-                        this.chatPrvd.isCleared = false;
+                        for (let i in res) this.netwrkLineList.push(res[i]);
                         if (refresher) refresher.complete();
                         resolve();
                     }, err => {

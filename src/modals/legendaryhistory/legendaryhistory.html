@@ -67,8 +67,7 @@
           <ng-container *ngIf="!message.locked_by_user ||
                         (message.locked_by_user && userId == message.user_id)">
             <ng-container *ngIf="message.locked_by_user">
-              <ion-icon ios="ios-lock" md="ios-lock"
-              class="locked-by-you info-icon"></ion-icon>
+              <ion-icon ios="ios-lock" md="ios-lock" class="locked-by-you info-icon"></ion-icon>
             </ng-container>
             <span *ngIf="message.text_with_links" class="text"
                   [ngClass]="{ 'emoji' : message.is_emoji }"
@@ -85,8 +84,8 @@
           </ng-container>
         </p>
 
-        <button class="feedback-button" (tap)="openFeedback(message, i)"
-                *ngIf="!message.locked_by_user || userId == message.user_id">
+        <button class="feedback-button" (tap)="openFeedback(message, i)" *ngIf="!message.locked_by_user || userId == message.user_id">
+            <div class="icon"></div>
         </button>
 
         <ng-container *ngIf="userId != message.user_id && message.locked_by_user">
@@ -132,8 +131,7 @@
 </ion-content>
 
 <ion-footer>
-  <button class="main-action-btn transparent small small-icon" ion-button
-          color="bk" outline (click)="closeModal()">
+  <button class="main-action-btn transparent small small-icon" ion-button color="bk" outline (click)="closeModal()">
     <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
   </button>
 </ion-footer>

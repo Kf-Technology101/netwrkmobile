@@ -546,7 +546,6 @@ export class LinePage {
                                 message.image_urls = message.images;
                                 message.is_synced = false;
                                 if (this.chatPrvd.isLobbyChat) message.expire_date = null;
-                                this.chatPrvd.postMessages.unshift(message);
                             } else this.toolsPrvd.showLoader();
 
                             this.goToLobby(messageParams);
@@ -568,7 +567,7 @@ export class LinePage {
                                             message.image_urls = message.images;
                                             message.is_synced = false;
                                             if (this.chatPrvd.isLobbyChat) message.expire_date = null;
-                                            this.chatPrvd.postMessages.unshift(message);
+
                                         } else this.toolsPrvd.showLoader();
 
                                         this.goToLobby(messageParams);
@@ -667,7 +666,7 @@ export class LinePage {
                 this.chatPrvd.isLandingPage = true;
                 this.setting.isNewlineScope=false;
                 if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-                    this.placeholderText = 'Become a connector or create/join a network';
+                    this.placeholderText = 'What would you like to say?';
                 }else{
                     this.placeholderText = 'What would you like to say?';
                 }
@@ -1009,6 +1008,16 @@ export class LinePage {
         return idList;
     }
 
+    private getMessagesIdByUndercover(messageArray: any):Array<number> {
+        let idList:Array<number> = [];
+        for (let m in messageArray) {
+            if(this.isUndercover == messageArray[m].undercover){
+                idList.push(messageArray[m].id);
+            }
+        }
+        return idList;
+    }
+
     private sendDeletedMessages() {
         this.chatPrvd.deleteMessages(this.idList).subscribe( res => {
             this.canRefresh = true;
@@ -1022,7 +1031,7 @@ export class LinePage {
         clearTimeout(this.messIntObject);
         this.chatPrvd.postMessages = [];
         this.chatPrvd.isCleared = true;
-        let messageArray=this.getMessagesIds(postMessage);
+        let messageArray=this.getMessagesIdByUndercover(postMessage);
         this.chatPrvd.deleteMessages(messageArray).subscribe( res => {
             this.canRefresh = true;
         }, err => {

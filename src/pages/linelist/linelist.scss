@@ -711,7 +711,11 @@ page-linelist,page-netwrklist {
               top: 25px;
             }
           }
-
+          .location {
+            font-size: 14px;
+            color:#5b87aa;
+            display: block;
+          }
           .username {
             font-size: 16px;
             display: inline-block;

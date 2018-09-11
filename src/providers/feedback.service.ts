@@ -6,17 +6,23 @@ import { Injectable } from '@angular/core';
 import { Tools } from './tools';
 import { Chat } from './chat';
 import { Api } from './api';
+import { Auth } from './auth';
 
 @Injectable()
 export class FeedbackService {
+    public user: any;
+
   constructor(
     private chatService: Chat,
     public plt: Platform,
+    public authPrvd: Auth,
     private toolsService: Tools,
     public sharing: SocialSharing,
     private facebook: Facebook,
     private api: Api
-  ) {}
+  ) {
+      this.user = this.authPrvd.getAuthData();
+  }
 
   public toggleLikes(message_id:number, user_id:number, event?:any):void {
     let el;
@@ -36,6 +42,20 @@ export class FeedbackService {
         console.log('[FeedbackService] sendPointData res:', res);
       }, err => console.error('[FeedbackService] sendPointData err:', err));
       console.log('[FeedbackService] toggleLikes res:', res);
+    }, err => {
+      console.error('[FeedbackService] toggleLikes err:', err);
+    });
+  }
+
+
+  public pointsOnJoinLine(message_id:number, user_id:number):void {
+    this.chatService.sendFeedbackData('messages/update_message_points', {
+      points: this.user.points_count,
+      message_id: message_id
+    }).subscribe(res => {
+       if(this.chatService.currentLobbyMessage){
+          this.chatService.currentLobbyMessage.points=this.user.points_count;
+       }
     }, err => {
       console.error('[FeedbackService] toggleLikes err:', err);
     });

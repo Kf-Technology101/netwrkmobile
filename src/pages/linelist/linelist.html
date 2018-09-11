@@ -2,7 +2,7 @@
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
     <ion-toolbar *ngIf="isUndercover">
         <div class="drag-container" [@sliderState]="topSlider.getState()">
-            <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">
+            <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)" [ngClass]="{ 'anim-glow' : !user.name || !user.role_name}">
                 <span class="info">
                     <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
                         {{ user.name }}
@@ -129,6 +129,13 @@
 
 
             <p class="message-container">
+
+                <span class="location" *ngIf="message.place_name && message.messageable_type=='Network' && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'" (click)="openLobbyForPinned(message)">
+                <ng-container >
+                    {{ message.place_name }}
+                </ng-container>
+                </span>
+
                 <span class="username" *ngIf="message.user">
                 <ng-container *ngIf="!message.role_name">
                 {{ message.user.name }}

@@ -951,6 +951,11 @@ page-network-no {
             }
           }
 
+          .location {
+            font-size: 14px;
+            color:#5b87aa;
+            display: block;
+          }
           .username {
             font-size: 16px;
             display: inline-block;
@@ -1274,10 +1279,10 @@ page-network-no {
           width: 13px;
           height: 13px;
           border-radius: 13px;
-          position: absolute;
-//          right: 4px;
+          position: relative;
+          right: 3px;
           padding: 0;
-          top: 4px;
+          top: 0;
           z-index: 3;
           float: right;
         }

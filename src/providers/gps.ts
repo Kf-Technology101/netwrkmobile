@@ -19,6 +19,7 @@ export class Gps {
   };
   public zipCode: number = null;
   public placeId:string;
+  public place_name:string;
 
   public changeZipCallback: (params?: any) => void;
   private watch: any;
@@ -145,11 +146,15 @@ export class Gps {
     for (let i = 0; i < data.length; i++) {
       for (let j = 0; j < data[i].address_components.length; j++) {
         for (let z = 0; z < data[i].address_components[j].types.length; z++) {
+          if (data[i].address_components[j].types[z] == 'route') {
+              this.place_name = data[i].address_components[0].long_name+ ', ' +data[i].address_components[2].long_name+', ' +data[i].address_components[5].long_name;
+              this.localStorage.set('place_name', this.place_name);
+          }
           if (data[i].address_components[j].types[z] == 'postal_code') {
-            this.zipCode = data[i].address_components[j].long_name;
-            this.placeId = data[i].place_id;
-            this.localStorage.set('place_id', this.placeId);
-            break;
+              this.zipCode = data[i].address_components[j].long_name;
+              this.placeId = data[i].place_id;
+              this.localStorage.set('place_id', this.placeId);
+              break;
           }
         }
       }
@@ -184,7 +189,7 @@ export class Gps {
       if (this.coords.lat && this.coords.lng) {
         console.log('my lat:', this.coords.lat, 'my lng:', this.coords.lng);
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
-          // console.log('[google addres] res:', res);
+          console.log('[my Location] res:', res);
           // default:
           let zipCode: any = this.parseGoogleAddress(res.results);
           // debug:

@@ -63,7 +63,7 @@ export class Profile {
       role_image_url: 'assets/images/incognito.png',
       role_name: null,
       hero_avatar_url: null,
-      updated_at: '2017-04-22T14:59:29.921Z',
+      updated_at: '2017-04-22T14:59:29.921Z'
     }
   }
 

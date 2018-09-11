@@ -503,6 +503,7 @@ export class LinePage {
                 text_with_links: emoji ?  emoji : this.txtIn.value,
                 user_id: this.user ? this.user.id : 0,
                 role_name: this.user.role_name,
+                place_name: this.gpsPrvd.place_name,
                 images: emoji ? [] : images,
                 video_urls: params && params.video_urls ? params.video_urls : [],
                 undercover: (this.chatPrvd.getState() == 'area') ? false : this.isUndercover,

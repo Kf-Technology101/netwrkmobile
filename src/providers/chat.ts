@@ -173,6 +173,12 @@ export class Chat {
     return messMap;
   }
 
+  public getParentLobby(message:any):any {
+      let mess = this.api.get('rooms/' + message.messageable_id + '/network').share();
+      let messMap = mess.map(res => res.json());
+      return messMap;
+  }
+
   public setState(state: string):void {
     this.localStorage.set('chat_state', state);
   }
@@ -294,7 +300,7 @@ export class Chat {
                 this.currentLobby.users = res.users;
                 this.currentLobby.hostId = res.host_id;
                 this.currentLobby.isAddButtonAvailable = !this.isCurrentUserBelongsToChat(this.currentLobby.users);
-                this.sortLobbyUsersByHostId(this.currentLobby.hostId);
+                //this.sortLobbyUsersByHostId(this.currentLobby.hostId);
                 resolve();
               } else {
                 reject('[getLocationLobbyUsers] Server returned no users or host_id');

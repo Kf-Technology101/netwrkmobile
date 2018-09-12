@@ -60,6 +60,7 @@ import { Places } from '../../providers/places';
 
 import { VideoService } from '../../providers/videoservice';
 import { FeedbackService } from '../../providers/feedback.service';
+import { LocalStorage } from '../../providers/local-storage';
 
 import * as moment from 'moment';
 // Sockets
@@ -223,6 +224,7 @@ export class ChatPage implements DoCheck {
     public zone: NgZone,
     public undercoverPrvd: UndercoverProvider,
     public slideAvatarPrvd: SlideAvatar,
+    public storage: LocalStorage,
     public toolsPrvd: Tools,
     public authPrvd: Auth,
     public cameraPrvd: Camera,
@@ -253,7 +255,7 @@ export class ChatPage implements DoCheck {
 
     console.log('%c [CHAT] CONSTRUCTOR ', 'background: #1287a8;color: #ffffff');
     this.initLpMap();
-    this.slideAvatarPrvd.setSliderPosition('left');
+    //this.slideAvatarPrvd.setSliderPosition('left');
   }
 
   public shareMessageToFacebook(message):void {
@@ -389,13 +391,9 @@ export class ChatPage implements DoCheck {
                 scrollwheel: false,
                 panControl: false,
                 mapTypeControl: false,
-                zoomControl: true,
-                streetViewControl: true,
-                scaleControl: true,
-                zoomControlOptions: {
-                    style: google_maps.ZoomControlStyle.LARGE,
-                    position: google_maps.ControlPosition.LEFT_BOTTOM
-                }
+                zoomControl: false,
+                streetViewControl: false,
+                scaleControl: false
             });
 
 
@@ -741,13 +739,15 @@ export class ChatPage implements DoCheck {
       let messageParams: any = {};
       let message: any = {};
 
-      if (!this.isUndercover) {
-        publicUser = true;
-      } else {
-        publicUser = this.slideAvatarPrvd.sliderPosition == 'left' ? true : false;
-      }
+        if(this.slideAvatarPrvd.sliderPosition == 'left' && this.storage.get('slider_position')=='left'){
+            publicUser=true;
+        }else{
+            publicUser=false;
+        }
+
 
       if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
+
 
       if (params && params.social && !this.chatPrvd.isLobbyChat)
         this.setDefaultTimer();
@@ -812,9 +812,9 @@ export class ChatPage implements DoCheck {
           this.toolsPrvd.hideLoader();
           message.id=res.id;
 
-          if (!this.isUndercover || !this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
+          if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby && this.chatPrvd.getState() == 'area') {
               let alert = this.alertCtrl.create({
-                  subTitle: 'Share the line with your friends?',
+                  subTitle: 'Share the conversation with your friends?',
                   buttons: [{
                       text: 'No',
                       role: 'cancel',
@@ -2009,9 +2009,8 @@ export class ChatPage implements DoCheck {
     // this.chatPrvd.postMessages = [];
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
 
-    if (this.chatPrvd.getState() == 'undercover') {
-      this.runUndecoverSlider(this.pageTag);
-    }
+
+    this.runUndecoverSlider(this.pageTag);
 
     this.events.subscribe('image:pushed', res => {
       this.setDefaultTimer();

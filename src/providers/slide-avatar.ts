@@ -54,29 +54,31 @@ export class SlideAvatar {
 
   public sliderInit(pageTag: string) {
     this.stopSliderEvents();
+
     this.toolsPrvd.checkIfHeroAvalable().subscribe(res => {
       console.log('checkIfHeroAvalable res:', res);
       if (res.disabled) {
         this.heroDisabled = res.disabled;
         this.stopSliderEvents();
       }
-      if (this.storage.get('chat_state') == 'area') {
-        this.sliderPosition = 'left';
-      }
+      //if (this.storage.get('chat_state') == 'area') {
+      //  this.sliderPosition = 'left';
+      //}
       let intervalCleared:boolean = false;
       let initInterval = setInterval(() => {
         let currentView = document.querySelector(pageTag);
         if (currentView) {
           this.selectedItem = currentView.querySelectorAll('.draggable-element')['0'];
-          if (this.heroDisabled) {
-            this.setSliderPosition('left');
-            this.sliderPosition = 'left';
-          }
+          //if (this.heroDisabled) {
+          //  this.setSliderPosition('left');
+          //  this.sliderPosition = 'left';
+          //}
+
           if (this.selectedItem) {
             clearInterval(initInterval);
             intervalCleared = true;
             if (!this.heroDisabled) {
-              if (this.storage.get('slider_position') === null) {
+              if (this.storage.get('slider_position')==null) {
                 this.sliderPosition = 'left';
                 this.setSliderDimentions();
                 this.setSliderPosition(this.sliderPosition);
@@ -84,8 +86,9 @@ export class SlideAvatar {
                 this.sliderPosition = this.storage.get('slider_position');
                 this.setSliderPosition(this.sliderPosition);
               }
-              this.startSliderEvents();
+                this.startSliderEvents();
             } else {
+                alert('hi')
               this.setSliderDimentions();
               this.setSliderPosition(this.sliderPosition);
             }
@@ -124,12 +127,21 @@ export class SlideAvatar {
     if (this.selectedItem) {
       this.arrowIcon = this.selectedItem.parentElement.children['1'];
       this.arrowIcon.style.opacity = '1';
-      if (state == 'right') {
-        this.selectedItem.style.left = this.dEnd + 'px';
-        this.arrowIcon.classList.add('right');
+      if (state == 'left') {
+          if (this.storage.get('slider_position')==null) {
+              this.selectedItem.style.left = this.dStart + 'px';
+              this.arrowIcon.classList.add('left');
+              this.arrowIcon.classList.remove('right');
+          }else if(this.storage.get('slider_position')=='left') {
+              this.arrowIcon.classList.add('left');
+              this.arrowIcon.classList.remove('right');
+          }
       } else {
-        this.selectedItem.style.left = this.dStart + 'px';
-        this.arrowIcon.classList.remove('right');
+          if(this.storage.get('slider_position')=='right'){
+              this.selectedItem.style.left = this.dEnd + 'px';
+              this.arrowIcon.classList.add('right');
+              this.arrowIcon.classList.remove('left');
+          }
       }
       this.storage.set('slider_position', state);
     }

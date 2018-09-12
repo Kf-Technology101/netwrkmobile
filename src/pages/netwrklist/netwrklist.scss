@@ -1,12 +1,17 @@
 
 
 
-modal-netwrklist {
+page-netwrklist {
   .bg-text {
     position: absolute;
     top: 40px;
     text-align: center;
     width: 100%;
+  }
+  .location {
+    font-size: 14px;
+    color:#5b87aa;
+    display: block;
   }
   .lockBtn {
     padding: 0px 8px !important;

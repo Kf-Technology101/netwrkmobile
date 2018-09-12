@@ -63,6 +63,7 @@ import { Settings } from '../../providers/settings';
 
 import { VideoService } from '../../providers/videoservice';
 import { FeedbackService } from '../../providers/feedback.service';
+import { LocalStorage } from '../../providers/local-storage';
 
 import * as moment from 'moment';
 // Sockets
@@ -224,6 +225,7 @@ export class LinePage {
         public navParams: NavParams,
         public toolsPrvd: Tools,
         public cameraPrvd: Camera,
+        public storage: LocalStorage,
         public zone: NgZone,
         public gpsPrvd: Gps,
         public setting: Settings,
@@ -487,10 +489,10 @@ export class LinePage {
             let messageParams: any = {};
             let message: any = {};
 
-            if (!this.isUndercover) {
-                publicUser = true;
-            } else {
-                publicUser = this.slideAvatarPrvd.sliderPosition == 'left' ? true : false;
+            if(this.slideAvatarPrvd.sliderPosition == 'left' && this.storage.get('slider_position')=='left'){
+                publicUser=true;
+            }else{
+                publicUser=false;
             }
 
             if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
@@ -1302,9 +1304,8 @@ export class LinePage {
         // this.chatPrvd.postMessages = [];
         this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
 
-        if (this.chatPrvd.getState() == 'undercover') {
-            this.runUndecoverSlider(this.pageTag);
-        }
+
+        this.runUndecoverSlider(this.pageTag);
 
         this.events.subscribe('image:pushed', res => {
             this.setDefaultTimer();

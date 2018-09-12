@@ -142,11 +142,11 @@ export class UndercoverCharacterPage {
   ionViewDidEnter() {
     this.splash.hide();
     this.toolsPrvd.hideLoader();
-    if (this.storage.get('first_time_hero') === null)
-      this.firstTimeHero = true;
+    //if (this.storage.get('first_time_hero') === null)
+      //this.firstTimeHero = true;
     // this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    this.slideAvatarPrvd.sliderInit(this.pageTag);
-    this.slideAvatarPrvd.setSliderPosition('right');
+    //this.slideAvatarPrvd.sliderInit(this.pageTag);
+    //this.slideAvatarPrvd.setSliderPosition('right');
   }
 
 }

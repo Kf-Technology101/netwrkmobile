@@ -46,6 +46,8 @@ export class ProfilePage {
   profileContent = new Toggleable('fadeIn', false);
   public backBtnDisabled: boolean = false;
 
+  topSlider = new Toggleable('slideDown', false);
+
   greeting: string;
   testSlides: string[] = [];
   public ownProfile: boolean;
@@ -57,6 +59,7 @@ export class ProfilePage {
   private posts: Array<any> = [];
   private pageTag: string;
   private postLoading: boolean = false;
+  private firstTimeHero: boolean = true;
 
   private usersQueue: Array<any> = [];
     public activePerson: any = {
@@ -365,8 +368,7 @@ export class ProfilePage {
       console.log('[Profile](showMessages) params:', params);
 
       if (this.ownProfile) {
-        params.public = this.slideAvatarPrvd.sliderPosition == 'right'
-          ? false : true;
+        params.public = this.slideAvatarPrvd.sliderPosition == 'right' ? false : true;
       } else {
         params.public = this.profileTypePublic;
       }
@@ -424,7 +426,11 @@ export class ProfilePage {
     this.setProfileData();
   }
 
-  ionViewDidEnter() { this.viewDidEnter(); }
+  ionViewDidEnter() {
+      this.viewDidEnter();
+      this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+      this.slideAvatarPrvd.sliderInit(this.pageTag);
+  }
 
   ionViewDidLoad() { this.loadProfile(); }
 

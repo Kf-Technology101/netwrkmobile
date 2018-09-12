@@ -7,7 +7,7 @@
   <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover' && !chatPrvd.areaLobby">
   <!--<ion-toolbar>-->
     <div class="drag-container" [@sliderState]="topSlider.getState()">
-      <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)" [ngClass]="{ 'anim-glow' : !user.name || !user.role_name}">
+      <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">
         <span class="info">
           <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username" >
             {{ user.name }}
@@ -159,12 +159,12 @@
 
                     <p class="message-item">
                         <span class="username" *ngIf="message.user" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">
-                            <ng-container *ngIf="!message.role_name">
-                                {{ message.user.name }}
-                            </ng-container>
-                            <ng-container *ngIf="message.role_name">
-                                {{ message.role_name }}
-                            </ng-container>
+                        <ng-container *ngIf="message.public">
+                        {{ message.user.name }}
+                        </ng-container>
+                        <ng-container *ngIf="!message.public">
+                        {{ message.user.role_name }}
+                        </ng-container>
                         </span>
 
                         <span class="message-date" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">{{ message.dateStr }}</span>
@@ -254,14 +254,13 @@
 
     <p *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)" class="no-data-message abs">There are no posts yet</p>
 
-    <div class="message place" #directions *ngIf="nearestPlace && chatPrvd.getState() == 'undercover' && dirVisible" (swipe)="directionSwipe($event, directions)">
+    <div class="message place" #directions *ngIf="!chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area' && nearestPlace && chatPrvd.getState() == 'undercover' && dirVisible" (swipe)="directionSwipe($event, directions)">
       <p class="message-container" (tap)="viewLocation()">
         <span class="username">Directions to the nearest {{ nearestPlace.type }}</span>
         <span class="text">{{ nearestPlace.name }} - {{ nearestPlace.address_string }}</span>
       </p>
       <button class="feedback-button" (tap)="viewLocation({routes: true})"></button>
     </div>
-
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
       <div class="message-container {{message.undercover}}" *ngIf="!message.has_expired && !message.social && !chatPrvd.areaLobby && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.user_id==user.id || (chatPrvd.getState() == 'area' || !isUndercover) && message.messageable_type=='Network' && !message.undercover && !message.social && !message.has_expired && !chatPrvd.areaLobby" [ngClass]="{'isLobby': chatPrvd.getState() == 'area' }">
@@ -287,11 +286,11 @@
         <p class="message-item">
 
          <span class="username" *ngIf="message.user" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">
-            <ng-container *ngIf="!message.role_name">
+            <ng-container *ngIf="message.public">
             {{ message.user.name }}
             </ng-container>
-            <ng-container *ngIf="message.role_name">
-            {{ message.role_name }}
+            <ng-container *ngIf="!message.public">
+            {{ message.user.role_name }}
             </ng-container>
           </span>
 
@@ -411,20 +410,20 @@
         </span>
 
          <span class="username" *ngIf="message.user && message.messageable_type=='Network'" (click)="openLobbyForPinned(message)">
-            <ng-container *ngIf="!message.role_name">
+            <ng-container *ngIf="message.public">
             {{ message.user.name }}
             </ng-container>
-            <ng-container *ngIf="message.role_name">
-            {{ message.role_name }}
+            <ng-container *ngIf="!message.public">
+            {{ message.user.role_name }}
             </ng-container>
           </span>
 
          <span class="username" *ngIf="message.user && message.messageable_type=='Room'" (click)="openLobbyForLineMessage(message)">
-            <ng-container *ngIf="!message.role_name">
+            <ng-container *ngIf="message.public">
             {{ message.user.name }}
             </ng-container>
-            <ng-container *ngIf="message.role_name">
-            {{ message.role_name }}
+            <ng-container *ngIf="!message.public">
+            {{ message.user.role_name }}
             </ng-container>
           </span>
 

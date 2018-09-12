@@ -81,9 +81,6 @@
         <splash height="480" src="resources/ios/splash/Default~iphone.png" width="320" />
         <splash height="2732" src="resources/ios/splash/Default@2x~universal~anyany.png" width="2732" />
     </platform>
-    <edit-config file="*-Info.plist" mode="merge" target="NSLocationWhenInUseUsageDescription">
-        <string>We want your location! Best regards</string>
-    </edit-config>
     <preference name="KeyboardDisplayRequiresUserAction" value="false" />
     <feature name="Keyboard">
         <param name="ios-package" onload="true" value="IonicKeyboard" />
@@ -140,5 +137,4 @@
         <variable name="APP_NAME" value="Netwrk" />
         <variable name="ANDROID_SDK_VERSION" value="4.+" />
     </plugin>
-    <engine name="ios" spec="~4.5.5" />
 </widget>

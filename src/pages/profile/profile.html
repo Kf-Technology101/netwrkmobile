@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ng-container *ngIf="ownProfile">
-      <div class="drag-container">
+      <div class="drag-container"  [@sliderState]="topSlider.getState()">
         <div class="dragline">
           <span class="info">
                 <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
@@ -12,7 +12,7 @@
                 </span>
           </span>
           <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon left">
-          <img class="draggable-element left" [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.hero_avatar_url : profile.user.avatar_url"
+            <img class="draggable-element" [src]="slideAvatarPrvd.sliderPosition == 'right' ? profile.user.hero_avatar_url : profile.user.avatar_url"
             (error)="chatPrvd.updateAvatarUrl($event)">
         </div>
       </div>

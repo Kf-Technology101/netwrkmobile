@@ -2,7 +2,6 @@ import { Component,ViewChild  } from '@angular/core';
 import { Platform, Events, App, Nav } from 'ionic-angular';
 import { Sim } from '@ionic-native/sim';
 import { StatusBar } from '@ionic-native/status-bar';
-import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
@@ -45,7 +44,6 @@ export class MyApp {
         public statusBar: StatusBar,
         private sim: Sim,
         private apiPrvd: Api,
-        private cameraPreview: CameraPreview,
         private permission: PermissionsService,
         private network: NetworkCheck,
         private gps: Gps

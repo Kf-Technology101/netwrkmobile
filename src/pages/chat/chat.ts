@@ -2006,9 +2006,7 @@ export class ChatPage implements DoCheck {
     this.chatPrvd.mainBtn.setState('normal');
     this.chatPrvd.mainBtn.show();
 
-    // this.chatPrvd.postMessages = [];
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
-
 
     this.runUndecoverSlider(this.pageTag);
 

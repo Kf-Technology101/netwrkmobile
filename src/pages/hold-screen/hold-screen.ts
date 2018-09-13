@@ -78,8 +78,8 @@ export class HoldScreenPage {
     public splash: SplashScreen
   ) {
     this.users = this.authPrvd.getAuthData();
+    this.gpsPrvd.getMyZipCode();
   }
-
 
     public goBack():void {
         this.storage.set('_fromPrSett', true);

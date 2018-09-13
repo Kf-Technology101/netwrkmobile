@@ -62,10 +62,16 @@ export class MapsModal {
         });
       }
 
+
+
+      let icon = {
+          url: 'assets/icon/wi-fi.png'
+      };
+
       let marker = new google_maps.Marker({
         map: this.map,
         position: this.place.location,
-        icon: 'assets/icon/marker.png'
+        icon: icon
       });
 
       google_maps.event.addListener(marker, 'click', () => {

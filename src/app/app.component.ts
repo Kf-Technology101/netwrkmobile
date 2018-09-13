@@ -6,9 +6,7 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 
 import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
-//import { NetworkPage } from '../pages/network/network';
 import { LogInPage } from '../pages/log-in/log-in';
-//import { NetworkFindPage } from '../pages/network-find/network-find';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 import { ChatPage } from '../pages/chat/chat';
 import { HoldScreenPage } from '../pages/hold-screen/hold-screen';
@@ -87,14 +85,10 @@ export class MyApp {
     }
 
     public init = () => {
-        this.gps.getMyZipCode().then(res => {
-            if (res && res.zip_code)
-                this.storage.set('chat_zip_code', res.zip_code);
-            this.network.networkStatus(); // watch for network status
-            this.getLogin();
-            this.getSimInfo();
-            this.statusBar.styleDefault();
-        });
+        this.network.networkStatus();
+        this.getLogin();
+        this.getSimInfo();
+        this.statusBar.styleDefault();
     };
 
     private goToPage(root:any):void {
@@ -102,17 +96,6 @@ export class MyApp {
             this.app.getRootNav().setRoot(ChatPage);
         }, err => this.app.getRootNav().setRoot(ChatPage));
         this.toolsPrvd.hideSplashScreen();
-
-        //this.toolsPrvd.hideSplashScreen();
-        //if (root == NetworkFindPage) {
-        //    this.toolsPrvd.hideSplashScreen();
-        //    this.app.getRootNav().setRoot(ChatPage, {
-        //        action: 'undercover'
-        //    });
-        //} else {
-        //    this.toolsPrvd.hideSplashScreen();
-        //    this.app.getRootNav().setRoot(root);
-        //}
     }
 
     private getLogin() {
@@ -125,31 +108,23 @@ export class MyApp {
                 case 'facebook':
                     this.authPrvd.getFbLoginStatus().then(data => {
                         if (data.status && data.status == 'connected') {
-                            root = this.undercoverPrvd.getCharacterPerson(
-                                HoldScreenPage, ChatPage)
+                            root = this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage);
+                            this.goToPage(root);
                         }
-                        this.goToPage(root);
                     });
                     break;
                 case 'email':
                     let fbConnected = this.authPrvd.getFbConnected();
                     if (fbConnected) {
-                        root = this.undercoverPrvd.getCharacterPerson(
-                            HoldScreenPage, ChatPage)
+                        root = this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage);
+                        this.goToPage(root);
                     }
-                    this.goToPage(root);
                     break;
                 default:
-                    this.gps.getMyZipCode().then(res => {
-                        this.app.getRootNav().setRoot(LogInPage);
-                    }, err => this.app.getRootNav().setRoot(LogInPage));
                     this.toolsPrvd.hideSplashScreen();
                     break;
             }
         } else {
-            this.gps.getMyZipCode().then(res => {
-                this.app.getRootNav().setRoot(LogInPage);
-            }, err => this.app.getRootNav().setRoot(LogInPage));
             this.toolsPrvd.hideSplashScreen();
         }
     }

@@ -25,7 +25,7 @@
 
     <div class="chat-container visible">
         <div class="visible item-line" *ngFor="let message of netwrkLineList; let i = index">
-            <ng-container *ngIf="!message.has_expired && user.id != message.user_id">
+            <ng-container *ngIf="!message.has_expired">
                 <img *ngIf="message.user" [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
                 <img *ngIf="!message.user" [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
 
@@ -73,8 +73,11 @@
                     </ng-container>
                 </p>
 
-                <button ion-button class="feedback-button" color="bk" item-end (click)="followNearByNetwork(message)" [ngClass]="{ 'isFollowed' : message.is_followed }">
+                <button ion-button class="feedback-button" color="bk" item-end (click)="followNearByNetwork(message)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id != message.user_id">
                     <ion-icon ios="ios-add" md="md-add"></ion-icon>
+                </button>
+                <button ion-button class="feedback-button" color="bk" item-end (click)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id">
+                    <ion-icon ios="ios-settings" md="md-settings"></ion-icon>
                 </button>
             </ng-container>
         </div>

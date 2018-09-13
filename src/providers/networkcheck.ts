@@ -14,21 +14,17 @@ export class NetworkCheck {
     console.log('networkStatus() in');
     let onDisconnect = () => {
       this.network.onDisconnect().subscribe(() => {
-        console.warn('NO INTERNET CONNECTION');
+          alert('inside Disconnect')
         this.tools.showLoader('Internet is needed to connect to the world around you');
-        // this.tools.showSplashScreen();
-        // onDisconnect.unsubscribe();
       });
     }
 
    onDisconnect();
 
    this.network.onConnect().subscribe(() => {
-     console.log('NETWORK CONNECTED');
       setTimeout(() => {
         if (this.network.type !== 'none') {
           this.tools.hideLoader();
-          // this.tools.hideSplashScreen();
           onDisconnect();
         }
       }, 3000);

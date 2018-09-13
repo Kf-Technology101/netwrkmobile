@@ -6,6 +6,7 @@ import { Chat } from '../../providers/chat';
 
 import { NetworkFindPage } from '../../pages/network-find/network-find';
 import { NetworkNoPage } from '../../pages/network-no/network-no';
+import { UndercoverCharacterPage } from '../../pages/undercover-character/undercover-character';
 import { NetworkPage } from '../../pages/network/network';
 import { ChatPage } from '../../pages/chat/chat';
 
@@ -82,6 +83,23 @@ export class NetwrklistPage {
             this.netwrkLineList=res.messages;
         }, err => {
             this.toolsPrvd.hideLoader();
+        });
+    }
+
+    private goToProfile(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
+        this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
+            this.chatPrvd.isLobbyChat = false;
+            if(this.user.id==profileId){
+                if(userRoleName){
+                    this.toolsPrvd.pushPage(ProfilePage, res);
+                }else{
+                    this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
+                }
+            }else{
+                this.toolsPrvd.pushPage(ProfilePage, res);
+            }
+        }, err => {
+            console.error('goToProfile err:', err);
         });
     }
 

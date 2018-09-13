@@ -5,7 +5,7 @@
 
     <!--Loader on swap-->
     <ion-refresher (ionRefresh)="refreshChat($event)">
-    <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
+        <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
     </ion-refresher>
 
 
@@ -35,7 +35,7 @@
                     </span>
 
                     <span class="location">
-                        <ng-container >
+                        <ng-container>
                             {{ message.place_name }}
                         </ng-container>
                     </span>
@@ -54,23 +54,6 @@
                     </ng-container>
 
                     <span class="message-date">{{ message.dateStr }}</span>
-
-                    <span *ngIf="message.expire_at" class="visible-for">
-                        Expires in {{ message.expire_at }}
-                    </span>
-
-                    <ng-container *ngIf="!message.locked_by_user || (message.locked_by_user && user.id == message.user_id)">
-                    <span *ngIf="message.text_with_links" class="text" [ngClass]="{ 'emoji' : message.is_emoji }" [innerHTML]="message.text_with_links"
-                    (click)="toolsPrvd.handleLinkClick($event)" (tap)="viewMyLocation(message)"></span>
-                    </ng-container>
-
-                    <ng-container *ngIf="message.locked_by_user && user.id != message.user_id">
-                        <span *ngIf="message.text_with_links" class="text"
-                        [ngClass]="{ 'emoji' : message.is_emoji }"
-                        (click)="toolsPrvd.handleLinkClick($event)">
-                        <i>[Message locked]</i>
-                        </span>
-                    </ng-container>
                 </p>
 
                 <button ion-button class="feedback-button" color="bk" item-end (click)="followNearByNetwork(message)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id != message.user_id">

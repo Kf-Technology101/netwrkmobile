@@ -50,8 +50,7 @@ export class UndercoverProvider {
 
   public getCharacterPerson(HSPage: any, ChatPage?: any): any {
     let authData = this.auth.getAuthData();
-    if (authData && authData.role_name
-      && authData.role_description && authData.role_image_url) {
+    if (authData && authData.role_name && authData.role_description && authData.role_image_url) {
         return ChatPage;
     } else {
       return HSPage;

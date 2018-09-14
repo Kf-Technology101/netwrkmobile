@@ -1003,12 +1003,60 @@ page-network-no {
           max-height: 460px;
           top: 0px;
         }
-        .feedback-button {
+        .feedback-setting-button {
           width: 37px;
           height: 37px;
           border-radius: 13px;
           position: absolute;
-          right: 12px;
+          right: 10px;
+          padding: 0 5px;
+          top: -2px;
+          z-index: 3;
+          background: color($colors, bk);
+          ion-icon {
+             color:#fff;
+             font-size: 22px;
+          }
+        }
+
+        .feedback-follow {
+          width: 37px;
+          height: 37px;
+          border-radius: 13px;
+          position: absolute;
+          right: 10px;
+          padding: 0 5px;
+          top: -2px;
+          z-index: 3;
+          background: #fff;
+          ion-icon {
+             color:color($colors, bk);
+             font-size: 22px;
+          }
+        }
+
+        .feedback-unfollow {
+          width: 37px;
+          height: 37px;
+          border-radius: 13px;
+          position: absolute;
+          right: 10px;
+          padding: 0 5px;
+          top: -2px;
+          z-index: 3;
+          background: color($colors, bk);
+          ion-icon {
+             color:#fff;
+             font-size: 22px;
+          }
+        }
+
+          .feedback-button {
+          width: 37px;
+          height: 37px;
+          border-radius: 13px;
+          position: absolute;
+          right: 10px;
           padding: 0 5px;
           top: 0;
           z-index: 3;
@@ -1052,6 +1100,7 @@ page-network-no {
             }
           }
         }
+
         .recast-button {
           width: 43px;
           border-radius: 13px;

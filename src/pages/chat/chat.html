@@ -462,16 +462,20 @@
         </p>
 
         <ng-container>
-            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message.id, user.id, $event)"
-            [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced,
-            'active' : message.like_by_user}"
-            *ngIf="!message.locked_by_user || user.id == message.user_id"
-            (press)="openFeedbackModal(message, i)">
-            <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
+            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message.id, user.id, $event)" [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="chatPrvd.areaLobby || chatPrvd.isLobbyChat || chatPrvd.getState() == 'area'"  (press)="openFeedbackModal(message, i)">
+                <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
+            </button>
+
+            <button ion-button class="" color="bk" item-end (click)="followNearByNetwork(message)" [ngClass]="{ 'feedback-follow' : message.is_followed, 'feedback-unfollow' : !message.is_followed }"  *ngIf="user.id != message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'">
+                <ion-icon ios="ios-add" md="md-add"></ion-icon>
+            </button>
+
+            <button ion-button class="feedback-setting-button" color="bk" item-end (click)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'">
+                <ion-icon ios="ios-settings" md="md-settings"></ion-icon>
             </button>
 
             <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)">
-            Share
+                Share
             </button>
         </ng-container>
 

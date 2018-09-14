@@ -2058,6 +2058,17 @@ export class ChatPage implements DoCheck {
     this.user = this.authPrvd.getAuthData();
   }
 
+  public followNearByNetwork(message) {
+        this.toolsPrvd.showLoader();
+        this.chatPrvd.followUserToLine(message.id).subscribe(res => {
+            message.is_followed=message.is_followed ? true : false;
+            this.toolsPrvd.hideLoader();
+        }, err => {
+            this.toolsPrvd.hideLoader();
+            //this.toolsPrvd.showToast('Something went wrong');
+        });
+  }
+
   ionViewDidEnter() {
     this.onEnter();
     this.toolsPrvd.hideLoader();

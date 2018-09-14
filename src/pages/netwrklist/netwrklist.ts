@@ -108,7 +108,7 @@ export class NetwrklistPage {
 
         this.toolsPrvd.showLoader();
         this.chatPrvd.followUserToLine(message.id).subscribe(res => {
-            message.is_followed=true;
+            message.is_followed=message.is_followed ? true : false;
             this.toolsPrvd.hideLoader();
             this.toolsPrvd.showToast('Followed Line successfully');
         }, err => {

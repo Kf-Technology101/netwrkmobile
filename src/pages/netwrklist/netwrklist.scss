@@ -8,6 +8,23 @@ page-netwrklist {
     text-align: center;
     width: 100%;
   }
+
+  .feedback-button {
+    width: 37px !important;
+    height: 37px !important;
+    border-radius: 13px;
+    position: absolute;
+    right: 12px;
+    padding: 8px 5px !important;
+    font-size: 22px !important;
+    top: 0;
+    z-index: 3;
+    background: color($colors, bk);
+    ion-icon {
+      color:#fff;
+      font-size: 22px;
+    }
+  }
   .location {
     font-size: 14px;
     color:#5b87aa;

@@ -33,33 +33,7 @@
       Clear
     </button>
 
-    <!--<button ion-button *ngIf="chatPrvd.postBtn.state"-->
-            <!--class="side lock-btn top-icon" (click)="toggleTopSlider('lock');-->
-            <!--textInput.setFocus();" [ngClass]="{ 'red' : !updateIconBgRelativeToCamera() }">-->
-      <!--<ion-icon ios="ios-lock" md="ios-lock"></ion-icon>-->
-    <!--</button>-->
-
-    <!--<div *ngIf="postLockData.password && postLockData.hint && chatPrvd.postBtn.state && isUndercover" class="lock-status"></div>-->
-
-    <!--<button ion-button *ngIf="chatPrvd.postBtn.state" class="side left timer-btn top-icon" (click)="toggleTopSlider('timer');-->
-            <!--textInput.setFocus();">-->
-      <!--<ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>-->
-    <!--</button>-->
-
-    <!--<ion-badge>-->
-      <!--{{ postTimerObj.time }}-->
-    <!--</ion-badge>-->
   </ion-toolbar>
-
-  <!--<ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state"-->
-    <!--class="post-timer">-->
-    <!--<button (tap)="setPostTimer(0)">Timeless</button>-->
-    <!--<button (tap)="setPostTimer(1)">1 hour</button>-->
-    <!--<button (tap)="setPostTimer(2)">1 day</button>-->
-    <!--<button (tap)="setPostTimer(3)">1 week</button>-->
-    <!--<button (tap)="setPostTimer(4)">1 month</button>-->
-    <!--<button (tap)="setPostTimer(5)">1 year</button>-->
-  <!--</ion-toolbar>-->
 
   <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state" class="post-lock">
     <form (submit)="unlockPost($event, unlockForm)" #unlockForm="ngForm">
@@ -263,7 +237,7 @@
     </div>
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      <div class="message-container {{message.undercover}}" *ngIf="!message.has_expired && !message.social && !chatPrvd.areaLobby && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.user_id==user.id || (chatPrvd.getState() == 'area' || !isUndercover) && message.messageable_type=='Network' && !message.undercover && !message.social && !message.has_expired && !chatPrvd.areaLobby" [ngClass]="{'isLobby': chatPrvd.getState() == 'area' }">
+      <div class="message-container {{message.undercover}}" *ngIf="!message.social && !chatPrvd.areaLobby && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.user_id==user.id || (chatPrvd.getState() == 'area' || !isUndercover) && message.messageable_type=='Network' && !message.undercover && !message.social && !chatPrvd.areaLobby" [ngClass]="{'isLobby': chatPrvd.getState() == 'area' }">
         <img *ngIf="message.user"
         (click)="openConversationLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar conversation"
@@ -323,19 +297,6 @@
 
            <img src="assets/icon/slider_arrow.svg" class="conversation_right_ico" *ngIf="chatPrvd.getState() != 'undercover'"  (tap)="openFeedbackModal(message, i)"  (press)="openFeedbackModal(message, i)">
         </p>
-
-        <!--<ng-container *ngIf="chatPrvd.getState() == 'area' && !message.undercover">-->
-            <!--<button class="feedback-button" (tap)="feedbackService.toggleLikes(message.id, user.id, $event)"-->
-            <!--[ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}"-->
-            <!--*ngIf="!message.locked_by_user || user.id == message.user_id"-->
-            <!--(press)="openFeedbackModal(message, i)">-->
-            <!--<div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>-->
-            <!--</button>-->
-
-            <!--<button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)">-->
-                <!--Share-->
-            <!--</button>-->
-        <!--</ng-container>-->
 
         <ng-container *ngIf="user.id != message.user_id && message.locked_by_user">
           <button class="feedback-button lock" (tap)="showUnlockPostForm(message.id, message.hint)">
@@ -470,9 +431,13 @@
                 <ion-icon ios="ios-add" md="md-add"></ion-icon>
             </button>
 
-            <button ion-button class="feedback-setting-button" color="bk" item-end (click)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'">
+            <button ion-button class="feedback-setting-button" color="bk" item-end (click)="message.clicked=!message.clicked" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'">
                 <ion-icon ios="ios-settings" md="md-settings"></ion-icon>
             </button>
+
+            <ion-toolbar [hidden]="!message.clicked" class="post-setting">
+                <button (tap)="goToProfile(message.user_id, message.public, message.user.role_name);message.clicked=!message.clicked">Profile</button>
+            </ion-toolbar>
 
             <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)">
                 Share
@@ -529,6 +494,7 @@
         <ion-infinite-scroll-content></ion-infinite-scroll-content>
   </ion-infinite-scroll>
 </ion-content>
+
 
 
         <!--Footer-->

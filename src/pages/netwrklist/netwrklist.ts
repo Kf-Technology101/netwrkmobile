@@ -73,13 +73,11 @@ export class NetwrklistPage {
     elRef: ElementRef
   ) {
       this.user = this.authPrvd.getAuthData();
+      this.getAndUpdateUndercoverMessages()
   }
 
-  ionViewDidEnter() {
-     this.getAndUpdateUndercoverMessages()
-  }
     private getAndUpdateUndercoverMessages() {
-        this.chatPrvd.getNearByMessages(this.isUndercover, this.netwrkLineList, null, true).subscribe(res => {
+        this.chatPrvd.getNearByMessages(this.netwrkLineList, null, false).subscribe(res => {
             this.netwrkLineList=res.messages;
         }, err => {
             this.toolsPrvd.hideLoader();
@@ -123,7 +121,7 @@ export class NetwrklistPage {
     private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
         return new Promise((resolve, reject) => {
             if (!this.chatPrvd.isLobbyChat || forced) {
-                this.chatPrvd.getNearByMessages(this.isUndercover, this.netwrkLineList, null, true)
+                this.chatPrvd.getNearByMessages(this.netwrkLineList, null, true)
                     .subscribe(res => {
                         res = this.chatPrvd.organizeMessages(res.messages);
                         for (let i in res) this.netwrkLineList.push(res[i]);

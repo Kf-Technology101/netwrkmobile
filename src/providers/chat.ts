@@ -478,14 +478,12 @@ export class Chat {
 
   public getMessages(
     undercover: boolean,
-    messagesArray?: Array<any>,
+    messageArray?: Array<any>,
     params?: any,
     doRefresh?: any
   ):any {
-    // console.log('===================================');
-    // console.log('[getMessages] arguments:', arguments);
-    let offset: number = messagesArray && messagesArray.length
-      ? messagesArray.length : 0;
+
+    let offset: number = messageArray && messageArray.length ? messageArray.length : 0;
 
     let data: any = {
       post_code: this.localStorage.get('chat_zip_code'),
@@ -498,9 +496,9 @@ export class Chat {
     };
 
     let messagesIds: Array<any> = [];
-    for (let i in messagesArray) {
-      if (messagesArray[i])
-        messagesIds.push(messagesArray[i].id);
+    for (let i in messageArray) {
+      if (messageArray[i])
+        messagesIds.push(messageArray[i].id);
     }
 
     // console.log('[getMessages] data:', data);
@@ -527,19 +525,17 @@ export class Chat {
   }
 
     public getNearByMessages(
-    undercover: boolean,
-    messagesArray?: Array<any>,
+    messagesNearArray?: Array<any>,
     params?: any,
     doRefresh?: any
   ):any {
     // console.log('===================================');
     // console.log('[getMessages] arguments:', arguments);
-    let offset: number = messagesArray && messagesArray.length
-      ? messagesArray.length : 0;
+    let offset: number = messagesNearArray && messagesNearArray.length ? messagesNearArray.length : 0;
 
     let data: any = {
       post_code: this.localStorage.get('chat_zip_code'),
-      undercover: undercover ? undercover : false,
+      undercover: false,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       offset: offset,
@@ -547,25 +543,22 @@ export class Chat {
     };
 
     let messagesIds: Array<any> = [];
-    for (let i in messagesArray) {
-      if (messagesArray[i])
-        messagesIds.push(messagesArray[i].id);
+    for (let i in messagesNearArray) {
+      if (messagesNearArray[i])
+        messagesIds.push(messagesNearArray[i].id);
     }
 
     // console.log('[getMessages] data:', data);
     // console.log('[getMessages] messagesIds:', messagesIds);
 
     // console.log('messagesIds:', messagesIds);
-    if (data.undercover && !doRefresh) {
+    if (!doRefresh) {
       data.offset = 0;
       data.limit = offset == 0 ? 20 : offset;
       data.current_ids = messagesIds;
     }
 
     if (params) Object.assign(data, params);
-
-    // console.log('[getMessages] params:', params);
-    // console.log('[getMessages] data (if undecover & can\'t refresh):', data);
 
     let seq = this.api.get('messages/nearby', data).share();
     let seqMap = seq.map(res => res.json());

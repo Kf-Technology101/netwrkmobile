@@ -252,10 +252,10 @@ export class ChatPage implements DoCheck {
   ) {
       this.user = this.authPrvd.getAuthData();
       this.chatPrvd.isLandingPage = true;
+      this.refreshChat(false, true);
+      this.initLpMap();
 
-    console.log('%c [CHAT] CONSTRUCTOR ', 'background: #1287a8;color: #ffffff');
-    this.initLpMap();
-    //this.slideAvatarPrvd.setSliderPosition('left');
+      //this.chatPrvd.getMessages(true, this.chatPrvd.postMessages,null, false);
   }
 
   public shareMessageToFacebook(message):void {
@@ -1255,26 +1255,55 @@ export class ChatPage implements DoCheck {
   private toggleTopSlider(container:string):void {
     if (this.plt.is('ios'))
       this.keyboard.show();
-    // if ((container == 'lock' || container == 'timer')
-    //     && this.txtIn.value.trim() == '') {
-    //   this.toolsPrvd.showToast('What do you want to hang?');
-    //   return;
-    // }
-    console.log('ACTIVE TOP SLIDER:', this.activeTopForm);
+
     let cont = this.getTopSlider(container);
     if (this.activeTopForm)
       this.hideTopSlider(this.activeTopForm);
+
     if (cont.isVisible()) {
       cont.setState('slideUp');
       this.activeTopForm = null;
       setTimeout(() => {
         cont.hide();
-      }, chatAnim/2);
+      }, 400);
     } else {
       this.activeTopForm = container;
       cont.show();
       cont.setState('slideDown');
-      // if (container == 'lock' || container == 'timer') {
+      setTimeout(() => {
+        this.setMainBtnStateRelativeToEvents();
+      }, 400);
+      // }
+    }
+  }
+
+    private getMiddleSlider(container:string,id:number):any {
+        const a = {
+            timer: this.postTimer,
+            lock: this.postLock,
+            unlock: this.postUnlock
+        }
+        return a[container];
+    }
+
+    private toggleBarSlider(container:string,id:number):void {
+    if (this.plt.is('ios'))
+      this.keyboard.show();
+
+    let cont = this.getMiddleSlider(container,id);
+    if (this.activeTopForm)
+      this.hideTopSlider(this.activeTopForm);
+
+    if (cont.isVisible()) {
+      cont.setState('slideUp');
+      this.activeTopForm = null;
+      setTimeout(() => {
+        cont.hide();
+      }, 400);
+    } else {
+      this.activeTopForm = container;
+      cont.show();
+      cont.setState('slideDown');
       setTimeout(() => {
         this.setMainBtnStateRelativeToEvents();
       }, 400);
@@ -1978,24 +2007,6 @@ export class ChatPage implements DoCheck {
 
     this.toolsPrvd.showLoader();
 
-    if (this.chatPrvd.getState() == 'area') {
-      this.zone.run(() => {
-        this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code'))
-        .subscribe(res => {
-          if (res.message == 'Network not found') {
-            this.toolsPrvd.pushPage(NetworkNoPage, {
-              action: 'create'
-            });
-            this.toolsPrvd.hideLoader();
-          } else {
-            this.toolsPrvd.hideLoader();
-          }
-        }, err => {
-          console.error(err);
-          this.toolsPrvd.hideLoader();
-        });
-      });
-    }
 
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;

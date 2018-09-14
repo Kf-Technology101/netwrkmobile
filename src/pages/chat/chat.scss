@@ -751,6 +751,32 @@ page-network-no {
   .areaLobby {
     width:95%;
   }
+
+  .post-setting {
+    border: none;
+    background: #5b87aa !important;
+    width: 130px;
+    float: right;
+    top: 40px;
+    position: absolute;
+    right: 10px;
+    border-radius: 8px;
+    z-index: 88888;
+    .toolbar-background {
+      border: none;
+      background: #5b87aa !important;
+    }
+    button {
+      display: block;
+      background-color: transparent;
+      width: 100%;
+      color: rgba(255,255,255,1) !important;
+      font-size: 16px;
+      margin: 0;
+      //            border-bottom: 1px solid #5da5d8;
+    }
+  }
+
   .content {
     position: absolute;
     top: 0;

@@ -105,10 +105,9 @@ export class NetwrklistPage {
 
 
     public followNearByNetwork(message) {
-
         this.toolsPrvd.showLoader();
+        message.is_followed=!message.is_followed;
         this.chatPrvd.followUserToLine(message.id).subscribe(res => {
-            message.is_followed=message.is_followed ? true : false;
             this.toolsPrvd.hideLoader();
             this.toolsPrvd.showToast('Followed Line successfully');
         }, err => {

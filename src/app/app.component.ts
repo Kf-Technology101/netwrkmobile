@@ -107,16 +107,16 @@ export class MyApp {
                     this.authPrvd.getFbLoginStatus().then(data => {
                         if (data.status && data.status == 'connected') {
                             root = this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage);
-                            this.goToPage(root);
                         }
+                        this.goToPage(root);
                     });
                     break;
                 case 'email':
                     let fbConnected = this.authPrvd.getFbConnected();
                     if (fbConnected) {
                         root = this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage);
-                        this.goToPage(root);
                     }
+                    this.goToPage(root);
                     break;
                 default:
                     this.toolsPrvd.hideSplashScreen();

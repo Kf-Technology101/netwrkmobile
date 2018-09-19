@@ -16,6 +16,7 @@ import { UndercoverProvider } from '../../providers/undercover';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Tools } from '../../providers/tools';
 import { Auth } from '../../providers/auth';
+import { Places } from '../../providers/places';
 
 
 import { ProfilePage } from '../../pages/profile/profile';
@@ -66,6 +67,7 @@ export class NetwrklistPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public toolsPrvd: Tools,
+    public places: Places,
     public zone: NgZone,
     public gpsPrvd: Gps,
     public slideAvatarPrvd: SlideAvatar,
@@ -73,6 +75,7 @@ export class NetwrklistPage {
     elRef: ElementRef
   ) {
       this.user = this.authPrvd.getAuthData();
+      this.places.displayNearRoutes=false;
       this.getAndUpdateUndercoverMessages()
   }
 

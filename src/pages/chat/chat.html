@@ -228,12 +228,25 @@
 
     <p *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)" class="no-data-message abs">There are no posts yet</p>
 
-    <div class="message place" #directions *ngIf="!chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area' && nearestPlace && chatPrvd.getState() == 'undercover' && dirVisible" (swipe)="directionSwipe($event, directions)">
-      <p class="message-container" (tap)="viewLocation()">
-        <span class="username">Directions to the nearest {{ nearestPlace.type }}</span>
-        <span class="text">{{ nearestPlace.name }} - {{ nearestPlace.address_string }}</span>
-      </p>
-      <button class="feedback-button" (tap)="viewLocation({routes: true})"></button>
+    <div *ngIf="nearestPlace">
+        <div class="message place" #directions *ngIf="!chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area' && (nearestPlace.type=='network' || nearestPlace.type=='cafe' || nearestPlace.type=='bar' || nearestPlace.type=='park') && chatPrvd.getState() == 'undercover' && dirVisible" (swipe)="directionSwipe($event, directions)">
+          <p class="message-container" (tap)="viewLocation({routes: true})">
+            <span class="username" *ngIf="nearestPlace.type!='network'">Directions to the nearest {{ nearestPlace.type }}</span>
+            <span class="username" *ngIf="nearestPlace.type=='network'">Directions to the nearest popular {{ nearestPlace.type }}</span>
+            <span class="text">{{ nearestPlace.name }} - {{ nearestPlace.address_string }}</span>
+          </p>
+          <button class="feedback-button" (tap)="viewLocation({routes: true})"></button>
+        </div>
+
+       <div class="message place" #directions *ngIf="!chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area' && nearestPlace.type=='no-network' && chatPrvd.getState() == 'undercover' && dirVisible">
+          <p class="message-container" (tap)="openLinePage()">
+            <span class="username">{{ nearestPlace.name }}</span>
+            <span class="text">{{ nearestPlace.address_string }}</span>
+          </p>
+            <button class="feedback-setting-button" (tap)="openLinePage()">
+                <ion-icon ios="ios-add" md="md-add"></ion-icon>
+            </button>
+        </div>
     </div>
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
@@ -431,13 +444,9 @@
                 <ion-icon ios="ios-add" md="md-add"></ion-icon>
             </button>
 
-            <button ion-button class="feedback-setting-button" color="bk" item-end (click)="message.clicked=!message.clicked" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'">
+            <button ion-button class="feedback-setting-button" color="bk" item-end (tap)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'">
                 <ion-icon ios="ios-settings" md="md-settings"></ion-icon>
             </button>
-
-            <ion-toolbar [hidden]="!message.clicked" class="post-setting">
-                <button (tap)="goToProfile(message.user_id, message.public, message.user.role_name);message.clicked=!message.clicked">Profile</button>
-            </ion-toolbar>
 
             <button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)">
                 Share

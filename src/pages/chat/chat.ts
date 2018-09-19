@@ -112,6 +112,17 @@ export class ChatPage implements DoCheck {
     public google;
     public map: any;
 
+    public nearestNetwork:any = {
+        dist: 0,
+        index: 0,
+        location: {
+            lat: null,
+            lng: null
+        },
+        address_string: null,
+        type: null,
+        name: null
+    };
 
   //public map: any;
 
@@ -388,12 +399,8 @@ export class ChatPage implements DoCheck {
             this.map = new google_maps.Map(this.mapElement.nativeElement, {
                 zoom: zoomScale,
                 center: loc,
-                scrollwheel: false,
-                panControl: false,
-                mapTypeControl: false,
-                zoomControl: false,
-                streetViewControl: false,
-                scaleControl: false
+                disableDefaultUI: true,
+                fullscreenControl: false
             });
 
 
@@ -1748,10 +1755,6 @@ export class ChatPage implements DoCheck {
   }
 
   private directionSwipe(ev:any):void {
-    // swipe directions:
-    // left - 2
-    // right - 4
-    // console.log('swipe event:', ev);
     this.directionCont.nativeElement.classList.remove('swipe-left');
     this.directionCont.nativeElement.classList.remove('swipe-right');
     if (ev.offsetDirection == 2)
@@ -1803,19 +1806,71 @@ export class ChatPage implements DoCheck {
       let providedStateFromGps = this.navParams.get('action_from_gps');
       let areaChanged:boolean = (this.chatPrvd.localStorage.get('areaChange_triggered') === true);
       let firstTimeUC:boolean = (this.chatPrvd.localStorage.get('first_time_undercover') === true);
-      if (areaChanged || firstTimeUC) {
+      //if (areaChanged || firstTimeUC) {
         let placesToSearch:Array<string> = ['bar', 'cafe', 'park'];
+
         if (this.nearestPlace) this.nearestPlace = undefined;
+
         this.places.initMapsService().then(res => {
           if (res == 'ok') {
             this.places.getNearestInstitution(
               document.getElementById('places'),
               placesToSearch
             ).then(plcs => {
-              this.nearestPlace = plcs;
+                if(this.places.displayNearRoutes && plcs){
+                    this.nearestPlace = plcs;
+                }else{
+                    this.chatPrvd.getNearByMessages(null, false).subscribe(res => {
+                        if(res.messages.length){
+
+                            let lat:number= parseFloat(res.messages[0].lat);
+                            let lng:number= parseFloat(res.messages[0].lng);
+
+                            let placeLoc:any = {
+                                lat: lat,
+                                lng :lng
+                            };
+
+                            this.nearestNetwork = {
+                                dist: 0,
+                                index: 0,
+                                location:placeLoc,
+                                address_string: res.messages[0].place_name,
+                                type: 'network',
+                                name: res.messages[0].text
+                            };
+                            this.nearestPlace = this.nearestNetwork;
+                        }else{
+                            this.nearestNetwork = {
+                                dist: 0,
+                                index: 0,
+                                location: {
+                                    lat:null,
+                                    lng: null
+                                },
+                                address_string: this.gpsPrvd.place_name,
+                                type: 'no-network',
+                                name: 'Create the first network at a nearby place!'
+                            };
+                            this.nearestPlace = this.nearestNetwork;
+                        }
+                    }, err => {
+                        this.nearestNetwork = {
+                            dist: 0,
+                            index: 0,
+                            location: {
+                                lat:null,
+                                lng: null
+                            },
+                            address_string: this.gpsPrvd.place_name,
+                            type: 'no-network',
+                            name: 'Create the first network at a nearby place!'
+                        };
+                        this.nearestPlace = this.nearestNetwork;
+                    });
+                }
               this.dirVisible = true;
               reject();
-              // console.log('nearest place:', plcs);
               resolve();
             }, err => {
               console.error('getNearestInstitution:', err);
@@ -1826,20 +1881,20 @@ export class ChatPage implements DoCheck {
           console.error('initMapsService:', err)
           resolve();
         });
-      }
-      this.chatPrvd.detectNetwork().then(res => {
-        if (providedStateFromGps) {
-          this.chatPrvd.networkAvailable = (res.network && areaChanged) ? true : false;
-          this.chatPrvd.localStorage.rm('areaChange_triggered');
-        }
-        if (providedStateFromGps == 'undercover') {
-          this.isUndercover = true;
-          this.chatPrvd.setState('undercover');
-        } else if (providedStateFromGps == 'area') {
-           this.goArea();
-            reject();
-        }
-      });
+      //}
+      //this.chatPrvd.detectNetwork().then(res => {
+      //  if (providedStateFromGps) {
+      //    this.chatPrvd.networkAvailable = (res.network && areaChanged) ? true : false;
+      //    this.chatPrvd.localStorage.rm('areaChange_triggered');
+      //  }
+      //  if (providedStateFromGps == 'undercover') {
+      //    this.isUndercover = true;
+      //    this.chatPrvd.setState('undercover');
+      //  } else if (providedStateFromGps == 'area') {
+      //     this.goArea();
+      //      reject();
+      //  }
+      //});
     });
   }
 

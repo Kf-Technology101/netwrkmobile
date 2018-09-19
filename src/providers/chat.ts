@@ -456,7 +456,6 @@ export class Chat {
           resolve(res);
         }, err => reject(err));
       }
-
     })
   }
 

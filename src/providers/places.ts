@@ -25,6 +25,7 @@ export class Places {
   };
 
   public displayRoutes:boolean = false;
+  public displayNearRoutes:boolean = false;
 
   constructor(
     private gapi: GoogleMapsService
@@ -93,7 +94,6 @@ export class Places {
     return new Promise((resolve, reject) => {
       for (let ti = 0; ti < typesArray.length; ti++) {
         this.places = new this.google_maps.places.PlacesService(elemNode);
-        console.log(' ');
         console.log('[PLACES] Start looking for ' + typesArray[ti] + '...');
         this.places.nearbySearch({
           location: this.currentLoc,
@@ -108,30 +108,32 @@ export class Places {
                 lat: results[i].geometry.location.lat(),
                 lng: results[i].geometry.location.lng()
               };
-              plsRes[i].distance_to_user =
-              this.getDistanceFromLatLng(this.currentLoc, placeLoc);
+              plsRes[i].distance_to_user = this.getDistanceFromLatLng(this.currentLoc, placeLoc);
               if (this.nearest.dist == 0 || plsRes[i].distance_to_user < this.nearest.dist) {
                 this.nearest.dist = plsRes[i].distance_to_user;
-                this.nearest.index = i;
+                this.nearest.index = i+1;
                 this.nearest.location  = placeLoc;
                 this.nearest.type = typesArray[ti];
                 this.nearest.name = plsRes[i].name;
                 this.nearest.address_string = plsRes[i].vicinity;
               }
             }
-            console.log('places near:', this.nearest);
+
+            console.warn('[PLACES] Found nearby place with type ' + typesArray[ti]);
+
             if (this.nearest) {
               console.warn('[PLACES] Found nearby place with type ' + typesArray[ti]);
               if (this.displayRoutes)
                 this.calculateAndDisplayRoute(this.currentLoc, this.nearest.location);
+
               resolve(this.nearest);
+            } else if (ti == typesArray.length - 1 && !this.nearest) {
+                resolve(this.nearest);
             }
-            else if (ti == typesArray.length - 1 &&
-                    !this.nearest) {
-              console.warn('[PLACES] Couldn\'t find places with type ' + typesArray[ti] + ' nearby');
-              reject('no places found');
-            }
-          } else console.warn('[PLACES] [', status, ']');
+          } else {
+              console.warn('[PLACES] [', status, ']');
+              resolve(this.nearest);
+          }
         });
       }
     });

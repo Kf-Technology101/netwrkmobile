@@ -527,8 +527,7 @@ export class LinePage {
 
             let imageUrls = emoji ? [] : images;
 
-            message.image_urls = messageParams.social_urls
-                ? messageParams.social_urls : imageUrls;
+            message.image_urls = messageParams.social_urls ? messageParams.social_urls : imageUrls;
             message.isTemporary = false;
             message.temporaryFor = 0;
 

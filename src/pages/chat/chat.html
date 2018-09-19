@@ -1,8 +1,6 @@
 
-<!--<div *ngIf="chatPrvd.isLanding.getState()" id="mapElement" #mapElement></div>-->
 <div id="mapElement" #mapElement ></div>
 
-<!--chat-header !isUndercover-->
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat && !chatPrvd.areaLobby }">
   <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover' && !chatPrvd.areaLobby">
   <!--<ion-toolbar>-->
@@ -85,32 +83,6 @@
            Clear
         </button>
     </ion-toolbar>
-
-    <!--<ion-toolbar>-->
-      <!--<ion-slides slidesPerView="4" class="netwrk-slider">-->
-        <!--<ion-slide *ngFor="let user of chatUsers" class="netwrk-slide">-->
-          <!--<div class="avatar" (tap)="goToProfile(user.id,user.profileTypePublic, user.role_name)">-->
-            <!--<img [src]="chatPrvd.users[user.id].avatar_url"-->
-            <!--(error)="chatPrvd.updateAvatarUrl($event)">-->
-          <!--</div>-->
-          <!--<span *ngIf="user.name" class="username">-->
-            <!--{{ user.name }}-->
-          <!--</span>-->
-          <!--<span *ngIf="!user.name" class="username">-->
-            <!--{{ user.email }}-->
-          <!--</span>-->
-        <!--</ion-slide>-->
-        <!--<ion-slide *ngIf="!chatPrvd.users[user.id]" class="netwrk-slide"-->
-        <!--<ion-slide class="netwrk-slide" (click)="joinNetwork()">-->
-          <!--<div class="avatar add-to-netwrk">-->
-             <!--<img src="assets/images/netwrk_plus.svg">-->
-          <!--</div>-->
-          <!--<span class="username">Connect</span>-->
-       <!--</ion-slide>-->
-      <!--</ion-slides>-->
-    <!--</ion-toolbar>-->
-
-
   </div>
 
     <div class="content areaLobby" *ngIf="chatPrvd.areaLobby">

@@ -500,10 +500,6 @@ export class Chat {
         messagesIds.push(messageArray[i].id);
     }
 
-    // console.log('[getMessages] data:', data);
-    // console.log('[getMessages] messagesIds:', messagesIds);
-
-    // console.log('messagesIds:', messagesIds);
     if (data.undercover && !doRefresh) {
       data.offset = 0;
       data.limit = offset == 0 ? 20 : offset;
@@ -553,8 +549,7 @@ export class Chat {
     // console.log('messagesIds:', messagesIds);
     if (!doRefresh) {
       data.offset = 0;
-      data.limit = offset == 0 ? 20 : offset;
-      data.current_ids = messagesIds;
+      data.limit = offset == 0 ? 20 : offset
     }
 
     if (params) Object.assign(data, params);

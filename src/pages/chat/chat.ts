@@ -261,6 +261,8 @@ export class ChatPage implements DoCheck {
   ) {
       this.user = this.authPrvd.getAuthData();
       this.chatPrvd.isLandingPage = true;
+      this.undercoverPrvd.setUndercover(true);
+      this.isUndercover=true;
       this.initLpMap();
   }
 
@@ -979,27 +981,11 @@ export class ChatPage implements DoCheck {
     legModal.present();
   }
 
-  // private isNetworkUnavailable():Promise<any> {
-  //   return new Promise((resolve, reject) => {
-  //     this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat__code'))
-  //     .subscribe(res => {
-  //       if (res.message == 'Network not found')
-  //         resolve('not found');
-  //
-  //       console.log(res);
-  //     }, err => {
-  //       console.error(err);
-  //     });
-  //   })
-  // }
-  //
-
     public goBack():void {
         this.chatPrvd.postMessages = [];
         this.settings.isNewlineScope=false;
         this.settings.isCreateLine=false;
         this.chatPrvd.isCleared = true;
-        this.refreshChat();
     }
 
     public openLinePage():void {
@@ -1424,7 +1410,7 @@ export class ChatPage implements DoCheck {
   }
 
   private doInfinite(ev):void {
-    if (!this.chatPrvd.isLobbyChat) {
+    if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
       setTimeout(() => {
         this.refreshChat().then(succ => ev.complete(), err => ev.complete());
       }, 500);
@@ -1469,13 +1455,10 @@ export class ChatPage implements DoCheck {
   }
 
   private getAndUpdateUndercoverMessages() {
-    // console.log('getAndUpdateUndercoverMessages()');
     this.chatPrvd.isMainBtnDisabled = false;
     this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages)
     .subscribe(res => {
-      // console.log('GPS coords:', this.gpsPrvd.coords);
       if (res) {
-        // console.log('undercover messages update...');
         if (res.ids_to_remove && res.ids_to_remove.length > 0)
           for (let i in this.chatPrvd.postMessages)
             for (let j in res.ids_to_remove)
@@ -1492,22 +1475,20 @@ export class ChatPage implements DoCheck {
           }
           this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
           this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(this.chatPrvd.postMessages);
-          // console.log('postMessages:', this.chatPrvd.postMessages);
           this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
         }
       }
       this.toolsPrvd.hideLoader();
-      //this.checkUCInterval();
+      this.checkUCInterval();
     }, err => {
-      // console.error('getAndUpdateUndercoverMessages() err:', err);
       this.toolsPrvd.hideLoader();
-      //this.checkUCInterval();
+      this.checkUCInterval();
     });
   }
 
   private startMessageUpdateTimer() {
-    if (this.chatPrvd.getState() == 'undercover' &&
-        this.chatPrvd.allowUndercoverUpdate) {
+    if (this.chatPrvd.getState() == 'undercover') {
+        alert('initially Called');
       this.getAndUpdateUndercoverMessages();
     }
   }

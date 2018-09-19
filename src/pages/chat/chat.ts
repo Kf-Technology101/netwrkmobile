@@ -27,9 +27,7 @@ import { SocialSharing } from '@ionic-native/social-sharing';
 
 // Pages
 import { CameraPage } from '../camera/camera';
-import { NetworkFindPage } from '../network-find/network-find';
 import { ProfilePage } from '../profile/profile';
-import { NetworkNoPage } from '../network-no/network-no';
 import { LogInPage } from '../log-in/log-in';
 import { NetworkContactListPage } from '../network-contact-list/network-contact-list';
 import { HoldScreenPage } from '../hold-screen/hold-screen';

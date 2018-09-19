@@ -36,9 +36,6 @@ import { MapsModal } from '../../modals/maps/maps';
 
 //Pages
 import { CameraPage } from '../../pages/camera/camera';
-import { NetworkFindPage } from '../../pages/network-find/network-find';
-import { NetworkNoPage } from '../../pages/network-no/network-no';
-import { NetworkPage } from '../../pages/network/network';
 import { ChatPage } from '../../pages/chat/chat';
 import { HoldScreenPage } from '../../pages/hold-screen/hold-screen';
 import { ProfilePage } from '../../pages/profile/profile';

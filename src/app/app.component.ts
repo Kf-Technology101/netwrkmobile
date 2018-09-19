@@ -6,7 +6,6 @@ import { StatusBar } from '@ionic-native/status-bar';
 import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
 import { LogInPage } from '../pages/log-in/log-in';
-import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 import { ChatPage } from '../pages/chat/chat';
 import { HoldScreenPage } from '../pages/hold-screen/hold-screen';
 

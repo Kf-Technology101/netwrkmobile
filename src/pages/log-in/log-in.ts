@@ -6,8 +6,6 @@ import { IonicPage, NavController, NavParams,Events,AlertController } from 'ioni
 // Pages
 import { SignUpPage } from '../sign-up/sign-up';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
-//import { NetworkFindPage } from '../network-find/network-find';
-//import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 import { SignUpFacebookPage } from '../sign-up-facebook/sign-up-facebook';
 import { HoldScreenPage } from '../hold-screen/hold-screen';
 

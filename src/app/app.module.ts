@@ -15,8 +15,6 @@ import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
 import { MyApp } from './app.component';
 
-import { HomePage } from '../pages/home/home';
-
 import { LogInPage } from '../pages/log-in/log-in';
 import { SignUpPage } from '../pages/sign-up/sign-up';
 import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
@@ -27,11 +25,8 @@ import { HoldScreenPage } from '../pages/hold-screen/hold-screen';
 import { ProfilePage } from '../pages/profile/profile';
 import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 
-import { NetworkPage } from '../pages/network/network';
 import { LinePage } from '../pages/linelist/linelist';
-import { NetworkFindPage } from '../pages/network-find/network-find';
 import { NetwrklistPage } from '../pages/netwrklist/netwrklist';
-import { NetworkNoPage } from '../pages/network-no/network-no';
 import { NetworkContactListPage } from '../pages/network-contact-list/network-contact-list';
 import { ChatPage } from '../pages/chat/chat';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
@@ -94,8 +89,6 @@ let pages = [
   // Autosize,
   MyApp,
 
-  HomePage,
-
   LogInPage,
   SignUpPage,
   SignUpConfirmPage,
@@ -106,12 +99,9 @@ let pages = [
 
   ProfilePage,
   ProfileSettingPage,
-
-  NetworkPage,
+  
   LinePage,
   NetwrklistPage,
-  NetworkFindPage,
-  NetworkNoPage,
   NetworkContactListPage,
   LegendaryModal,
   FeedbackShareModal,

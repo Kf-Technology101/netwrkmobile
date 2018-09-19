@@ -4,10 +4,7 @@ import { ViewController,NavController, NavParams, Platform, App } from 'ionic-an
 import { Api } from '../../providers/api';
 import { Chat } from '../../providers/chat';
 
-import { NetworkFindPage } from '../../pages/network-find/network-find';
-import { NetworkNoPage } from '../../pages/network-no/network-no';
 import { UndercoverCharacterPage } from '../../pages/undercover-character/undercover-character';
-import { NetworkPage } from '../../pages/network/network';
 import { ChatPage } from '../../pages/chat/chat';
 
 // Providers

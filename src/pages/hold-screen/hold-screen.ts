@@ -5,10 +5,7 @@ import { Slides } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { LocalStorage } from '../../providers/local-storage';
 // Pages
-import { NetworkFindPage } from '../network-find/network-find';
 import { NetwrklistPage } from '../netwrklist/netwrklist';
-import { NetworkNoPage } from '../network-no/network-no';
-import { NetworkPage } from '../network/network';
 import { ChatPage } from '../chat/chat';
 // Providers
 import { Gps } from '../../providers/gps';

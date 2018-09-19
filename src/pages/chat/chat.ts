@@ -261,10 +261,7 @@ export class ChatPage implements DoCheck {
   ) {
       this.user = this.authPrvd.getAuthData();
       this.chatPrvd.isLandingPage = true;
-      this.refreshChat(false, true);
       this.initLpMap();
-
-      //this.chatPrvd.getMessages(true, this.chatPrvd.postMessages,null, false);
   }
 
   public shareMessageToFacebook(message):void {
@@ -2134,12 +2131,10 @@ export class ChatPage implements DoCheck {
 
   public viewLocation(params?:any):void {
     console.log('view location...');
-    // if (this.nearestPlace) {
       this.toolsPrvd.pushPage(MapsModal, {
         place: this.nearestPlace,
         display_routes: (params && params.routes) ? params.routes : false
       });
-    // }
   }
 
 
@@ -2174,7 +2169,6 @@ export class ChatPage implements DoCheck {
     }
     this.chatPrvd.messageDateTimer.enableLogMessages = true;
     this.generateEmoticons();
-    this.refreshChat();
     let socialArray = ['fb', 'twitter', 'instagram'];
     this.authPrvd.getSocialStatus().subscribe(res => {
       console.log('get social status:',res);

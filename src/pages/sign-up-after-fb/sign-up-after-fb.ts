@@ -46,17 +46,14 @@ export class SignUpAfterFbPage {
   doSignUp(form: any) {
     console.log(form);
     if (form.valid) {
-      // this.tools.showLoader();
       let updateObj = { user: { date_of_birthday: this.date_of_birthday } };
 
       this.user.update(this.auth.getAuthData().id, updateObj, 'facebook')
         .map(res => res.json()).subscribe(res => {
-          // this.tools.hideLoader();
           this.tools.pushPage(
             this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage)
           );
         }, err => {
-          // this.tools.hideLoader();
           this.tools.showToast(JSON.stringify(err));
         });
     } else {

@@ -654,7 +654,6 @@ export class LinePage {
             this.toolsPrvd.showLoader();
 
             this.app.getRootNav().setRoot(ChatPage);
-            //this.refreshChat();
             this.setting.isNewlineScope=false;
             this.chatPrvd.currentLobbyMessage=res;
             this.chatPrvd.appendLineContainer.hidden = true;
@@ -956,18 +955,16 @@ export class LinePage {
     }
 
     private getAndUpdateUndercoverMessages() {
-        // console.log('getAndUpdateUndercoverMessages()');
         this.chatPrvd.isMainBtnDisabled = false;
         this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages)
             .subscribe(res => {
-                // console.log('GPS coords:', this.gpsPrvd.coords);
                 if (res) {
-                    // console.log('undercover messages update...');
-                    if (res.ids_to_remove && res.ids_to_remove.length > 0)
-                        for (let i in this.chatPrvd.postMessages)
-                            for (let j in res.ids_to_remove)
-                                if (this.chatPrvd.postMessages[i].id == res.ids_to_remove[j])
-                                    this.chatPrvd.postMessages.splice(i, 1);
+                    //// console.log('undercover messages update...');
+                    //if (res.ids_to_remove && res.ids_to_remove.length > 0)
+                    //    for (let i in this.chatPrvd.postMessages)
+                    //        for (let j in res.ids_to_remove)
+                    //            if (this.chatPrvd.postMessages[i].id == res.ids_to_remove[j])
+                    //                this.chatPrvd.postMessages.splice(i, 1);
 
                     if (res.messages && res.messages.length > 0) {
                         for (let i in this.chatPrvd.postMessages) {
@@ -977,9 +974,9 @@ export class LinePage {
                                 }
                             }
                         }
+
                         this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
                         this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(this.chatPrvd.postMessages);
-                        // console.log('postMessages:', this.chatPrvd.postMessages);
                         this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
                     }
                 }
@@ -993,8 +990,7 @@ export class LinePage {
     }
 
     private startMessageUpdateTimer() {
-        if (this.chatPrvd.getState() == 'undercover' &&
-            this.chatPrvd.allowUndercoverUpdate) {
+        if (this.chatPrvd.getState() == 'undercover') {
             this.getAndUpdateUndercoverMessages();
         }
     }
@@ -1324,18 +1320,8 @@ export class LinePage {
         this.chatPrvd.socketsInit();
         this.initResponseFromGPS();
         this.setContentPadding(false);
-        if (this.chatPrvd.getState() == 'area') {
-            this.getUsers().then(res => {
-                this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code'))
-                    .subscribe(res => {
-                        console.log('getNetwork res:', res);
-                        if (res.network) {
-                            this.chatPrvd.saveNetwork(res.network);
-                            this.updateMessages();
-                        }
-                    }, err => console.error(err));
-            }, err => console.error(err));
-        } else if (this.chatPrvd.getState() == 'undercover'){
+
+        if (this.chatPrvd.getState() == 'undercover'){
             this.messagesInterval = true;
             this.startMessageUpdateTimer();
         }
@@ -1371,7 +1357,6 @@ export class LinePage {
         }
         this.chatPrvd.messageDateTimer.enableLogMessages = true;
         this.generateEmoticons();
-        this.refreshChat();
         let socialArray = ['fb', 'twitter', 'instagram'];
         this.authPrvd.getSocialStatus().subscribe(res => {
             console.log('get social status:',res);

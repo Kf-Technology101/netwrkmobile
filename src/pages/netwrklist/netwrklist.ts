@@ -73,8 +73,11 @@ export class NetwrklistPage {
   ) {
       this.user = this.authPrvd.getAuthData();
       this.places.displayNearRoutes=false;
-      this.getAndUpdateUndercoverMessages()
   }
+
+    ionViewDidEnter() {
+        this.getAndUpdateUndercoverMessages()
+    }
 
     private getAndUpdateUndercoverMessages() {
         this.chatPrvd.getNearByMessages(this.netwrkLineList, null, false).subscribe(res => {
@@ -110,7 +113,6 @@ export class NetwrklistPage {
             this.toolsPrvd.showToast('Followed Line successfully');
         }, err => {
             this.toolsPrvd.hideLoader();
-            //this.toolsPrvd.showToast('Something went wrong');
         });
     }
 
@@ -120,19 +122,16 @@ export class NetwrklistPage {
 
     private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
         return new Promise((resolve, reject) => {
-            if (!this.chatPrvd.isLobbyChat || forced) {
-                this.chatPrvd.getNearByMessages(this.netwrkLineList, null, true)
-                    .subscribe(res => {
-                        res = this.chatPrvd.organizeMessages(res.messages);
-                        for (let i in res) this.netwrkLineList.push(res[i]);
-                        if (refresher) refresher.complete();
-                        resolve();
-                    }, err => {
-                        console.error(err);
-                        if (refresher) refresher.complete();
-                        reject();
-                    });
-            } else { if (refresher) refresher.complete(); reject(); }
+            this.chatPrvd.getNearByMessages(this.netwrkLineList, null, true)
+                .subscribe(res => {
+                    res = this.chatPrvd.organizeMessages(res.messages);
+                    for (let i in res) this.netwrkLineList.push(res[i]);
+                    if (refresher) refresher.complete();
+                    resolve();
+                }, err => {
+                    console.error(err);
+                    if (refresher) refresher.complete(); reject();
+                });
         });
     }
 
@@ -144,7 +143,7 @@ export class NetwrklistPage {
 
     private doInfinite(ev):void {
         setTimeout(() => {
-            this.refreshChat().then(succ => ev.complete(), err => ev.complete());
+            this.refreshChat(ev).then(succ => ev.complete(), err => ev.complete());
         }, 500);
     }
 
@@ -158,7 +157,5 @@ export class NetwrklistPage {
               this.navCtrl.remove(pageIndex);
           }
       });
-
-      //this.toolsPrvd.popPage(ChatPage);
   }
 }

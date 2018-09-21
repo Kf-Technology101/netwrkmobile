@@ -1020,12 +1020,12 @@ export class ChatPage implements DoCheck {
     this.postLockData.password = null;
     this.postTimerObj.expireDate = null;
     this.postTimerObj.time = null;
-    this.slideAvatarPrvd.sliderPosition = 'left';
+    //this.slideAvatarPrvd.sliderPosition = 'left';
 
     // this.cameraPrvd.toggleCameraBg({ isArea: true });
 
     this.hideTopSlider(this.activeTopForm);
-
+    this.refreshChat();
     this.getUsers().then(res => {
       this.chatPrvd.setState('area');
       this.updateMessages().then(res => {
@@ -1486,7 +1486,7 @@ export class ChatPage implements DoCheck {
   }
 
   private startMessageUpdateTimer() {
-    if (this.chatPrvd.getState() == 'undercover') {
+    if (this.chatPrvd.getState() == 'undercover' &&  !this.chatPrvd.areaLobby) {
       this.getAndUpdateUndercoverMessages();
     }
   }
@@ -1535,7 +1535,6 @@ export class ChatPage implements DoCheck {
   }
 
   private runUndecoverSlider(pageTag):void {
-    // console.log('(runUndecoverSlider) arguments:', arguments);
     if (this.chatPrvd.getState() == 'undercover') {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
       this.slideAvatarPrvd.sliderInit(pageTag);
@@ -1962,11 +1961,10 @@ export class ChatPage implements DoCheck {
         if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
               this.toolsPrvd.showLoader();
               this.chatPrvd.isMainBtnDisabled = true;
-              //this.txtIn.value = '';
               this.chatPrvd.setState('area');
               this.isUndercover=true;
               this.chatPrvd.areaLobby=true;
-                this.settings.isNewlineScope=false;
+              this.settings.isNewlineScope=false;
               this.chatPrvd.currentLobbyMessage=message;
               this.chatPrvd.appendContainer.hidden = true;
               this.cameraPrvd.takenPictures = [];
@@ -1979,17 +1977,13 @@ export class ChatPage implements DoCheck {
                   }else{
                       this.placeholderText = 'What would you like to say?';
                   }
-
                   this.chatPrvd.allowUndercoverUpdate = false;
                   clearTimeout(this.messIntObject);
                   this.chatPrvd.toggleLobbyChatMode();
                   this.chatPrvd.isMainBtnDisabled = false;
-                  this.initLpMap();
                   this.chatPrvd.areaLobby=true;
                   this.toolsPrvd.hideLoader();
-
               }, err => {
-                  console.error(err);
                   this.chatPrvd.areaLobby=true;
                   this.placeholderText = 'What do you want to talk about?';
                   this.chatPrvd.isMainBtnDisabled = false;
@@ -2002,7 +1996,7 @@ export class ChatPage implements DoCheck {
 
   public handleMainBtnClick(event:any):void {
       this.chatPrvd.isMainBtnDisabled = true;
-      if (this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby) {
+      if (this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
           this.chatPrvd.areaLobby=false;
           this.chatPrvd.isCleared = true;
           this.canRefresh = true;
@@ -2026,8 +2020,17 @@ export class ChatPage implements DoCheck {
               console.error(err);
           });
       } else {
-          this.chatPrvd.areaLobby=false;
-          this.goUndercover(event);
+          if(this.chatPrvd.areaLobby){
+              this.chatPrvd.areaLobby=false;
+              this.chatPrvd.toggleLobbyChatMode();
+              this.chatPrvd.setState('area');
+              this.undercoverPrvd.setUndercover(false);
+              this.isUndercover=false;
+              this.goArea()
+          }else{
+              this.chatPrvd.areaLobby=false;
+              this.goUndercover(event);
+          }
       }
   }
 

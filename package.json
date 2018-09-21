@@ -51,6 +51,7 @@
     "angular2-moment": "^1.3.3",
     "com.synconset.imagepicker": "https://github.com/Telerik-Verified-Plugins/ImagePicker.git",
     "cordova-base64-to-gallery": "^4.1.3",
+    "cordova-browser": "~5.0.4",
     "cordova-ios": "~4.5.5",
     "cordova-plugin-add-swift-support": "^1.7.2",
     "cordova-plugin-android-permissions": "^1.0.0",
@@ -86,8 +87,7 @@
     "rxjs": "5.4.2",
     "sw-toolbox": "3.6.0",
     "twitter-connect-plugin": "git+https://github.com/ManifestWebDesign/twitter-connect-plugin.git",
-    "zone.js": "0.8.26",
-    "cordova-browser": "~5.0.4"
+    "zone.js": "0.8.26"
   },
   "devDependencies": {
     "@ionic/app-scripts": "3.1.9",

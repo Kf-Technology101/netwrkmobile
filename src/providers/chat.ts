@@ -283,7 +283,12 @@ export class Chat {
           console.log('getLocationLobby:', res);
           if (res && res.messages && res.room_id) {
             this.postMessages = [];
-            this.postMessages = res.messages;
+            if(res.messages){
+               this.postMessages = res.messages;
+            }else{
+               this.postMessages = [];
+            }
+
             this.postAreaMessages = [];
             if(this.areaLobby){
                   this.postAreaMessages.unshift(message)
@@ -294,9 +299,7 @@ export class Chat {
             this.currentLobbyMessage = message;
             this.startLobbySocket(res.room_id);
             this.getLocationLobbyUsers(message.id).subscribe(res => {
-              console.log('getLocationLobbyUsers:', res);
               if (res && res.users && res.host_id) {
-                console.log('lobby users:', res.users);
                 this.currentLobby.users = res.users;
                 this.currentLobby.hostId = res.host_id;
                 this.currentLobby.isAddButtonAvailable = !this.isCurrentUserBelongsToChat(this.currentLobby.users);

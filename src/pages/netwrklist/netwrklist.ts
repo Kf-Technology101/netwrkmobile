@@ -76,11 +76,13 @@ export class NetwrklistPage {
   }
 
     ionViewDidEnter() {
+        this.toolsPrvd.showLoader();
         this.getAndUpdateUndercoverMessages()
     }
 
     private getAndUpdateUndercoverMessages() {
         this.chatPrvd.getNearByMessages(this.netwrkLineList, null, false).subscribe(res => {
+            this.toolsPrvd.hideLoader();
             this.netwrkLineList=res.messages;
         }, err => {
             this.toolsPrvd.hideLoader();

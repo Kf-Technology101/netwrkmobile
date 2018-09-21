@@ -1097,7 +1097,6 @@ export class ChatPage implements DoCheck {
         console.log('[goUndercover] detectNetwork res:', res);
         if (res.network)
           this.chatPrvd.saveNetwork(res.network);
-        console.log('DETECT NETWORK [goUndercover]');
 
         if (res.message == 'Network not found') {
            this.gpsPrvd.createNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {

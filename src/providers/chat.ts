@@ -543,10 +543,6 @@ export class Chat {
         messagesIds.push(messagesNearArray[i].id);
     }
 
-    // console.log('[getMessages] data:', data);
-    // console.log('[getMessages] messagesIds:', messagesIds);
-
-    // console.log('messagesIds:', messagesIds);
     if (!doRefresh) {
       data.offset = 0;
       data.limit = offset == 0 ? 20 : offset

@@ -1456,14 +1456,13 @@ export class ChatPage implements DoCheck {
 
   private getAndUpdateUndercoverMessages() {
     this.chatPrvd.isMainBtnDisabled = false;
-    this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages)
-    .subscribe(res => {
+    this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
       if (res) {
-        if (res.ids_to_remove && res.ids_to_remove.length > 0)
-          for (let i in this.chatPrvd.postMessages)
-            for (let j in res.ids_to_remove)
-              if (this.chatPrvd.postMessages[i].id == res.ids_to_remove[j])
-                this.chatPrvd.postMessages.splice(i, 1);
+        //if (res.ids_to_remove && res.ids_to_remove.length > 0)
+        //  for (let i in this.chatPrvd.postMessages)
+        //    for (let j in res.ids_to_remove)
+        //      if (this.chatPrvd.postMessages[i].id == res.ids_to_remove[j])
+        //        this.chatPrvd.postMessages.splice(i, 1);
 
         if (res.messages && res.messages.length > 0) {
           for (let i in this.chatPrvd.postMessages) {
@@ -1488,7 +1487,6 @@ export class ChatPage implements DoCheck {
 
   private startMessageUpdateTimer() {
     if (this.chatPrvd.getState() == 'undercover') {
-        alert('initially Called');
       this.getAndUpdateUndercoverMessages();
     }
   }

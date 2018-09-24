@@ -14,7 +14,6 @@ export class NetworkCheck {
     console.log('networkStatus() in');
     let onDisconnect = () => {
       this.network.onDisconnect().subscribe(() => {
-          alert('inside Disconnect')
         this.tools.showLoader('Internet is needed to connect to the world around you');
       });
     }

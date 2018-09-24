@@ -7,7 +7,6 @@ import { User } from './user';
 import { Tools } from './tools';
 
 
-
 @Injectable()
 export class UndercoverProvider {
   public sliderState: boolean =  false;
@@ -42,7 +41,7 @@ export class UndercoverProvider {
             resolve(res);
         }, err => {
             this.tools.hideLoader();
-            this.tools.showToast(JSON.stringify(err));
+            //this.tools.showToast(JSON.stringify(err));
             reject(err);
         });
     });

@@ -659,7 +659,8 @@ export class ChatPage implements DoCheck {
     }
   }
 
-  private showUnlockPostForm(messageId:any, hint:any):void {
+  public showUnlockPostForm(messageId:any, hint:any){
+    alert('tap');
     this.postUnlockData.id = messageId;
     this.currentHint = hint;
     this.toggleTopSlider('unlock');
@@ -1254,6 +1255,7 @@ export class ChatPage implements DoCheck {
         cont.hide();
       }, 400);
     } else {
+        alert('hi');
       this.activeTopForm = container;
       cont.show();
       cont.setState('slideDown');

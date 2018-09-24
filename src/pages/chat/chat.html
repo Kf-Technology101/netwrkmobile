@@ -411,7 +411,7 @@
         </ng-container>
 
         <ng-container *ngIf="user.id != message.user_id && message.locked_by_user">
-          <button class="feedback-button lock" (tap)="showUnlockPostForm(message.id, message.hint)">
+          <button class="feedback-button lock" (click)="showUnlockPostForm(message.id, message.hint)">
             <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
           </button>
         </ng-container>

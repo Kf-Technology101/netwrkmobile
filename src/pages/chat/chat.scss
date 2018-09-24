@@ -971,6 +971,7 @@ page-network-no {
             text-align: center;
             &.locked-by-you {
               top: 5px;
+              cursor: pointer;
             }
             &.will-expire {
               top: 25px;

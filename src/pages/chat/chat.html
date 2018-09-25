@@ -309,7 +309,7 @@
     </div>
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      <div *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' && (message.is_followed || message.user_id == user.id) || chatPrvd.isLobbyChat && !message.has_expired && isUndercover || chatPrvd.areaLobby || chatPrvd.getState() == 'area' && message.messageable_type=='Room' && message.undercover && !message.has_expired">
+      <div *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' && (message.is_followed || message.user_id == user.id || message.user_id != user.id) || chatPrvd.isLobbyChat && !message.has_expired && isUndercover || chatPrvd.areaLobby || chatPrvd.getState() == 'area' && message.messageable_type=='Room' && message.undercover && !message.has_expired">
         <img *ngIf="message.user && message.messageable_type=='Network'"
         (click)="openLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
         [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"

@@ -99,7 +99,6 @@ export class Gps {
       }
 
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
-        console.log('[Gps][getMyZipCode]', resp);
         if (resp.coords) {
           if (!this.coords.lat && !this.coords.lng) {
               if (this.loc.isCustomCoordAvaliable()) {
@@ -120,7 +119,6 @@ export class Gps {
           this.getZipCode().then(zip => {
               resolve({ zip_code: zip });
           }).catch(err => reject(err));
-        console.log('[Gps][getMyZipCode]', err);
         reject(err);
       });
 
@@ -142,7 +140,6 @@ export class Gps {
   }
 
   private parseGoogleAddress(data: any): number {
-    // let zip: number;
     for (let i = 0; i < data.length; i++) {
       for (let j = 0; j < data[i].address_components.length; j++) {
         for (let z = 0; z < data[i].address_components[j].types.length; z++) {
@@ -160,7 +157,6 @@ export class Gps {
       }
     }
     return this.zipCode;
-    // return zip;
   }
 
   public getGoogleAdress(lat?:number, lng?:number) {

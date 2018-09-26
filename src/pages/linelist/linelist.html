@@ -353,7 +353,7 @@
 
             <div item-content id="textInpBtns" [@bgState]="chatPrvd.bgState.state">
 
-                <button ion-button [@inputState]="chatPrvd.chatBtns.state[0]">
+                <button class="noBtn" ion-button [@inputState]="chatPrvd.chatBtns.state[0]" (click)="openCamera()">
                     <ion-icon ios="ios-camera-outline" md="ios-camera-outline"></ion-icon>
                 </button>
 

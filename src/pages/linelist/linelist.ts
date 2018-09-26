@@ -318,11 +318,7 @@ export class LinePage {
 
     private setContentPadding(status):void {
         try {
-            this.contentPadding = status
-                ? document.documentElement.clientHeight / 2 + 76 + 'px'
-                : '180px';
-            // if (this.chatPrvd.getState() == 'undercover')
-            //   this.chatPrvd.scrollToBottom(this.content);
+            this.contentPadding = status ? document.documentElement.clientHeight / 2 + 76 + 'px' : '180px';
         } catch (e) {
             console.log(e);
         }
@@ -718,7 +714,7 @@ export class LinePage {
                             case 'undercover':
                                 this.messagesInterval = true;
                                 clearTimeout(this.messIntObject);
-                                this.startMessageUpdateTimer();
+                                this.getAndUpdateUndercoverMessages();
                                 break;
                             case 'area':
                                 this.updateMessages(false);
@@ -981,18 +977,9 @@ export class LinePage {
                     }
                 }
                 this.toolsPrvd.hideLoader();
-                //this.checkUCInterval();
             }, err => {
-                // console.error('getAndUpdateUndercoverMessages() err:', err);
                 this.toolsPrvd.hideLoader();
-                //this.checkUCInterval();
             });
-    }
-
-    private startMessageUpdateTimer() {
-        if (this.chatPrvd.getState() == 'undercover') {
-            this.getAndUpdateUndercoverMessages();
-        }
     }
 
     private getMessagesIds(messageArray: any):Array<number> {
@@ -1039,7 +1026,6 @@ export class LinePage {
     }
 
     private runUndecoverSlider(pageTag):void {
-        // console.log('(runUndecoverSlider) arguments:', arguments);
         if (this.chatPrvd.getState() == 'undercover') {
             this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
             this.slideAvatarPrvd.sliderInit(pageTag);
@@ -1049,8 +1035,6 @@ export class LinePage {
 
     private goToProfile(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
         this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
-            // res['post_code'] = this.chatPrvd.localStorage.get('chat_zip_code');
-            // console.log('GO TO PROFILE res:', res);
             this.chatPrvd.isLobbyChat = false;
             if(this.user.id==profileId){
                 if(userRoleName){
@@ -1153,8 +1137,8 @@ export class LinePage {
                     avatar_url: null,
                     created_at: '2017-04-22T14:59:29.921Z',
                     date_of_birthday: '2004-01-01',
-                    email: 'olbachinskiy2@gmail.com',
-                    name: 'Oleksandr Bachynskyi',
+                    email: 'sannagare99@gmail.com',
+                    name: 'Sachin nagare',
                     id: 55,
                     invitation_sent: false,
                     phone: '1492873128682',
@@ -1179,7 +1163,6 @@ export class LinePage {
 
     private runClickListener():void {
         this.global = this.renderer.listen('document', 'touchstart', evt => {
-            // console.log('Clicking the document:', evt);
             let destroyEvent:boolean = false;
             this.chatPrvd.localStorage.set('first_time_refresh', false);
             this.chatPrvd.networkAvailable = null;
@@ -1188,10 +1171,6 @@ export class LinePage {
     }
 
     private directionSwipe(ev:any):void {
-        // swipe directions:
-        // left - 2
-        // right - 4
-        // console.log('swipe event:', ev);
         this.directionCont.nativeElement.classList.remove('swipe-left');
         this.directionCont.nativeElement.classList.remove('swipe-right');
         if (ev.offsetDirection == 2)
@@ -1205,14 +1184,11 @@ export class LinePage {
 
     ngOnInit() {
         this.chatPrvd.getBlacklist().subscribe(res => {
-            // console.log('BLACKLIST:', res);
             if (res && res.length > 0)
                 this.chatPrvd.localStorage.set('blacklist', res);
         }, err => console.error(err));
         this.authPrvd.getSocialStatus().subscribe(res => {
             let socialArray = [ 'fb', 'twitter', 'instagram' ];
-            // console.log('get social status:',res);
-            // Go through all social networks and toggle their switch if active
             for (let i = 0; i < socialArray.length; i++) {
                 if (res[socialArray[i]]) {
                     this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
@@ -1255,7 +1231,6 @@ export class LinePage {
                                 this.nearestPlace = plcs;
                                 this.dirVisible = true;
                                 reject();
-                                // console.log('nearest place:', plcs);
                                 resolve();
                             }, err => {
                                 console.error('getNearestInstitution:', err);
@@ -1293,9 +1268,7 @@ export class LinePage {
         this.chatPrvd.mainLineBtn.setState('normal');
         this.chatPrvd.mainLineBtn.show();
 
-        // this.chatPrvd.postMessages = [];
         this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
-
 
         this.runUndecoverSlider(this.pageTag);
 
@@ -1314,17 +1287,13 @@ export class LinePage {
             }
         }, err => console.error(err));
 
-        // this.cameraPrvd.toggleCameraBg();
-
         // init sockets
         this.chatPrvd.socketsInit();
         this.initResponseFromGPS();
         this.setContentPadding(false);
 
-        if (this.chatPrvd.getState() == 'undercover'){
-            this.messagesInterval = true;
-            this.startMessageUpdateTimer();
-        }
+        this.messagesInterval = true;
+        this.getAndUpdateUndercoverMessages();
 
         this.zone.run(() => {
             this.undercoverPrvd.profileType = this.undercoverPrvd.profileType;
@@ -1360,7 +1329,6 @@ export class LinePage {
         let socialArray = ['fb', 'twitter', 'instagram'];
         this.authPrvd.getSocialStatus().subscribe(res => {
             console.log('get social status:',res);
-            // Go through all social networks and toggle their switch if active
             for (let i = 0; i < socialArray.length; i++) {
                 if (res[socialArray[i]]) {
                     this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];

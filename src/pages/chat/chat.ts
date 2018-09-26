@@ -1423,7 +1423,6 @@ export class ChatPage implements DoCheck {
       if (!this.chatPrvd.isLobbyChat || forced) {
         this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
         .subscribe(res => {
-          this.initLpMap();
           res = this.chatPrvd.organizeMessages(res.messages);
           for (let i in res) this.chatPrvd.postMessages.push(res[i]);
           this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
@@ -1742,25 +1741,23 @@ export class ChatPage implements DoCheck {
 
   ngOnInit() {
     this.chatPrvd.getBlacklist().subscribe(res => {
-      // console.log('BLACKLIST:', res);
       if (res && res.length > 0)
         this.chatPrvd.localStorage.set('blacklist', res);
     }, err => console.error(err));
+
     this.authPrvd.getSocialStatus().subscribe(res => {
       let socialArray = [ 'fb', 'twitter', 'instagram' ];
-      // console.log('get social status:',res);
-      // Go through all social networks and toggle their switch if active
       for (let i = 0; i < socialArray.length; i++) {
         if (res[socialArray[i]]) {
           this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
         }
       }
     }, err => console.error(err));
-    console.log('%c [CHAT] ngOnInit ', 'background: #1287a8;color: #ffffff');
+
+
     if (this.chatPrvd.localStorage.get('last_zip_code') === null) {
       this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
-    } else if (this.chatPrvd.localStorage.get('last_zip_code') !=
-               this.chatPrvd.localStorage.get('chat_zip_code')) {
+    } else if (this.chatPrvd.localStorage.get('last_zip_code') != this.chatPrvd.localStorage.get('chat_zip_code')) {
       this.chatPrvd.localStorage.set('first_time_undercover', null);
       this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
     }
@@ -1855,20 +1852,6 @@ export class ChatPage implements DoCheck {
           console.error('initMapsService:', err)
           resolve();
         });
-      //}
-      //this.chatPrvd.detectNetwork().then(res => {
-      //  if (providedStateFromGps) {
-      //    this.chatPrvd.networkAvailable = (res.network && areaChanged) ? true : false;
-      //    this.chatPrvd.localStorage.rm('areaChange_triggered');
-      //  }
-      //  if (providedStateFromGps == 'undercover') {
-      //    this.isUndercover = true;
-      //    this.chatPrvd.setState('undercover');
-      //  } else if (providedStateFromGps == 'area') {
-      //     this.goArea();
-      //      reject();
-      //  }
-      //});
     });
   }
 
@@ -1876,7 +1859,6 @@ export class ChatPage implements DoCheck {
       if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
           this.toolsPrvd.showLoader();
           this.chatPrvd.isMainBtnDisabled = true;
-          //this.txtIn.value = '';
           this.isUndercover=true;
 
           this.settings.isNewlineScope=false;
@@ -1915,8 +1897,6 @@ export class ChatPage implements DoCheck {
       if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
           this.chatPrvd.getParentLobby(message).subscribe(res => {
               this.toolsPrvd.showLoader();
-              //this.chatPrvd.isMainBtnDisabled = true;
-              //this.txtIn.value = '';
               this.isUndercover=true;
 
               this.settings.isNewlineScope=false;
@@ -1933,8 +1913,6 @@ export class ChatPage implements DoCheck {
                       this.placeholderText = 'What would you like to say?';
                   }
 
-                  //this.chatPrvd.allowUndercoverUpdate = false;
-                  //clearTimeout(this.messIntObject);
                   this.chatPrvd.toggleLobbyChatMode();
                   this.chatPrvd.isMainBtnDisabled = false;
                   this.chatPrvd.isLobbyChat=true;
@@ -2069,8 +2047,6 @@ export class ChatPage implements DoCheck {
       }
     }, err => console.error(err));
 
-    // this.cameraPrvd.toggleCameraBg();
-
     // init sockets
     this.chatPrvd.socketsInit();
     this.initResponseFromGPS();
@@ -2130,12 +2106,7 @@ export class ChatPage implements DoCheck {
   }
 
   ngDoCheck() {
-    /*
-     Check if messages are updated. If so - run posterAllVideos() function from
-     [videoservice] provider
-    */
     if (this.chatPrvd.postMessages != this.chatPrvd.oldMessages) {
-      console.log('postMessages changed!');
       this.chatPrvd.oldMessages = this.chatPrvd.postMessages;
       setTimeout(() => {
         this.videoservice.posterAllVideos(

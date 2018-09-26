@@ -16,13 +16,6 @@
             </div>
         </div>
 
-        <!--<button *ngIf="chatPrvd.postMessages.length == 0 && !chatPrvd.postBtn.state"-->
-            <!--class="side refresh-btn top-icon" (tap)="refreshChat()"-->
-            <!--[hidden]="!canRefresh" ion-button-->
-            <!--[ngClass]="{ 'white' : !updateIconBgRelativeToCamera() }">-->
-        <!--<ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>-->
-        <!--</button>-->
-
         <button ion-button class="side clear-btn" (tap)="clearMessages(chatPrvd.postMessages)"
             *ngIf="isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state &&
             !chatPrvd.isLobbyChat">
@@ -91,8 +84,6 @@
     <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
     </ion-refresher>
 
-    <div id="places"></div>
-
 <!--Follow line Info-->
     <ion-row class="bg-text" align-items-center>
         <ion-col text-center>
@@ -118,7 +109,6 @@
 <div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat }">
 
     <p *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)" class="no-data-message abs">There are no lines yet</p>
-
 
 
     <div class="message" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
@@ -372,12 +362,8 @@
                 <button ion-button [@inputState]="chatPrvd.chatBtns.state[4]"></button>
             </div>
 
-            <button ion-button
-            (click)="toggleChatOptions();
-            toggleLineContainer(emojiLineContainer, 'hide');
-            toggleLineContainer(shareLineContainer, 'hide')"
-            [@rotState]="chatPrvd.plusBtn.state" ion-button item-left clear
-            id="plus-btn">
+            <button ion-button (click)="toggleChatOptions(); toggleLineContainer(emojiLineContainer, 'hide');toggleLineContainer(shareLineContainer, 'hide')"
+            [@rotState]="chatPrvd.plusBtn.state" ion-button item-left clear id="plus-btn">
             <ion-icon ios="ios-add" md="ios-add"></ion-icon>
             </button>
 

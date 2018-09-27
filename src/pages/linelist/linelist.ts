@@ -1068,7 +1068,7 @@ export class LinePage {
     private constructorLoad():Promise<any> {
         return new Promise(resolve => {
             console.log('%c [CHAT] constructorLoad ', 'background: #1287a8;color: #ffffff');
-            this.keyboard.disableScroll(true);
+            //this.keyboard.disableScroll(true);
 
             this.setCustomTransitions();
 

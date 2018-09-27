@@ -139,9 +139,9 @@ export class CameraPage {
   }
 
   ionViewDidEnter() {
-    // this.cameraPrvd.toggleCameraBg({
-    //   isCamera: true
-    // });
+    this.cameraPrvd.toggleCameraBg({
+       isCamera: true
+    });
 
     setTimeout(() => {
       this.cameraUI.tooltip = 'tooltipFadeIn';

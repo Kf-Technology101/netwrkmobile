@@ -36,14 +36,7 @@ export class Camera {
     return new Promise((succ, rej) => {
       if (state === 'show') {
         try {
-          // try {
-          //   this.cameraPreview.stopCamera().then(res=>succ()).catch(err=>rej());
-          // } catch (error) {
-          //   console.error('camera stop catch err:', error);
-          //   rej(error);
-          // }
-          this.cameraPreview.startCamera(this.cameraPreviewOpts)
-          .then(res => succ(res)).catch(err => rej(err));
+          this.cameraPreview.startCamera(this.cameraPreviewOpts).then(res => succ(res)).catch(err => rej(err));
         } catch (error) {
           console.error('camera start catch err:', error);
           rej(error);
@@ -66,13 +59,13 @@ export class Camera {
 
   public toggleCameraBg(params?:any):void {
     let cOpt:any = this.storage.get('enable_uc_camera');
-    if ((params && params.isCamera && !params.isArea) || cOpt == true) {
+    if (params.isCamera || cOpt == true) {
       try {
         this.toggleCameraInstance('show').then(res => {
           this.cameraPreview.show();
         }, err => { console.error('camera show err:', err); });
       } catch (err) { console.error('CameraPreview show() catch err:', err); }
-    } else if ((params && params.isArea) || cOpt == false || cOpt === null) {
+    } else if (cOpt == false || cOpt === null) {
       try {
         this.toggleCameraInstance('hide').then(res => {
           this.cameraPreview.hide();

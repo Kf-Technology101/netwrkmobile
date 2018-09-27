@@ -1074,18 +1074,18 @@ export class ChatPage implements DoCheck {
           this.hideTopSlider(this.activeTopForm);
           this.chatPrvd.postBtn.setState(false);
         }
-        this.keyboard.close();
+        //this.keyboard.close();
         setTimeout(() => {
           this.setMainBtnStateRelativeToEvents();
         }, 300);
       } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled') {
         this.toggleContainer(this.emojiContainer, 'hide');
         this.toggleContainer(this.shareContainer, 'hide');
-        this.keyboard.close();
+        //this.keyboard.close();
       }else if(this.chatPrvd.mainBtn.getState() == 'back-to-hold'){
           this.toggleContainer(this.emojiContainer, 'hide');
           this.toggleContainer(this.shareContainer, 'hide');
-          this.keyboard.close();
+          //this.keyboard.close();
       }
       this.chatPrvd.isMessagesVisible = false;
       this.chatPrvd.postMessages = [];
@@ -1577,7 +1577,7 @@ export class ChatPage implements DoCheck {
   private constructorLoad():Promise<any> {
     return new Promise(resolve => {
       console.log('%c [CHAT] constructorLoad ', 'background: #1287a8;color: #ffffff');
-      this.keyboard.disableScroll(true);
+      //this.keyboard.disableScroll(true);
 
       this.setCustomTransitions();
       this.keyboard.onKeyboardShow().subscribe(res => {

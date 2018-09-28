@@ -145,6 +145,7 @@ export function providers() {
     Deeplinks,
     Geolocation,
     CameraPreview,
+    Camera,
     SocialSharing,
     File,
     Transfer,

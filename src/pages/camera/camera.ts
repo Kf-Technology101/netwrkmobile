@@ -1,6 +1,6 @@
 import { Component, HostBinding } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
-import { CameraPreview } from '@ionic-native/camera-preview';
+import { CameraPreviewOptions, CameraPreview } from '@ionic-native/camera-preview';
 
 import { Tools } from '../../providers/tools';
 import { Camera } from '../../providers/camera';
@@ -144,6 +144,7 @@ export class CameraPage {
     setTimeout(() => {
       this.cameraUI.tooltip = 'tooltipFadeIn';
     }, animSpeed.fadeIn/2);
+
     console.log('ionViewDidLoad CameraPage');
   }
 }

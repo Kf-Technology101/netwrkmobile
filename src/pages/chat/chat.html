@@ -173,7 +173,7 @@
 <ion-content has-main-btn has-main-btn-label no-bounce (ionScrollEnd)="listenForScrollEnd($event)"
   [ngClass]="{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': chatPrvd.getState() == 'area', 'lobby-content': chatPrvd.isLobbyChat, 'white-undercover': isUndercover &&
   (chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': chatPrvd.getState() == 'undercover'}"
-  [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin}">
+  [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin}" *ngIf="!settings.isNewlineScope">
 
   <ion-refresher (ionRefresh)="refreshChat($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
@@ -181,7 +181,7 @@
 
   <div id="places"></div>
 
-<div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat }">
+<div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat }" >
 
     <p *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)" class="no-data-message abs">There are no posts yet</p>
 

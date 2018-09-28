@@ -660,7 +660,6 @@ export class ChatPage implements DoCheck {
   }
 
   public showUnlockPostForm(messageId:any, hint:any){
-    alert('tap');
     this.postUnlockData.id = messageId;
     this.currentHint = hint;
     this.toggleTopSlider('unlock');
@@ -748,6 +747,14 @@ export class ChatPage implements DoCheck {
             publicUser=true;
         }else{
             publicUser=false;
+        }
+
+        if(this.chatPrvd.getState() == 'area'){
+            this.toggleContainer(this.emojiContainer, 'hide');
+            this.toggleContainer(this.shareContainer, 'hide');
+            if (this.chatPrvd.bgState.getState() == 'stretched') {
+                this.toggleChatOptions();
+            }
         }
 
 
@@ -1255,7 +1262,6 @@ export class ChatPage implements DoCheck {
         cont.hide();
       }, 400);
     } else {
-        alert('hi');
       this.activeTopForm = container;
       cont.show();
       cont.setState('slideDown');
@@ -1413,7 +1419,7 @@ export class ChatPage implements DoCheck {
   private doInfinite(ev):void {
     if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
       setTimeout(() => {
-        this.refreshChat().then(succ => ev.complete(), err => ev.complete());
+        this.refreshChat(ev).then(succ => ev.complete(), err => ev.complete());
       }, 500);
     }
   }
@@ -1455,34 +1461,30 @@ export class ChatPage implements DoCheck {
   }
 
   private getAndUpdateUndercoverMessages() {
-    this.chatPrvd.isMainBtnDisabled = false;
-    this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
-      if (res) {
-        //if (res.ids_to_remove && res.ids_to_remove.length > 0)
-        //  for (let i in this.chatPrvd.postMessages)
-        //    for (let j in res.ids_to_remove)
-        //      if (this.chatPrvd.postMessages[i].id == res.ids_to_remove[j])
-        //        this.chatPrvd.postMessages.splice(i, 1);
-
-        if (res.messages && res.messages.length > 0) {
-          for (let i in this.chatPrvd.postMessages) {
-            for (let j in res.messages) {
-              if (this.chatPrvd.postMessages[i].id == res.messages[j].id) {
-                this.chatPrvd.postMessages.splice(i, 1);
+      if (this.chatPrvd.getState() == 'undercover' &&  !this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
+          this.chatPrvd.isMainBtnDisabled = false;
+          this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
+              if (res) {
+                  if (res.messages && res.messages.length > 0) {
+                      for (let i in this.chatPrvd.postMessages) {
+                          for (let j in res.messages) {
+                              if (this.chatPrvd.postMessages[i].id == res.messages[j].id) {
+                                  this.chatPrvd.postMessages.splice(i, 1);
+                              }
+                          }
+                      }
+                      this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
+                      this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(this.chatPrvd.postMessages);
+                      this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
+                  }
               }
-            }
-          }
-          this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
-          this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(this.chatPrvd.postMessages);
-          this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
-        }
+              this.toolsPrvd.hideLoader();
+              this.checkUCInterval();
+          }, err => {
+              this.toolsPrvd.hideLoader();
+              this.checkUCInterval();
+          });
       }
-      this.toolsPrvd.hideLoader();
-      this.checkUCInterval();
-    }, err => {
-      this.toolsPrvd.hideLoader();
-      this.checkUCInterval();
-    });
   }
 
   private startMessageUpdateTimer() {
@@ -1675,7 +1677,10 @@ export class ChatPage implements DoCheck {
       } else {
           this.isUndercover = true;
           this.chatPrvd.setState('undercover');
+      }
 
+      if (this.chatPrvd.bgState.getState() == 'stretched') {
+        this.toggleChatOptions();
       }
 
       this.flipHover = this.isUndercover ? true : false;
@@ -1857,6 +1862,9 @@ export class ChatPage implements DoCheck {
 
   public openLobbyForPinned(message:any):void {
       if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
+          if (this.chatPrvd.bgState.getState() == 'stretched') {
+              this.toggleChatOptions();
+          }
           this.toolsPrvd.showLoader();
           this.chatPrvd.isMainBtnDisabled = true;
           this.isUndercover=true;
@@ -1895,6 +1903,9 @@ export class ChatPage implements DoCheck {
 
   public openLobbyForLineMessage(message:any):void {
       if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
+          if (this.chatPrvd.bgState.getState() == 'stretched') {
+              this.toggleChatOptions();
+          }
           this.chatPrvd.getParentLobby(message).subscribe(res => {
               this.toolsPrvd.showLoader();
               this.isUndercover=true;
@@ -1938,6 +1949,9 @@ export class ChatPage implements DoCheck {
 
     public openConversationLobbyForPinned(message:any):void {
         if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
+            if (this.chatPrvd.bgState.getState() == 'stretched') {
+                this.toggleChatOptions();
+            }
               this.toolsPrvd.showLoader();
               this.chatPrvd.isMainBtnDisabled = true;
               this.chatPrvd.setState('area');
@@ -1975,6 +1989,9 @@ export class ChatPage implements DoCheck {
 
   public handleMainBtnClick(event:any):void {
       this.chatPrvd.isMainBtnDisabled = true;
+      if (this.chatPrvd.bgState.getState() == 'stretched') {
+          this.toggleChatOptions();
+      }
       if (this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
           this.chatPrvd.areaLobby=false;
           this.chatPrvd.isCleared = true;
@@ -2085,6 +2102,9 @@ export class ChatPage implements DoCheck {
 
   ionViewDidEnter() {
     this.onEnter();
+    if (this.chatPrvd.bgState.getState() == 'stretched') {
+       this.toggleChatOptions();
+    }
     this.toolsPrvd.hideLoader();
   }
 

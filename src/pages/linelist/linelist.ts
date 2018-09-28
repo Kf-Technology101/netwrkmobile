@@ -377,6 +377,9 @@ export class LinePage {
     private insertEmoji(emoji):void {
         let emojiDecoded = String.fromCodePoint(emoji);
         this.postMessage(emojiDecoded);
+        if (this.chatPrvd.bgState.getState() == 'stretched') {
+            this.toggleChatOptions();
+        }
     }
 
     private convertEmoji(unicode):any {
@@ -448,7 +451,9 @@ export class LinePage {
             video_urls: post.video_urls ? post.video_urls : [],
             social_post: true
         }
-
+        if (this.chatPrvd.bgState.getState() == 'stretched') {
+            this.toggleChatOptions();
+        }
         this.postMessage(null, params);
     }
 
@@ -941,27 +946,11 @@ export class LinePage {
         return messageB.id - messageA.id;
     }
 
-    private checkUCInterval():void {
-        if (this.messagesInterval) {
-            clearTimeout(this.messIntObject);
-            this.messIntObject = setTimeout(() => {
-                this.getAndUpdateUndercoverMessages();
-            }, 10000);
-        }
-    }
-
     private getAndUpdateUndercoverMessages() {
         this.chatPrvd.isMainBtnDisabled = false;
         this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages)
             .subscribe(res => {
                 if (res) {
-                    //// console.log('undercover messages update...');
-                    //if (res.ids_to_remove && res.ids_to_remove.length > 0)
-                    //    for (let i in this.chatPrvd.postMessages)
-                    //        for (let j in res.ids_to_remove)
-                    //            if (this.chatPrvd.postMessages[i].id == res.ids_to_remove[j])
-                    //                this.chatPrvd.postMessages.splice(i, 1);
-
                     if (res.messages && res.messages.length > 0) {
                         for (let i in this.chatPrvd.postMessages) {
                             for (let j in res.messages) {

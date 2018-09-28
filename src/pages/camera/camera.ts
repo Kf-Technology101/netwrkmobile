@@ -66,7 +66,7 @@ export class CameraPage {
 
   takePhoto() {
     this.tools.showLoader();
-    // picture options
+
     const pictureOpts = {
       width: 1280,
       height: 1280,
@@ -76,8 +76,7 @@ export class CameraPage {
     // take a picture
     this.cameraUI.button.hidden = true;
     this.cameraPreview.takePicture(pictureOpts).then(imageData => {
-      console.log(imageData);
-      // this.cameraPrvd.takenPictures = data:image/jpeg;base64,' + imageData[0];
+
       this.cameraUI.button.state = 'photoButtonFadeOut';
       this.cameraUI.tooltip = 'tooltipFadeOut';
       if (this.storage.get('first_time_camera') === null) {
@@ -86,8 +85,8 @@ export class CameraPage {
       setTimeout(() => {
         this.mainBtn.state = 'normal';
       }, animSpeed.fadeIn/2);
+
       this.imgBg = `url(data:image/jpeg;base64,${imageData[0]})`;
-      // this.imgUrl = 'data:image/jpeg;base64,' + imageData[0];
 
       this.base64ToGallery.base64ToGallery(imageData[0], { prefix: 'netwrk_' }).then(
         res => {
@@ -123,7 +122,6 @@ export class CameraPage {
   }
 
   saveImage() {
-    // console.log("Saving image:", this.imgUrl);
     if (this.cameraPrvd.takenPictures.length < 3) {
       this.cameraPrvd.pushPhoto(this.imgUrl);
       this.goBack();

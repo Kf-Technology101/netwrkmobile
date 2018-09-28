@@ -22,7 +22,6 @@ export class Camera {
     public storage: LocalStorage,
     public cameraPreview: CameraPreview
   ) {
-    console.log('Hello Camera Provider');
     this.cameraPreviewOpts.width = document.documentElement.clientWidth;
     this.cameraPreviewOpts.height = document.documentElement.clientHeight;
   }

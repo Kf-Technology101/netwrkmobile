@@ -3,14 +3,10 @@
   <ion-grid>
     <ion-row align-items-end>
       <ion-col>
-        <div *ngIf="!imgBg && storage.get('first_time_camera') === null"
-             class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
+        <div *ngIf="!imgBg" class="tooltip" [@cameraUIstate]="cameraUI.tooltip">
           Tap for a picture
-          <div></div>
         </div>
-        <button ion-button *ngIf="!imgBg" [@cameraUIstate]="cameraUI.button.state"
-        class="take-photo" (click)="takePhoto()" [hidden]="cameraUI.button.hidden"
-          outline color="bk">
+        <button ion-button *ngIf="!imgBg" [@cameraUIstate]="cameraUI.button.state" class="take-photo" (click)="takePhoto()" [hidden]="cameraUI.button.hidden" outline color="bk">
           <div class="white"></div>
         </button>
       </ion-col>
@@ -18,7 +14,6 @@
       <button *ngIf="imgBg" ion-button class="camera-cancel-button" (tap)="cancelSave()">
         <ion-icon ios="ios-close" md="ios-close"></ion-icon>
       </button>
-
     </ion-row>
   </ion-grid>
 </ion-content>
@@ -27,15 +22,12 @@
   <button *ngIf="!imgBg" class="switch-camera" ion-button clear (click)="switchCamera()">
     <img class="sun-icon" src="assets/images/switch_camera_icon.png">
   </button>
-  <button *ngIf="!imgBg" ion-button color="bk"
-    class="main-action-btn transparent small small-icon"
-    (click)="goBack()" outline>
-  <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
+
+  <button *ngIf="!imgBg" ion-button color="bk" class="main-action-btn transparent small small-icon" (click)="goBack()" outline>
+    <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
   </button>
 
-  <button isScrolling="false" tapable *ngIf="imgBg" [@mainBtnState]="mainBtn.state" color="bk"
-  class="main-action-btn big has-footer transparent border" (tap)="saveImage()">
-    <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"
-    class="forward-arrow"></ion-icon>
+  <button isScrolling="false" tapable *ngIf="imgBg" [@mainBtnState]="mainBtn.state" color="bk" class="main-action-btn big has-footer transparent border" (tap)="saveImage()">
+    <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline" class="forward-arrow"></ion-icon>
   </button>
 </ion-footer>

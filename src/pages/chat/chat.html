@@ -381,9 +381,7 @@
           </ng-container>
 
           <ng-container *ngIf="message.locked_by_user && user.id != message.user_id">
-            <span *ngIf="message.text_with_links" class="text"
-                  [ngClass]="{ 'emoji' : message.is_emoji }"
-                  (click)="toolsPrvd.handleLinkClick($event)">
+            <span *ngIf="message.text_with_links" class="text" [ngClass]="{ 'emoji' : message.is_emoji }" (click)="toolsPrvd.handleLinkClick($event)">
               <i>[Message locked]</i>
             </span>
           </ng-container>
@@ -413,11 +411,8 @@
           </button>
         </ng-container>
 
-        <ng-container *ngIf="message.locked_by_user && user.id == message.user_id ||
-                            !message.locked_by_user">
-          <ion-slides *ngIf="message.image_urls.length +
-                             message.video_urls.length > 1" pager="true"
-                      (ionSlideDidChange)="videoservice.messageSliderChange($event, pageTag)">
+        <ng-container *ngIf="message.locked_by_user && user.id == message.user_id || !message.locked_by_user">
+          <ion-slides *ngIf="message.image_urls.length + message.video_urls.length > 1" pager="true" (ionSlideDidChange)="videoservice.messageSliderChange($event, pageTag)">
             <ion-slide *ngFor="let img of message.image_urls">
               <img [src]="img" (load)="chatPrvd.calcLoadedImages()"/>
             </ion-slide>
@@ -431,11 +426,9 @@
               </video>
             </ion-slide>
           </ion-slides>
-          <ng-container *ngIf="message.image_urls.length +
-                               message.video_urls.length <= 1">
+          <ng-container *ngIf="message.image_urls.length + message.video_urls.length <= 1">
             <ng-container *ngIf="message.image_urls.length > 0">
-              <img *ngFor="let j of message.image_urls" src="{{j}}"
-              (load)="chatPrvd.calcLoadedImages()"/>
+              <img *ngFor="let j of message.image_urls" src="{{j}}" (load)="chatPrvd.calcLoadedImages()"/>
             </ng-container>
             <ng-container *ngIf="message.video_urls.length > 0">
               <div class="video-container" (tap)="videoservice.toggleVideoVolume($event)">

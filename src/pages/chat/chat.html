@@ -274,11 +274,8 @@
           </button>
         </ng-container>
 
-        <ng-container *ngIf="message.locked_by_user && user.id == message.user_id ||
-                            !message.locked_by_user">
-          <ion-slides *ngIf="message.image_urls.length +
-                             message.video_urls.length > 1" pager="true"
-                      (ionSlideDidChange)="videoservice.messageSliderChange($event, pageTag)">
+        <ng-container *ngIf="message.locked_by_user && user.id == message.user_id || !message.locked_by_user">
+          <ion-slides *ngIf="message.image_urls.length + message.video_urls.length > 1" pager="true" (ionSlideDidChange)="videoservice.messageSliderChange($event, pageTag)">
             <ion-slide *ngFor="let img of message.image_urls">
               <img [src]="img" (load)="chatPrvd.calcLoadedImages()"/>
             </ion-slide>
@@ -461,15 +458,9 @@
   </ion-infinite-scroll>
 </ion-content>
 
-
-
-        <!--Footer-->
+<!--Footer-->
 <ion-footer class="has-input chatFooter chatChatFooter">
-  <div item-content class="appended-pictures-container"
-    [hidden]="chatPrvd.appendContainer.hidden"
-    [@containerState]="chatPrvd.appendContainer.state"
-    [ngClass]="{ 'netwrk' : !isUndercover }"
-    *ngIf="cameraPrvd.takenPictures && cameraPrvd.takenPictures.length > 0">
+  <div item-content class="appended-pictures-container" [hidden]="chatPrvd.appendContainer.hidden" [@containerState]="chatPrvd.appendContainer.state" [ngClass]="{ 'netwrk' : !isUndercover }" *ngIf="cameraPrvd.takenPictures && cameraPrvd.takenPictures.length > 0 && (chatPrvd.isLobbyChat || chatPrvd.areaLobby || chatPrvd.getState() == 'area')">
     <div class="img-container" *ngFor="let i of cameraPrvd.takenPictures; let indx = index" >
       <img class="img-preview" [src]="i"/>
       <button (click)="removeAppendedImage(indx)">
@@ -478,14 +469,11 @@
     </div>
   </div>
 
-  <div #emojiCont item-content class="gallery-container emoji-container"
-    [hidden]="emojiContainer.hidden" [@containerState]="emojiContainer.state">
-    <span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)"
-      class="emoji-item">{{ convertEmoji(emoji) }}</span>
+  <div #emojiCont item-content class="gallery-container emoji-container" [hidden]="emojiContainer.hidden" [@containerState]="emojiContainer.state" *ngIf="chatPrvd.isLobbyChat || chatPrvd.areaLobby || chatPrvd.getState() == 'area'">
+    <span item-content *ngFor="let emoji of emojis" (click)="insertEmoji(emoji)" class="emoji-item">{{ convertEmoji(emoji) }}</span>
   </div>
 
-  <div #shareCont item-content class="gallery-container share-container"
-    [hidden]="shareContainer.hidden" [@containerState]="shareContainer.state">
+  <div #shareCont item-content class="gallery-container share-container" [hidden]="shareContainer.hidden" [@containerState]="shareContainer.state" *ngIf="chatPrvd.isLobbyChat || chatPrvd.areaLobby || chatPrvd.getState() == 'area'">
     <ion-toolbar [ngClass]="{ 'no-events' : !socialLoaderHidden }">
       <div class="slide-container sl-facebook">
         <div #slfb [ngClass]="{'active': shareCheckbox.facebook}" class="toggle-el"
@@ -531,25 +519,25 @@
       <ng-container *ngFor="let post of socialPosts">
         <ng-container *ngIf="post.text_with_links || post.image_urls.length > 0">
           <div (click)="postMessageFromSocial(post)" class="img-container">
+
             <ng-container *ngIf="post.social == 'facebook'">
               <ion-icon ios="logo-facebook" md="logo-facebook"
               class="social-ico" color="facebook"></ion-icon>
             </ng-container>
+
             <ng-container *ngIf="post.social == 'twitter'">
               <ion-icon ios="logo-twitter" md="logo-twitter"
               class="social-ico" color="twitter"></ion-icon>
             </ng-container>
+
             <ng-container *ngIf="post.social == 'instagram'">
               <ion-icon ios="logo-instagram" md="logo-instagram"
               class="social-ico" color="instagram"></ion-icon>
             </ng-container>
-            <p *ngIf="post.text_with_links" class="message {{ post.social }}"
-            [innerHTML]="post.text_with_links"
-            [ngClass]="{'with-media': post.image_urls.length > 0 ||
-                      (post.video_urls && post.video_urls.length > 0)}"></p>
-            <ion-slides *ngIf="post.image_urls.length +
-                               post.video_urls.length > 1" pager="true"
-                        (ionSlideDidChange)="videoservice.messageSliderChange($event, pageTag)">
+
+            <p *ngIf="post.text_with_links" class="message {{ post.social }}" [innerHTML]="post.text_with_links" [ngClass]="{'with-media': post.image_urls.length > 0 || (post.video_urls && post.video_urls.length > 0)}"></p>
+
+            <ion-slides *ngIf="post.image_urls.length + post.video_urls.length > 1" pager="true" (ionSlideDidChange)="videoservice.messageSliderChange($event, pageTag)">
               <ion-slide *ngFor="let img of post.image_urls">
                 <img [src]="img" (load)="chatPrvd.calcLoadedImages()"/>
               </ion-slide>
@@ -559,11 +547,10 @@
                 </video>
               </ion-slide>
             </ion-slides>
-            <ng-container *ngIf="post.image_urls.length +
-                                 post.video_urls.length <= 1">
+
+            <ng-container *ngIf="post.image_urls.length + post.video_urls.length <= 1">
               <ng-container *ngIf="post.image_urls.length > 0">
-                <img *ngFor="let j of post.image_urls" [src]="j"
-                (load)="chatPrvd.calcLoadedImages()"/>
+                <img *ngFor="let j of post.image_urls" [src]="j" (load)="chatPrvd.calcLoadedImages()"/>
               </ng-container>
               <ng-container *ngFor="let vid of post.video_urls">
                 <video [poster]="vid.poster" loop muted playsinline>
@@ -571,12 +558,11 @@
                 </video>
               </ng-container>
             </ng-container>
+
           </div>
         </ng-container>
         <ng-container *ngIf="!post.image_urls && post.text_with_links">
-          <p (click)="postMessageFromSocial(post)"
-            class="message {{ post.social }}"
-            [innerHTML]="post.text_with_links"></p>
+          <p (click)="postMessageFromSocial(post)" class="message {{ post.social }}" [innerHTML]="post.text_with_links"></p>
         </ng-container>
       </ng-container>
     </div>
@@ -594,27 +580,16 @@
         <span ion-text>No, I’ll move elsewhere</span>
   </button>
 
-  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope"
-    [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
-    class="main-action-btn has-footer transparent chatMainBtn"
-    (click)="openLinePage()" [disabled]="chatPrvd.isMainBtnDisabled" (press)="goToHoldScreen()"
-  [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
-  <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
+  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (click)="openLinePage()" [disabled]="chatPrvd.isMainBtnDisabled" (press)="goToHoldScreen()" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
+    <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
   </button>
 
-  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="!settings.isNewlineScope"
-    [@mainBtnState]="chatPrvd.mainBtn.state" color="bk"
-    class="main-action-btn has-footer transparent chatMainBtn" (press)="goToHoldScreen()"
-    (click)="handleMainBtnClick($event)" [disabled]="chatPrvd.isMainBtnDisabled"
-  [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
-      <!--<ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline" *ngIf="chatPrvd.isLobbyChat || !isUndercover" class="small"></ion-icon>-->
-  </button>
+  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="!settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (press)="goToHoldScreen()" (click)="handleMainBtnClick($event)" [disabled]="chatPrvd.isMainBtnDisabled" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}"></button>
 
   <button class="netwrk-button" (click)="eventClickTrigger()" *ngIf="isUndercover && !chatPrvd.isLobbyChat && !settings.isNewlineScope && chatPrvd.getState() == 'undercover'">
-        <img src="assets/icon/wifi.png"/>
+      <img src="assets/icon/wifi.png"/>
   </button>
 
-    <!--'greyStyle' : chatPrvd.currentLobby.isAddButtonAvailable && chatPrvd.isLobbyChat-->
   <div class="flip-container hover" [ngClass]="{'hover' : flipHover }" *ngIf="chatPrvd.isLobbyChat || chatPrvd.getState() == 'area'">
     <ion-item class="text front" #inputItem *ngIf="(chatPrvd.currentLobby.currentUserPresent && chatPrvd.isLobbyChat) || !mainInput.hidden" [@fadeState]="mainInput.state" [ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state}">
       <div item-content id="textInpBtns" [@bgState]="chatPrvd.bgState.state">

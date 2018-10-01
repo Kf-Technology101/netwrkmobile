@@ -1081,18 +1081,18 @@ export class ChatPage implements DoCheck {
           this.hideTopSlider(this.activeTopForm);
           this.chatPrvd.postBtn.setState(false);
         }
-        //this.keyboard.close();
+        this.keyboard.close();
         setTimeout(() => {
           this.setMainBtnStateRelativeToEvents();
         }, 300);
       } else if (this.chatPrvd.mainBtn.getState() == 'moved-n-scaled') {
         this.toggleContainer(this.emojiContainer, 'hide');
         this.toggleContainer(this.shareContainer, 'hide');
-        //this.keyboard.close();
+        this.keyboard.close();
       }else if(this.chatPrvd.mainBtn.getState() == 'back-to-hold'){
           this.toggleContainer(this.emojiContainer, 'hide');
           this.toggleContainer(this.shareContainer, 'hide');
-          //this.keyboard.close();
+          this.keyboard.close();
       }
       this.chatPrvd.isMessagesVisible = false;
       this.chatPrvd.postMessages = [];
@@ -1426,7 +1426,7 @@ export class ChatPage implements DoCheck {
 
   private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
     return new Promise((resolve, reject) => {
-      if (!this.chatPrvd.isLobbyChat || forced) {
+      if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby || forced && !this.chatPrvd.areaLobby ) {
         this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
         .subscribe(res => {
           res = this.chatPrvd.organizeMessages(res.messages);
@@ -1579,7 +1579,7 @@ export class ChatPage implements DoCheck {
   private constructorLoad():Promise<any> {
     return new Promise(resolve => {
       console.log('%c [CHAT] constructorLoad ', 'background: #1287a8;color: #ffffff');
-      //this.keyboard.disableScroll(true);
+      this.keyboard.disableScroll(true);
 
       this.setCustomTransitions();
       this.keyboard.onKeyboardShow().subscribe(res => {
@@ -1970,8 +1970,8 @@ export class ChatPage implements DoCheck {
                   }else{
                       this.placeholderText = 'What would you like to say?';
                   }
-                  this.chatPrvd.allowUndercoverUpdate = false;
-                  clearTimeout(this.messIntObject);
+                  //this.chatPrvd.allowUndercoverUpdate = false;
+                  //clearTimeout(this.messIntObject);
                   this.chatPrvd.toggleLobbyChatMode();
                   this.chatPrvd.isMainBtnDisabled = false;
                   this.chatPrvd.areaLobby=true;

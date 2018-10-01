@@ -654,7 +654,6 @@ export class LinePage {
         this.chatPrvd.sendMessage(messageParams).then(res => {
             this.toolsPrvd.showLoader();
 
-            this.app.getRootNav().setRoot(ChatPage);
             this.setting.isNewlineScope=false;
             this.chatPrvd.currentLobbyMessage=res;
             this.chatPrvd.appendLineContainer.hidden = true;
@@ -672,6 +671,7 @@ export class LinePage {
                 this.chatPrvd.allowUndercoverUpdate = false;
                 clearTimeout(this.messIntObject);
                 this.chatPrvd.toggleLobbyChatMode();
+                this.app.getRootNav().setRoot(ChatPage);
                 this.chatPrvd.isMainBtnDisabled = false;
                 this.toolsPrvd.hideLoader();
             }, err => {
@@ -1057,7 +1057,7 @@ export class LinePage {
     private constructorLoad():Promise<any> {
         return new Promise(resolve => {
             console.log('%c [CHAT] constructorLoad ', 'background: #1287a8;color: #ffffff');
-            //this.keyboard.disableScroll(true);
+            this.keyboard.disableScroll(true);
 
             this.setCustomTransitions();
 
@@ -1143,6 +1143,9 @@ export class LinePage {
             if (!this.user.role_image_url)
                 this.user.role_image_url = this.toolsPrvd.defaultAvatar;
 
+            if (this.chatPrvd.bgState.getState() == 'stretched') {
+                this.toggleChatOptions();
+            }
 
             this.isUndercover = true;
             this.chatPrvd.setState('undercover');
@@ -1297,6 +1300,9 @@ export class LinePage {
 
     ionViewDidEnter() {
         this.onEnter();
+        if (this.chatPrvd.bgState.getState() == 'stretched') {
+            this.toggleChatOptions();
+        }
         this.toolsPrvd.hideLoader();
     }
 

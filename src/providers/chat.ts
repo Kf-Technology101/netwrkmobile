@@ -288,7 +288,6 @@ export class Chat {
             }else{
                this.postMessages = [];
             }
-
             this.postAreaMessages = [];
             if(this.areaLobby){
                   this.postAreaMessages.unshift(message)
@@ -303,7 +302,6 @@ export class Chat {
                 this.currentLobby.users = res.users;
                 this.currentLobby.hostId = res.host_id;
                 this.currentLobby.isAddButtonAvailable = !this.isCurrentUserBelongsToChat(this.currentLobby.users);
-                //this.sortLobbyUsersByHostId(this.currentLobby.hostId);
                 resolve();
               } else {
                 reject('[getLocationLobbyUsers] Server returned no users or host_id');

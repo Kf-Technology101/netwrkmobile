@@ -10,7 +10,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 export class EmojiFilter implements PipeTransform {
   transform(value, args) {
-    console.log(value);
     return String.fromCodePoint(value);
   }
 }

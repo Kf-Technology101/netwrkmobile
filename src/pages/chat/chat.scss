@@ -276,6 +276,15 @@ page-network-no {
   .content.no-height {
     height:0 !important;
   }
+  .content.areaLobby {
+    .message {
+      img {
+        width:50px;
+        height: 50px;
+      }
+    }
+  }
+
   .content {
     background: transparent;
     .message-container .message-item {

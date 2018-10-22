@@ -528,7 +528,7 @@ page-linelist,page-netwrklist {
           width: 100%;
         }
         video {
-          max-height: 400px;
+          max-height: 200px;
           width: 100%;
         }
         .slides {
@@ -617,10 +617,10 @@ page-linelist,page-netwrklist {
           .swiper-slide {
             align-items: center;
             .slide-zoom {
-              max-height: 460px;
+              max-height: 200px;
               video, img {
                 top: 0;
-                min-height: 360px;
+                min-height: 200px;
               }
               img {
                 height: 100%;
@@ -719,6 +719,7 @@ page-linelist,page-netwrklist {
           .username {
             font-size: 16px;
             display: inline-block;
+            margin-bottom: 12px;
           }
           .message-date {
             font-size: 12px;
@@ -744,23 +745,30 @@ page-linelist,page-netwrklist {
           .text {
             display: block;
             font-size: 12px;
-            margin-top: 12px;
-            margin-left: -10px;
             &.emoji {
               font-size: 44px;
             }
           }
         }
-        img, video {
+        video {
           position: relative;
           z-index: 1;
-          top: -18px;
           background: color($colors, white);
           width: 100%;
-        }
-        video {
           max-height: 460px;
           top: 0px;
+        }
+        .mar-10 {
+          margin-bottom:10px;
+        }
+        img.resize-img {
+          position: relative;
+          z-index: 1;
+          top: 0px;
+          background: color($colors, white);
+          width: 200px;
+          display: block;
+          height: 200px;
         }
         .feedback-button {
           width: 42px;
@@ -849,13 +857,12 @@ page-linelist,page-netwrklist {
           .swiper-slide {
             align-items: center;
             .slide-zoom {
-              max-height: 460px;
+              max-height: 250px;
               video, img {
                 top: 0;
-                min-height: 360px;
+                min-height: 250px;
               }
               img {
-                height: 100%;
                 object-fit: contain;
               }
             }
@@ -978,15 +985,36 @@ page-linelist,page-netwrklist {
             }
           }
         }
-        img, video {
+
+        img.resize-img {
           position: relative;
           z-index: 1;
-          top: -18px;
+          top: -2px;
+          background: color($colors, white);
+          display: block;
+          height: 200px;
+      }
+        .img-wrapper {
+          align-items: center;
+          max-height: 200px;
+          video, img {
+            top: 0;
+            min-height: 200px;
+          }
+          img {
+            object-fit: contain;
+          }
+        }
+
+        video {
+          position: relative;
+          z-index: 1;
+          top: -2px;
           background: color($colors, white);
           width: 100%;
         }
         video {
-          max-height: 460px;
+          max-height: 300px;
           top: 0px;
         }
         .feedback-button {

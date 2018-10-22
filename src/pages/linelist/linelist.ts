@@ -1299,6 +1299,8 @@ export class LinePage {
     }
 
     ionViewDidEnter() {
+        this.storage.set('slider_position', 'right');
+        this.slideAvatarPrvd.setSliderPosition('right');
         this.onEnter();
         if (this.chatPrvd.bgState.getState() == 'stretched') {
             this.toggleChatOptions();

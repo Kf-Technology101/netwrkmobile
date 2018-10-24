@@ -61,6 +61,11 @@ export class SignUpFacebookPage {
     });
   }
 
+
+  public skipConnectToFacebook() {
+      this.toolsPrvd.pushPage(ChatPage);
+  }
+
   ionViewDidLoad() {
     console.log('ionViewDidLoad SignUpFacebookPage');
   }

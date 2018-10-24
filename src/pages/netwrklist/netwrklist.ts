@@ -121,6 +121,8 @@ export class NetwrklistPage {
     }
 
     public goToLanding() {
+        this.chatPrvd.postMessages=[];
+        this.chatPrvd.isCleared = true;
         this.app.getRootNav().setRoot(ChatPage);
     }
 
@@ -156,7 +158,7 @@ export class NetwrklistPage {
 
       let pageIndex = this.navCtrl.length() - 1;
 
-      this.app.getRootNav().push(ChatPage).then(() => {
+      this.app.getRootNav().setRoot(ChatPage).then(() => {
           if(pageIndex){
               this.navCtrl.remove(pageIndex);
           }

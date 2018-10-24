@@ -16,7 +16,7 @@
                 (ionFocus)="inputOn($event, 'focus')"
                 (ionBlur)="inputOn($event, 'blur')"
                 type="text"
-                placeholder="Email/Phone number..."
+                placeholder="Email..."
                 [formControl]="signUpForm.controls['login']"
                 [ngClass]="{'error-border':!signUpForm.controls['login'].valid}"
                 name="login"

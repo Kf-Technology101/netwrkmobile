@@ -1178,6 +1178,8 @@ export class ChatPage implements DoCheck {
   }
 
   private goToHoldScreen():void {
+      this.chatPrvd.postMessages=[];
+      this.chatPrvd.isCleared = true;
       this.toolsPrvd.pushPage(NetwrklistPage);
   }
 

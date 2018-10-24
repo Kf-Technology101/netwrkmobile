@@ -503,7 +503,8 @@ export class Chat {
 
     if (data.undercover && !doRefresh) {
       data.offset = 0;
-      data.limit = offset == 0 ? 20 : offset;
+      //data.limit = offset == 0 ? 20 : offset;
+      data.limit = 20;
       data.current_ids = messagesIds;
     }
 
@@ -546,7 +547,8 @@ export class Chat {
 
     if (!doRefresh) {
       data.offset = 0;
-      data.limit = offset == 0 ? 20 : offset
+      //data.limit = offset == 0 ? 20 : offset
+      data.limit = 20
     }
 
     if (params) Object.assign(data, params);

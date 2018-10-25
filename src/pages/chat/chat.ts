@@ -994,6 +994,7 @@ export class ChatPage implements DoCheck {
         this.settings.isNewlineScope=false;
         this.settings.isCreateLine=false;
         this.chatPrvd.isCleared = true;
+        this.refreshChat();
     }
 
     public openLinePage():void {

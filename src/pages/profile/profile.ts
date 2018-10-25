@@ -240,6 +240,8 @@ export class ProfilePage {
   }
 
   private goBack():void {
+      this.chatPrvd.postMessages=[];
+      this.chatPrvd.isCleared = true;
       this.toolsPrvd.popPage();
 
     //if (this.usersQueue.length > 0) {

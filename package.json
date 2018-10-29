@@ -149,8 +149,7 @@
       }
     },
     "platforms": [
-      "browser",
-      "ios"
+      "browser"
     ]
   }
 }

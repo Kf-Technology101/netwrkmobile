@@ -144,7 +144,7 @@ export class Gps {
       for (let j = 0; j < data[i].address_components.length; j++) {
         for (let z = 0; z < data[i].address_components[j].types.length; z++) {
           if (data[i].address_components[j].types[z] == 'route') {
-              this.place_name = data[i].address_components[0].long_name+ ', ' +data[i].address_components[2].long_name+', ' +data[i].address_components[5].long_name;
+              this.place_name = data[i].address_components[0].long_name+ ', ' +data[i].address_components[1].long_name+', '+data[i].address_components[2].long_name+', ' +data[i].address_components[3].long_name;
               this.localStorage.set('place_name', this.place_name);
           }
           if (data[i].address_components[j].types[z] == 'postal_code') {

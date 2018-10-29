@@ -2027,6 +2027,7 @@ export class ChatPage implements DoCheck {
               this.chatPrvd.areaLobby=false;
               this.chatPrvd.toggleLobbyChatMode();
               if(this.pageNav){
+                  this.chatPrvd.postMessages=[];
                   this.chatPrvd.setState('undercover');
                   this.undercoverPrvd.setUndercover(true);
                   this.isUndercover=true;

@@ -32,6 +32,7 @@ export class Chat {
 
   public postMessages: any = [];
   public postAreaMessages: any = [];
+  public postLineMessages: any = [];
 
   public oldMessages:any = [];
 
@@ -283,14 +284,12 @@ export class Chat {
           console.log('getLocationLobby:', res);
           if (res && res.messages && res.room_id) {
             this.postMessages = [];
-
+            this.postLineMessages = [];
             this.postAreaMessages = [];
             if(this.areaLobby){
                this.postAreaMessages.unshift(message)
             }else if(!this.isLobbyChat){
-                if(this.postMessages.length == 0){
-                    this.postMessages.unshift(message);
-                }
+                this.postLineMessages.unshift(message);
             }
 
             if (res.messages && res.messages.length > 0) {

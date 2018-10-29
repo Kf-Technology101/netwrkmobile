@@ -38,7 +38,6 @@ modal-legendaryhistory {
     &.netwrk-content.content-md {
       .scroll-content {
         margin-top: 45px !important;
-        // margin-bottom: 70px;
       }
     }
     &.netwrk-content.content-ios {
@@ -49,7 +48,6 @@ modal-legendaryhistory {
     &.lobby-content.content-md {
       .scroll-content {
         margin-top: 25px !important;
-        // margin-bottom: 70px;
       }
     }
     &.lobby-content.content-ios {
@@ -751,7 +749,12 @@ page-network-no {
   }
 
   .areaLobby {
-    width:95%;
+    width:98%;
+  }
+
+  .lineLobby {
+    width:97%;
+    top: 101px !important;
   }
 
   .post-setting {
@@ -775,11 +778,13 @@ page-network-no {
       color: rgba(255,255,255,1) !important;
       font-size: 16px;
       margin: 0;
-      //            border-bottom: 1px solid #5da5d8;
     }
   }
 
   .content {
+    &.lobby-content {
+      margin-top: 90px;
+    }
     position: absolute;
     top: 0;
     background: transparent !important;
@@ -819,7 +824,10 @@ page-network-no {
         background: #fff;
       }
       &.lobby {
-        padding-top: 80px;
+        padding-top: 60px;
+      }
+      &.areaLobby {
+        padding-top: 50px !important;
       }
       .message.conversation-post{
         border-radius: 13px;

@@ -283,17 +283,20 @@ export class Chat {
           console.log('getLocationLobby:', res);
           if (res && res.messages && res.room_id) {
             this.postMessages = [];
-            if(res.messages){
-               this.postMessages = res.messages;
-            }else{
-               this.postMessages = [];
-            }
+
             this.postAreaMessages = [];
             if(this.areaLobby){
-                  this.postAreaMessages.unshift(message)
-            }else{
-               this.postMessages.unshift(message);
+               this.postAreaMessages.unshift(message)
+            }else if(!this.isLobbyChat){
+                if(this.postMessages.length == 0){
+                    this.postMessages.unshift(message);
+                }
             }
+
+            if (res.messages && res.messages.length > 0) {
+              this.postMessages = this.postMessages.concat(res.messages);
+            }
+
             this.currentLobby.id = res.room_id;
             this.currentLobbyMessage = message;
             this.startLobbySocket(res.room_id);
@@ -505,18 +508,14 @@ export class Chat {
       data.offset = 0;
       //data.limit = offset == 0 ? 20 : offset;
       data.limit = 20;
-      data.current_ids = messagesIds;
+      data.current_ids = [];
+      //data.current_ids = messagesIds;
     }
 
     if (params) Object.assign(data, params);
 
-    // console.log('[getMessages] params:', params);
-    // console.log('[getMessages] data (if undecover & can\'t refresh):', data);
-
     let seq = this.api.get('messages', data).share();
     let seqMap = seq.map(res => res.json());
-
-    // console.log('===================================');
 
     return seqMap;
   }

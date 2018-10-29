@@ -284,7 +284,7 @@
 
   <div id="places"></div>
 
-<div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat, 'areaLobby' : chatPrvd.areaLobby }" >
+<div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat, 'areaMessageLobby' : chatPrvd.areaLobby }" >
 
     <p *ngIf="chatPrvd.postMessages.length == 0 && (!isUndercover || chatPrvd.isLobbyChat)" class="no-data-message abs">There are no posts yet</p>
 

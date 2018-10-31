@@ -79,7 +79,6 @@ export class UndercoverCharacterPage {
         }
     }, err => {
       this.settings.isCreateLine=false;
-      //this.toolsPrvd.showToast(this.textError);
     });
   }
 

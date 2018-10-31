@@ -293,6 +293,7 @@ export class Chat {
             }
 
             if (res.messages && res.messages.length > 0) {
+              this.postMessages = [];
               this.postMessages = this.postMessages.concat(res.messages);
             }
 

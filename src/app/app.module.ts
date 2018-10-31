@@ -79,6 +79,7 @@ import { TwitterConnect } from '@ionic-native/twitter-connect';
 import { BackgroundMode } from '@ionic-native/background-mode';
 import { Crop } from '@ionic-native/crop';
 import { AppAvailability } from '@ionic-native/app-availability';
+import { PhotoViewer } from '@ionic-native/photo-viewer';
 
 // sockets
 import { Ng2CableModule } from 'ng2-cable';
@@ -147,6 +148,7 @@ export function providers() {
     CameraPreview,
     Camera,
     SocialSharing,
+    PhotoViewer,
     File,
     Transfer,
     Keyboard,

@@ -274,11 +274,20 @@ page-network-no {
   .content.no-height {
     height:0 !important;
   }
-  .content.areaLobby,.content.lineLobby {
+  .content.areaLobby {
     .message {
       img.img-ico {
         width:50px;
         height: 50px;
+      }
+    }
+  }
+  .content.lineLobby {
+    .message {
+      img.img-ico {
+        width:20px;
+        height: 20px;
+        display: block;
       }
     }
   }
@@ -756,8 +765,8 @@ page-network-no {
   }
 
   .lineLobby {
-    width:98%;
-    top: 101px !important;
+    width:100%;
+    top: 120px !important;
   }
 
   .post-setting {
@@ -827,7 +836,7 @@ page-network-no {
         background: #fff;
       }
       &.lobby {
-        padding-top: 60px;
+        padding-top: 95px;
       }
       &.areaMessageLobby {
         padding-top: 40px !important;
@@ -1112,54 +1121,96 @@ page-network-no {
         }
 
           .feedback-button {
-          width: 37px;
-          height: 37px;
-          border-radius: 13px;
-          position: absolute;
-          right: 12px;
-          padding: 0 5px;
-          top: 0;
-          z-index: 3;
-          background: color($colors, bk);
-          .icon {
-            pointer-events: none;
-            width: 100%;
-            height: 100%;
-            display: block;
+            width: 37px;
+            height: 37px;
+            border-radius: 13px;
+            position: absolute;
+            right: 12px;
+            padding: 0 5px;
+            top: 0;
             z-index: 3;
-            -webkit-mask: url('../assets/icon/like.svg') no-repeat 75%;
-            background: #fff;
-            &.lobby {
-              -webkit-mask: url('../assets/icon/lobby-icon.svg') no-repeat 75%;
-              background: #fff;
-            }
-          }
-          &.active {
-            background: #fff;
+            background: color($colors, bk);
             .icon {
+              pointer-events: none;
+              width: 100%;
+              height: 100%;
+              display: block;
+              z-index: 3;
               -webkit-mask: url('../assets/icon/like.svg') no-repeat 75%;
-              background: color($colors, bk);
+              background: #fff;
               &.lobby {
                 -webkit-mask: url('../assets/icon/lobby-icon.svg') no-repeat 75%;
+                background: #fff;
+              }
+            }
+
+            &.active {
+              background: #fff;
+              .icon {
+                -webkit-mask: url('../assets/icon/like.svg') no-repeat 75%;
                 background: color($colors, bk);
+                &.lobby {
+                  -webkit-mask: url('../assets/icon/lobby-icon.svg') no-repeat 75%;
+                  background: color($colors, bk);
+                }
+              }
+            }
+            &.disabled {
+              pointer-events: none!important;
+            }
+            &.bottom {
+              top: auto;
+              bottom: 25px;
+            }
+            &.lock {
+              background: color($colors, bk);
+              .icon {
+                font-size: 30px;
+                color: #fff;
               }
             }
           }
-          &.disabled {
-            pointer-events: none!important;
-          }
-          &.bottom {
-            top: auto;
-            bottom: 25px;
-          }
-          &.lock {
+
+
+         .lock-button {
+           width: 40px;
+           height: 37px;
+           border-radius: 13px;
+           position: absolute;
+           right: 11px;
+           padding: 0 5px;
+           top: 2px;
+           z-index: 3;
             background: color($colors, bk);
             .icon {
-              font-size: 30px;
-              color: #fff;
+              pointer-events: none;
+              width: 100%;
+              height: 100%;
+              display: block;
+              z-index: 3;
+            }
+
+            &.active {
+              background: #fff;
+              .icon {
+                background: color($colors, bk);
+              }
+            }
+            &.disabled {
+              pointer-events: none!important;
+            }
+            &.bottom {
+              top: auto;
+              bottom: 25px;
+            }
+            &.lock {
+              background: color($colors, bk);
+              .icon {
+                font-size: 30px;
+                color: #fff;
+              }
             }
           }
-        }
 
         .recast-button {
           width: 43px;

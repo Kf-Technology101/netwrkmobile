@@ -1296,6 +1296,14 @@ export class LinePage {
         }, 1);
 
         this.user = this.authPrvd.getAuthData();
+
+        if(this.user.role_name=='Private network' && this.slideAvatarPrvd.sliderPosition == 'right'){
+            this.toggleTopSlider('lock');
+        }
+
+        if(this.user.role_name=='Temporary gathering' && this.slideAvatarPrvd.sliderPosition == 'right'){
+            this.toggleTopSlider('timer')
+        }
     }
 
     ionViewDidEnter() {

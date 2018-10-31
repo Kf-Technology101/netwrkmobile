@@ -233,5 +233,13 @@
       "APP_ID": "390382104668705",
       "APP_NAME": "Netwrk"
     }
+  },
+  "com-sarriaroman-photoviewer": {
+    "source": {
+      "type": "registry",
+      "id": "com-sarriaroman-photoviewer"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

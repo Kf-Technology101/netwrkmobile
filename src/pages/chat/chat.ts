@@ -267,7 +267,6 @@ export class ChatPage implements DoCheck {
       this.undercoverPrvd.setUndercover(true);
       this.isUndercover=true;
       this.pageNav=true;
-      this.initLpMap();
   }
 
   public shareMessageToFacebook(message):void {
@@ -425,8 +424,6 @@ export class ChatPage implements DoCheck {
 
                 let marker = new google_maps.Marker({
                     map: this.map,
-                    title:this.user.role_name,
-                    animation: google_maps.Animation.DROP,
                     position: res.results[0].geometry.location,
                     icon: icon
                 });
@@ -440,8 +437,6 @@ export class ChatPage implements DoCheck {
                         };
                         let markers = new google_maps.Marker({
                             map: this.map,
-                            title:this.chatPrvd.postMessages[i],
-                            animation: google_maps.Animation.DROP,
                             position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
                             icon: icon1,
                             id: this.chatPrvd.postMessages[i]
@@ -463,7 +458,6 @@ export class ChatPage implements DoCheck {
 
                                 let markers = new google_maps.Marker({
                                     map: this.map,
-                                    animation: google_maps.Animation.DROP,
                                     position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
                                     icon: icon1,
                                     id: this.chatPrvd.postMessages[i]
@@ -481,7 +475,6 @@ export class ChatPage implements DoCheck {
 
                                 let markers = new google_maps.Marker({
                                     map: this.map,
-                                    animation: google_maps.Animation.DROP,
                                     title:this.chatPrvd.postMessages[i],
                                     position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
                                     icon: icon2,
@@ -877,11 +870,11 @@ export class ChatPage implements DoCheck {
           this.hideTopSlider(this.activeTopForm);
           this.txtIn.value = '';
           this.setMainBtnStateRelativeToEvents();
-        } else this.toolsPrvd.showLoader();
+        }
 
+        this.toolsPrvd.showLoader();
         this.chatPrvd.sendMessage(messageParams).then(res => {
           this.hideTopSlider(this.activeTopForm);
-          this.toolsPrvd.hideLoader();
           message.id=res.id;
 
           if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby && this.chatPrvd.getState() == 'area') {
@@ -891,7 +884,7 @@ export class ChatPage implements DoCheck {
                       text: 'No',
                       role: 'cancel',
                       handler: () => {
-                          this.openConversationLobbyForPinned(message);
+                          this.openConversationLobbyForPinnedFormMessage(message);
                       }
                   }, {
                       cssClass: 'active',
@@ -903,7 +896,7 @@ export class ChatPage implements DoCheck {
                           if (this.plt.is('ios')){
                               this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://landing').then(res => {
                                       this.toolsPrvd.showToast('Message successfully shared');
-                                      this.openConversationLobbyForPinned(message);
+                                      this.openConversationLobbyForPinnedFormMessage(message);
                                   }, err =>{
                                       this.toolsPrvd.showToast('Unable to share message');
                                   }
@@ -911,7 +904,7 @@ export class ChatPage implements DoCheck {
                           }else{
                               this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
                                       this.toolsPrvd.showToast('Message successfully shared');
-                                      this.openConversationLobbyForPinned(message);
+                                      this.openConversationLobbyForPinnedFormMessage(message);
                                   }, err =>{
                                       this.toolsPrvd.showToast('Unable to share message');
                                   }
@@ -933,6 +926,7 @@ export class ChatPage implements DoCheck {
           this.updatePost(res, message, emoji);
           this.postTimerObj.time = null;
           this.chatPrvd.scrollToTop();
+          this.toolsPrvd.hideLoader();
         }).catch(err => {
           this.toolsPrvd.hideLoader();
           console.error('sendMessage:', err);
@@ -948,6 +942,7 @@ export class ChatPage implements DoCheck {
         }
       }
     } catch (e) {
+      this.toolsPrvd.hideLoader();
       console.error('Error in postMessage:', e);
     }
   }
@@ -1074,55 +1069,35 @@ export class ChatPage implements DoCheck {
     }
 
   private goArea():void {
-    console.log('_going to area...');
-
     this.messagesInterval = false;
     clearTimeout(this.messIntObject);
-
     this.setPostTimer(3);
-
     this.hideTopSlider(this.activeTopForm);
-    //this.refreshChat();
     this.chatPrvd.setState('area');
     this.placeholderText = 'Start a local conversation...';
     this.getAndUpdateUndercoverMessages();
+    this.initLpMap();
     this.chatPrvd.isMainBtnDisabled = false;
-    this.toolsPrvd.hideLoader();
-
     this.getUsers().then(res => {});
-    //  this.chatPrvd.setState('area');
-    //  this.updateMessages().then(res => {
-    //    this.chatPrvd.isMainBtnDisabled = false;
-    //    this.toolsPrvd.hideLoader();
-    //  }, err => {
-    //    console.error(err);
-    //    this.chatPrvd.isMainBtnDisabled = false;
-    //    this.toolsPrvd.hideLoader();
-    //  });
-    //}, err => {
-    //  console.error(err);
-    //  this.chatPrvd.isMainBtnDisabled = false;
-    //  this.toolsPrvd.hideLoader();
-    //});
+    this.toolsPrvd.hideLoader();
   }
 
-    private getNetworkUsers():void {
-        let netPar:any = {
-            post_code: this.chatPrvd.localStorage.get('chat_zip_code')
-        };
-        this.networkPrvd.getUsers(netPar).subscribe(res => {
-            if (res) {
-                this.networkUsers = res.users;
-                this.uniqueUsers = res.unique_users;
-            }
-        }, err => console.error(err));
-    }
+  private getNetworkUsers():void {
+    let netPar:any = {
+        post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+    };
+    this.networkPrvd.getUsers(netPar).subscribe(res => {
+        if (res) {
+            this.networkUsers = res.users;
+            this.uniqueUsers = res.unique_users;
+        }
+    }, err => console.error(err));
+  }
 
   private goUndercover(event?:any):any {
     console.log('============= goUndercover =============');
     this.messagesInterval = false;
     clearTimeout(this.messIntObject);
-    // Disable main button on view load
     this.chatPrvd.isMainBtnDisabled = true;
     this.toolsPrvd.showLoader();
 
@@ -1157,49 +1132,45 @@ export class ChatPage implements DoCheck {
         this.chatPrvd.setState('area');
 
         this.chatPrvd.detectNetwork().then(res => {
-        console.log('[goUndercover] detectNetwork res:', res);
-        if (res.network)
-          this.chatPrvd.saveNetwork(res.network);
+            console.log('[goUndercover] detectNetwork res:', res);
+            if (res.network)
+              this.chatPrvd.saveNetwork(res.network);
 
-        if (res.message == 'Network not found') {
-           this.gpsPrvd.createNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
-                if(res){
-                    this.networkParams = {
-                        post_code: this.chatPrvd.localStorage.get('chat_zip_code')
-                    };
-                    this.networkPrvd.join(this.networkParams).subscribe(res => {
-                        //this.getNetworkUsers();
-                        this.undercoverPrvd.setUndercover(false);
-                        this.isUndercover=false;
-                        this.flipInput();
-                        this.changePlaceholderText();
-                        setTimeout(() => {
+            if (res.message == 'Network not found') {
+               this.gpsPrvd.createNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
+                    if(res){
+                        this.networkParams = {
+                            post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+                        };
+                        this.networkPrvd.join(this.networkParams).subscribe(res => {
+                            this.getNetworkUsers();
+                            this.undercoverPrvd.setUndercover(false);
+                            this.isUndercover=false;
+                            this.flipInput();
+                            this.changePlaceholderText();
                             this.goArea();
                             this.content.resize();
-                        }, 1);
-                    }, err => {
-                        console.log(err);
-                    });
-
-                }
-            }, err => {
-                console.log(err);
-            });
-          this.toolsPrvd.hideLoader();
-          return;
-        } else {
-          console.log('_network exists');
-          this.undercoverPrvd.setUndercover(false);
-          this.isUndercover=false;
-          this.flipInput();
-          this.changePlaceholderText();
-          setTimeout(() => {
-            this.goArea();
-            this.content.resize();
-          }, 1);
-        }
-        this.chatPrvd.isMainBtnDisabled = false;
-      }, err => console.error(err));
+                        }, err => {
+                            this.toolsPrvd.hideLoader();
+                            console.log(err);
+                        });
+                    }else{
+                        this.toolsPrvd.hideLoader();
+                    }
+                }, err => {
+                   this.toolsPrvd.hideLoader();
+                    console.log(err);
+                });
+            } else {
+              this.undercoverPrvd.setUndercover(false);
+              this.isUndercover=false;
+              this.flipInput();
+              this.changePlaceholderText();
+              this.goArea();
+              this.content.resize();
+            }
+            this.chatPrvd.isMainBtnDisabled = false;
+        }, err => console.error(err));
 
     } else if (this.chatPrvd.getState() == 'area') {
       this.chatPrvd.setState('undercover');
@@ -1207,10 +1178,10 @@ export class ChatPage implements DoCheck {
       this.undercoverPrvd.setUndercover(true);
       this.isUndercover=true;
       this.chatPrvd.alreadyScolledToBottom = false;
-      //this.cameraPrvd.toggleCameraBg();
       this.runUndecoverSlider(this.pageTag);
       this.startMessageUpdateTimer();
       this.flipInput();
+      this.initLpMap();
       this.changePlaceholderText();
       this.messagesInterval = true;
       setTimeout(() => {
@@ -1445,7 +1416,6 @@ export class ChatPage implements DoCheck {
 
   private getUsers():Promise<any> {
     return new Promise((resolve, reject) => {
-      this.toolsPrvd.showLoader();
       this.networkPrvd.getUsers(this.networkParams).subscribe(res => {
         console.log('res:', res);
         if (res) {
@@ -1585,10 +1555,10 @@ export class ChatPage implements DoCheck {
     this.chatPrvd.isCleared = true;
     let messageArray=this.getMessagesIds(postMessage);
     this.chatPrvd.deleteMessages(messageArray).subscribe( res => {
-       this.canRefresh = true;
-    }, err => {
-       this.canRefresh = true;
-    });
+          this.canRefresh = true;
+      }, err => {
+          this.canRefresh = true;
+      });
   }
 
   private flipInput():void {
@@ -1996,10 +1966,10 @@ export class ChatPage implements DoCheck {
                   this.chatPrvd.isMainBtnDisabled = false;
                   this.chatPrvd.isLobbyChat=true;
                   this.chatPrvd.areaLobby=false;
+                  this.initLpMap();
                   this.chatPrvd.setState('undercover');
                   this.undercoverPrvd.setUndercover(true);
                   this.toolsPrvd.hideLoader();
-
               }, err => {
                   console.error(err);
                   this.placeholderText = 'What do you want to talk about?';
@@ -2017,6 +1987,7 @@ export class ChatPage implements DoCheck {
 
     public openConversationLobbyForPinned(message:any):void {
         if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
+              this.toolsPrvd.showLoader();
               if(this.chatPrvd.getState() == 'undercover'){
                  this.pageNav=true;
               }else  if(this.chatPrvd.getState() == 'area'){
@@ -2028,7 +1999,7 @@ export class ChatPage implements DoCheck {
               }
 
               this.chatPrvd.postMessages = [];
-              this.toolsPrvd.showLoader();
+
               this.chatPrvd.isMainBtnDisabled = true;
               this.chatPrvd.setState('area');
               this.isUndercover=true;
@@ -2046,6 +2017,54 @@ export class ChatPage implements DoCheck {
                   }else{
                       this.placeholderText = 'What would you like to say?';
                   }
+                  this.initLpMap();
+                  this.chatPrvd.toggleLobbyChatMode();
+                  this.chatPrvd.isMainBtnDisabled = false;
+                  this.chatPrvd.areaLobby=true;
+                  this.toolsPrvd.hideLoader();
+              }, err => {
+                  this.chatPrvd.areaLobby=true;
+                  this.placeholderText = 'What do you want to talk about?';
+                  this.chatPrvd.isMainBtnDisabled = false;
+                  this.startMessageUpdateTimer();
+                  this.chatPrvd.allowUndercoverUpdate = true;
+                  this.toolsPrvd.hideLoader();
+              });
+        }
+  }
+
+    public openConversationLobbyForPinnedFormMessage(message:any):void {
+        if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
+              if(this.chatPrvd.getState() == 'undercover'){
+                 this.pageNav=true;
+              }else  if(this.chatPrvd.getState() == 'area'){
+                 this.pageNav=false;
+              }
+
+              if(this.chatPrvd.bgState.getState() == 'stretched') {
+                 this.toggleChatOptions();
+              }
+
+              this.chatPrvd.postMessages = [];
+
+              this.chatPrvd.isMainBtnDisabled = true;
+              this.chatPrvd.setState('area');
+              this.isUndercover=true;
+              this.chatPrvd.areaLobby=true;
+              this.settings.isNewlineScope=false;
+              this.chatPrvd.currentLobbyMessage=message;
+              this.chatPrvd.appendContainer.hidden = true;
+              this.cameraPrvd.takenPictures = [];
+              this.setMainBtnStateRelativeToEvents();
+              this.placeholderText = 'What would you like to say?';
+
+              this.chatPrvd.openLobbyForPinned(message).then(() => {
+                  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
+                      this.placeholderText = 'What do you want to talk about?';
+                  }else{
+                      this.placeholderText = 'What would you like to say?';
+                  }
+                  this.initLpMap();
                   this.chatPrvd.toggleLobbyChatMode();
                   this.chatPrvd.isMainBtnDisabled = false;
                   this.chatPrvd.areaLobby=true;
@@ -2109,6 +2128,7 @@ export class ChatPage implements DoCheck {
                   this.startMessageUpdateTimer();
                   this.flipInput();
                   this.changePlaceholderText();
+                  this.initLpMap();
                   this.messagesInterval = true;
                   setTimeout(() => {
                       this.content.resize();
@@ -2124,6 +2144,7 @@ export class ChatPage implements DoCheck {
                   this.placeholderText = 'Start a local conversation...';
                   this.chatPrvd.postMessages=[];
                   this.getAndUpdateUndercoverMessages();
+                  this.initLpMap();
                   this.getUsers().then(res => {});
               }
           }else{
@@ -2137,7 +2158,6 @@ export class ChatPage implements DoCheck {
     console.log('%c [CHAT] ionViewDidEnter ', 'background: #1287a8;color: #ffffff');
 
     this.toolsPrvd.showLoader();
-
 
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;
@@ -2171,6 +2191,7 @@ export class ChatPage implements DoCheck {
     this.chatPrvd.socketsInit();
     this.initResponseFromGPS();
     this.setContentPadding(false);
+
     if (this.chatPrvd.getState() == 'area') {
       this.getUsers().then(res => {
         this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code'))
@@ -2185,6 +2206,7 @@ export class ChatPage implements DoCheck {
     } else if (this.chatPrvd.getState() == 'undercover'){
       this.messagesInterval = true;
       this.startMessageUpdateTimer();
+      this.initLpMap();
     }
 
     this.zone.run(() => {

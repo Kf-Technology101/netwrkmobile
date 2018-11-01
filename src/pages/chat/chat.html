@@ -291,11 +291,11 @@
         </div>
 
        <div class="message place" #directions *ngIf="!chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area' && nearestPlace.type=='no-network' && chatPrvd.getState() == 'undercover' && dirVisible">
-          <p class="message-container" (tap)="openLinePage()">
+          <p class="message-container" (tap)="eventClickTrigger()">
             <span class="username">{{ nearestPlace.name }}</span>
             <span class="text">{{ nearestPlace.address_string }}</span>
           </p>
-            <button class="feedback-setting-button" (tap)="openLinePage()">
+            <button class="feedback-setting-button" (tap)="eventClickTrigger()">
                 <ion-icon ios="ios-add" md="md-add"></ion-icon>
             </button>
         </div>
@@ -343,10 +343,6 @@
           <span *ngIf="message.expire_at && !chatPrvd.isLobbyChat" class="visible-for">
             Expires in {{ message.expire_at }}
           </span>
-
-          <!--<ng-container *ngIf="message.expire_at && !message.has_expired && !chatPrvd.isLobbyChat">-->
-             <!--<ion-icon ios="ios-timer-outline" md="ios-timer-outline"  class="will-expire info-icon"></ion-icon>-->
-          <!--</ng-container>-->
 
           <ng-container *ngIf="message.locked">
             <ion-icon ios="ios-lock" md="ios-lock" class="locked-by-you info-icon"></ion-icon>

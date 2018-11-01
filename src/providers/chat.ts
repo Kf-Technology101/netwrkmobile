@@ -768,6 +768,33 @@ export class Chat {
       }
   }
 
+
+  public openLineGallery() {
+      let pickerOptions = {
+        maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
+      }
+      if (pickerOptions.maximumImagesCount <= 0) {
+        this.tools.showToast('You can\'t append more pictures');
+      } else {
+        ImagePicker.getPictures(pickerOptions).then(file_uris => {
+          for (let fileUrl of file_uris) {
+            if (this.cameraPrvd.takenPictures.length < 3) {
+              if (this.plt.is('android')) {
+                if (fileUrl.indexOf('file:///') !== -1)
+                  this.cameraPrvd.pushPhoto(fileUrl);
+                  this.updateAppendLineContainer();
+              } else {
+                this.cameraPrvd.pushPhoto(fileUrl);
+                this.updateAppendLineContainer();
+              }
+            }
+          }
+        }, err => {
+          console.log('[imagePicker]', err);
+        });
+      }
+  }
+
   public sendFeedback(messageData: any, mIndex: number) {
     return new Promise(res => {
       let feedbackData = {
@@ -779,12 +806,11 @@ export class Chat {
           lng: messageData.lng
         }
       };
-      // console.log('message data:', messageData);
-      // console.log('feedback data:', feedbackData);
+
       this.mainBtn.setState('minimised');
-      // console.log('messageData.image_urls', messageData.image_urls);
+
       let image = messageData.image_urls.length > 0 ? messageData.image_urls[0] : null;
-      // console.log('image', image);
+
       let params = {
         data: feedbackData,
         messageText: messageData.text,
@@ -801,7 +827,7 @@ export class Chat {
 
   public goToProfile(profileId?: number, profileTypePublic?: boolean): Promise<any> {
     return new Promise(res => {
-      // console.log('[ChatProvider][goToProfile]', profileTypePublic);
+
       let currentUser = this.authPrvd.getAuthData();
       if (!profileId) profileId = currentUser.id;
       let params = {

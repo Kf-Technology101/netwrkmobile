@@ -546,7 +546,7 @@ export class LinePage {
                                 message.image_urls = message.images;
                                 message.is_synced = false;
                                 if (this.chatPrvd.isLobbyChat) message.expire_date = null;
-                            } else this.toolsPrvd.showLoader();
+                            }
 
                             this.goToLobby(messageParams);
                         }
@@ -568,7 +568,7 @@ export class LinePage {
                                             message.is_synced = false;
                                             if (this.chatPrvd.isLobbyChat) message.expire_date = null;
 
-                                        } else this.toolsPrvd.showLoader();
+                                        }
 
                                         this.goToLobby(messageParams);
                                     }, err =>{
@@ -586,7 +586,7 @@ export class LinePage {
                                             message.is_synced = false;
                                             if (this.chatPrvd.isLobbyChat) message.expire_date = null;
                                             this.chatPrvd.postMessages.unshift(message);
-                                        } else this.toolsPrvd.showLoader();
+                                        }
 
                                         this.goToLobby(messageParams);
                                     }, err =>{
@@ -651,9 +651,8 @@ export class LinePage {
     }
 
     private goToLobby(messageParams:any){
+        this.toolsPrvd.showLoader();
         this.chatPrvd.sendMessage(messageParams).then(res => {
-            this.toolsPrvd.showLoader();
-
             this.setting.isNewlineScope=false;
             this.chatPrvd.currentLobbyMessage=res;
             this.chatPrvd.appendLineContainer.hidden = true;
@@ -675,8 +674,6 @@ export class LinePage {
                 this.chatPrvd.isMainBtnDisabled = false;
                 this.toolsPrvd.hideLoader();
             }, err => {
-                console.error(err);
-                console.log('Tap to hang anything here');
                 this.placeholderText = 'Tap to hang anything here';
                 this.chatPrvd.isMainBtnDisabled = false;
                 this.chatPrvd.allowUndercoverUpdate = true;
@@ -1238,6 +1235,16 @@ export class LinePage {
     }
 
     public goBackOnLanding(event:any):void {
+        this.cameraPrvd.takenPictures=[];
+        if (this.cameraPrvd.takenPictures.length == 0) {
+            this.chatPrvd.mainLineBtn.setState('normal');
+            this.chatPrvd.appendLineContainer.setState('off');
+            if (this.txtIn.value.trim().length == 0)
+                this.chatPrvd.postBtn.setState(false);
+            setTimeout(() => {
+                this.chatPrvd.appendLineContainer.hide();
+            }, chatAnim/2);
+        }
         this.chatPrvd.isLandingPage = true;
         this.chatPrvd.postMessages = [];
         this.chatPrvd.isCleared = true;

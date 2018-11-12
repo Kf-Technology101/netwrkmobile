@@ -138,5 +138,5 @@
         <variable name="ANDROID_SDK_VERSION" value="4.+" />
     </plugin>
     <plugin name="com-sarriaroman-photoviewer" spec="~1.1.18" />
-    <engine name="ios" spec="~4.5.5" />
+    <engine name="browser" spec="~5.0.4" />
 </widget>

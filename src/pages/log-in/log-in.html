@@ -7,7 +7,7 @@
     <ion-row>
       <ion-col text-center>
         <p ion-text color="bk" class="login-caption">
-          Naturally, to access your local broadcast netwrk, you must share your location.
+          Naturally, <b>to see the networks around you</b>, you must share your location.
           No one can see where you are or what is surrounding you.
         </p>
       </ion-col>
@@ -42,10 +42,10 @@
 
   <button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()"
     ion-button color="bk" class="main-action-btn medium has-label"
-    (tap)="doFbLogin()" outline id="main-btn">
+    (tap)="goToSignUp()" outline id="main-btn">
   </button>
 
-  <div *ngIf="chatPrvd.mainBtn.getState() == 'centered'" class="tip">Quick login via facebook</div>
+  <div *ngIf="chatPrvd.mainBtn.getState() == 'centered'" (tap)="goToSignUp()" class="tip">Tap to get started</div>
 
 </ion-content>
 
@@ -54,8 +54,8 @@
     <button ion-button default (tap)="toggleLoginForm()"
             round item-left color="bk" [@fadeState]="controls.state"
             [hidden]="controls.hidden">Login</button>
-    <button type="submit" (tap)="goToSignUp()" ion-button default round item-right
+    <button type="submit" (tap)="doFbLogin()" ion-button default round item-right
             color="bk" [@fadeState]="controls.state"
-            [hidden]="controls.hidden">Full sign up</button>
+            [hidden]="controls.hidden">Fb login</button>
   </ion-item>
 </ion-footer>

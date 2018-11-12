@@ -999,12 +999,6 @@ export class LinePage {
         clearTimeout(this.messIntObject);
         this.chatPrvd.postMessages = [];
         this.chatPrvd.isCleared = true;
-        let messageArray=this.getMessagesIdByUndercover(postMessage);
-        this.chatPrvd.deleteMessages(messageArray).subscribe( res => {
-            this.canRefresh = true;
-        }, err => {
-            this.canRefresh = true;
-        });
     }
 
     private flipInput():void {

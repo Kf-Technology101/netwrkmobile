@@ -108,6 +108,7 @@ export class ChatPage implements DoCheck {
 
   public isUndercover: boolean;
   public pageNav: boolean;
+  public pageNavLobby: boolean;
 
     public google;
     public map: any;
@@ -267,6 +268,7 @@ export class ChatPage implements DoCheck {
       this.undercoverPrvd.setUndercover(true);
       this.isUndercover=true;
       this.pageNav=true;
+      this.pageNavLobby=true;
   }
 
   public shareMessageToFacebook(message):void {
@@ -428,8 +430,8 @@ export class ChatPage implements DoCheck {
                     icon: icon
                 });
 
-                for (let i = 0; i < this.chatPrvd.postMessages.length; i++) {
-                    if(this.chatPrvd.postMessages[i].expire_date!=null){
+                if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
+                    if(this.chatPrvd.postLineMessages[0].expire_date!=null){
                         let icon1 = {
                             url: 'assets/icon/broadcast.png',
                             origin: new google_maps.Point(0,0),
@@ -437,53 +439,162 @@ export class ChatPage implements DoCheck {
                         };
                         let markers = new google_maps.Marker({
                             map: this.map,
-                            position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                            icon: icon1,
-                            id: this.chatPrvd.postMessages[i]
+                            position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
+                            icon: icon1
                         });
 
                         google_maps.event.addListener(markers, 'click', () => {
-                            this.openLobbyForPinned(markers.id);
+
                         });
                     }else{
-                        if(this.chatPrvd.postMessages[i].locked){
-                            if(this.chatPrvd.postMessages[i].undercover) {
-                                let icon1 = {
-                                    url: this.chatPrvd.postMessages[i].user.avatar_url,
-                                    title: this.chatPrvd.postMessages[i],
-                                    scaledSize: new google_maps.Size(35, 35),
-                                    origin: new google_maps.Point(0, 0),
-                                    anchor: new google_maps.Point(0, 0)
-                                };
+                        if(this.chatPrvd.postLineMessages[0].locked){
+                            let icon1 = {
+                                url: this.chatPrvd.postLineMessages[0].user.avatar_url,
+                                title: this.chatPrvd.postLineMessages[0],
+                                scaledSize: new google_maps.Size(35, 35),
+                                origin: new google_maps.Point(0, 0),
+                                anchor: new google_maps.Point(0, 0)
+                            };
 
-                                let markers = new google_maps.Marker({
-                                    map: this.map,
-                                    position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                                    icon: icon1,
-                                    id: this.chatPrvd.postMessages[i]
-                                });
+                            let markers = new google_maps.Marker({
+                                map: this.map,
+                                position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
+                                icon: icon1,
+                                id: this.chatPrvd.postLineMessages[0]
+                            });
 
-                                google_maps.event.addListener(markers, 'click', () => {
-                                    this.openLobbyForPinned(markers.id);
-                                });
-                            }
+                            google_maps.event.addListener(markers, 'click', () => {
+
+                            });
                         }else{
-                            if(this.chatPrvd.postMessages[i].undercover){
-                                let icon2 = {
-                                    url: 'assets/icon/wi-fi.png'
-                                };
+                            console.log(this.chatPrvd.postLineMessages[0].lat);
+                            let icon2 = {
+                                url: 'assets/icon/wi-fi.png'
+                            };
 
-                                let markers = new google_maps.Marker({
-                                    map: this.map,
-                                    title:this.chatPrvd.postMessages[i],
-                                    position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                                    icon: icon2,
-                                    id: this.chatPrvd.postMessages[i]
-                                });
+                            let markers = new google_maps.Marker({
+                                map: this.map,
+                                position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
+                                icon: icon2,
+                                id: this.chatPrvd.postLineMessages[0]
+                            });
 
-                                google_maps.event.addListener(markers, 'click', () => {
-                                    this.openLobbyForPinned(markers.id);
-                                });
+                            google_maps.event.addListener(markers, 'click', () => {
+
+                            });
+                        }
+                    }
+                }else if(this.chatPrvd.areaLobby){
+                    if(this.chatPrvd.postAreaMessages[0].expire_date!=null){
+                        let icon1 = {
+                            url: 'assets/icon/broadcast.png',
+                            origin: new google_maps.Point(0,0),
+                            anchor: new google_maps.Point(0, 0)
+                        };
+                        let markers = new google_maps.Marker({
+                            map: this.map,
+                            position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
+                            icon: icon1
+                        });
+
+                        google_maps.event.addListener(markers, 'click', () => {
+
+                        });
+                    }else{
+                        if(this.chatPrvd.postAreaMessages[0].locked){
+                            let icon1 = {
+                                url: this.chatPrvd.postAreaMessages[0].user.avatar_url,
+                                title: this.chatPrvd.postAreaMessages[0],
+                                scaledSize: new google_maps.Size(35, 35),
+                                origin: new google_maps.Point(0, 0),
+                                anchor: new google_maps.Point(0, 0)
+                            };
+
+                            let markers = new google_maps.Marker({
+                                map: this.map,
+                                position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
+                                icon: icon1,
+                                id: this.chatPrvd.postAreaMessages[0]
+                            });
+
+                            google_maps.event.addListener(markers, 'click', () => {
+
+                            });
+                        }else{
+                            let icon2 = {
+                                url: 'assets/icon/wi-fi.png'
+                            };
+
+                            let markers = new google_maps.Marker({
+                                map: this.map,
+                                title:this.chatPrvd.postAreaMessages[0],
+                                position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
+                                icon: icon2
+                            });
+
+                            google_maps.event.addListener(markers, 'click', () => {
+
+                            });
+                        }
+                    }
+                }else{
+                    for (let i = 0; i < this.chatPrvd.postMessages.length; i++) {
+                        if(this.chatPrvd.postMessages[i].expire_date!=null){
+                            let icon1 = {
+                                url: 'assets/icon/broadcast.png',
+                                origin: new google_maps.Point(0,0),
+                                anchor: new google_maps.Point(0, 0)
+                            };
+                            let markers = new google_maps.Marker({
+                                map: this.map,
+                                position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
+                                icon: icon1,
+                                id: this.chatPrvd.postMessages[i]
+                            });
+
+                            google_maps.event.addListener(markers, 'click', () => {
+                                this.openLobbyForPinned(markers.id);
+                            });
+                        }else{
+                            if(this.chatPrvd.postMessages[i].locked){
+                                if(this.chatPrvd.postMessages[i].undercover) {
+                                    let icon1 = {
+                                        url: this.chatPrvd.postMessages[i].user.avatar_url,
+                                        title: this.chatPrvd.postMessages[i],
+                                        scaledSize: new google_maps.Size(35, 35),
+                                        origin: new google_maps.Point(0, 0),
+                                        anchor: new google_maps.Point(0, 0)
+                                    };
+
+                                    let markers = new google_maps.Marker({
+                                        map: this.map,
+                                        position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
+                                        icon: icon1,
+                                        id: this.chatPrvd.postMessages[i]
+                                    });
+
+                                    google_maps.event.addListener(markers, 'click', () => {
+                                        this.openLobbyForPinned(markers.id);
+                                    });
+                                }
+                            }else{
+                                if(this.chatPrvd.postMessages[i].undercover){
+                                    let icon2 = {
+                                        url: 'assets/icon/wi-fi.png'
+                                    };
+
+                                    let markers = new google_maps.Marker({
+                                        map: this.map,
+                                        title:this.chatPrvd.postMessages[i],
+                                        position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
+                                        icon: icon2,
+                                        id: this.chatPrvd.postMessages[i]
+                                    });
+
+                                    google_maps.event.addListener(markers, 'click', () => {
+                                        this.openLobbyForPinned(markers.id);
+                                    });
+                                }
                             }
                         }
                     }
@@ -1076,7 +1187,6 @@ export class ChatPage implements DoCheck {
     this.chatPrvd.setState('area');
     this.placeholderText = 'Start a local conversation...';
     this.getAndUpdateUndercoverMessages();
-    this.initLpMap();
     this.chatPrvd.isMainBtnDisabled = false;
     this.getUsers().then(res => {});
     this.toolsPrvd.hideLoader();
@@ -1181,7 +1291,6 @@ export class ChatPage implements DoCheck {
       this.runUndecoverSlider(this.pageTag);
       this.startMessageUpdateTimer();
       this.flipInput();
-      this.initLpMap();
       this.changePlaceholderText();
       this.messagesInterval = true;
       setTimeout(() => {
@@ -1506,12 +1615,13 @@ export class ChatPage implements DoCheck {
                       this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(this.chatPrvd.postMessages);
                       this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
                   }
+                  this.initLpMap();
               }
               this.toolsPrvd.hideLoader();
-              this.checkUCInterval();
+              //this.checkUCInterval();
           }, err => {
               this.toolsPrvd.hideLoader();
-              this.checkUCInterval();
+              //this.checkUCInterval();
           });
       }
   }
@@ -1553,12 +1663,12 @@ export class ChatPage implements DoCheck {
     clearTimeout(this.messIntObject);
     this.chatPrvd.postMessages = [];
     this.chatPrvd.isCleared = true;
-    let messageArray=this.getMessagesIds(postMessage);
-    this.chatPrvd.deleteMessages(messageArray).subscribe( res => {
-          this.canRefresh = true;
-      }, err => {
-          this.canRefresh = true;
-      });
+    //let messageArray=this.getMessagesIds(postMessage);
+    //this.chatPrvd.deleteMessages(messageArray).subscribe( res => {
+    //      this.canRefresh = true;
+    //  }, err => {
+    //      this.canRefresh = true;
+    //  });
   }
 
   private flipInput():void {
@@ -1890,7 +2000,7 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForLockedChecked(message:any):void {
-      if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
+      if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
           if (this.chatPrvd.bgState.getState() == 'stretched') {
               this.toggleChatOptions();
           }
@@ -1932,15 +2042,22 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForPinned(message:any):void {
-      if(this.user.id != message.user_id && message.locked_by_user){
-          this.showUnlockPostForm(message.id, message.hint)
-      }else{
-          this.openLobbyForLockedChecked(message);
+      if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
+          if(this.chatPrvd.getState() == 'undercover'){
+              this.pageNavLobby=true;
+          }else  if(this.chatPrvd.getState() == 'area'){
+              this.pageNavLobby=false;
+          }
+          if(this.user.id != message.user_id && message.locked_by_user){
+              this.showUnlockPostForm(message.id, message.hint)
+          }else{
+              this.openLobbyForLockedChecked(message);
+          }
       }
   }
 
   public openLobbyForLineMessage(message:any):void {
-      if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
+      if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
           if (this.chatPrvd.bgState.getState() == 'stretched') {
               this.toggleChatOptions();
           }
@@ -1986,7 +2103,7 @@ export class ChatPage implements DoCheck {
   }
 
     public openConversationLobbyForPinned(message:any):void {
-        if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
+        if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
               this.toolsPrvd.showLoader();
               if(this.chatPrvd.getState() == 'undercover'){
                  this.pageNav=true;
@@ -2017,8 +2134,9 @@ export class ChatPage implements DoCheck {
                   }else{
                       this.placeholderText = 'What would you like to say?';
                   }
-                  this.initLpMap();
+
                   this.chatPrvd.toggleLobbyChatMode();
+                  this.initLpMap();
                   this.chatPrvd.isMainBtnDisabled = false;
                   this.chatPrvd.areaLobby=true;
                   this.toolsPrvd.hideLoader();
@@ -2034,7 +2152,7 @@ export class ChatPage implements DoCheck {
   }
 
     public openConversationLobbyForPinnedFormMessage(message:any):void {
-        if(!this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby){
+        if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
               if(this.chatPrvd.getState() == 'undercover'){
                  this.pageNav=true;
               }else  if(this.chatPrvd.getState() == 'area'){
@@ -2064,8 +2182,8 @@ export class ChatPage implements DoCheck {
                   }else{
                       this.placeholderText = 'What would you like to say?';
                   }
-                  this.initLpMap();
                   this.chatPrvd.toggleLobbyChatMode();
+                  this.initLpMap();
                   this.chatPrvd.isMainBtnDisabled = false;
                   this.chatPrvd.areaLobby=true;
                   this.toolsPrvd.hideLoader();
@@ -2101,6 +2219,16 @@ export class ChatPage implements DoCheck {
           this.chatPrvd.postMessages = [];
           this.placeholderText = 'What do you want to talk about?';
           this.setMainBtnStateRelativeToEvents();
+
+          if(this.pageNavLobby){
+              this.chatPrvd.setState('undercover');
+              this.undercoverPrvd.setUndercover(true);
+              this.isUndercover=true;
+          }else{
+              this.chatPrvd.setState('area');
+              this.undercoverPrvd.setUndercover(false);
+              this.isUndercover=false;
+          }
           this.refreshChat(false, true).then(res => {
               this.chatPrvd.allowUndercoverUpdate = true;
               this.startMessageUpdateTimer();
@@ -2128,7 +2256,7 @@ export class ChatPage implements DoCheck {
                   this.startMessageUpdateTimer();
                   this.flipInput();
                   this.changePlaceholderText();
-                  this.initLpMap();
+
                   this.messagesInterval = true;
                   setTimeout(() => {
                       this.content.resize();
@@ -2144,7 +2272,6 @@ export class ChatPage implements DoCheck {
                   this.placeholderText = 'Start a local conversation...';
                   this.chatPrvd.postMessages=[];
                   this.getAndUpdateUndercoverMessages();
-                  this.initLpMap();
                   this.getUsers().then(res => {});
               }
           }else{

@@ -1,7 +1,27 @@
 page-hold {
 
-  .loading {
+  .hold-text {
     height: 100%;
+    .netwrk-icon {
+      width:120px;
+      margin-top: 20px;
+    }
+    .text-bk1 {
+      color: #5b87aa;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+    .text-bk2 {
+      color: #5b87aa;
+      font-size: 12px;
+      font-weight: bold;
+    }
+    .text-bk3 {
+      color: #5b87aa;
+      font-size: 15px;
+      font-weight: bold;
+    }
   }
 
   .footer .tip {

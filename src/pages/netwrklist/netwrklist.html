@@ -1,5 +1,16 @@
 
-
+<ion-header>
+    <ion-toolbar>
+        <ng-container>
+            <ion-row class="loading bg-text" align-items-center>
+                <ion-col text-center>
+                    <h1 ion-text color="white">Hello, here are the networks near you.</h1>
+                    <h1 ion-text color="white">Follow some to get started!</h1>
+                </ion-col>
+            </ion-row>
+        </ng-container>
+    </ion-toolbar>
+</ion-header>
 
 <ion-content class="connect arealist content"  no-bounce>
 
@@ -8,20 +19,6 @@
         <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
     </ion-refresher>
 
-
-    <ion-row class="loading bg-text" align-items-center>
-        <ion-col text-center>
-            <h1 ion-text color="white">Hello, here are the connectors and networks near you.</h1>
-
-            <p  ion-text color="white">
-                Tap &nbsp;
-                <button ion-button color="bk" class="ion-netwrk-btn">
-                    <ion-icon ios="ios-add" md="md-add"></ion-icon>
-                </button> &nbsp;
-                to follow them.
-            </p>
-        </ion-col>
-    </ion-row>
 
     <div class="chat-container visible">
        <div class="visible item-line" *ngFor="let message of netwrkLineList; let i = index" >

@@ -120,13 +120,17 @@ page-log-in {
     left: 0;
     right: 0;
     top: calc(50% + 60px);
-    font-size: 10px;
+    font-size: 16px;
+    padding: 4px;
+    width: 166px;
+    cursor: pointer;
     &:before {
       width: 35px;
       height: 15px;
       top: -6px;
     }
   }
+
   .transparent {
     background: transparent;
     background-color: transparent;

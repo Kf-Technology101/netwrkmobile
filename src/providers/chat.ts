@@ -278,23 +278,22 @@ export class Chat {
 
   public openLobbyForPinned(message:any):Promise<any> {
     return new Promise ((resolve, reject) => {
-      console.log('openLobbyForPinned:', message);
       if (!this.isLobbyChat) {
         this.getLocationLobby(message.id).subscribe(res => {
-          console.log('getLocationLobby:', res);
           if (res && res.messages && res.room_id) {
             this.postMessages = [];
             this.postLineMessages = [];
             this.postAreaMessages = [];
+
+           if (res.messages && res.messages.length > 0) {
+              this.postMessages = this.postMessages.concat(res.messages);
+           }
+
             if(this.areaLobby){
                this.postAreaMessages.unshift(message)
             }else if(!this.isLobbyChat){
+                this.postMessages.push(message);
                 this.postLineMessages.unshift(message);
-            }
-
-            if (res.messages && res.messages.length > 0) {
-              this.postMessages = [];
-              this.postMessages = this.postMessages.concat(res.messages);
             }
 
             this.currentLobby.id = res.room_id;

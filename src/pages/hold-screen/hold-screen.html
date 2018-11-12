@@ -1,14 +1,21 @@
 
 
-<!--<ion-content no-bounce>-->
-<!--<ion-row class="loading" align-items-center>-->
-<!--<ion-col text-center>-->
-      <!--<span ion-text color="bk">-->
-         <!--Hold for net to look for networks nearby-->
-      <!--</span>-->
-<!--</ion-col>-->
-<!--</ion-row>-->
-<!--</ion-content>-->
+<ion-content no-bounce>
+    <ion-row class="hold-text">
+        <ion-col text-center>
+              <img class="netwrk-icon" src="assets/images/wifi.png">
+              <p ion-text class="text-bk1">
+                 Networks are normally in public places.
+              </p>
+              <p ion-text class="text-bk2">
+                  Follow then connect to join. Your points (accumulated from being awesome) add to the network total!
+              </p>
+              <p ion-text class="text-bk3">
+                 The most popular networks are shown more often!
+              </p>
+        </ion-col>
+    </ion-row>
+</ion-content>
 
 
 <ion-footer>
@@ -17,6 +24,6 @@
     </div>
 
     <button ion-button color="bk" class="main-action-btn medium transparent" outline (press)="showNetwrklist()" (tap)="showNetwrklist()">
-        <!--<ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>-->
+        <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
     </button>
 </ion-footer>

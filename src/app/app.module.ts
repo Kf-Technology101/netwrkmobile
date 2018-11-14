@@ -80,6 +80,7 @@ import { BackgroundMode } from '@ionic-native/background-mode';
 import { Crop } from '@ionic-native/crop';
 import { AppAvailability } from '@ionic-native/app-availability';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
+import { NativeGeocoder } from '@ionic-native/native-geocoder';
 
 // sockets
 import { Ng2CableModule } from 'ng2-cable';
@@ -154,6 +155,7 @@ export function providers() {
     Keyboard,
     Network,
     TwitterConnect,
+    NativeGeocoder,
 
     SplashScreen,
     StatusBar,
@@ -171,7 +173,7 @@ export function providers() {
     FeedbackService,
     AppAvailability,
 
-    Places,
+    Places
     // Keep this to enable Ionic's runtime error handling during development
   ];
 };

@@ -9,7 +9,7 @@ export class LocationChange {
       lng: null
     }
 
-    constructor(
+ constructor(
     private storage: LocalStorage,
     private alertCtrl: AlertController,
     private toastCtrl: ToastController
@@ -91,16 +91,16 @@ export class LocationChange {
     let toast = this.toastCtrl.create({
       message: message,
       duration: duration ? duration : 3000,
-      position: 'top',
+      position: 'top'
     });
     toast.present();
   }
 
-  private parseCoordinates(coords:any):any {
+  public parseCoordinates(coords:any):any {
     if (typeof coords === 'object') {
       return {
-        lat: parseFloat(coords.lat),
-        lng: parseFloat(coords.lng)
+        lat: parseFloat(coords.latitude),
+        lng: parseFloat(coords.longitude)
       }
     } else if (typeof coords === 'string') {
       return {
@@ -150,10 +150,10 @@ export class LocationChange {
     // this.storage.set('location_history', locations);
   }
 
-  private setCustomLocation(data):void {
+  public setCustomLocation(data):void {
     if (data) {
       if (typeof data === 'object') {
-        if (data.lat && data.lng) {
+        if (data.latitude && data.longitude) {
           this.coords = this.parseCoordinates(data);
         } else {
           this.showToast('All fields are required');
@@ -168,6 +168,5 @@ export class LocationChange {
         console.error(err);
       }
     }
-    console.log('Coord parse result:', this.coords);
   }
 }

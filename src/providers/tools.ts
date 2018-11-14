@@ -109,7 +109,7 @@ export class Tools {
     this.toast = this.toastCtrl.create({
       message: message,
       duration: duration ? duration : 3000,
-      position: position ? position : 'top',
+      position: position ? position : 'top'
     });
     this.toast.present();
   }

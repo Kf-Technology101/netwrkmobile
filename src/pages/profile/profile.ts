@@ -209,8 +209,6 @@ export class ProfilePage {
   private loadOwnProfile() {
         console.log('LOAD | OWN PROFILE');
         this.showUserData(this.authPrvd.getAuthData());
-        //this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-        //this.slideAvatarPrvd.sliderInit(this.pageTag);
 
         this.user = this.authPrvd.getAuthData();
         this.setProfileData();
@@ -244,21 +242,6 @@ export class ProfilePage {
       this.chatPrvd.isCleared = true;
       this.toolsPrvd.popPage();
 
-    //if (this.usersQueue.length > 0) {
-    //  this.backBtnDisabled = true;
-    //  this.toggleProfilePageAnimation(false);
-    //  setTimeout(() => {
-    //    this.usersQueue.pop();
-    //    this.loadConstructor();
-    //    this.viewDidEnter({
-    //      id: this.usersQueue[this.usersQueue.length - 1],
-    //      public: true
-    //    });
-    //    this.toggleProfilePageAnimation(true);
-    //  }, 400);
-    //} else {
-    //  this.toolsPrvd.popPage();
-    //}
   }
 
   private toggleProfilePageAnimation(state:boolean):void {
@@ -315,8 +298,7 @@ export class ProfilePage {
 
   private loadProfile() {
     this.toolsPrvd.showLoader();
-    console.log('stored user id:', this.user.id,
-                ' current user id:', this.authPrvd.getAuthData().id);
+    console.log('stored user id:', this.user.id, ' current user id:', this.authPrvd.getAuthData().id);
     if (this.user.id == this.authPrvd.getAuthData().id) {
       this.ownProfile = true;
       this.loadOwnProfile();
@@ -333,15 +315,6 @@ export class ProfilePage {
     this.user = res;
 
     this.showMessages(this.undercoverPrvd.isUndercover);
-
-    //  Uncomment for social Intigration
-
-    //this.socialPrvd.getFriendList(this.user.provider_id).then(friends => {
-    //  console.log(friends);
-    //  this.fbFriends = friends.data;
-    //  console.log('this.fbFriends:', this.fbFriends);
-    //  console.log('this.user:', this.user);
-    //}).catch(err => console.log(err));
   }
 
   changeCallback(positionLeft?: boolean) {
@@ -411,19 +384,14 @@ export class ProfilePage {
 
   private viewDidEnter(params?:any):void {
     console.log('PROFILE | DIDENTER');
-    //console.log('connect:', this.socialPrvd.connect);
+
     if (params) {
       if (params.id) this.user.id = params.id;
       if (params.public) this.profileTypePublic = params.public;
     }
     this.posts = [];
     this.loadProfile();
-    //this.cameraPrvd.toggleCameraBg();
-    //if (this.ownProfile) {
-    //  this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-    //  this.slideAvatarPrvd.sliderInit(this.pageTag);
-    //
-    //}
+
     this.user = this.authPrvd.getAuthData();
     this.setProfileData();
   }

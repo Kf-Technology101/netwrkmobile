@@ -59,6 +59,16 @@
     </form>
   </ion-toolbar>
 
+  <ion-toolbar [hidden]="postCustAddress.hidden" [@slideState]="postCustAddress.state" class="post-address">
+    <form (submit)="sendCustAddressInfo($event, custAddressForm)" #custAddressForm="ngForm">
+      <p class="address-label">If you want network in a different location, type it in below..</p>
+      <ion-item>
+        <ion-input type="text" placeholder="Choose a place where you hang out!" name="custumAddress" [(ngModel)]="postCustAddressData.custumAddress" required></ion-input>
+      </ion-item>
+      <button ion-button type="submit" class="submit" *ngIf="postCustAddressData.custumAddress">Submit</button>
+    </form>
+  </ion-toolbar>
+
   <!--Area Header-->
   <div *ngIf="!isUndercover || !chatPrvd.areaLobby && chatPrvd.getState() == 'area'" class="netwrk-header">
     <ion-toolbar class="area-head">
@@ -213,11 +223,11 @@
         </div>
 
        <div class="message place" #directions *ngIf="!chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area' && nearestPlace.type=='no-network' && chatPrvd.getState() == 'undercover' && dirVisible">
-          <p class="message-container" (tap)="eventClickTrigger()">
+          <p class="message-container" (tap)="eventClickTrigger();toggleTopSlider('address');">
             <span class="username">{{ nearestPlace.name }}</span>
             <span class="text">{{ nearestPlace.address_string }}</span>
           </p>
-            <button class="feedback-setting-button" (tap)="eventClickTrigger()">
+            <button class="feedback-setting-button" (tap)="eventClickTrigger();toggleTopSlider('address');">
                 <ion-icon ios="ios-add" md="md-add"></ion-icon>
             </button>
         </div>
@@ -578,17 +588,17 @@
     Start your network here?
   </div>
 
-  <button ion-button class="back-nav-btn" (tap)="goBack()" clear *ngIf="settings.isNewlineScope == true">
+  <button ion-button class="back-nav-btn" (tap)="goBack();" clear *ngIf="settings.isNewlineScope == true">
         <span ion-text>No, I’ll move elsewhere</span>
   </button>
 
-  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (click)="openLinePage()" [disabled]="chatPrvd.isMainBtnDisabled" (press)="goToHoldScreen()" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
+  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (click)="openLinePage();" [disabled]="chatPrvd.isMainBtnDisabled" (press)="goToHoldScreen()" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
     <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
   </button>
 
   <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="!settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (press)="goToHoldScreen()" (click)="handleMainBtnClick($event)" [disabled]="chatPrvd.isMainBtnDisabled" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}"></button>
 
-  <button class="netwrk-button" (click)="eventClickTrigger()" *ngIf="isUndercover && !chatPrvd.isLobbyChat && !settings.isNewlineScope && chatPrvd.getState() == 'undercover'">
+  <button class="netwrk-button" (click)="eventClickTrigger(); toggleTopSlider('address');" *ngIf="isUndercover && !chatPrvd.isLobbyChat && !settings.isNewlineScope && chatPrvd.getState() == 'undercover'">
       <img src="assets/icon/wifi.png"/>
   </button>
 

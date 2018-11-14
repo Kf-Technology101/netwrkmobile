@@ -25,6 +25,7 @@ import { Geolocation } from '@ionic-native/geolocation';
 import { Keyboard } from '@ionic-native/keyboard';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
+import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder';
 
 // Pages
 import { CameraPage } from '../camera/camera';
@@ -56,6 +57,9 @@ import { NetworkProvider } from '../../providers/networkservice';
 import { Gps } from '../../providers/gps';
 import { Social } from '../../providers/social';
 import { Places } from '../../providers/places';
+//import { GeocoderProvider } from '../../providers/geocoder';
+
+import { LocationChange } from '../../providers/locationchange';
 
 import { VideoService } from '../../providers/videoservice';
 import { FeedbackService } from '../../providers/feedback.service';
@@ -107,11 +111,17 @@ export class ChatPage implements DoCheck {
   @HostBinding('class') colorClass = 'transparent-background';
 
   public isUndercover: boolean;
+
+  public insideRadius: boolean;
   public pageNav: boolean;
   public pageNavLobby: boolean;
 
     public google;
     public map: any;
+    public coords:any = {
+        lat: null,
+        lng: null
+    }
 
     public nearestNetwork:any = {
         dist: 0,
@@ -138,10 +148,12 @@ export class ChatPage implements DoCheck {
   mainInput = new Toggleable('fadeIn', false);
   postTimer = new Toggleable('slideUp', false);
   postLock = new Toggleable('slideUp', true);
+  postCustAddress = new Toggleable('slideUp', true);
   topSlider = new Toggleable('slideDown', false);
   postUnlock  = new Toggleable('slideUp', true);
 
   public action:any;
+  public postGeocodeData:any;
 
   flipHover: boolean;
 
@@ -184,9 +196,13 @@ export class ChatPage implements DoCheck {
   public hostUrl: string;
   public placeholderText: string;
 
+  public geocoded : boolean;
+  public results  : string;
+
   private debug: any = {
     postHangTime: 0
   };
+
   private postLockData: any = {
     password: null,
     hint: null
@@ -214,6 +230,10 @@ export class ChatPage implements DoCheck {
   private postUnlockData:any = {
     id: null,
     password: null
+  }
+
+  private postCustAddressData:any = {
+      custumAddress: null
   }
 
   private currentHint:any;
@@ -255,12 +275,14 @@ export class ChatPage implements DoCheck {
     private keyboard: Keyboard,
     public settings: Settings,
     private renderer: Renderer,
+    public locationchange: LocationChange,
     public config: Config,
     public events: Events,
     public places: Places,
     private photoViewer: PhotoViewer,
     public app: App,
     public videoservice: VideoService,
+    public nativeGeocoder   : NativeGeocoder,
     public feedbackService: FeedbackService
   ) {
       this.user = this.authPrvd.getAuthData();
@@ -825,6 +847,101 @@ export class ChatPage implements DoCheck {
     }
   }
 
+  private sendCustAddressInfo(event:any, form: any):void {
+    event.stopPropagation();
+    event.preventDefault();
+    if (form.invalid) {
+      this.toolsPrvd.showToast(this.textStrings.require);
+    } else {
+      this.postCustAddressData = {
+          custumAddress: form.value.custumAddress
+      };
+
+        let keyword : string = form.value.custumAddress;
+
+        let options: NativeGeocoderOptions = {
+            useLocale: true,
+            maxResults: 1
+        };
+
+        this.nativeGeocoder.forwardGeocode(keyword, options).then((data: NativeGeocoderForwardResult[]) =>  {
+            this.geocoded = true;
+
+            if (data) {
+                if (data[0].latitude && data[0].longitude) {
+                    this.insideRadius = this.gpsPrvd
+                        .calculateDistanceInMiles({
+                            lat: <number> parseFloat(data[0].latitude),
+                            lng: <number> parseFloat(data[0].longitude)
+                        },this.gpsPrvd.coords);
+
+                    if(this.insideRadius){
+                        this.gpsPrvd.coords = this.locationchange.parseCoordinates(data[0]);
+                        try {
+                            this.storage.set('custom_coordinates', this.gpsPrvd.coords);
+                            let cont0 = this.getTopSlider('address');
+                            cont0.setState('slideUp');
+                            cont0.hide();
+
+                            this.gpsPrvd.getZipCode().then(res => {
+                                this.gapi.init.then((google_maps:any) => {
+                                    let loc:any = {
+                                        lat: this.gpsPrvd.coords.lat,
+                                        lng: this.gpsPrvd.coords.lng
+                                    };
+
+                                    this.map = new google_maps.Map(this.mapElement.nativeElement, {
+                                        zoom: 16,
+                                        center: loc,
+                                        disableDefaultUI: true,
+                                        fullscreenControl: false
+                                    });
+
+                                    this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng).map(res => res.json()).subscribe(res => {
+                                        let icon = {
+                                            url:'assets/icon/blue_dot.png'
+                                        };
+
+                                        let marker = new google_maps.Marker({
+                                            map: this.map,
+                                            animation: google_maps.Animation.DROP,
+                                            position: res.results[0].geometry.location,
+                                            icon: icon
+                                        });
+                                    });
+
+                                    this.map.setCenter(loc);
+                                    //this.toolsPrvd.showToast('Custom location successfully set');
+                                });
+                                this.postCustAddressData = {
+                                    custumAddress: null
+                                };
+                            });
+                        } catch (err) {
+                            console.error(err);
+                        }
+                    } else {
+                        this.postCustAddressData = {
+                            custumAddress: null
+                        };
+                        let alert = this.alertCtrl.create({
+                            subTitle: 'The location has to be within 10 miles of you. Sorry! House rules.',
+                            buttons: [{
+                                text: 'Ok',
+                                role: 'cancel'
+                            }]
+                        });
+                        alert.present();
+                        //this.toolsPrvd.showToast('The location has to be within 10 miles of you. Sorry! House rules.');
+                    }
+                }
+            }
+        }).catch((error : any)=>{
+            this.geocoded      = true;
+        });
+    }
+  }
+
   public showUnlockPostForm(messageId:any, hint:any){
     this.postUnlockData.id = messageId;
     this.currentHint = hint;
@@ -1156,6 +1273,14 @@ export class ChatPage implements DoCheck {
   }
 
     public goBack():void {
+        this.storage.rm('custom_coordinates');
+        this.gpsPrvd.getMyZipCode().then(res => {
+          this.initLpMap();
+            let cont0 = this.getTopSlider('address');
+            cont0.setState('slideUp');
+            cont0.hide();
+        });
+
         this.chatPrvd.postMessages = [];
         this.settings.isNewlineScope=false;
         this.settings.isCreateLine=false;
@@ -1164,11 +1289,12 @@ export class ChatPage implements DoCheck {
     }
 
     public openLinePage():void {
-        //this.toolsPrvd.popPage();
+        let cont0 = this.getTopSlider('address');
+        cont0.setState('slideUp');
+        cont0.hide();
         this.settings.isNewlineScope=false;
         this.settings.isCreateLine=true;
         this.toolsPrvd.pushPage(UndercoverCharacterPage);
-        //this.toolsPrvd.pushPage(LinePage)
     }
 
     public eventClickTrigger():void {
@@ -1363,6 +1489,7 @@ export class ChatPage implements DoCheck {
     const a = {
       timer: this.postTimer,
       lock: this.postLock,
+      address: this.postCustAddress,
       unlock: this.postUnlock
     }
     return a[container];
@@ -1406,7 +1533,6 @@ export class ChatPage implements DoCheck {
       setTimeout(() => {
         this.setMainBtnStateRelativeToEvents();
       }, 400);
-      // }
     }
   }
 
@@ -1414,12 +1540,13 @@ export class ChatPage implements DoCheck {
         const a = {
             timer: this.postTimer,
             lock: this.postLock,
+            address: this.postCustAddress,
             unlock: this.postUnlock
         }
         return a[container];
     }
 
-    private toggleBarSlider(container:string,id:number):void {
+  private toggleBarSlider(container:string,id:number):void {
     if (this.plt.is('ios'))
       this.keyboard.show();
 
@@ -1440,7 +1567,6 @@ export class ChatPage implements DoCheck {
       setTimeout(() => {
         this.setMainBtnStateRelativeToEvents();
       }, 400);
-      // }
     }
   }
 
@@ -2042,6 +2168,10 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForPinned(message:any):void {
+      let cont1 = this.getTopSlider('address');
+      cont1.setState('slideUp');
+      cont1.hide();
+
       if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
           if(this.chatPrvd.getState() == 'undercover'){
               this.pageNavLobby=true;
@@ -2057,6 +2187,10 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForLineMessage(message:any):void {
+      let cont3 = this.getTopSlider('address');
+      cont3.setState('slideUp');
+      cont3.hide();
+
       if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
           if (this.chatPrvd.bgState.getState() == 'stretched') {
               this.toggleChatOptions();
@@ -2103,6 +2237,10 @@ export class ChatPage implements DoCheck {
   }
 
     public openConversationLobbyForPinned(message:any):void {
+        let cont2 = this.getTopSlider('address');
+        cont2.setState('slideUp');
+        cont2.hide();
+
         if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
               this.toolsPrvd.showLoader();
               if(this.chatPrvd.getState() == 'undercover'){
@@ -2207,6 +2345,10 @@ export class ChatPage implements DoCheck {
       let cont = this.getTopSlider('unlock');
       cont.setState('slideUp');
       cont.hide();
+
+      let cont0 = this.getTopSlider('address');
+      cont0.setState('slideUp');
+      cont0.hide();
 
       if (this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
           this.chatPrvd.areaLobby=false;

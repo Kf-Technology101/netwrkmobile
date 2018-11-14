@@ -67,8 +67,6 @@ export class Gps {
 
   public calculateDistance(firstCoords: any, secondCoords?: any): boolean {
     if (!secondCoords) secondCoords = this.coords;
-    // console.log('calculateDistance() firstCoords:', firstCoords);
-    // console.log('calculateDistance() secondCoords:', secondCoords);
     let p: number = 0.017453292519943295; // Math.PI / 180
     let cos: any = Math.cos;
     let a = 0.5 - cos((secondCoords.lat - firstCoords.lat) * p) / 2 +
@@ -79,6 +77,21 @@ export class Gps {
     let miles = sum * 0.621371192; // Kilometers to miles
     let yards = miles * 1760; // Miles to yards
     let result: boolean = yards <= this.maxDistance;
+
+    return result;
+  }
+
+  public calculateDistanceInMiles(firstCoords: any, secondCoords?: any): boolean {
+    if (!secondCoords) secondCoords = this.coords;
+    let p: number = 0.017453292519943295; // Math.PI / 180
+    let cos: any = Math.cos;
+    let a = 0.5 - cos((secondCoords.lat - firstCoords.lat) * p) / 2 +
+      cos(firstCoords.lat * p) *
+      cos(secondCoords.lat * p) *
+      (1 - cos((secondCoords.lng - firstCoords.lng) * p)) / 2;
+    let sum = 12742 * Math.asin(Math.sqrt(a)); // R * 2; R = 6371 km
+    let miles = sum * 0.621371192; // Kilometers to miles
+    let result: boolean = miles <= 10;
 
     return result;
   }
@@ -175,12 +188,12 @@ export class Gps {
     let seq = this.getAddressDetail(url, {
       latlng: coords,
       sensor: true,
-      key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'// 'AIzaSyDcv5mevdUEdXU4c4XqmRLS3_QPH2G9CFY',
+      key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'
     }).share();
     return seq;
   }
 
-  private getZipCode(): Promise<any> {
+  public getZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.coords.lat && this.coords.lng) {
         console.log('my lat:', this.coords.lat, 'my lng:', this.coords.lng);
@@ -188,8 +201,6 @@ export class Gps {
           console.log('[my Location] res:', res);
           // default:
           let zipCode: any = this.parseGoogleAddress(res.results);
-          // debug:
-          // let zipCode: number = this.localStorage.get('test_zip_code');
 
           this.loc.saveCurrentLocation({
             name:<string> res.results[0].formatted_address,
@@ -202,30 +213,26 @@ export class Gps {
           if (this.localStorage.get('chat_zip_code') === null) {
             this.localStorage.set('chat_zip_code', zipCode);
           }
-          let nav = this.app.getActiveNav();
-          if (nav.getActive() && zipCode != this.localStorage.get('chat_zip_code') &&
-              this.localStorage.get('chat_zip_code') !== null) {
-            // clearInterval(this.zipInterval);
+
+        let nav = this.app.getActiveNav();
+        if (nav.getActive() && zipCode != this.localStorage.get('chat_zip_code') && this.localStorage.get('chat_zip_code') !== null) {
             this.localStorage.rm('current_network');
             this.localStorage.set('chat_zip_code', zipCode);
-            if (nav.getActive().name.toLowerCase() == 'chatpage' ||
-                nav.getActive().name.toLowerCase() == 'networknopage') {
-              this.localStorage.set('areaChange_triggered', true);
-              nav.setRoot(ChatPage, {
-                action_from_gps: this.localStorage.get('chat_state'),
-                zipCode: zipCode
-              });
+            if (nav.getActive().name.toLowerCase() == 'chatpage') {
+                this.localStorage.set('areaChange_triggered', true);
+                //nav.setRoot(ChatPage, {
+                //    action_from_gps: this.localStorage.get('chat_state'),
+                //    zipCode: zipCode
+                //});
             }
-          }
-          // console.log('[Gps][getZipCode] zipCode:', zipCode);
+        }
+
           resolve(zipCode);
         },
         err => {
-          // console.log('[Gps][getZipCode]', err);
           reject(err);
         });
       }
     });
   }
-
 }

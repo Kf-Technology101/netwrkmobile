@@ -54,8 +54,6 @@ export class User {
     }).share();
     seq.map(res => res.json()).subscribe(
       res => {
-        console.log(res);
-
           let authType:any = this.auth.getAuthType();
           let authData:any = this.auth.getAuthData();
           if (authType && authData) {

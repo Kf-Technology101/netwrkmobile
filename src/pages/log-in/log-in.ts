@@ -135,21 +135,17 @@ export class LogInPage {
 
   doFbLogin() {
     this.tools.showLoader();
+    //this.tools.pushPage(SignUpAfterFbPage)
     this.authPrvd.signUpFacebook().then(data => {
-      console.log("Inside facebook Signup");
-      console.log('signUpFacebook data:', data);
-      // check user's terms of use acceptance status
       if (data.result.tou_accepted) {
-        this.user.update(data.result.id, data.update, 'facebook')
-        .map(res => res.json()).subscribe(res => {
-          if (res.date_of_birthday) {
-            let date = new Date(res.date_of_birthday);
-            if (typeof date == 'object') {
+        this.user.update(data.result.id, data.update, 'facebook').map(res => res.json()).subscribe(res => {
+          if (res.is_password_set) {
+              this.tools.hideLoader();
               this.authPrvd.setFbConnected();
-                this.chatPrvd.detectNetwork()
-                this.tools.pushPage(HoldScreenPage)
-            }
+              this.chatPrvd.detectNetwork();
+              this.tools.pushPage(HoldScreenPage)
           } else {
+            this.authPrvd.setFbConnected();
             this.tools.hideLoader();
             this.tools.pushPage(SignUpAfterFbPage);
           }
@@ -158,8 +154,7 @@ export class LogInPage {
           this.tools.hideLoader();
           this.tools.showToast(JSON.stringify(err));
         });
-      } else if (!data.result.tou_accepted &&
-                 typeof data.result.tou_accepted == 'boolean'){
+      } else if (!data.result.tou_accepted && typeof data.result.tou_accepted == 'boolean'){
         this.termsAlertShow('fb', data.result.id);
       }
     }, err => {

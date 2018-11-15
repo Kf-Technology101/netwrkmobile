@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Http, Headers, RequestOptions } from '@angular/http';
+import { AlertController } from 'ionic-angular';
 
 import 'rxjs/Rx';
 import 'rxjs/add/operator/map';
@@ -25,6 +26,7 @@ export class Auth {
     public api: Api,
     public storage: LocalStorage,
     public network: NetworkProvider,
+    private alertCtrl: AlertController,
     public social: Social,
     public facebook: Facebook
   ) {
@@ -98,12 +100,10 @@ export class Auth {
   public signUpFacebook(): Promise<any> {
     return new Promise((resolve, reject) => {
       this.facebook.getLoginStatus().then((data: FacebookLoginResponse) => {
-
         if (data.status && data.status == 'connected') {
           this.loginWithFacebook(data, resolve, reject, true);
         } else {
-          this.facebook.login(this.social.fbPermissions)
-            .then((data: FacebookLoginResponse) => {
+          this.facebook.login(this.social.fbPermissions).then((data: FacebookLoginResponse) => {
             this.loginWithFacebook(data, resolve, reject, true);
           }, err => reject(err));
         }
@@ -173,6 +173,7 @@ export class Auth {
       'name',
       'gender',
     ];
+
     this.facebook.api(
       '/me?fields=' + fields.join(','),
       this.social.fbPermissions
@@ -205,22 +206,21 @@ export class Auth {
       ).then(pic => {
         console.log(pic);
         authData.user.image_url = pic ? pic.data.url : null;
-
         let resolveObj = {
-          update: updateObj,
-          auth: authData,
-          result: this.getAuthData()
+           update: updateObj,
+           auth: authData,
+           result: this.getAuthData()
         }
 
         if (oAuth) {
-          let seq = this.api.post('sessions/oauth_login', authData).share();
-          seq.map(res => res.json()).subscribe(
-            res => {
-              resolveObj.result = res;
-              this.saveAuthData(res, 'facebook');
-              resolve(resolveObj);
-            }, err => reject(err)
-          );
+            let seq = this.api.post('sessions/oauth_login', authData).share();
+            seq.map(res => res.json()).subscribe(
+                res => {
+                    resolveObj.result = res;
+                    this.saveAuthData(res, 'facebook');
+                    resolve(resolveObj);
+                }, err => reject(err)
+            );
         } else {
           this.setFbConnected();
           resolve(resolveObj);
@@ -233,5 +233,4 @@ export class Auth {
   private formateDate(date?: string) {
     return moment(date).format('YYYY-MM-DD');
   }
-
 }

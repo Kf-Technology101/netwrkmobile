@@ -9,17 +9,31 @@
       <ion-col>
         <form (submit)="doSignUp()" #submitBirthdayForm="ngForm" novalidate>
           <ion-list>
+              <ion-item>
+                  <ion-input
+                  type="password"
+                  placeholder="Password..."
+                  name="password"
+                  required [(ngModel)]="passInput1"></ion-input>
+              </ion-item>
 
-            <ion-item>
-              <ion-datetime #focusBirthday placeholder="Birthday..."
-                displayFormat="MMMM D, YYYY"
-                pickerFormat="MMMM D YYYY"
-                [(ngModel)]="date_of_birthday"
-                [max]="maxBirthday"
-                name="date_of_birthday"
-                (ionChange)="doSignUp(submitBirthdayForm)"
-                required></ion-datetime>
-            </ion-item>
+              <ion-item>
+                  <ion-input
+                  type="password"
+                  placeholder="Confirm password..."
+                  name="confirm_password"
+                  required [(ngModel)]="passInput2"></ion-input>
+              </ion-item>
+
+            <!--<ion-item>-->
+              <!--<ion-datetime #focusBirthday placeholder="Birthday..."-->
+                <!--displayFormat="MMMM D, YYYY"-->
+                <!--pickerFormat="MMMM D YYYY"-->
+                <!--[(ngModel)]="date_of_birthday"-->
+                <!--[max]="maxBirthday"-->
+                <!--name="date_of_birthday"-->
+                <!--required></ion-datetime>-->
+            <!--</ion-item>-->
 
             <ion-item></ion-item>
 

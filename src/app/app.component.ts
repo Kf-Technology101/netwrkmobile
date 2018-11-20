@@ -79,6 +79,8 @@ export class MyApp {
                 }
             });
         });
+
+        this.storage.rm('custom_coordinates');
     }
 
     public init = () => {

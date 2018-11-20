@@ -232,7 +232,7 @@ export class ChatPage implements DoCheck {
     password: null
   }
 
-  private postCustAddressData:any = {
+  public postCustAddressData:any = {
       custumAddress: null
   }
 
@@ -866,6 +866,10 @@ export class ChatPage implements DoCheck {
 
         this.nativeGeocoder.forwardGeocode(keyword, options).then((data: NativeGeocoderForwardResult[]) =>  {
             this.geocoded = true;
+            //let data=[{
+            //    latitude:-20.1585685,
+            //    longitude:0.256254
+            //}]
 
             if (data) {
                 if (data[0].latitude && data[0].longitude) {
@@ -883,47 +887,53 @@ export class ChatPage implements DoCheck {
                             cont0.setState('slideUp');
                             cont0.hide();
 
-                            this.gpsPrvd.getZipCode().then(res => {
-                                this.gapi.init.then((google_maps:any) => {
-                                    let loc:any = {
-                                        lat: this.gpsPrvd.coords.lat,
-                                        lng: this.gpsPrvd.coords.lng
-                                    };
+                            this.gpsPrvd.getCustomZipCode().then(res => {
+                               if(res){
+                                   this.gapi.init.then((google_maps:any) => {
+                                       let loc:any = {
+                                           lat: this.gpsPrvd.coords.lat,
+                                           lng: this.gpsPrvd.coords.lng
+                                       };
 
-                                    this.map = new google_maps.Map(this.mapElement.nativeElement, {
-                                        zoom: 16,
-                                        center: loc,
-                                        disableDefaultUI: true,
-                                        fullscreenControl: false
-                                    });
+                                       this.map = new google_maps.Map(this.mapElement.nativeElement, {
+                                           zoom: 16,
+                                           center: loc,
+                                           disableDefaultUI: true,
+                                           fullscreenControl: false
+                                       });
 
-                                    this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng).map(res => res.json()).subscribe(res => {
-                                        let icon = {
-                                            url:'assets/icon/blue_dot.png'
-                                        };
+                                       this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng).map(res => res.json()).subscribe(res => {
+                                           let icon = {
+                                               url:'assets/icon/wi-fi.png'
+                                           };
 
-                                        let marker = new google_maps.Marker({
-                                            map: this.map,
-                                            animation: google_maps.Animation.DROP,
-                                            position: res.results[0].geometry.location,
-                                            icon: icon
-                                        });
-                                    });
+                                           let marker = new google_maps.Marker({
+                                               map: this.map,
+                                               animation: google_maps.Animation.DROP,
+                                               position: res.results[0].geometry.location,
+                                               icon: icon
+                                           });
+                                       });
 
-                                    this.map.setCenter(loc);
-                                    //this.toolsPrvd.showToast('Custom location successfully set');
-                                });
-                                this.postCustAddressData = {
-                                    custumAddress: null
-                                };
+                                       this.map.setCenter(loc);
+                                   });
+                                   this.postCustAddressData = {
+                                       custumAddress: null
+                                   };
+                               }else{
+                                   this.customAddressReset()
+                               }
+                            }).catch(err => {
+                                this.customAddressReset()
                             });
                         } catch (err) {
-                            console.error(err);
+                            this.customAddressReset()
                         }
                     } else {
                         this.postCustAddressData = {
                             custumAddress: null
                         };
+
                         let alert = this.alertCtrl.create({
                             subTitle: 'The location has to be within 10 miles of you. Sorry! House rules.',
                             buttons: [{
@@ -932,12 +942,13 @@ export class ChatPage implements DoCheck {
                             }]
                         });
                         alert.present();
-                        //this.toolsPrvd.showToast('The location has to be within 10 miles of you. Sorry! House rules.');
                     }
                 }
+            }else{
+                this.customAddressReset()
             }
         }).catch((error : any)=>{
-            this.geocoded      = true;
+            this.customAddressReset()
         });
     }
   }
@@ -946,6 +957,20 @@ export class ChatPage implements DoCheck {
     this.postUnlockData.id = messageId;
     this.currentHint = hint;
     this.toggleTopSlider('unlock');
+  }
+
+  public customAddressReset(){
+      this.toolsPrvd.showToast('Check it again, something is wrong');
+      this.storage.rm('custom_coordinates');
+      this.postCustAddressData = {
+          custumAddress: null
+      };
+      let cont0 = this.getTopSlider('address');
+      cont0.setState('slideDown');
+      cont0.show();
+      this.chatPrvd.postMessages = [];
+      this.settings.isNewlineScope=true;
+      this.gpsPrvd.getMyZipCode();
   }
 
   private unlockPost(event:any, form: any):void {
@@ -1386,6 +1411,7 @@ export class ChatPage implements DoCheck {
                             this.changePlaceholderText();
                             this.goArea();
                             this.content.resize();
+                            this.chatPrvd.isMainBtnDisabled = true;
                         }, err => {
                             this.toolsPrvd.hideLoader();
                             console.log(err);
@@ -1405,7 +1431,7 @@ export class ChatPage implements DoCheck {
               this.goArea();
               this.content.resize();
             }
-            this.chatPrvd.isMainBtnDisabled = false;
+
         }, err => console.error(err));
 
     } else if (this.chatPrvd.getState() == 'area') {
@@ -1428,7 +1454,7 @@ export class ChatPage implements DoCheck {
     }
 
     setTimeout(() => {
-      this.chatPrvd.isMainBtnDisabled = false;
+      //this.chatPrvd.isMainBtnDisabled = false;
       this.toolsPrvd.hideLoader();
       console.log('========= end of goUndercover =========');
     }, 2);
@@ -1725,7 +1751,6 @@ export class ChatPage implements DoCheck {
 
   private getAndUpdateUndercoverMessages() {
       if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
-          this.chatPrvd.isMainBtnDisabled = false;
 
           this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
               if (res) {
@@ -1744,6 +1769,7 @@ export class ChatPage implements DoCheck {
                   this.initLpMap();
               }
               this.toolsPrvd.hideLoader();
+              this.chatPrvd.isMainBtnDisabled = false;
               //this.checkUCInterval();
           }, err => {
               this.toolsPrvd.hideLoader();
@@ -1848,7 +1874,7 @@ export class ChatPage implements DoCheck {
 
       this.setCustomTransitions();
       this.keyboard.onKeyboardShow().subscribe(res => {
-        this.topSlider.setState('slideUp');
+        //this.topSlider.setState('slideUp');
         this.chatPrvd.postBtn.setState(true);
         if (this.plt.is('ios')) {
           try {
@@ -2341,7 +2367,6 @@ export class ChatPage implements DoCheck {
       if (this.chatPrvd.bgState.getState() == 'stretched') {
           this.toggleChatOptions();
       }
-
       let cont = this.getTopSlider('unlock');
       cont.setState('slideUp');
       cont.hide();
@@ -2427,6 +2452,7 @@ export class ChatPage implements DoCheck {
     console.log('%c [CHAT] ionViewDidEnter ', 'background: #1287a8;color: #ffffff');
 
     this.toolsPrvd.showLoader();
+    this.chatPrvd.isMainBtnDisabled=true;
 
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;
@@ -2547,7 +2573,6 @@ export class ChatPage implements DoCheck {
         }
       }
     }, err => console.error(err));
-
   }
 
   ionViewWillLeave() {

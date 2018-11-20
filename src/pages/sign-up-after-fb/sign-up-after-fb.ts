@@ -29,6 +29,7 @@ export class SignUpAfterFbPage {
 
   private validBirthdayErrorString: string;
   private validPasswordErrorString: string;
+  private pass_length: string;
 
   constructor(
     public navCtrl: NavController,
@@ -41,24 +42,27 @@ export class SignUpAfterFbPage {
     this.maxBirthday = this.tools.getToday(13);
     this.validBirthdayErrorString = 'Please fill all fields';
     this.validPasswordErrorString = 'Hmmm, it looks like they don\'t match';
-    //
-    //setTimeout(() => {
-    //  if (!this.birthdayInput._isOpen) this.birthdayInput.open();
-    //}, 1500);
+    this.pass_length = 'We like your style, but for your own good, it needs to be longer';
+
   }
 
   doSignUp(form: any) {
     if (form.valid && this.passInput1==this.passInput2) {
-      let updateObj = { user: { password: this.passInput1} };
 
-      this.user.update(this.auth.getAuthData().id, updateObj, 'facebook')
-        .map(res => res.json()).subscribe(res => {
-          this.tools.pushPage(
-            this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage)
-          );
-        }, err => {
-          this.tools.showToast(JSON.stringify(err));
-        });
+        if (this.passInput1 && this.passInput2 && (this.passInput1 < 6 && this.passInput1 > 0) && (this.passInput2 > 0 && this.passInput2 < 6)) {
+            this.tools.showToast(this.pass_length);
+        }else{
+        let updateObj = { user: { password: this.passInput1} };
+
+        this.user.update(this.auth.getAuthData().id, updateObj, 'facebook')
+            .map(res => res.json()).subscribe(res => {
+                this.tools.pushPage(
+                    this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage)
+                );
+            }, err => {
+                this.tools.showToast(JSON.stringify(err));
+            });
+        }
     } else {
         if (this.passInput1!=this.passInput2) {
             this.tools.showToast(this.validPasswordErrorString);

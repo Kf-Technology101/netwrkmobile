@@ -261,10 +261,10 @@ export class Chat {
 
   public isCurrentUserBelongsToChat(users:Array<any>):any {
     let isInside:boolean = false;
-      this.user=this.authPrvd.getAuthData();
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].id == this.user.id) { isInside = true; break; }
-    }
+        this.user=this.authPrvd.getAuthData();
+        for (let i = 0; i < users.length; i++) {
+          if (users[i].id == this.user.id) { isInside = true; break; }
+        }
     console.log('[isCurrentUserBelongsToChat] res:', isInside);
     return isInside;
   }

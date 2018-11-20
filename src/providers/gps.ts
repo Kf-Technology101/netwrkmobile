@@ -199,37 +199,77 @@ export class Gps {
         console.log('my lat:', this.coords.lat, 'my lng:', this.coords.lng);
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
           console.log('[my Location] res:', res);
-          // default:
-          let zipCode: any = this.parseGoogleAddress(res.results);
+            let zipCode: any = this.parseGoogleAddress(res.results);
 
-          this.loc.saveCurrentLocation({
-            name:<string> res.results[0].formatted_address,
-            lat:<number> this.coords.lat,
-            lng:<number> this.coords.lng,
-            zip:<number> zipCode
-          });
+            this.loc.saveCurrentLocation({
+                name:<string> res.results[0].formatted_address,
+                lat:<number> this.coords.lat,
+                lng:<number> this.coords.lng,
+                zip:<number> zipCode
+            });
 
-          // console.log('zipCode:', zipCode);
-          if (this.localStorage.get('chat_zip_code') === null) {
-            this.localStorage.set('chat_zip_code', zipCode);
-          }
-
-        let nav = this.app.getActiveNav();
-        if (nav.getActive() && zipCode != this.localStorage.get('chat_zip_code') && this.localStorage.get('chat_zip_code') !== null) {
-            this.localStorage.rm('current_network');
-            this.localStorage.set('chat_zip_code', zipCode);
-            if (nav.getActive().name.toLowerCase() == 'chatpage') {
-                this.localStorage.set('areaChange_triggered', true);
-                //nav.setRoot(ChatPage, {
-                //    action_from_gps: this.localStorage.get('chat_state'),
-                //    zipCode: zipCode
-                //});
+            // console.log('zipCode:', zipCode);
+            if (this.localStorage.get('chat_zip_code') === null) {
+                this.localStorage.set('chat_zip_code', zipCode);
             }
-        }
 
-          resolve(zipCode);
+            let nav = this.app.getActiveNav();
+            if (nav.getActive() && zipCode != this.localStorage.get('chat_zip_code') && this.localStorage.get('chat_zip_code') !== null) {
+                this.localStorage.rm('current_network');
+                this.localStorage.set('chat_zip_code', zipCode);
+                if (nav.getActive().name.toLowerCase() == 'chatpage') {
+                    this.localStorage.set('areaChange_triggered', true);
+                    //nav.setRoot(ChatPage, {
+                    //    action_from_gps: this.localStorage.get('chat_state'),
+                    //    zipCode: zipCode
+                    //});
+                }
+            }
+            resolve(zipCode);
         },
         err => {
+          reject(err);
+        });
+      }
+    });
+  }
+
+  public getCustomZipCode(): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (this.coords.lat && this.coords.lng) {
+        console.log('my lat:', this.coords.lat, 'my lng:', this.coords.lng);
+        this.getGoogleAdress().map(res => res.json()).subscribe(res => {
+            if(res.status==='OK'){
+                let zipCode: any = this.parseGoogleAddress(res.results);
+
+                this.loc.saveCurrentLocation({
+                    name:<string> res.results[0].formatted_address,
+                    lat:<number> this.coords.lat,
+                    lng:<number> this.coords.lng,
+                    zip:<number> zipCode
+                });
+
+                if (this.localStorage.get('chat_zip_code') === null) {
+                    this.localStorage.set('chat_zip_code', zipCode);
+                }
+
+                let nav = this.app.getActiveNav();
+                if (nav.getActive() && zipCode != this.localStorage.get('chat_zip_code') && this.localStorage.get('chat_zip_code') !== null) {
+                    this.localStorage.rm('current_network');
+                    this.localStorage.set('chat_zip_code', zipCode);
+                    if (nav.getActive().name.toLowerCase() == 'chatpage') {
+                        this.localStorage.set('areaChange_triggered', true);
+                        //nav.setRoot(ChatPage, {
+                        //    action_from_gps: this.localStorage.get('chat_state'),
+                        //    zipCode: zipCode
+                        //});
+                    }
+                }
+                resolve(true);
+            }else{
+                resolve(false);
+            }
+        },err => {
           reject(err);
         });
       }

@@ -432,6 +432,13 @@ export class Chat {
     return messMap;
   }
 
+  public sendNotification(data: any):any {
+     let seq = this.api.post('messages/send_notifications', data).share();
+     let notifyMap = seq.map(res => res.json());
+
+     return notifyMap;
+  }
+
   public sendMessage(data: any):any {
     return new Promise((resolve, reject) => {
       let params = {

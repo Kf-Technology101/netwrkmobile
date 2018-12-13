@@ -145,7 +145,7 @@ export class Profile {
       params = {
         user: {
           role_name: this.userName,
-          role_description: this.userDescription,
+          role_description: this.userDescription
         }
       }
     } else {
@@ -160,6 +160,32 @@ export class Profile {
         this.user = res;
         this.tools.hideLoader();
         // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
+      }, err => {
+        console.error(err);
+        this.tools.hideLoader();
+      });
+  }
+
+
+  public saveNetworkName(roleName?:string) {
+
+    let params: any;
+    if (this.userName){
+        this.tools.showLoader();
+        params = {
+            user: {
+                role_name: this.userName,
+                role_description: this.userDescription
+            }
+        }
+    }
+
+    if (params)
+      this.userPrvd.update(this.user.id, params, this.auth.getAuthType(), 'update')
+      .map(res => res.json()).subscribe(res => {
+        console.log('[user provider] (Update) res:', res);
+        this.user = res;
+        this.tools.hideLoader();
       }, err => {
         console.error(err);
         this.tools.hideLoader();

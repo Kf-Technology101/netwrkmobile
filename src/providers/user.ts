@@ -60,7 +60,6 @@ export class User {
               let authType = type ? type : 'email';
               this.auth.saveAuthData(res, authType);
           }
-
       }, err => console.error('ERROR', err)
     );
     return seq;

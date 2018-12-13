@@ -15,6 +15,7 @@ import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Settings } from '../../providers/settings';
 import { Auth } from '../../providers/auth';
+import { User } from '../../providers/user';
 
 import { heroes } from '../../includes/heroes';
 import * as moment from 'moment';
@@ -68,6 +69,7 @@ export class HoldScreenPage {
     public settings: Settings,
     public zone: NgZone,
     public gpsPrvd: Gps,
+    public userPrvd: User,
     public slideAvatarPrvd: SlideAvatar,
     public authPrvd: Auth,
     elRef: ElementRef,
@@ -76,7 +78,27 @@ export class HoldScreenPage {
   ) {
     this.users = this.authPrvd.getAuthData();
     this.gpsPrvd.getMyZipCode();
+
+      platform.ready().then(() => {
+          this.registerDevice();
+      });
   }
+
+    public registerDevice() {
+        let params: any;
+            params = {
+                user: {
+                    registration_id: this.authPrvd.getDeviceRegistration()
+                }
+            };
+
+        if (params)
+            this.userPrvd.update(this.users.id, params, this.authPrvd.getAuthType(), 'update')
+            .map(res => res.json()).subscribe(res => {
+            }, err => {
+                console.error(err);
+            });
+    }
 
     public goBack():void {
         this.storage.set('_fromPrSett', true);

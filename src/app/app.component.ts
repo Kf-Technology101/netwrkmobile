@@ -1,7 +1,8 @@
 import { Component,ViewChild  } from '@angular/core';
-import { Platform, Events, App, Nav } from 'ionic-angular';
+import { Platform, Events, App, Nav, AlertController } from 'ionic-angular';
 import { Sim } from '@ionic-native/sim';
 import { StatusBar } from '@ionic-native/status-bar';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
@@ -42,9 +43,11 @@ export class MyApp {
         private undercoverPrvd: UndercoverProvider,
         public statusBar: StatusBar,
         private sim: Sim,
+        private alertCtrl: AlertController,
         private apiPrvd: Api,
         private permission: PermissionsService,
         private network: NetworkCheck,
+        private push: Push,
         private gps: Gps
         ) {
 
@@ -78,9 +81,51 @@ export class MyApp {
                     this.init();
                 }
             });
+            this.authPrvd.removeDeviceRegistration();
+            this.pushSetup();
         });
 
         this.storage.rm('custom_coordinates');
+    }
+
+    pushSetup(){
+        const options: PushOptions = {
+            android: {
+                senderID:'650336583017'
+            },
+            ios: {
+                alert: 'true',
+                badge: true,
+                sound: 'true'
+            }
+        };
+
+        const pushObject: PushObject = this.push.init(options);
+
+        pushObject.on('notification').subscribe((notification: any) => {
+            console.log('Received a notification', notification);
+            if (notification.additionalData.foreground) {
+
+            } else {
+                let authType = this.authPrvd.getAuthType();
+                let authData = this.authPrvd.getAuthData();
+
+                if (authType && authData) {
+                    this.toolsPrvd.pushPage(ChatPage, {
+                        message: notification.notification.child_message
+                    });
+                }
+            }
+        });
+
+        pushObject.on('registration').subscribe((registration: any) => {
+            console.log('Device Registration', registration);
+            this.authPrvd.setDeviceRegistration(registration.registrationId);
+        });
+
+        pushObject.on('error').subscribe(error => {
+            console.error('Error with Push plugin', error)
+        });
     }
 
     public init = () => {

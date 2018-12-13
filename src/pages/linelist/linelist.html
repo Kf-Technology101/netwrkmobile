@@ -1,20 +1,24 @@
 <!--Header -->
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
     <ion-toolbar *ngIf="isUndercover">
-        <div class="drag-container" [@sliderState]="topSlider.getState()">
-            <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">
-                <span class="info">
-                    <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">
-                        {{ user.name }}
-                    </span>
-                    <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
-                        {{ user.role_name }}
-                    </span>
-                </span>
-                <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon">
-                <img class="draggable-element" [src]="slideAvatarPrvd.sliderPosition == 'right' ? user.hero_avatar_url : user.avatar_url" (error)="chatPrvd.updateAvatarUrl($event)">
-            </div>
-        </div>
+
+
+         <ion-input class="netwrk-input" text-center type="text" [(ngModel)]="profile.userName" (ionBlur)="saveNetworkName()"></ion-input>
+
+        <!--<div class="drag-container" [@sliderState]="topSlider.getState()">-->
+            <!--<div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">-->
+                <!--<span class="info">-->
+                    <!--<span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username">-->
+                        <!--{{ user.name }}-->
+                    <!--</span>-->
+                    <!--<span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">-->
+                        <!--{{ user.role_name }}-->
+                    <!--</span>-->
+                <!--</span>-->
+                <!--<img src="assets/icon/slider_arrow.svg" class="arrow-ico icon">-->
+                <!--<img class="draggable-element" [src]="slideAvatarPrvd.sliderPosition == 'right' ? user.hero_avatar_url : user.avatar_url" (error)="chatPrvd.updateAvatarUrl($event)">-->
+            <!--</div>-->
+        <!--</div>-->
 
         <button ion-button class="side clear-btn" (tap)="clearMessages(chatPrvd.postMessages)"
             *ngIf="isUndercover && chatPrvd.postMessages.length > 0 && !chatPrvd.postBtn.state &&
@@ -28,13 +32,13 @@
 
         <div *ngIf="postLockData.password && postLockData.hint && chatPrvd.postBtn.state && isUndercover" class="lock-status"></div>
 
-        <button ion-button class="side left timer-btn top-icon white" (click)="toggleTopSlider('timer')">
-            <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
-        </button>
+        <!--<button ion-button class="side left timer-btn top-icon white" (click)="toggleTopSlider('timer')">-->
+            <!--<ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>-->
+        <!--</button>-->
 
-        <ion-badge *ngIf="postTimerObj.time && isUndercover">
-            {{ postTimerObj.time }}
-        </ion-badge>
+        <!--<ion-badge *ngIf="postTimerObj.time && isUndercover">-->
+            <!--{{ postTimerObj.time }}-->
+        <!--</ion-badge>-->
     </ion-toolbar>
 
     <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state" class="post-timer">
@@ -85,26 +89,26 @@
     </ion-refresher>
 
 <!--Follow line Info-->
-    <ion-row class="bg-text" align-items-center>
-        <ion-col text-center>
-            <h1 ion-text color="white">Tap to change the name and picture</h1>
+    <!--<ion-row class="bg-text" align-items-center>-->
+        <!--<ion-col text-center>-->
+            <!--<h1 ion-text color="white">Tap to change the name and picture</h1>-->
 
-            <p  ion-text color="white">
-                Tap &nbsp;
-                <button color="bk" class="ion-netwrk-btn side lock-btn top-icon lockBtn" style="height: 25px;">
-                    <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
-                </button>  &nbsp;
-                to make it private
-            </p>
-            <p  ion-text color="white">
-                Tap &nbsp;
-                <button color="bk" class="ion-netwrk-btn side lock-btn top-icon lockBtn" style="height: 25px;">
-                    <ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>
-                </button>  &nbsp;
-                to start a party
-            </p>
-        </ion-col>
-    </ion-row>
+            <!--<p  ion-text color="white">-->
+                <!--Tap &nbsp;-->
+                <!--<button color="bk" class="ion-netwrk-btn side lock-btn top-icon lockBtn" style="height: 25px;">-->
+                    <!--<ion-icon ios="ios-lock" md="ios-lock"></ion-icon>-->
+                <!--</button>  &nbsp;-->
+                <!--to make it private-->
+            <!--</p>-->
+            <!--<p  ion-text color="white">-->
+                <!--Tap &nbsp;-->
+                <!--<button color="bk" class="ion-netwrk-btn side lock-btn top-icon lockBtn" style="height: 25px;">-->
+                    <!--<ion-icon ios="ios-timer-outline" md="ios-timer-outline"></ion-icon>-->
+                <!--</button>  &nbsp;-->
+                <!--to start a party-->
+            <!--</p>-->
+        <!--</ion-col>-->
+    <!--</ion-row>-->
 
 <div class="chat-container visible" #chatContainer [ngClass]="{ 'undercover' : chatPrvd.getState() == 'undercover', 'lobby' : chatPrvd.isLobbyChat }">
 
@@ -120,17 +124,17 @@
             <p class="message-container">
 
                 <span class="location" *ngIf="message.place_name && message.messageable_type=='Network' && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'" (click)="openLobbyForPinned(message)">
-                <ng-container >
-                    {{ message.place_name }}
-                </ng-container>
+                    <ng-container >
+                        {{ message.place_name }}
+                    </ng-container>
                 </span>
 
                 <span class="username" *ngIf="message.user">
                     <ng-container *ngIf="message.public">
-                    {{ message.user.name }}
+                        {{ message.user.name }}
                     </ng-container>
                     <ng-container *ngIf="!message.public">
-                    {{ message.user.role_name }}
+                        {{ message.role_name }}
                     </ng-container>
                 </span>
 
@@ -197,7 +201,7 @@
                 </span>
             </p>
 
-            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message.id, user.id, $event)" [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="!message.locked_by_user || user.id == message.user_id" (press)="openFeedbackModal(message, i)">
+            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message, user.id, $event)" [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="!message.locked_by_user || user.id == message.user_id" (press)="openFeedbackModal(message, i)">
                 <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
             </button>
 

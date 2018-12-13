@@ -47,6 +47,7 @@ export class FeedbackModal {
 
   private displayToolbar:any = false;
   private likeData:any;
+  private messageData:any;
   private data:any;
   private isUndercover:boolean;
 
@@ -120,6 +121,13 @@ export class FeedbackModal {
           points: this.postStatus.isLegendary ? -15 : 15,
           user_id: this.likeData.user_id
         }).subscribe(res => {
+            if(this.postStatus.isLiked==15){
+                this.messageData.notification_type="legendary";
+                this.chatPrvd.sendNotification(this.messageData).subscribe(notificationRes => {
+                    console.log('Notification Res', notificationRes);
+                }, err => console.error(err));
+            }
+
           console.log('sendPointData res:', res);
         });
         this.postInf.totalLegendary = res.legendary_count;
@@ -134,6 +142,12 @@ export class FeedbackModal {
           points: this.postStatus.isLiked ? -5 : 5,
           user_id: this.likeData.user_id
         }).subscribe(res => {
+            if(this.postStatus.isLiked==5){
+                this.messageData.notification_type="like";
+                this.chatPrvd.sendNotification(this.messageData).subscribe(notificationRes => {
+                    console.log('Notification Res', notificationRes);
+                }, err => console.error(err));
+            }
           console.log('sendPointData res:', res);
           this.likebtn.nativeElement.classList.remove('no-events');
         }, err => this.likebtn.nativeElement.classList.remove('no-events'));
@@ -226,6 +240,7 @@ export class FeedbackModal {
     this.postInf.totalLegendary = this.params.get('totalLegendary');
     this.postStatus.isLegendary = this.params.get('legendaryByUser');
     this.isUndercover = this.params.get('isUndercover');
+    this.messageData = this.params.get('message');
 
     console.log('postInf:', this.postInf);
     console.log('postStatus:', this.postStatus);

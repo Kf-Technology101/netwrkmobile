@@ -141,6 +141,18 @@ export class Auth {
     this.network.saveInviteAccess(authData.invitation_sent);
   }
 
+  public setDeviceRegistration(registrationId: any) {
+    this.storage.set('device_registrationId', registrationId);
+  }
+
+  public getDeviceRegistration():any {
+      return this.storage.get('device_registrationId');
+  }
+
+  public removeDeviceRegistration():any {
+    this.storage.rm('device_registrationId');
+  }
+
   public getFbLoginStatus() { return this.facebook.getLoginStatus(); }
 
   public setFbConnected() {

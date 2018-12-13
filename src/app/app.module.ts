@@ -2,6 +2,7 @@ import { NgModule, ErrorHandler, Renderer } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { Push } from '@ionic-native/push';
 
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 
@@ -158,6 +159,7 @@ export function providers() {
     NativeGeocoder,
 
     SplashScreen,
+    Push,
     StatusBar,
     Sim,
     InAppBrowser,

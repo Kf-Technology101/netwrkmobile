@@ -56,7 +56,8 @@ import { Social } from '../../providers/social';
 import { Places } from '../../providers/places';
 import { Gps } from '../../providers/gps';
 import { Settings } from '../../providers/settings';
-
+import { Profile } from '../../providers/profile';
+import { User } from '../../providers/user';
 
 import { VideoService } from '../../providers/videoservice';
 import { FeedbackService } from '../../providers/feedback.service';
@@ -86,6 +87,9 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 @Component({
     selector: 'page-linelist',
     templateUrl: 'linelist.html',
+    providers: [
+        Profile
+    ],
     animations: [
         toggleInputsFade,
         rotateChatPlus,
@@ -226,6 +230,8 @@ export class LinePage {
         public zone: NgZone,
         public gpsPrvd: Gps,
         public setting: Settings,
+        public userPrvd: User,
+        public profile: Profile,
         public sharing: SocialSharing,
         public slideAvatarPrvd: SlideAvatar,
         public authPrvd: Auth,
@@ -1308,6 +1314,7 @@ export class LinePage {
     }
 
     ionViewDidEnter() {
+        this.setProfileData();
         this.storage.set('slider_position', 'right');
         this.slideAvatarPrvd.setSliderPosition('right');
         this.onEnter();
@@ -1326,6 +1333,7 @@ export class LinePage {
     }
 
     ionViewDidLoad() {
+        this.setProfileData();
         console.log('%c [CHAT] ionViewDidLoad ', 'background: #1287a8;color: #ffffff');
         if (this.chatPrvd.localStorage.get('enable_uc_camera') === null) {
             this.chatPrvd.localStorage.set('enable_uc_camera', true);
@@ -1343,7 +1351,42 @@ export class LinePage {
         }, err => console.error(err));
     }
 
+    public saveNetworkName() {
+
+        let params: any;
+        if (this.profile.userName){
+            this.toolsPrvd.showLoader();
+            params = {
+                user: {
+                    role_name: this.profile.userName,
+                    role_description: this.profile.userDescription
+                }
+            }
+        }
+
+        if (params)
+            this.userPrvd.update(this.user.id, params, this.authPrvd.getAuthType(), 'update')
+                .map(res => res.json()).subscribe(res => {
+                    console.log('[user provider] (Update) res:', res);
+                    this.authPrvd.saveAuthData(res);
+                    this.user = res;
+                    this.toolsPrvd.hideLoader();
+                }, err => {
+                    console.error(err);
+                    this.toolsPrvd.hideLoader();
+                });
+    }
+
+    setProfileData() {
+        this.profile.userName = this.user.role_name;
+        this.profile.userDescription = this.user.role_description;
+    }
+
     ionViewWillLeave() {
+        this.profile.saveChangesOnLeave();
+        this.setProfileData();
+        this.profile.user.role_name = this.profile.userName;
+
         console.log('%c [CHAT] ionViewWillLeave ', 'background: #1287a8;color: #ffffff');
         this.navParams.data = {};
         this.componentLoaded = false;

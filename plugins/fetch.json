@@ -10,7 +10,7 @@
   "cordova-plugin-device": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-device@2.0.2"
+      "id": "cordova-plugin-device@^2.0.2"
     },
     "is_top_level": true,
     "variables": {}
@@ -127,14 +127,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "cordova-plugin-background-mode": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-background-mode"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "cordova-plugin-android-permissions": {
     "source": {
       "type": "registry",
@@ -174,7 +166,8 @@
     },
     "is_top_level": true,
     "variables": {
-      "PHOTO_LIBRARY_DESCRIPTION": "image picker"
+      "PHOTO_LIBRARY_DESCRIPTION": "image picker",
+      "PHOTO_LIBRARY_USAGE_DESCRIPTION": " "
     }
   },
   "cordova-plugin-add-swift-support": {
@@ -231,7 +224,8 @@
     "is_top_level": true,
     "variables": {
       "APP_ID": "390382104668705",
-      "APP_NAME": "Netwrk"
+      "APP_NAME": "Netwrk",
+      "ANDROID_SDK_VERSION": "4.+"
     }
   },
   "com-sarriaroman-photoviewer": {
@@ -248,7 +242,9 @@
       "id": "cordova-plugin-nativegeocoder"
     },
     "is_top_level": true,
-    "variables": {}
+    "variables": {
+      "LOCATION_WHEN_IN_USE_DESCRIPTION": "Use geocoder service"
+    }
   },
   "phonegap-plugin-push": {
     "source": {
@@ -259,5 +255,13 @@
     "variables": {
       "SENDER_ID": "650336583017"
     }
+  },
+  "cordova-plugin-background-mode": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-background-mode"
+    },
+    "is_top_level": true,
+    "variables": {}
   }
 }

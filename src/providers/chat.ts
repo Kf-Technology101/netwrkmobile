@@ -290,10 +290,15 @@ export class Chat {
            }
 
             if(this.areaLobby){
-               this.postAreaMessages.unshift(message)
+                if(this.postAreaMessages.indexOf(message)==-1){
+                    this.postAreaMessages.unshift(message);
+                }
             }else if(!this.isLobbyChat){
                 this.postMessages.push(message);
-                this.postLineMessages.unshift(message);
+
+                if(this.postLineMessages.indexOf(message)==-1){
+                    this.postLineMessages.unshift(message);
+                }
             }
 
             this.currentLobby.id = res.room_id;
@@ -531,8 +536,7 @@ export class Chat {
     params?: any,
     doRefresh?: any
   ):any {
-    // console.log('===================================');
-    // console.log('[getMessages] arguments:', arguments);
+
     let offset: number = messagesNearArray && messagesNearArray.length ? messagesNearArray.length : 0;
 
     let data: any = {
@@ -598,7 +602,9 @@ export class Chat {
     let messages: Array<any> = [];
     for (let i in data) {
       data[i].date = moment(data[i].created_at).fromNow();
-      messages.push(data[i]);
+        if(messages.indexOf(data[i])==-1){
+            messages.push(data[i]);
+        }
     }
     return messages;
   }

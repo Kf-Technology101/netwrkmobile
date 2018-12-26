@@ -660,31 +660,7 @@ export class LinePage {
         this.toolsPrvd.showLoader();
         this.chatPrvd.sendMessage(messageParams).then(res => {
             this.setting.isNewlineScope=false;
-            this.chatPrvd.currentLobbyMessage=res;
-            this.chatPrvd.appendLineContainer.hidden = true;
-            this.cameraPrvd.takenPictures = [];
-            this.placeholderText = 'What would you like to say?';
-
-            this.chatPrvd.openLobbyForPinned(res).then(() => {
-                this.chatPrvd.isLandingPage = true;
-                this.setting.isNewlineScope=false;
-                if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-                    this.placeholderText = 'What would you like to say?';
-                }else{
-                    this.placeholderText = 'What would you like to say?';
-                }
-                this.chatPrvd.allowUndercoverUpdate = false;
-                clearTimeout(this.messIntObject);
-                this.chatPrvd.toggleLobbyChatMode();
-                this.app.getRootNav().setRoot(ChatPage);
-                this.chatPrvd.isMainBtnDisabled = false;
-                this.toolsPrvd.hideLoader();
-            }, err => {
-                this.placeholderText = 'Tap to hang anything here';
-                this.chatPrvd.isMainBtnDisabled = false;
-                this.chatPrvd.allowUndercoverUpdate = true;
-                this.toolsPrvd.hideLoader();
-            });
+            this.app.getRootNav().setRoot(ChatPage, {message:res});
         }).catch(err => {
             this.toolsPrvd.hideLoader();
         });
@@ -928,7 +904,11 @@ export class LinePage {
                 this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
                     .subscribe(res => {
                         res = this.chatPrvd.organizeMessages(res.messages);
-                        for (let i in res) this.chatPrvd.postMessages.push(res[i]);
+                        for (let i in res) {
+                            if(this.chatPrvd.postMessages.indexOf(res[i])==-1){
+                                this.chatPrvd.postMessages.push(res[i]);
+                            }
+                        }
                         this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
                         this.chatPrvd.isCleared = false;
                         if (refresher) refresher.complete();
@@ -1278,7 +1258,6 @@ export class LinePage {
         this.events.subscribe('message:received', res => {
             console.log('message:received res:', res);
             if (res.messageReceived && this.chatPrvd.isCleared) {
-                this.chatPrvd.postMessages = [];
                 this.refreshChat();
             }
             if (res.runVideoService) {

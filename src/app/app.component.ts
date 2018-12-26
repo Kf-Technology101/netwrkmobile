@@ -51,6 +51,8 @@ export class MyApp {
         private gps: Gps
         ) {
 
+        this.init();
+
         platform.registerBackButtonAction(() => {
             this.toolsPrvd.doBackButton();
             return true;
@@ -67,19 +69,9 @@ export class MyApp {
             console.log('Unmatched Route', err);
         });
 
-        this.init();
-
         platform.ready().then(() => {
             permission.checkCameraPermissions().then(permissionOk => {
                 this.storage.set('enable_uc_camera', permissionOk ? true : false);
-
-                if(platform.is('android')) {
-                    permission.checkAll().then(res => {
-                        this.init();
-                    }, err => console.error(err));
-                } else {
-                    this.init();
-                }
             });
             this.authPrvd.removeDeviceRegistration();
             this.pushSetup();
@@ -111,8 +103,10 @@ export class MyApp {
                 let authData = this.authPrvd.getAuthData();
 
                 if (authType && authData) {
-                    this.toolsPrvd.pushPage(ChatPage, {
-                        message: notification.notification.child_message
+                    this.gps.getMyZipCode().then(res => {
+                        this.toolsPrvd.pushPage(ChatPage, {
+                            message:notification.additionalData.child_message
+                        });
                     });
                 }
             }
@@ -135,7 +129,7 @@ export class MyApp {
         this.statusBar.styleDefault();
     };
 
-    private goToPage(root:any):void {
+    private goToPage():void {
         this.gps.getMyZipCode().then(res => {
             this.app.getRootNav().setRoot(ChatPage);
         }, err => this.app.getRootNav().setRoot(ChatPage));
@@ -147,22 +141,14 @@ export class MyApp {
         let authData = this.authPrvd.getAuthData();
 
         if (authType && authData) {
-            let root:any;
             switch (authType) {
                 case 'facebook':
                     this.authPrvd.getFbLoginStatus().then(data => {
-                        if (data.status && data.status == 'connected') {
-                            root = this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage);
-                        }
-                        this.goToPage(root);
+                        this.goToPage();
                     });
                     break;
                 case 'email':
-                    let fbConnected = this.authPrvd.getFbConnected();
-                    if (fbConnected) {
-                        root = this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage);
-                    }
-                    this.goToPage(root);
+                    this.goToPage();
                     break;
                 default:
                     this.toolsPrvd.hideSplashScreen();
@@ -175,9 +161,9 @@ export class MyApp {
 
     private getSimInfo() {
         this.sim.getSimInfo().then(info => {
-            console.log('Sim info: ', info);
-            this.storage.set('country_code', info.countryCode);
-        },
-        err => console.error('Unable to get sim info: ', err));
+                console.log('Sim info: ', info);
+                this.storage.set('country_code', info.countryCode);
+            },
+            err => console.error('Unable to get sim info: ', err));
     }
 }

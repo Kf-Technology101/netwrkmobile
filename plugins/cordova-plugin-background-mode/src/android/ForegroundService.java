@@ -21,6 +21,7 @@
 
 package de.appplant.cordova.plugin.background;
 
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -35,7 +36,7 @@ import android.os.PowerManager;
 
 import org.json.JSONObject;
 
-import java.lang.reflect.Method;
+import static android.os.PowerManager.PARTIAL_WAKE_LOCK;
 
 /**
  * Puts the service in a foreground state, where the system considers it to be
@@ -115,11 +116,11 @@ public class ForegroundService extends Service {
             startForeground(NOTIFICATION_ID, makeNotification());
         }
 
-        PowerManager powerMgr = (PowerManager)
+        PowerManager pm = (PowerManager)
                 getSystemService(POWER_SERVICE);
 
-        wakeLock = powerMgr.newWakeLock(
-                PowerManager.PARTIAL_WAKE_LOCK, "BackgroundMode");
+        wakeLock = pm.newWakeLock(
+                PARTIAL_WAKE_LOCK, "BackgroundMode");
 
         wakeLock.acquire();
     }
@@ -179,9 +180,11 @@ public class ForegroundService extends Service {
         setColor(notification, settings);
 
         if (intent != null && settings.optBoolean("resume")) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
             PendingIntent contentIntent = PendingIntent.getActivity(
                     context, NOTIFICATION_ID, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
+
 
             notification.setContentIntent(contentIntent);
         }
@@ -203,9 +206,7 @@ public class ForegroundService extends Service {
         }
 
         Notification notification = makeNotification(settings);
-
-        getNotificationManager().notify(
-                NOTIFICATION_ID, notification);
+        getNotificationManager().notify(NOTIFICATION_ID, notification);
     }
 
     /**
@@ -214,16 +215,13 @@ public class ForegroundService extends Service {
      * @param settings A JSON dict containing the icon name.
      */
     private int getIconResId(JSONObject settings) {
-        Context context = getApplicationContext();
-        Resources res   = context.getResources();
-        String pkgName  = context.getPackageName();
-        String icon     = settings.optString("icon", NOTIFICATION_ICON);
+        String icon = settings.optString("icon", NOTIFICATION_ICON);
 
         // cordova-android 6 uses mipmaps
-        int resId = getIconResId(res, icon, "mipmap", pkgName);
+        int resId = getIconResId(icon, "mipmap");
 
         if (resId == 0) {
-            resId = getIconResId(res, icon, "drawable", pkgName);
+            resId = getIconResId(icon, "drawable");
         }
 
         return resId;
@@ -232,15 +230,14 @@ public class ForegroundService extends Service {
     /**
      * Retrieve resource id of the specified icon.
      *
-     * @param res The app resource bundle.
      * @param icon The name of the icon.
      * @param type The resource type where to look for.
-     * @param pkgName The name of the package.
      *
      * @return The resource id or 0 if not found.
      */
-    private int getIconResId(Resources res, String icon,
-                             String type, String pkgName) {
+    private int getIconResId(String icon, String type) {
+        Resources res  = getResources();
+        String pkgName = getPackageName();
 
         int resId = res.getIdentifier(icon, type, pkgName);
 
@@ -257,6 +254,7 @@ public class ForegroundService extends Service {
      * @param notification A Notification.Builder instance
      * @param settings A JSON dict containing the color definition (red: FF0000)
      */
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setColor(Notification.Builder notification,
                           JSONObject settings) {
 
@@ -267,10 +265,7 @@ public class ForegroundService extends Service {
 
         try {
             int aRGB = Integer.parseInt(hex, 16) + 0xFF000000;
-            Method setColorMethod = notification.getClass().getMethod(
-                    "setColor", int.class);
-
-            setColorMethod.invoke(notification, aRGB);
+            notification.setColor(aRGB);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -280,8 +275,7 @@ public class ForegroundService extends Service {
      * Shared manager for the notification service.
      */
     private NotificationManager getNotificationManager() {
-        return (NotificationManager) getSystemService(
-                Context.NOTIFICATION_SERVICE);
+        return (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
 }

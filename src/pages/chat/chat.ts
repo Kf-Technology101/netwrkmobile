@@ -1782,7 +1782,6 @@ export class ChatPage implements DoCheck {
 
   private getAndUpdateUndercoverMessages() {
       if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
-
           this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
               if (res) {
                   if (res.messages && res.messages.length > 0) {
@@ -1810,7 +1809,7 @@ export class ChatPage implements DoCheck {
   }
 
   private startMessageUpdateTimer() {
-    if (this.chatPrvd.getState() == 'undercover' &&  !this.chatPrvd.areaLobby &&  !this.chatPrvd.isLobbyChat) {
+    if (this.chatPrvd.getState() == 'undercover' &&  !this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
       this.getAndUpdateUndercoverMessages();
     }
   }
@@ -2558,9 +2557,14 @@ export class ChatPage implements DoCheck {
         }, err => console.error(err));
       }, err => console.error(err));
     } else if (this.chatPrvd.getState() == 'undercover'){
-      this.messagesInterval = true;
-      this.startMessageUpdateTimer();
-      this.initLpMap();
+        this.initLpMap();
+        this.messageParam = this.navParams.get('message');
+        if (this.messageParam) {
+            this.openLobbyForPinned(this.messageParam);
+        }else{
+            this.messagesInterval = true;
+            this.startMessageUpdateTimer();
+        }
     }
 
     this.zone.run(() => {
@@ -2572,6 +2576,7 @@ export class ChatPage implements DoCheck {
     }, 1);
 
     this.user = this.authPrvd.getAuthData();
+
   }
 
   public followNearByNetwork(message) {

@@ -38,6 +38,8 @@ export class Chat {
 
   public isLandingPage: boolean;
   public areaLobby: boolean = false;
+  public areaFilter : boolean=false;
+  public holdFilter : boolean=false;
 
   public appendContainer = new Toggleable('off', true);
   public appendLineContainer = new Toggleable('off', true);

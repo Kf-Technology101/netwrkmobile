@@ -200,6 +200,7 @@ export class ChatPage implements DoCheck {
   public placeholderText: string;
 
   public geocoded : boolean;
+
   public results  : string;
 
   private debug: any = {
@@ -314,6 +315,14 @@ export class ChatPage implements DoCheck {
             }, err => {
                 console.error(err);
             });
+  }
+
+  public resetFilter():void {
+      if(this.chatPrvd.areaFilter){
+          this.chatPrvd.areaFilter=false;
+      }else{
+          this.chatPrvd.areaFilter=true;
+      }
   }
 
   public shareMessageToFacebook(message):void {

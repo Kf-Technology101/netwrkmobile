@@ -5,10 +5,31 @@
             <ion-row class="loading bg-text" align-items-center>
                 <ion-col text-center>
                     <h1 ion-text color="white">Hello, here are the networks near you.</h1>
-                    <h1 ion-text color="white">Follow some to get started!</h1>
                 </ion-col>
             </ion-row>
         </ng-container>
+
+        <div ion-text color="bk" class="area-subhead-tip">
+            <span class="subhead-container" (click)="resetFilter()">
+                <div class="flex-ch netwrk-name">
+                    <span *ngIf="!chatPrvd.holdFilter" class="username" >
+                        15 Miles
+                    </span>
+                    <span *ngIf="chatPrvd.holdFilter" class="username">
+                        All
+                    </span>
+                </div>
+
+                <div class="flex-ch">
+                    <button ion-button class="netwrk-icon">
+                        <img class="netwrk-img" src="assets/icon/netwrk-chat.svg">
+                    </button>
+                </div>
+                <div class="flex-ch">
+                    <span class="netwrk-users">{{netwrkLineList.length}} </span> <ion-icon class="lobby-icon" ios="ios-close-circle" md="md-close-circle"></ion-icon>
+                </div>
+            </span>
+        </div>
     </ion-toolbar>
 </ion-header>
 

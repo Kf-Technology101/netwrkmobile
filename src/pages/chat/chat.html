@@ -75,16 +75,24 @@
         <img class="ic user-icon" src="assets/images/sun_icon.png" (click)="goToLegendaryList()" style="float:left;width:34px;height:34px;">
 
         <div ion-text color="bk" class="area-subhead-tip">
-          <span class="subhead-container">
-            <div class="flex-ch netwrk-name">{{ chatPrvd.localStorage.get('chat_zip_code')}}</div>
-            <div class="flex-ch">
-                <div class="netwrk-icon">
-                    <img class="netwrk-img" src="assets/icon/netwrk-chat.svg">
+          <span class="subhead-container" (click)="resetFilter()">
+                <div class="flex-ch netwrk-name">
+                    <span *ngIf="!chatPrvd.areaFilter" class="username" >
+                        {{ chatPrvd.localStorage.get('chat_zip_code')}}
+                    </span>
+                    <span *ngIf="chatPrvd.areaFilter" class="username">
+                        All
+                    </span>
                 </div>
-            </div>
-            <div class="flex-ch">
-                <span class="netwrk-users">{{uniqueUsers}} </span>  <span class="lobby-icon"></span>
-            </div>
+
+                <div class="flex-ch">
+                    <button ion-button class="netwrk-icon">
+                        <img class="netwrk-img" src="assets/icon/netwrk-chat.svg">
+                    </button>
+                </div>
+                <div class="flex-ch">
+                    <span class="netwrk-users">{{uniqueUsers}} </span>  <span class="lobby-icon"></span>
+                </div>
           </span>
         </div>
 
@@ -621,7 +629,7 @@
       <img src="assets/icon/wifi.png"/>
   </button>
 
-  <div class="flip-container hover" [ngClass]="{'hover' : flipHover }" *ngIf="chatPrvd.isLobbyChat || chatPrvd.getState() == 'area'">
+  <div class="flip-container hover" [ngClass]="{'hover' : flipHover }" *ngIf="chatPrvd.isLobbyChat || chatPrvd.areaLobby">
     <ion-item class="text front" #inputItem *ngIf="(chatPrvd.currentLobby.currentUserPresent && chatPrvd.isLobbyChat) || !mainInput.hidden" [@fadeState]="mainInput.state" [ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state}">
       <div item-content id="textInpBtns" [@bgState]="chatPrvd.bgState.state">
         <button class="noBtn" ion-button [@inputState]="chatPrvd.chatBtns.state[0]" (click)="openCamera();

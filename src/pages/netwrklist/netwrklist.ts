@@ -108,6 +108,20 @@ export class NetwrklistPage {
         });
     }
 
+    private goToLobby(messageParams:any){
+        this.chatPrvd.postMessages=[];
+        this.chatPrvd.isCleared = true;
+        messageParams.image_urls='';
+        this.app.getRootNav().setRoot(ChatPage, {message:messageParams});
+    }
+
+    public resetFilter():void {
+        if(this.chatPrvd.holdFilter){
+            this.chatPrvd.holdFilter=false;
+        }else{
+            this.chatPrvd.holdFilter=true;
+        }
+    }
 
     public followNearByNetwork(message) {
         this.toolsPrvd.showLoader();

@@ -476,7 +476,7 @@
                 <ion-icon ios="ios-add" md="md-add"></ion-icon>
             </button>
 
-            <button ion-button class="feedback-setting-button" color="bk" item-end (tap)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'">
+            <button ion-button class="feedback-setting-button" color="bk" item-end (tap)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && message.messageable_type=='Network'">
                 <ion-icon ios="ios-settings" md="md-settings"></ion-icon>
             </button>
 

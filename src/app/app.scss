@@ -92,6 +92,7 @@ ion-refresher {
 .no-events {
   pointer-events: none!important;
 }
+
 // iPad fixes
 ion-app {
   .platform-ipad {
@@ -370,7 +371,7 @@ ion-app .ion-page .content {
 }
 
 .header-ios {
-  padding-top: 16px;
+  padding-top: 30px;
 }
 .connect {
   &.arealist {

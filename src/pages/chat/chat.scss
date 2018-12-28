@@ -52,15 +52,20 @@ modal-legendaryhistory {
     }
     &.lobby-content.content-ios {
       .scroll-content {
-        margin-top: 30px!important;
+        margin-top: 40px!important;
       }
     }
 
     &.content-ios {
       // margin-bottom: 70px;
-
+      .areaLobby {
+        top:30px !important;
+      }
+      .areaMessageLobby {
+        padding-top: 90px !important;
+      }
       .scroll-content {
-        margin-top: 10px!important;
+        margin-top: 18px!important;
         margin-bottom: inherit;
       }
     }

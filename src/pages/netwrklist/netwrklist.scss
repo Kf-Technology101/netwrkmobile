@@ -1,6 +1,5 @@
 
 
-
 page-netwrklist {
   .content {
       .scroll-content {
@@ -9,6 +8,9 @@ page-netwrklist {
         padding-bottom: inherit;
         border-top: none;
       }
+  }
+  .header-ios {
+    padding-top: 0 !important;
   }
 
   ion-header {
@@ -87,7 +89,6 @@ page-netwrklist {
         white-space: nowrap;
         overflow:hidden;
         font-weight: bold;
-        //        text-overflow: ellipsis;
         .md-person-icon {
           background: #5b87aa;
         }

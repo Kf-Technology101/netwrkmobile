@@ -75,12 +75,12 @@
         <img class="ic user-icon" src="assets/images/sun_icon.png" (click)="goToLegendaryList()" style="float:left;width:34px;height:34px;">
 
         <div ion-text color="bk" class="area-subhead-tip">
-          <span class="subhead-container" (click)="resetFilter()">
+           <span class="subhead-container" (click)="resetFilter()">
                 <div class="flex-ch netwrk-name">
-                    <span *ngIf="!chatPrvd.areaFilter" class="username" >
+                    <span *ngIf="chatPrvd.areaFilter" class="username" >
                         {{ chatPrvd.localStorage.get('chat_zip_code')}}
                     </span>
-                    <span *ngIf="chatPrvd.areaFilter" class="username">
+                    <span *ngIf="!chatPrvd.areaFilter" class="username">
                         All
                     </span>
                 </div>
@@ -93,7 +93,7 @@
                 <div class="flex-ch">
                     <span class="netwrk-users">{{uniqueUsers}} </span>  <span class="lobby-icon"></span>
                 </div>
-          </span>
+           </span>
         </div>
 
         <button ion-button class="side clear-btn legendary-icon" (tap)="clearMessages(chatPrvd.postMessages)" *ngIf="!chatPrvd.areaLobby">

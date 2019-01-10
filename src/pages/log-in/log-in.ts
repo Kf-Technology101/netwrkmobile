@@ -116,12 +116,6 @@ export class LogInPage {
     this.authPrvd.login(this.account).map(res => res.json()).subscribe(resp => {
       console.log('login resp:', resp);
       if (resp.tou_accepted) {
-        //let page = resp.fb_connected ? this.undercoverPrvd.getCharacterPerson(HoldScreenPage, ChatPage) : SignUpFacebookPage;
-        //if (page == NetworkFindPage) {
-        //  this.skipNetworkFindPage();
-        //} else {
-        //  this.tools.pushPage(page);
-        //}
           this.tools.pushPage(HoldScreenPage);
       } else if (!resp.tou_accepted &&
         typeof resp.tou_accepted == 'boolean'){
@@ -135,7 +129,6 @@ export class LogInPage {
 
   doFbLogin() {
     this.tools.showLoader();
-    //this.tools.pushPage(SignUpAfterFbPage)
     this.authPrvd.signUpFacebook().then(data => {
       if (data.result.tou_accepted) {
         this.user.update(data.result.id, data.update, 'facebook').map(res => res.json()).subscribe(res => {

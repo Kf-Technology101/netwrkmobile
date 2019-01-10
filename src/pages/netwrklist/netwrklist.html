@@ -1,5 +1,5 @@
 
-<ion-header>
+<ion-header class="ios-head">
     <ion-toolbar>
         <ng-container>
             <ion-row class="loading bg-text" align-items-center>
@@ -12,10 +12,10 @@
         <div ion-text color="bk" class="area-subhead-tip">
             <span class="subhead-container" (click)="resetFilter()">
                 <div class="flex-ch netwrk-name">
-                    <span *ngIf="!chatPrvd.holdFilter" class="username" >
+                    <span *ngIf="chatPrvd.holdFilter" class="username" >
                         15 Miles
                     </span>
-                    <span *ngIf="chatPrvd.holdFilter" class="username">
+                    <span *ngIf="!chatPrvd.holdFilter" class="username">
                         All
                     </span>
                 </div>

@@ -176,9 +176,7 @@ export class Auth {
 
   private loginWithFacebook(data: FacebookLoginResponse, resolve, reject, oAuth: boolean) {
     this.social.setSocialAuth(data.authResponse, Social.FACEBOOK);
-
     let fields: Array<string> = [
-      'birthday',
       'email',
       'first_name',
       'last_name',
@@ -216,7 +214,6 @@ export class Auth {
         'me/picture?width=320&height=320&redirect=false',
         this.social.fbPermissions
       ).then(pic => {
-        console.log(pic);
         authData.user.image_url = pic ? pic.data.url : null;
         let resolveObj = {
            update: updateObj,
@@ -224,22 +221,27 @@ export class Auth {
            result: this.getAuthData()
         }
 
-        if (oAuth) {
+        if(oAuth) {
             let seq = this.api.post('sessions/oauth_login', authData).share();
             seq.map(res => res.json()).subscribe(
                 res => {
                     resolveObj.result = res;
                     this.saveAuthData(res, 'facebook');
                     resolve(resolveObj);
-                }, err => reject(err)
+                }, err => {
+                    reject(err)
+                }
             );
         } else {
           this.setFbConnected();
           resolve(resolveObj);
         }
-
-      }).catch(err => reject(err))
-    }).catch(err => reject(err))
+      }).catch(err => {
+          reject(err)
+      })
+    }).catch(err => {
+        reject(err)
+    })
   }
 
   private formateDate(date?: string) {

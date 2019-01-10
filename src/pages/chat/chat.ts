@@ -19,6 +19,7 @@ import {
 } from 'ionic-angular';
 
 import { GoogleMapsService } from 'google-maps-angular2';
+import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
 
 import { CameraPreview } from '@ionic-native/camera-preview';
 import { Geolocation } from '@ionic-native/geolocation';
@@ -103,6 +104,9 @@ declare var google;
     slideToggle,
     toggleUcSlider,
     lobbyAnimation
+  ],
+  providers: [
+     Base64ToGallery
   ]
 })
 
@@ -118,24 +122,24 @@ export class ChatPage implements DoCheck {
   public pageNav: boolean;
   public pageNavLobby: boolean;
 
-    public google;
-    public map: any;
-    public coords:any = {
+  public google;
+  public map: any;
+  public coords:any = {
+     lat: null,
+     lng: null
+  }
+
+  public nearestNetwork:any = {
+     dist: 0,
+     index: 0,
+     location: {
         lat: null,
         lng: null
-    }
-
-    public nearestNetwork:any = {
-        dist: 0,
-        index: 0,
-        location: {
-            lat: null,
-            lng: null
-        },
-        address_string: null,
-        type: null,
-        name: null
-    };
+     },
+     address_string: null,
+     type: null,
+     name: null
+  };
 
   //public map: any;
 
@@ -268,6 +272,7 @@ export class ChatPage implements DoCheck {
     public gapi: GoogleMapsService,
     public chatPrvd: Chat,
     public networkPrvd: NetworkProvider,
+    private base64ToGallery: Base64ToGallery,
     public gpsPrvd: Gps,
     public plt: Platform,
     public sharing: SocialSharing,
@@ -318,10 +323,16 @@ export class ChatPage implements DoCheck {
   }
 
   public resetFilter():void {
+      this.chatPrvd.postMessages = [];
+      this.settings.isNewlineScope=false;
+      this.settings.isCreateLine=false;
+      this.chatPrvd.isCleared = true;
       if(this.chatPrvd.areaFilter){
           this.chatPrvd.areaFilter=false;
+          this.refreshChat();
       }else{
           this.chatPrvd.areaFilter=true;
+          this.refreshChat();
       }
   }
 
@@ -448,32 +459,29 @@ export class ChatPage implements DoCheck {
 
     private initLpMap():void {
         this.gapi.init.then((google_maps: any) => {
-            let zoomScale:number;
-            let loc: any = {
-                lat: this.gpsPrvd.coords.lat,
-                lng: this.gpsPrvd.coords.lng
-            };
+        let zoomScale:number;
+        let loc: any = {
+            lat: this.gpsPrvd.coords.lat,
+            lng: this.gpsPrvd.coords.lng
+        };
 
-            if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
-                zoomScale=13;
-            }else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
-                zoomScale=14;
-            }else if(this.chatPrvd.isLobbyChat){
-                zoomScale=14;
-            }
+        if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
+            zoomScale=13;
+        }else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
+            zoomScale=14;
+        }else if(this.chatPrvd.isLobbyChat){
+            zoomScale=14;
+        }
 
-            this.map = new google_maps.Map(this.mapElement.nativeElement, {
-                zoom: zoomScale,
-                center: loc,
-                disableDefaultUI: true,
-                fullscreenControl: false
-            });
-
+        this.map = new google_maps.Map(this.mapElement.nativeElement, {
+            zoom: zoomScale,
+            center: loc,
+            disableDefaultUI: true,
+            fullscreenControl: false
+        });
 
         this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
             .map(res => res.json()).subscribe(res => {
-                console.log('[google address] res:', res);
-
                 let icon = {
                     url:'assets/icon/blue_dot.png'
                 };
@@ -485,170 +493,52 @@ export class ChatPage implements DoCheck {
                 });
 
                 if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
-                    if(this.chatPrvd.postLineMessages[0].expire_date!=null){
-                        let icon1 = {
-                            url: 'assets/icon/broadcast.png',
-                            origin: new google_maps.Point(0,0),
+                    let lobbyIcon = {
+                        url: 'assets/icon/marker.svg',
+                        scaledSize: new google_maps.Size(45, 45),
+                        origin: new google_maps.Point(0, 0),
+                        anchor: new google_maps.Point(0, 0)
+                    };
+
+                    let markers = new google_maps.Marker({
+                        map: this.map,
+                        position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
+                        icon: lobbyIcon
+                    });
+                }else {
+                    if(this.chatPrvd.areaLobby){
+                        let chatRoom = {
+                            url: 'assets/icon/marker.svg',
+                            scaledSize: new google_maps.Size(45, 45),
+                            origin: new google_maps.Point(0, 0),
                             anchor: new google_maps.Point(0, 0)
                         };
-                        let markers = new google_maps.Marker({
-                            map: this.map,
-                            position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
-                            icon: icon1
-                        });
 
-                        google_maps.event.addListener(markers, 'click', () => {
-
-                        });
-                    }else{
-                        if(this.chatPrvd.postLineMessages[0].locked){
-                            let icon1 = {
-                                url: this.chatPrvd.postLineMessages[0].user.avatar_url,
-                                title: this.chatPrvd.postLineMessages[0],
-                                scaledSize: new google_maps.Size(35, 35),
-                                origin: new google_maps.Point(0, 0),
-                                anchor: new google_maps.Point(0, 0)
-                            };
-
-                            let markers = new google_maps.Marker({
-                                map: this.map,
-                                position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
-                                icon: icon1,
-                                id: this.chatPrvd.postLineMessages[0]
-                            });
-
-                            google_maps.event.addListener(markers, 'click', () => {
-
-                            });
-                        }else{
-                            console.log(this.chatPrvd.postLineMessages[0].lat);
-                            let icon2 = {
-                                url: 'assets/icon/wi-fi.png'
-                            };
-
-                            let markers = new google_maps.Marker({
-                                map: this.map,
-                                position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
-                                icon: icon2,
-                                id: this.chatPrvd.postLineMessages[0]
-                            });
-
-                            google_maps.event.addListener(markers, 'click', () => {
-
-                            });
-                        }
-                    }
-                }else if(this.chatPrvd.areaLobby){
-                    if(this.chatPrvd.postAreaMessages[0].expire_date!=null){
-                        let icon1 = {
-                            url: 'assets/icon/broadcast.png',
-                            origin: new google_maps.Point(0,0),
-                            anchor: new google_maps.Point(0, 0)
-                        };
                         let markers = new google_maps.Marker({
                             map: this.map,
                             position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
-                            icon: icon1
+                            icon: chatRoom
                         });
+                    }else {
+                        for (var i = 0; i < this.chatPrvd.postMessages.length; i++) {
+                            if(this.chatPrvd.postMessages[i].undercover){
+                                let mapIcon = {
+                                    url: 'assets/icon/marker.svg',
+                                    scaledSize: new google_maps.Size(35, 35),
+                                    anchor: new google_maps.Point(16, 16)
+                                };
 
-                        google_maps.event.addListener(markers, 'click', () => {
+                                let markers = new google_maps.Marker({
+                                    map: this.map,
+                                    position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
+                                    icon: mapIcon,
+                                    id: i,
+                                    message: this.chatPrvd.postMessages[i]
+                                });
 
-                        });
-                    }else{
-                        if(this.chatPrvd.postAreaMessages[0].locked){
-                            let icon1 = {
-                                url: this.chatPrvd.postAreaMessages[0].user.avatar_url,
-                                title: this.chatPrvd.postAreaMessages[0],
-                                scaledSize: new google_maps.Size(35, 35),
-                                origin: new google_maps.Point(0, 0),
-                                anchor: new google_maps.Point(0, 0)
-                            };
-
-                            let markers = new google_maps.Marker({
-                                map: this.map,
-                                position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
-                                icon: icon1,
-                                id: this.chatPrvd.postAreaMessages[0]
-                            });
-
-                            google_maps.event.addListener(markers, 'click', () => {
-
-                            });
-                        }else{
-                            let icon2 = {
-                                url: 'assets/icon/wi-fi.png'
-                            };
-
-                            let markers = new google_maps.Marker({
-                                map: this.map,
-                                title:this.chatPrvd.postAreaMessages[0],
-                                position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
-                                icon: icon2
-                            });
-
-                            google_maps.event.addListener(markers, 'click', () => {
-
-                            });
-                        }
-                    }
-                }else{
-                    for (let i = 0; i < this.chatPrvd.postMessages.length; i++) {
-                        if(this.chatPrvd.postMessages[i].expire_date!=null){
-                            let icon1 = {
-                                url: 'assets/icon/broadcast.png',
-                                origin: new google_maps.Point(0,0),
-                                anchor: new google_maps.Point(0, 0)
-                            };
-                            let markers = new google_maps.Marker({
-                                map: this.map,
-                                position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                                icon: icon1,
-                                id: this.chatPrvd.postMessages[i]
-                            });
-
-                            google_maps.event.addListener(markers, 'click', () => {
-                                this.openLobbyForPinned(markers.id);
-                            });
-                        }else{
-                            if(this.chatPrvd.postMessages[i].locked){
-                                if(this.chatPrvd.postMessages[i].undercover) {
-                                    let icon1 = {
-                                        url: this.chatPrvd.postMessages[i].user.avatar_url,
-                                        title: this.chatPrvd.postMessages[i],
-                                        scaledSize: new google_maps.Size(35, 35),
-                                        origin: new google_maps.Point(0, 0),
-                                        anchor: new google_maps.Point(0, 0)
-                                    };
-
-                                    let markers = new google_maps.Marker({
-                                        map: this.map,
-                                        position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                                        icon: icon1,
-                                        id: this.chatPrvd.postMessages[i]
-                                    });
-
-                                    google_maps.event.addListener(markers, 'click', () => {
-                                        this.openLobbyForPinned(markers.id);
-                                    });
-                                }
-                            }else{
-                                if(this.chatPrvd.postMessages[i].undercover){
-                                    let icon2 = {
-                                        url: 'assets/icon/wi-fi.png'
-                                    };
-
-                                    let markers = new google_maps.Marker({
-                                        map: this.map,
-                                        title:this.chatPrvd.postMessages[i],
-                                        position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                                        icon: icon2,
-                                        id: this.chatPrvd.postMessages[i]
-                                    });
-
-                                    google_maps.event.addListener(markers, 'click', () => {
-                                        this.openLobbyForPinned(markers.id);
-                                    });
-                                }
+                                google_maps.event.addListener(markers, 'click', () => {
+                                    this.openLobbyForPinned(markers.message);
+                                });
                             }
                         }
                     }
@@ -657,62 +547,62 @@ export class ChatPage implements DoCheck {
                 console.log('[google address] error:', err);
             });
 
-        this.map.setCenter(loc);
+            this.map.setCenter(loc);
     });
   }
 
-    private viewLineLocation(message:any):void {
-        this.messagesInterval = false;
-        clearTimeout(this.messIntObject);
-        this.chatPrvd.postMessages = [];
-        this.chatPrvd.isCleared = true;
+  private viewLineLocation(message:any):void {
+    this.messagesInterval = false;
+    clearTimeout(this.messIntObject);
+    this.chatPrvd.postMessages = [];
+    this.chatPrvd.isCleared = true;
 
-        this.gapi.init.then((google_maps: any) => {
-            let loc: any = {
-                lat: parseFloat(message.lat),
-                lng: parseFloat(message.lng)
+    this.gapi.init.then((google_maps: any) => {
+        let loc: any = {
+            lat: parseFloat(message.lat),
+            lng: parseFloat(message.lng)
+        };
+
+        this.map = new google_maps.Map(this.mapElement.nativeElement, {
+            zoom: 13,
+            center: loc,
+            disableDefaultUI: true,
+            fullscreenControl: false
+        });
+
+        this.gpsPrvd.getGoogleAdress(parseFloat(message.lat), parseFloat(message.lng)).map(res => res.json()).subscribe(res => {
+            let icon = {
+                url:'assets/icon/blue_dot.png'
             };
 
-            this.map = new google_maps.Map(this.mapElement.nativeElement, {
-                zoom: 13,
-                center: loc,
-                disableDefaultUI: true,
-                fullscreenControl: false
+            let marker = new google_maps.Marker({
+                map: this.map,
+                animation: google_maps.Animation.DROP,
+                position: res.results[0].geometry.location,
+                icon: icon
             });
 
-            this.gpsPrvd.getGoogleAdress(parseFloat(message.lat), parseFloat(message.lng)).map(res => res.json()).subscribe(res => {
-                let icon = {
-                    url:'assets/icon/blue_dot.png'
-                };
+            let chatRoom = {
+                url: 'assets/icon/marker.svg',
+                scaledSize: new google_maps.Size(45, 45),
+                origin: new google_maps.Point(0, 0),
+                anchor: new google_maps.Point(0, 0)
+            };
 
-                let marker = new google_maps.Marker({
-                    map: this.map,
-                    animation: google_maps.Animation.DROP,
-                    position: res.results[0].geometry.location,
-                    icon: icon
-                });
-
-                let icon1 = {
-                    url: 'assets/icon/broadcast.png',
-                    origin: new google_maps.Point(0,0),
-                    anchor: new google_maps.Point(0, 0)
-                };
-                let markers = new google_maps.Marker({
-                    map: this.map,
-                    animation: google_maps.Animation.DROP,
-                    position: new google_maps.LatLng(parseFloat(message.lat), parseFloat(message.lng)),
-                    icon: icon1
-                });
-
-                google_maps.event.addListener(markers, 'click', () => {
-
-                });
+            let markers = new google_maps.Marker({
+                map: this.map,
+                position: new google_maps.LatLng(parseFloat(message.lat), parseFloat(message.lng)),
+                icon: chatRoom
             });
 
-            this.map.setCenter(loc);
+            google_maps.event.addListener(markers, 'click', () => {
+
+            });
         });
-    }
 
+        this.map.setCenter(loc);
+    });
+  }
 
   public lineJoinRequest():void {
         let alert = this.alertCtrl.create({

@@ -98,5 +98,4 @@ export class ProfileSettingPage {
         this.storage.rm('auth_type');
     }).catch(err => console.error('logout error: ', err));
   }
-
 }

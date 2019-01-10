@@ -39,7 +39,7 @@ export class Chat {
   public isLandingPage: boolean;
   public areaLobby: boolean = false;
   public areaFilter : boolean=false;
-  public holdFilter : boolean=false;
+  public holdFilter : boolean=true;
 
   public appendContainer = new Toggleable('off', true);
   public appendLineContainer = new Toggleable('off', true);
@@ -504,6 +504,7 @@ export class Chat {
     let data: any = {
       post_code: this.localStorage.get('chat_zip_code'),
       undercover: undercover ? undercover : false,
+      is_distance_check: this.areaFilter,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       offset: offset,
@@ -544,6 +545,7 @@ export class Chat {
     let data: any = {
       post_code: this.localStorage.get('chat_zip_code'),
       undercover: false,
+      is_distance_check: this.holdFilter,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       offset: offset,

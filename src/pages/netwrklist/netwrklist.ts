@@ -118,8 +118,10 @@ export class NetwrklistPage {
     public resetFilter():void {
         if(this.chatPrvd.holdFilter){
             this.chatPrvd.holdFilter=false;
+            this.getAndUpdateUndercoverMessages()
         }else{
             this.chatPrvd.holdFilter=true;
+            this.getAndUpdateUndercoverMessages()
         }
     }
 

@@ -20,9 +20,7 @@ export class Social {
   public fbPermissions: Array<string> = [
     'public_profile',
     'user_friends',
-    'email',
-    'user_birthday',
-    'user_posts'
+    'email'
   ];
 
   public connect: any = {
@@ -197,6 +195,7 @@ export class Social {
   public getFriendList(id: string): Promise<any> {
     return new Promise((resolve, reject) => {
       let fields: Array<string> = [
+        'birthday',
         'picture',
         'name',
         'first_name',

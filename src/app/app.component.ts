@@ -104,9 +104,7 @@ export class MyApp {
 
                 if (authType && authData) {
                     this.gps.getMyZipCode().then(res => {
-                        this.toolsPrvd.pushPage(ChatPage, {
-                            message:notification.additionalData.child_message
-                        });
+                        this.app.getRootNav().setRoot(ChatPage, {message:notification.additionalData.child_message});
                     });
                 }
             }

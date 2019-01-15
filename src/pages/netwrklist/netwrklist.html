@@ -59,15 +59,15 @@
                     </span>
 
                     <ng-container>
-                        <div>{{ message.text }}</div>
+                        <div>{{ message.text }} <span class="text-connected" *ngIf="message.is_followed">(Connected..)</span></div>
                     </ng-container>
 
                     <ng-container class="username" *ngIf="message.user">
                         <div *ngIf="message.public">
-                        {{ message.user.name }}
+                            {{ message.user.name }}
                         </div>
                         <div *ngIf="!message.public">
-                        {{ message.user.role_name }}
+                            {{ message.user.role_name }}
                         </div>
                     </ng-container>
 

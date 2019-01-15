@@ -44,9 +44,59 @@ export class MapsModal {
         this.directionsService = new google_maps.DirectionsService;
         this.directionsDisplay = new google_maps.DirectionsRenderer;
 
+        var mapStyle = [
+            {
+                "featureType": "all",
+                "stylers": [
+                    {
+                        "saturation": 0
+                    },
+                    {
+                        "hue": "#e7ecf0"
+                    }
+                ]
+            },
+            {
+                "featureType": "road",
+                "stylers": [
+                    {
+                        "saturation": -70
+                    }
+                ]
+            },
+            {
+                "featureType": "transit",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "poi",
+                "stylers": [
+                    {
+                        "visibility": "off"
+                    }
+                ]
+            },
+            {
+                "featureType": "water",
+                "stylers": [
+                    {
+                        "visibility": "simplified"
+                    },
+                    {
+                        "saturation": -60
+                    }
+                ]
+            }
+        ];
+
         this.map = new google_maps.Map(this.mapElement.nativeElement, {
             zoom: 16,
             center: loc,
+            styles:mapStyle,
             disableDefaultUI: true,
             fullscreenControl: false
         });

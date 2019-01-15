@@ -304,6 +304,8 @@ export class ChatPage implements DoCheck {
       plt.ready().then(() => {
           this.registerDevice();
       });
+
+      this.initMap();
   }
 
   public registerDevice() {
@@ -457,25 +459,66 @@ export class ChatPage implements DoCheck {
     alert.present();
   }
 
-    private initLpMap():void {
-        this.gapi.init.then((google_maps: any) => {
-        let zoomScale:number;
-        let loc: any = {
-            lat: this.gpsPrvd.coords.lat,
-            lng: this.gpsPrvd.coords.lng
-        };
+  private initMap():void {
+      this.gapi.init.then((google_maps: any) => {
+      let loc: any = {
+         lat: this.gpsPrvd.coords.lat,
+         lng: this.gpsPrvd.coords.lng
+      };
 
-        if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
-            zoomScale=13;
-        }else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
-            zoomScale=14;
-        }else if(this.chatPrvd.isLobbyChat){
-            zoomScale=14;
-        }
+      var mapStyle = [
+          {
+              "featureType": "all",
+              "stylers": [
+                  {
+                      "saturation": 0
+                  },
+                  {
+                      "hue": "#e7ecf0"
+                  }
+              ]
+          },
+          {
+              "featureType": "road",
+              "stylers": [
+                  {
+                      "saturation": -70
+                  }
+              ]
+          },
+          {
+              "featureType": "transit",
+              "stylers": [
+                  {
+                      "visibility": "off"
+                  }
+              ]
+          },
+          {
+              "featureType": "poi",
+              "stylers": [
+                  {
+                      "visibility": "off"
+                  }
+              ]
+          },
+          {
+              "featureType": "water",
+              "stylers": [
+                  {
+                      "visibility": "simplified"
+                  },
+                  {
+                      "saturation": -60
+                  }
+              ]
+          }
+      ];
 
         this.map = new google_maps.Map(this.mapElement.nativeElement, {
-            zoom: zoomScale,
+            zoom: 13,
             center: loc,
+            styles:mapStyle,
             disableDefaultUI: true,
             fullscreenControl: false
         });
@@ -491,19 +534,47 @@ export class ChatPage implements DoCheck {
                     position: res.results[0].geometry.location,
                     icon: icon
                 });
+            }, err => {
+                console.log('[google address] error:', err);
+            });
 
+            this.map.setCenter(loc);
+      });
+  }
+
+  private initLpMap():void {
+     this.gapi.init.then((google_maps: any) => {
+         let zoomScale:number;
+         let loc: any = {
+             lat: this.gpsPrvd.coords.lat,
+             lng: this.gpsPrvd.coords.lng
+         };
+
+         if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
+             this.map.zoom=13;
+         }else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
+             this.map.zoom=14;
+         }else if(this.chatPrvd.isLobbyChat){
+             this.map.zoom=15;
+         }
+
+         this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
+            .map(res => res.json()).subscribe(res => {
                 if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
                     let lobbyIcon = {
                         url: 'assets/icon/marker.svg',
-                        scaledSize: new google_maps.Size(45, 45),
-                        origin: new google_maps.Point(0, 0),
-                        anchor: new google_maps.Point(0, 0)
+                        scaledSize: new google_maps.Size(35, 35),
+                        anchor: new google_maps.Point(16, 16)
                     };
 
                     let markers = new google_maps.Marker({
                         map: this.map,
                         position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
                         icon: lobbyIcon
+                    });
+
+                    google_maps.event.addListener(markers, 'click', () => {
+
                     });
                 }else {
                     if(this.chatPrvd.areaLobby){
@@ -519,36 +590,43 @@ export class ChatPage implements DoCheck {
                             position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
                             icon: chatRoom
                         });
+
+                        google_maps.event.addListener(markers, 'click', () => {
+
+                        });
                     }else {
                         for (var i = 0; i < this.chatPrvd.postMessages.length; i++) {
-                            if(this.chatPrvd.postMessages[i].undercover){
-                                let mapIcon = {
-                                    url: 'assets/icon/marker.svg',
-                                    scaledSize: new google_maps.Size(35, 35),
-                                    anchor: new google_maps.Point(16, 16)
-                                };
 
-                                let markers = new google_maps.Marker({
-                                    map: this.map,
-                                    position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                                    icon: mapIcon,
-                                    id: i,
-                                    message: this.chatPrvd.postMessages[i]
-                                });
+                            let mapIcon = {
+                                url: 'assets/icon/marker.svg',
+                                scaledSize: new google_maps.Size(35, 35),
+                                anchor: new google_maps.Point(16, 16)
+                            };
 
-                                google_maps.event.addListener(markers, 'click', () => {
+                            let markers = new google_maps.Marker({
+                                map: this.map,
+                                position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
+                                icon: mapIcon,
+                                id: i,
+                                message: this.chatPrvd.postMessages[i]
+                            });
+
+                            google_maps.event.addListener(markers, 'click', () => {
+                                if(markers.message.undercover){
                                     this.openLobbyForPinned(markers.message);
-                                });
-                            }
+                                }else{
+                                    this.openConversationLobbyForPinned(markers.message)
+                                }
+                            });
                         }
                     }
                 }
             }, err => {
                 console.log('[google address] error:', err);
-            });
+         });
 
-            this.map.setCenter(loc);
-    });
+         this.map.setCenter(loc);
+     });
   }
 
   private viewLineLocation(message:any):void {
@@ -563,25 +641,9 @@ export class ChatPage implements DoCheck {
             lng: parseFloat(message.lng)
         };
 
-        this.map = new google_maps.Map(this.mapElement.nativeElement, {
-            zoom: 13,
-            center: loc,
-            disableDefaultUI: true,
-            fullscreenControl: false
-        });
+        this.map.zoom = 14;
 
         this.gpsPrvd.getGoogleAdress(parseFloat(message.lat), parseFloat(message.lng)).map(res => res.json()).subscribe(res => {
-            let icon = {
-                url:'assets/icon/blue_dot.png'
-            };
-
-            let marker = new google_maps.Marker({
-                map: this.map,
-                animation: google_maps.Animation.DROP,
-                position: res.results[0].geometry.location,
-                icon: icon
-            });
-
             let chatRoom = {
                 url: 'assets/icon/marker.svg',
                 scaledSize: new google_maps.Size(45, 45),
@@ -1268,6 +1330,7 @@ export class ChatPage implements DoCheck {
     this.chatPrvd.setState('area');
     this.placeholderText = 'Start a local conversation...';
     this.getAndUpdateUndercoverMessages();
+    this.initLpMap();
     this.chatPrvd.isMainBtnDisabled = false;
     this.getUsers().then(res => {});
     this.toolsPrvd.hideLoader();
@@ -1699,10 +1762,8 @@ export class ChatPage implements DoCheck {
               }
               this.toolsPrvd.hideLoader();
               this.chatPrvd.isMainBtnDisabled = false;
-              //this.checkUCInterval();
           }, err => {
               this.toolsPrvd.hideLoader();
-              //this.checkUCInterval();
           });
       }
   }

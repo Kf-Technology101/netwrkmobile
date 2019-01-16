@@ -115,9 +115,11 @@ export class MapsModal {
                 this.directionsDisplay.setDirections(response);
         });
 
-
       let icon = {
-          url: 'assets/icon/wi-fi.png'
+          url: 'assets/icon/marker.png',
+          scaledSize:new google_maps.Size(35, 40),
+          origin: new google_maps.Point(0, 0),
+          anchor: new google_maps.Point(0, 0)
       };
 
       let marker = new google_maps.Marker({

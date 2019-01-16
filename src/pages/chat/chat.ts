@@ -183,6 +183,7 @@ export class ChatPage implements DoCheck {
 
   public chatUsers: any = [];
   public networkUsers: any = [];
+  public mapMarkers: any = [];
 
   public user: any;
 
@@ -515,39 +516,52 @@ export class ChatPage implements DoCheck {
           }
       ];
 
-        this.map = new google_maps.Map(this.mapElement.nativeElement, {
-            zoom: 13,
-            center: loc,
-            styles:mapStyle,
-            disableDefaultUI: true,
-            fullscreenControl: false
+    this.map = new google_maps.Map(this.mapElement.nativeElement, {
+        zoom: 13,
+        center: loc,
+        styles:mapStyle,
+        disableDefaultUI: true,
+        fullscreenControl: false
+    });
+
+    this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
+        .map(res => res.json()).subscribe(res => {
+            let icon = {
+                url:'assets/icon/blue_dot.png'
+            };
+
+            let marker = new google_maps.Marker({
+                map: this.map,
+                position: res.results[0].geometry.location,
+                icon: icon
+            });
+        }, err => {
+            console.log('[google address] error:', err);
         });
 
-        this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
-            .map(res => res.json()).subscribe(res => {
-                let icon = {
-                    url:'assets/icon/blue_dot.png'
-                };
-
-                let marker = new google_maps.Marker({
-                    map: this.map,
-                    position: res.results[0].geometry.location,
-                    icon: icon
-                });
-            }, err => {
-                console.log('[google address] error:', err);
-            });
-
-            this.map.setCenter(loc);
-      });
+        this.map.setCenter(loc);
+    });
   }
 
   private initLpMap():void {
+
+      this.clearMarkers();
+
      this.gapi.init.then((google_maps: any) => {
          let zoomScale:number;
          let loc: any = {
              lat: this.gpsPrvd.coords.lat,
              lng: this.gpsPrvd.coords.lng
+         };
+
+         let iconUrl='assets/icon/marker.png';
+         let iconSize=new google_maps.Size(35, 40);
+
+         let markerIcon = {
+             url: iconUrl,
+             scaledSize: iconSize,
+             origin: new google_maps.Point(0, 0),
+             anchor: new google_maps.Point(0, 0)
          };
 
          if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
@@ -561,72 +575,64 @@ export class ChatPage implements DoCheck {
          this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
             .map(res => res.json()).subscribe(res => {
                 if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
-                    let lobbyIcon = {
-                        url: 'assets/icon/marker.svg',
-                        scaledSize: new google_maps.Size(35, 35),
-                        anchor: new google_maps.Point(16, 16)
-                    };
-
-                    let markers = new google_maps.Marker({
+                    let marker = new google_maps.Marker({
                         map: this.map,
                         position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
-                        icon: lobbyIcon
+                        icon: markerIcon
                     });
 
-                    google_maps.event.addListener(markers, 'click', () => {
-
-                    });
+                    this.mapMarkers.push(marker);
                 }else {
                     if(this.chatPrvd.areaLobby){
-                        let chatRoom = {
-                            url: 'assets/icon/marker.svg',
-                            scaledSize: new google_maps.Size(45, 45),
-                            origin: new google_maps.Point(0, 0),
-                            anchor: new google_maps.Point(0, 0)
-                        };
-
-                        let markers = new google_maps.Marker({
+                        let marker = new google_maps.Marker({
                             map: this.map,
                             position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
-                            icon: chatRoom
+                            icon: markerIcon
                         });
 
-                        google_maps.event.addListener(markers, 'click', () => {
-
-                        });
+                        this.mapMarkers.push(marker);
                     }else {
                         for (var i = 0; i < this.chatPrvd.postMessages.length; i++) {
-
-                            let mapIcon = {
-                                url: 'assets/icon/marker.svg',
-                                scaledSize: new google_maps.Size(35, 35),
-                                anchor: new google_maps.Point(16, 16)
-                            };
-
-                            let markers = new google_maps.Marker({
+                            let marker = new google_maps.Marker({
                                 map: this.map,
                                 position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
-                                icon: mapIcon,
+                                icon: markerIcon,
                                 id: i,
                                 message: this.chatPrvd.postMessages[i]
                             });
 
-                            google_maps.event.addListener(markers, 'click', () => {
-                                if(markers.message.undercover){
-                                    this.openLobbyForPinned(markers.message);
+                            this.mapMarkers.push(marker);
+                            google_maps.event.addListener(marker, 'click', () => {
+                                if(marker.message.undercover){
+                                    this.openLobbyForPinned(marker.message);
                                 }else{
-                                    this.openConversationLobbyForPinned(markers.message)
+                                    this.openConversationLobbyForPinned(marker.message)
                                 }
                             });
                         }
                     }
                 }
+                this.addMarker();
             }, err => {
                 console.log('[google address] error:', err);
          });
 
+
          this.map.setCenter(loc);
      });
+  }
+
+  public clearMarkers():void {
+      for (var i = 0; i < this.mapMarkers.length; i++ ) {
+          this.mapMarkers[i].setMap(null);
+      }
+      this.mapMarkers.length = 0;
+  }
+
+  public addMarker():void {
+     for (var j = 0; j < this.mapMarkers.length; j++) {
+        this.mapMarkers[j].setMap(this.map);
+     }
   }
 
   private viewLineLocation(message:any):void {
@@ -641,25 +647,27 @@ export class ChatPage implements DoCheck {
             lng: parseFloat(message.lng)
         };
 
+        let iconUrl='assets/icon/marker.png';
+        let iconSize=new google_maps.Size(35, 40);
+
         this.map.zoom = 14;
 
         this.gpsPrvd.getGoogleAdress(parseFloat(message.lat), parseFloat(message.lng)).map(res => res.json()).subscribe(res => {
             let chatRoom = {
-                url: 'assets/icon/marker.svg',
-                scaledSize: new google_maps.Size(45, 45),
+                url: iconUrl,
+                scaledSize: iconSize,
                 origin: new google_maps.Point(0, 0),
                 anchor: new google_maps.Point(0, 0)
             };
 
-            let markers = new google_maps.Marker({
+            let marker = new google_maps.Marker({
                 map: this.map,
                 position: new google_maps.LatLng(parseFloat(message.lat), parseFloat(message.lng)),
                 icon: chatRoom
             });
 
-            google_maps.event.addListener(markers, 'click', () => {
-
-            });
+            this.mapMarkers.push(marker);
+            this.addMarker();
         });
 
         this.map.setCenter(loc);

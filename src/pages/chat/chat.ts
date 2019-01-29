@@ -845,9 +845,9 @@ export class ChatPage implements DoCheck {
     if (form.invalid) {
       this.toolsPrvd.showToast(this.textStrings.require);
     } else {
-      this.postCustAddressData = {
-          custumAddress: form.value.custumAddress
-      };
+        this.postCustAddressData = {
+            custumAddress: form.value.custumAddress
+        };
 
         let keyword : string = form.value.custumAddress;
 
@@ -858,11 +858,6 @@ export class ChatPage implements DoCheck {
 
         this.nativeGeocoder.forwardGeocode(keyword, options).then((data: NativeGeocoderForwardResult[]) =>  {
             this.geocoded = true;
-            //let data=[{
-            //    latitude:-20.1585685,
-            //    longitude:0.256254
-            //}]
-
             if (data) {
                 if (data[0].latitude && data[0].longitude) {
                     this.insideRadius = this.gpsPrvd

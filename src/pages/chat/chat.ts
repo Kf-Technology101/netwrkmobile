@@ -27,6 +27,7 @@ import { Keyboard } from '@ionic-native/keyboard';
 import { SocialSharing } from '@ionic-native/social-sharing';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResult, NativeGeocoderOptions } from '@ionic-native/native-geocoder';
+// import {googlemaps} from 'googlemaps';
 
 // Pages
 import { CameraPage } from '../camera/camera';
@@ -128,6 +129,7 @@ export class ChatPage implements DoCheck {
      lat: null,
      lng: null
   }
+  public autocompleteItems: any = [] ;
 
   public nearestNetwork:any = {
      dist: 0,
@@ -259,6 +261,9 @@ export class ChatPage implements DoCheck {
 
   public uniqueUsers:number = 0;
 
+  public request_type: any;
+  public requestMessage: any;
+  
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -296,6 +301,7 @@ export class ChatPage implements DoCheck {
     public nativeGeocoder   : NativeGeocoder,
     public feedbackService: FeedbackService
   ) {
+	  console.log('[Chat Page]');
       this.user = this.authPrvd.getAuthData();
       this.chatPrvd.isLandingPage = true;
       this.undercoverPrvd.setUndercover(true);
@@ -305,7 +311,7 @@ export class ChatPage implements DoCheck {
       plt.ready().then(() => {
           this.registerDevice();
       });
-
+	 		
       this.initMap();
   }
 
@@ -384,7 +390,7 @@ export class ChatPage implements DoCheck {
         role: 'cancel',
           handler:()=>{
               alert.dismiss();
-              this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
+			  this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
                   this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                       console.log('getLocationLobbyUsers:', res);
                       this.feedbackService.pointsOnJoinLine(message.id, this.user.id);
@@ -398,7 +404,7 @@ export class ChatPage implements DoCheck {
                   }, err => {
                       console.error(err);
                   });
-              }, err => {});
+              }, err => {}); 
           }
       }, {
         cssClass: 'active',
@@ -461,7 +467,7 @@ export class ChatPage implements DoCheck {
   }
 
   private initMap():void {
-      this.gapi.init.then((google_maps: any) => {
+	this.gapi.init.then((google_maps: any) => {
       let loc: any = {
          lat: this.gpsPrvd.coords.lat,
          lng: this.gpsPrvd.coords.lng
@@ -540,7 +546,12 @@ export class ChatPage implements DoCheck {
         });
 
         this.map.setCenter(loc);
+		
+		
     });
+	
+	
+	
   }
 
   private initLpMap():void {
@@ -710,7 +721,6 @@ export class ChatPage implements DoCheck {
   }
 
   private toggleChatOptions():void {
-
     this.chatPrvd.plusBtn.setState((this.chatPrvd.plusBtn.getState() == 'spined') ? 'default' : 'spined');
     this.chatPrvd.bgState.setState((this.chatPrvd.bgState.getState() == 'stretched') ? 'compressed' : 'stretched');
 
@@ -721,11 +731,14 @@ export class ChatPage implements DoCheck {
           this.chatPrvd.chatBtns.state[i] = 'btnShown';
         }, chatAnim/3 + (i*50));
       }
-    } else {
-      if (this.txtIn.value.trim() != '' ||
-          this.cameraPrvd.takenPictures.length > 0) {
+    } else { 
+	  if (this.cameraPrvd.takenPictures.length > 0) {
         this.chatPrvd.postBtn.setState(true);
-      }
+      }else if(this.txtIn!= undefined){
+		  if(this.txtIn.value.trim() != ''){
+			this.chatPrvd.postBtn.setState(true); 
+		  }
+	  }
       for (let i = 0; i < this.chatPrvd.chatBtns.state.length; i++) {
         this.chatPrvd.chatBtns.state[i] = 'btnHidden';
       }
@@ -766,6 +779,179 @@ export class ChatPage implements DoCheck {
     }
   }
 
+  public showMyReply(message:any){	  
+	console.log(message);	
+	console.log('[isLobbyChat] '+this.chatPrvd.isLobbyChat);
+	console.log('[areaLobby] '+this.chatPrvd.areaLobby);		
+	
+  }
+  
+  private setCustomAddressOnMap(addressDetails){
+	let addressLat = addressDetails.geometry.location.lat();
+	let addressLng = addressDetails.geometry.location.lng();
+	let data:any = {
+		lat: addressLat,
+		lng: addressLng
+	};
+	
+	try {		
+		this.storage.set('custom_coordinates', data);
+		let cont0 = this.getTopSlider('address');
+		cont0.setState('slideUp');
+		cont0.hide();
+					   
+		this.gapi.init.then((google_maps:any) => {
+			this.map = new google_maps.Map(this.mapElement.nativeElement, {
+			   zoom: 16,
+			   center: data,
+			   disableDefaultUI: true,
+			   fullscreenControl: false
+			});
+			
+			let icon = {
+			   url:'assets/icon/wi-fi.png'
+			};
+
+			let marker = new google_maps.Marker({
+			   map: this.map,
+			   animation: google_maps.Animation.DROP,
+			   position: addressDetails.geometry.location,
+			   icon: icon
+			});
+			this.map.setCenter(data);
+		});
+			   
+	    this.postCustAddressData = {
+		   custumAddress: null
+	    };
+	    this.autocompleteItems = [];  		
+	}catch (err) {		
+		this.customAddressReset()
+	}	  
+  }
+  
+  public chooseAddress(addressDetails:any){
+	
+	let addressLat = addressDetails.geometry.location.lat();
+	let addressLng = addressDetails.geometry.location.lng();
+	
+	this.insideRadius = this.gpsPrvd
+                        .calculateDistanceInMiles({
+                            lat: <number> parseFloat(addressLat),
+                            lng: <number> parseFloat(addressLng)
+                        },this.gpsPrvd.coords);
+    						
+	if(this.insideRadius){
+		let customLoc: any = {
+			lat: addressLat,
+            lng: addressLng
+		};
+		this.setCustomAddressOnMap(addressDetails);
+	}else{
+		this.postCustAddressData = {
+			custumAddress: null
+		};
+
+		let alert = this.alertCtrl.create({
+			subTitle: 'The location has to be within 10 miles of you. Sorry! House rules.',
+			buttons: [{
+				text: 'Ok',
+				role: 'cancel'
+			}]
+		});
+		alert.present();
+	}
+	
+  }
+  
+  public updateNearByList(){
+    let loc: any = {
+			lat: this.gpsPrvd.coords.lat,
+            lng: this.gpsPrvd.coords.lng
+		};
+    if(this.postCustAddressData.custumAddress == ''){
+		this.autocompleteItems = []; 
+		return;		
+	}
+	
+	this.gapi.init.then((google_maps: any) => {
+		let service = new google_maps.places.PlacesService(this.map);
+		let myLatLng = new google.maps.LatLng(loc);
+			
+		service.nearbySearch({
+		  keyword : this.postCustAddressData.custumAddress,
+		  location: loc,
+		  radius: 100,
+		  // types: [this.isType]
+		}, (results, status) => {
+			this.autocompleteItems = [];  
+		    if (status === google_maps.places.PlacesServiceStatus.OK) {
+			  for (var i = 0; i < results.length; i++) {
+				this.autocompleteItems.push(results[i]);
+			  }
+			}
+		}); 
+	});
+  }
+  
+  
+  private sendLineAccessRequest(messageId:any){
+	this.requestMessage = this.user.name+' would like to hang out!';
+	this.request_type = 'ACCESS_REQUEST';
+	this.toolsPrvd.showLoader();
+	this.chatPrvd.getLocationLobby(messageId).subscribe(res => {
+		if (res && res.messages && res.room_id) {
+			this.chatPrvd.currentLobby.id = res.room_id;
+			// this.chatPrvd.startLobbySocket(res.room_id);
+			this.chatPrvd.getLocationLobbyUsers(messageId).subscribe(res => {
+				if (res && res.users && res.host_id) {
+					this.chatPrvd.currentLobby.users = res.users;
+					this.chatPrvd.currentLobby.hostId = res.host_id;
+					this.postMessage();
+					this.toolsPrvd.showToast('Request sent.');
+				} 
+			}, err => {
+				console.error(err);
+			});
+			
+		} 
+	}, err => {
+		console.error(err);		
+	});
+  }
+
+  
+  public changeRequestStatus(message:any,resStatus:string){
+	  let parentMessageId = '';
+	  this.toolsPrvd.showLoader();
+	  this.chatPrvd.getParentLobby(message).subscribe(res => {
+		parentMessageId = res.messages.id;
+		console.log(message.id);	
+		let data = {
+		  id: parentMessageId,
+		  message: message,
+		  status: resStatus
+		}
+		
+		this.chatPrvd.unlockRequest(data).subscribe(res => {
+			for (let m in this.chatPrvd.postMessages) {
+			  if(this.chatPrvd.postMessages[m].id == message.id) {
+				this.chatPrvd.postMessages	
+				this.chatPrvd.postMessages.splice(m, 1);
+				break;
+			  }
+			}
+			this.toolsPrvd.hideLoader();
+			this.hideTopSlider('unlock');
+		}, err => {		
+			console.error(err);
+			this.hideTopSlider('unlock');
+		});
+
+	  });
+	  
+  }
+  
   private updateContainer(container:any) {
     if (this.chatPrvd.appendContainer.hidden)
       this.chatPrvd.mainBtn.setState('normal');
@@ -843,9 +1029,9 @@ export class ChatPage implements DoCheck {
     event.stopPropagation();
     event.preventDefault();
     if (form.invalid) {
-      this.toolsPrvd.showToast(this.textStrings.require);
+	  this.toolsPrvd.showToast(this.textStrings.require);
     } else {
-        this.postCustAddressData = {
+		this.postCustAddressData = {
             custumAddress: form.value.custumAddress
         };
 
@@ -859,6 +1045,7 @@ export class ChatPage implements DoCheck {
         this.nativeGeocoder.forwardGeocode(keyword, options).then((data: NativeGeocoderForwardResult[]) =>  {
             this.geocoded = true;
             if (data) {
+				console.log(data);
                 if (data[0].latitude && data[0].longitude) {
                     this.insideRadius = this.gpsPrvd
                         .calculateDistanceInMiles({
@@ -1033,7 +1220,7 @@ export class ChatPage implements DoCheck {
   }
 
   private postMessage(emoji?: string, params?: any):void {
-    try {
+	try {
       let publicUser: boolean;
       let images = [];
       let messageParams: any = {};
@@ -1059,15 +1246,24 @@ export class ChatPage implements DoCheck {
 
       if (params && params.social && !this.chatPrvd.isLobbyChat)
         this.setDefaultTimer();
-
+	
+	  let msgrequest_type = this.request_type?this.request_type:null;
+	  
+	  
+	  let textInput = '';
+	   if(this.txtIn != undefined) {	
+			 textInput = this.txtIn.value;
+	   }
+	  let messageTxt = this.requestMessage?this.requestMessage:textInput;
+	  
       messageParams = {
-        text: emoji ?  emoji : this.txtIn.value,
-        text_with_links: emoji ?  emoji : this.txtIn.value,
+        text: emoji ?  emoji : messageTxt,
+        text_with_links: emoji ?  emoji : messageTxt,
         user_id: this.user ? this.user.id : 0,
         role_name: this.user.role_name,
         place_name: this.gpsPrvd.place_name,
         images: emoji ? [] : images,
-        messageable_type:'Network',
+        messageable_type: 'Network',
         video_urls: params && params.video_urls ? params.video_urls : [],
         undercover: (this.chatPrvd.getState() == 'area') ? false : this.isUndercover,
         public: publicUser,
@@ -1076,7 +1272,8 @@ export class ChatPage implements DoCheck {
         password: this.postLockData.password ? this.postLockData.password : null,
         hint: this.postLockData.hint ? this.postLockData.hint : null,
         expire_date: this.postTimerObj.expireDate ? this.postTimerObj.expireDate : null,
-        timestamp: Math.floor(new Date().getTime()/1000)
+        timestamp: Math.floor(new Date().getTime()/1000),
+		message_type: msgrequest_type
       };
 
       if (params) Object.assign(messageParams, params);
@@ -1091,6 +1288,7 @@ export class ChatPage implements DoCheck {
       message.temporaryFor = 0;
 
       console.log('[POST MESSAGE] messageParams:', messageParams);
+	  
       if ((message.text && message.text.trim() != '') ||
           (message.images && message.images.length > 0) ||
           (message.social_urls && message.social_urls.length > 0)) {
@@ -1104,11 +1302,14 @@ export class ChatPage implements DoCheck {
           if (this.chatPrvd.isLobbyChat) message.expire_date = null;
 
           console.log('message before unshift:', message);
-
-          this.chatPrvd.postMessages.unshift(message);
-
-          this.hideTopSlider(this.activeTopForm);
-          this.txtIn.value = '';
+		  
+		if(this.request_type != "ACCESS_REQUEST"){
+			this.chatPrvd.postMessages.unshift(message);
+		}
+          this.hideTopSlider(this.activeTopForm);	
+		  if(this.txtIn != undefined) {	
+			this.txtIn.value = '';
+		  }
           this.setMainBtnStateRelativeToEvents();
         }
 
@@ -1123,8 +1324,8 @@ export class ChatPage implements DoCheck {
                   console.log('Notification Res', notificationRes);
               }, err => console.error(err));
           }
-
-          if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat || !this.chatPrvd.areaLobby && this.chatPrvd.getState() == 'area') {
+		  
+          if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat && this.request_type != "ACCESS_REQUEST"|| !this.chatPrvd.areaLobby && this.chatPrvd.getState() == 'area' && this.request_type != "ACCESS_REQUEST") {
               let alert = this.alertCtrl.create({
                   subTitle: 'Share the conversation with your friends?',
                   buttons: [{
@@ -1166,6 +1367,8 @@ export class ChatPage implements DoCheck {
               alert.present();
           }
           console.log('[sendMessage] res:', res);
+		  
+		  this.request_type = null;
           this.postLockData.hint = null;
           this.postLockData.password = null;
           this.postTimerObj.expireDate = null;
@@ -2207,7 +2410,7 @@ export class ChatPage implements DoCheck {
       let cont1 = this.getTopSlider('address');
       cont1.setState('slideUp');
       cont1.hide();
-
+console.log('[this.chatPrvd.getState]'+this.chatPrvd.getState());
       if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
           if(this.chatPrvd.getState() == 'undercover'){
               this.pageNavLobby=true;
@@ -2392,7 +2595,8 @@ export class ChatPage implements DoCheck {
       let cont0 = this.getTopSlider('address');
       cont0.setState('slideUp');
       cont0.hide();
-
+		// console.log('[isLobbyChat] '+this.chatPrvd.isLobbyChat);
+		// console.log('[areaLobby] '+this.chatPrvd.areaLobby);
       if (this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
           this.chatPrvd.areaLobby=false;
           this.chatPrvd.isCleared = true;
@@ -2542,13 +2746,16 @@ export class ChatPage implements DoCheck {
 
   }
 
-  public followNearByNetwork(message) {
-      message.is_followed=!message.is_followed;
-      this.chatPrvd.followUserToLine(message.id).subscribe(res => {}, err => {});
+  public followNearByNetwork(message,index) {
+	  message.is_followed=!message.is_followed;
+	  this.chatPrvd.followUserToLine(message.id).subscribe(res => {}, err => {});
+	  // this.chatPrvd.updateSyncMessage(message);
   }
 
   ionViewDidEnter() {
-    this.onEnter();
+	  console.log('on enter');
+	  console.log('this.txtIn'+this.txtIn);
+	this.onEnter();
     if (this.chatPrvd.bgState.getState() == 'stretched') {
        this.toggleChatOptions();
     }

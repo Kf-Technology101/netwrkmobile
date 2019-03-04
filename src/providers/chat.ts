@@ -135,12 +135,14 @@ export class Chat {
   }
 
   public followUserToLine(messageId:number):any {
+	  this.updateSyncMessage(messageId);
       this.user = this.authPrvd.getAuthData();
     let mess = this.api.post('user_followed', {
         message_id: messageId,
         user_id: this.user.id
     }).share();
     let messMap = mess.map(res => res.json());
+	
     return messMap;
   }
 
@@ -237,6 +239,16 @@ export class Chat {
       } else console.log('skipping...');
     });
   }
+  
+  private updateSyncMessage(message:any):void {
+	this.postMessages.forEach((m, index) => {
+	  if (m.id == message) {
+        this.postMessages.splice(index, 1, message);
+        // this.postMessages[index] = JSON.parse(JSON.stringify(message));
+      } else console.log('skipping...');
+    });
+  }
+  
 
   private appendMessage(data:any, messageContainer:any):void {
     if (data.message.user_id != this.user.id || data.message.social)
@@ -482,6 +494,18 @@ export class Chat {
     return seqMap;
   }
 
+  
+  public unlockRequest(data) {
+    console.log('UNLOCK POST data:', data);
+    let seq = this.api.post('messages/unlock', {
+      id: data.id,
+	  message:data.message,
+	  status: data.status
+    }).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+  
   public unlockPost(data) {
     console.log('UNLOCK POST data:', data);
     let seq = this.api.post('messages/unlock', {

@@ -143,5 +143,4 @@
         <variable name="SENDER_ID" value="650336583017" />
     </plugin>
     <plugin name="cordova-plugin-background-mode" spec="~0.7.2" />
-    <engine name="ios" spec="~4.5.5" />
 </widget>

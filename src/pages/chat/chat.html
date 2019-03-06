@@ -692,7 +692,7 @@
         <span ion-text>No, I’ll move elsewhere</span>
   </button>
 
-  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" [disabled]="chatPrvd.isMainBtnDisabled" (press)="goToHoldScreen()" (click)="openLinePage();" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}"><!--  (click)="openLinePage();"  -->
+  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" [disabled]="chatPrvd.isMainBtnDisabled" (press)="goToHoldScreen()" (click)="setCustomAddressOnMap(coords);" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}"><!--  (click)="openLinePage();"  -->
     <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
   </button>
   

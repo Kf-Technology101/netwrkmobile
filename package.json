@@ -159,8 +159,6 @@
       },
       "cordova-plugin-background-mode": {}
     },
-    "platforms": [
-      "ios"
-    ]
+    "platforms": []
   }
 }

@@ -130,7 +130,6 @@ export class ChatPage implements DoCheck {
      lng: null
   }
   public autocompleteItems: any = [] ;
-  public nearbyPlaces: any = [] ;
 
   public nearestNetwork:any = {
      dist: 0,
@@ -473,7 +472,7 @@ export class ChatPage implements DoCheck {
          lat: this.gpsPrvd.coords.lat,
          lng: this.gpsPrvd.coords.lng
       };
-
+	  this.coords = loc;
       var mapStyle = [
           {
               "featureType": "all",
@@ -533,7 +532,7 @@ export class ChatPage implements DoCheck {
 
     this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
         .map(res => res.json()).subscribe(res => {
-            let icon = {
+			let icon = {
                 url:'assets/icon/blue_dot.png'
             };
 
@@ -558,7 +557,6 @@ export class ChatPage implements DoCheck {
   private initLpMap():void {
 
       this.clearMarkers();
-
      this.gapi.init.then((google_maps: any) => {
          let zoomScale:number;
          let loc: any = {
@@ -585,7 +583,7 @@ export class ChatPage implements DoCheck {
          }
 
          this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
-            .map(res => res.json()).subscribe(res => {
+            .map(res => res.json()).subscribe(res => {		
                 if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
                     let marker = new google_maps.Marker({
                         map: this.map,
@@ -632,6 +630,8 @@ export class ChatPage implements DoCheck {
 
          this.map.setCenter(loc);
      });
+	 
+	 
   }
 
   public clearMarkers():void {
@@ -788,13 +788,15 @@ export class ChatPage implements DoCheck {
   }
   
   private setCustomAddressOnMap(addressDetails){
-	let addressLat = addressDetails.geometry.location.lat();
-	let addressLng = addressDetails.geometry.location.lng();
+	let addressLat = addressDetails.lat;
+	let addressLng = addressDetails.lng;
 	let data:any = {
 		lat: addressLat,
 		lng: addressLng
 	};	
-	try {		
+	try {	
+		this.clearMarkers();
+		this.toolsPrvd.showLoader();	
 		this.storage.set('custom_coordinates', data);
 		let cont0 = this.getTopSlider('address');
 		cont0.setState('slideUp');
@@ -860,7 +862,7 @@ export class ChatPage implements DoCheck {
 					  }
 					];
 					this.map = new google_maps.Map(this.mapElement.nativeElement, {
-					   zoom : 16,
+					   zoom : 19,
 					   center: data,
 					   styles:mapStyle,
 					   disableDefaultUI: true,
@@ -869,13 +871,9 @@ export class ChatPage implements DoCheck {
 					let icon = {
 					   url:'assets/icon/wi-fi.png'
 					};
-					let marker:any = [];		
-					
-
+					let marker:any = [];
 					for (var i = 0; i < results.length; i++) {
-						
-						marker = new google_maps.Marker({
-							
+						marker = new google_maps.Marker({							
 						   map: this.map,
 						   title:results[i].name,
 						   animation: google_maps.Animation.DROP,
@@ -888,6 +886,7 @@ export class ChatPage implements DoCheck {
 						infowindow.open(this.map, marker);
 						let self = this;
 						let resultEle = results[i];
+						
 						marker.addListener('click', function(marker){
 							let loc:any = {
 								lat: resultEle.geometry.location.lat(),
@@ -895,12 +894,17 @@ export class ChatPage implements DoCheck {
 							};	
 							self.map.setCenter(loc);	
 							self.openLinePage();							
-						});					
+						});	
+						this.mapMarkers.push(marker);						
 					}
+					this.toolsPrvd.hideLoader();
+				}else{
+					this.toolsPrvd.hideLoader();
 				}			
 			}); 
 		});			
 	}catch (err) {		
+		this.toolsPrvd.hideLoader();
 		this.customAddressReset()
 	}	  
   }
@@ -922,7 +926,7 @@ export class ChatPage implements DoCheck {
             lng: addressLng
 		};	
 		this.autocompleteItems	= [];
-		this.setCustomAddressOnMap(addressDetails);
+		this.setCustomAddressOnMap(customLoc);
 	}else{
 		this.postCustAddressData = {
 			custumAddress: null
@@ -1417,7 +1421,7 @@ export class ChatPage implements DoCheck {
               }, err => console.error(err));
           }
 		  
-          if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat && this.request_type != "ACCESS_REQUEST"|| !this.chatPrvd.areaLobby && this.chatPrvd.getState() == 'area' && this.request_type != "ACCESS_REQUEST") {
+          if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat && this.request_type != "ACCESS_REQUEST" || !this.chatPrvd.areaLobby && this.chatPrvd.getState() == 'area' && this.request_type != "ACCESS_REQUEST") {
               let alert = this.alertCtrl.create({
                   subTitle: 'Share the conversation with your friends?',
                   buttons: [{
@@ -1590,7 +1594,9 @@ export class ChatPage implements DoCheck {
     public goBack():void {
         this.storage.rm('custom_coordinates');
         this.gpsPrvd.getMyZipCode().then(res => {
-          this.initLpMap();
+			console.log('init my map');
+			
+			this.initLpMap();
             let cont0 = this.getTopSlider('address');
             cont0.setState('slideUp');
             cont0.hide();

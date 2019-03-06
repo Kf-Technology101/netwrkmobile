@@ -130,6 +130,7 @@ export class ChatPage implements DoCheck {
      lng: null
   }
   public autocompleteItems: any = [] ;
+  public nearbyPlaces: any = [] ;
 
   public nearestNetwork:any = {
      dist: 0,
@@ -792,39 +793,113 @@ export class ChatPage implements DoCheck {
 	let data:any = {
 		lat: addressLat,
 		lng: addressLng
-	};
-	
+	};	
 	try {		
 		this.storage.set('custom_coordinates', data);
 		let cont0 = this.getTopSlider('address');
 		cont0.setState('slideUp');
 		cont0.hide();
-					   
-		this.gapi.init.then((google_maps:any) => {
-			this.map = new google_maps.Map(this.mapElement.nativeElement, {
-			   zoom: 16,
-			   center: data,
-			   disableDefaultUI: true,
-			   fullscreenControl: false
-			});
-			
-			let icon = {
-			   url:'assets/icon/wi-fi.png'
-			};
+		this.postCustAddressData.custumAddress = null;		
+		
+		this.gapi.init.then((google_maps: any) => {
+			let service = new google_maps.places.PlacesService(this.map);
+			let myLatLng = new google.maps.LatLng(data);
+				
+			service.nearbySearch({
+			  keyword : this.postCustAddressData.custumAddress,
+			  location: data,
+			  radius: 100,
+			}, (results, status) => {
+				if (status === google_maps.places.PlacesServiceStatus.OK) {
+					var mapStyle = [
+					  {
+						  "featureType": "all",
+						  "stylers": [
+							  {
+								  "saturation": 0
+							  },
+							  {
+								  "hue": "#e7ecf0"
+							  }
+						  ]
+					  },
+					  {
+						  "featureType": "road",
+						  "stylers": [
+							  {
+								  "saturation": -70
+							  }
+						  ]
+					  },
+					  {
+						  "featureType": "transit",
+						  "stylers": [
+							  {
+								  "visibility": "off"
+							  }
+						  ]
+					  },
+					  {
+						  "featureType": "poi",
+						  "stylers": [
+							  {
+								  "visibility": "off"
+							  }
+						  ]
+					  },
+					  {
+						  "featureType": "water",
+						  "stylers": [
+							  {
+								  "visibility": "simplified"
+							  },
+							  {
+								  "saturation": -60
+							  }
+						  ]
+					  }
+					];
+					this.map = new google_maps.Map(this.mapElement.nativeElement, {
+					   zoom : 16,
+					   center: data,
+					   styles:mapStyle,
+					   disableDefaultUI: true,
+					   fullscreenControl: false			   
+					});
+					let icon = {
+					   url:'assets/icon/wi-fi.png'
+					};
+					let marker:any = [];		
+					
 
-			let marker = new google_maps.Marker({
-			   map: this.map,
-			   animation: google_maps.Animation.DROP,
-			   position: addressDetails.geometry.location,
-			   icon: icon
-			});
-			this.map.setCenter(data);
-		});
-			   
-	    this.postCustAddressData = {
-		   custumAddress: null
-	    };
-	    this.autocompleteItems = [];  		
+					for (var i = 0; i < results.length; i++) {
+						
+						marker = new google_maps.Marker({
+							
+						   map: this.map,
+						   title:results[i].name,
+						   animation: google_maps.Animation.DROP,
+						   position: results[i].geometry.location,
+						   icon: icon
+						});
+						var infowindow = new google_maps.InfoWindow({
+							content: results[i].name
+						});
+						infowindow.open(this.map, marker);
+						let self = this;
+						let resultEle = results[i];
+						marker.addListener('click', function(marker){
+							let loc:any = {
+								lat: resultEle.geometry.location.lat(),
+								lng: resultEle.geometry.location.lng()
+							};	
+							self.map.setCenter(loc);	
+							self.openLinePage();							
+						});					
+					}
+				}			
+			}); 
+		});			
 	}catch (err) {		
 		this.customAddressReset()
 	}	  
@@ -845,7 +920,8 @@ export class ChatPage implements DoCheck {
 		let customLoc: any = {
 			lat: addressLat,
             lng: addressLng
-		};
+		};	
+		this.autocompleteItems	= [];
 		this.setCustomAddressOnMap(addressDetails);
 	}else{
 		this.postCustAddressData = {
@@ -869,6 +945,7 @@ export class ChatPage implements DoCheck {
 			lat: this.gpsPrvd.coords.lat,
             lng: this.gpsPrvd.coords.lng
 		};
+		console.log(loc);
     if(this.postCustAddressData.custumAddress == ''){
 		this.autocompleteItems = []; 
 		return;		
@@ -881,17 +958,19 @@ export class ChatPage implements DoCheck {
 		service.nearbySearch({
 		  keyword : this.postCustAddressData.custumAddress,
 		  location: loc,
-		  radius: 100,
+		  radius: 10000,
 		  // types: [this.isType]
 		}, (results, status) => {
-			this.autocompleteItems = [];  
-		    if (status === google_maps.places.PlacesServiceStatus.OK) {
+			this.autocompleteItems = []; 
+			if (status === google_maps.places.PlacesServiceStatus.OK) {
 			  for (var i = 0; i < results.length; i++) {
 				this.autocompleteItems.push(results[i]);
 			  }
-			}
+			}						
 		}); 
-	});
+	});	
+	
+	
   }
   
   
@@ -943,9 +1022,22 @@ export class ChatPage implements DoCheck {
 			}
 			this.toolsPrvd.hideLoader();
 			this.hideTopSlider('unlock');
+			let showToast = "Process was successfully completed.";
+			switch(resStatus){
+				case "ACCEPT":
+					showToast ="Request has been accepted successfully.";
+					break;
+				case "REJECT":
+					showToast ="Request has been rejected successfully.";
+					break;
+					
+			}
+			this.toolsPrvd.showToast(showToast);
 		}, err => {		
 			console.error(err);
 			this.hideTopSlider('unlock');
+			let showToast ="Something went wrong. Please try later.";
+			this.toolsPrvd.showToast(showToast);
 		});
 
 	  });

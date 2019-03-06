@@ -1,4 +1,3 @@
-<!-- <script src="http://maps.google.com/maps/api/js?key=AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw"></script> -->
 <div id="mapElement" #mapElement ></div>
 
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat && !chatPrvd.areaLobby }">
@@ -34,16 +33,20 @@
   </ion-toolbar>
 
   <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state" class="post-lock">
-    <button ion-button class="button" *ngIf="!postUnlockData.password" (click)="sendLineAccessRequest(postUnlockData.id)">Request Access</button>
+    <button ion-button class="send-request-btn" *ngIf="!postUnlockData.password" (click)="sendLineAccessRequest(postUnlockData.id)">
+		Request Access
+	</button>
     <form (submit)="unlockPost($event, unlockForm)" #unlockForm="ngForm">
       <input type="hidden" value="">
       <ion-item>
         <ion-input type="password" placeholder="Password" name="password"
           [(ngModel)]="postUnlockData.password" required></ion-input>
       </ion-item>
-      <p ion-text color="bk">Hint: {{ currentHint }}</p>
-      <button ion-button type="submit" class="submit" *ngIf="postUnlockData.password">Unlock it</button>
+      <p ion-text class="password-hint" color="bk">Hint: {{ currentHint }}</p>
+	 
+      <button ion-button type="submit" class="unlock-line-btn" *ngIf="postUnlockData.password">Unlock it</button>
     </form>
+	<span class="red" (click)="toggleTopSlider('unlock')"> Never Mind </span>
   </ion-toolbar>
 
   <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state" class="post-lock">
@@ -66,18 +69,20 @@
       <ion-item>
         <ion-input type="text" placeholder="Choose a place where you hang out!" name="custumAddress" [(ngModel)]="postCustAddressData.custumAddress" required (keyup)="updateNearByList()"></ion-input>
       </ion-item>
-	  <ion-scroll scrollY="true" style="height:100px" *ngIf="autocompleteItems.length">
-		  <ion-list>
-			<ion-item *ngFor="let item of autocompleteItems" 
-			(click)="chooseAddress(item)">
-			{{ item.name }},{{ item.vicinity }}
-			</ion-item>
-		  </ion-list> 
-	  </ion-scroll>
+		
       <button ion-button type="submit" class="submit" *ngIf="postCustAddressData.custumAddress">Submit</button>
     </form>
+	
   </ion-toolbar>
-  
+
+	<ion-scroll scrollY="true" *ngIf="autocompleteItems.length" class="autocomplete-suggestions">
+	  <ion-list>
+		<ion-item *ngFor="let item of autocompleteItems" class="autocomplete-suggestion" (click)="chooseAddress(item)">
+		{{ item.name }},{{ item.vicinity }}
+		</ion-item>
+	  </ion-list> 
+	</ion-scroll>
+
   
   <!--Area Header-->
   <div *ngIf="!isUndercover || !chatPrvd.areaLobby && chatPrvd.getState() == 'area'" class="netwrk-header">
@@ -478,7 +483,7 @@
         </p>
 
         <ng-container>
-            <button class="feedback-button 1 " (tap)="feedbackService.toggleLikes(message, user.id, $event)" [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="chatPrvd.areaLobby && !message.locked_by_user || chatPrvd.isLobbyChat && !message.locked_by_user || chatPrvd.getState() == 'area' && !message.locked_by_user"  (press)="openFeedbackModal(message, i)">
+            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message, user.id, $event)" [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="chatPrvd.areaLobby && !message.locked_by_user || chatPrvd.isLobbyChat && !message.locked_by_user || chatPrvd.getState() == 'area' && !message.locked_by_user"  (press)="openFeedbackModal(message, i)">
                 <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
             </button>
 
@@ -506,7 +511,7 @@
         </ng-container>
       </div>
 	
-	  <div class="message-container false isLobby" *ngIf="chatPrvd.isLobbyChat && message.message_type =='ACCESS_REQUEST' && chatPrvd.postLineMessages[0].user_id == user.id && message.deleted!=true">
+	  <div class="message-container false isLobby message-request" *ngIf="chatPrvd.isLobbyChat && message.message_type =='ACCESS_REQUEST' && chatPrvd.postLineMessages[0].user_id == user.id && message.deleted!=true">
 	  <!-- <div *ngIf="isParentOwnerUser(message)"> -->
 		<img *ngIf="message.user" (click)="openConversationLobbyForPinned(message)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
 		[src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar conversation"
@@ -547,11 +552,11 @@
 				<span *ngIf="message.text_with_links" class="text" [ngClass]="{ 'emoji' : message.is_emoji }" [innerHTML]="message.text_with_links" (click)="toolsPrvd.handleLinkClick($event)"></span>
 			</ng-container>
 
-			<img src="assets/icon/slider_arrow.svg" class="conversation_right_ico" (click)="changeRequestStatus(message,'REJECT')">
+			<img src="assets/icon/slider_arrow.svg" class="conversation_right_ico" (swipe)="changeRequestStatus(message,'REJECT')" >
 		</p>
 
 		<ng-container>
-			<button ion-button class="submit" (click)="changeRequestStatus(message,'ACCEPT')" >
+			<button ion-button class="recast-button" (click)="changeRequestStatus(message,'ACCEPT')" >
                 Sure, say hello for me!
             </button>
 		</ng-container>
@@ -687,7 +692,7 @@
         <span ion-text>No, I’ll move elsewhere</span>
   </button>
 
-  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn 1 has-footer transparent chatMainBtn" (click)="openLinePage();" [disabled]="chatPrvd.isMainBtnDisabled" (press)="goToHoldScreen()" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
+  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" [disabled]="chatPrvd.isMainBtnDisabled" (press)="goToHoldScreen()" (click)="openLinePage();" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}"><!--  (click)="openLinePage();"  -->
     <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
   </button>
   

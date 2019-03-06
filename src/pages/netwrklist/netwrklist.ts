@@ -73,6 +73,7 @@ export class NetwrklistPage {
     public authPrvd: Auth,
     elRef: ElementRef
   ) {
+	  console.log('[Netwrk List Page]');
       this.user = this.authPrvd.getAuthData();
       this.places.displayNearRoutes=false;
   }
@@ -80,11 +81,12 @@ export class NetwrklistPage {
     ionViewDidEnter() {
         this.toolsPrvd.showLoader();
         this.getAndUpdateUndercoverMessages()
+		 this.toolsPrvd.hideLoader();
     }
 
-    private getAndUpdateUndercoverMessages() {
+    private getAndUpdateUndercoverMessages() {		
+		console.log('[netwrkLineList]'+this.netwrkLineList);
         this.chatPrvd.getNearByMessages(this.netwrkLineList, null, false).subscribe(res => {
-            this.toolsPrvd.hideLoader();
             this.netwrkLineList=res.messages;
         }, err => {
             this.toolsPrvd.hideLoader();
@@ -116,12 +118,16 @@ export class NetwrklistPage {
     }
 
     public resetFilter():void {
+		console.log(this.chatPrvd.holdFilter);
+		this.toolsPrvd.showLoader();
         if(this.chatPrvd.holdFilter){
             this.chatPrvd.holdFilter=false;
-            this.getAndUpdateUndercoverMessages()
+            this.getAndUpdateUndercoverMessages();
+			this.toolsPrvd.hideLoader();
         }else{
             this.chatPrvd.holdFilter=true;
-            this.getAndUpdateUndercoverMessages()
+            this.getAndUpdateUndercoverMessages();
+			this.toolsPrvd.hideLoader();
         }
     }
 

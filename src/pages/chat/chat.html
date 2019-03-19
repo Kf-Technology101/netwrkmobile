@@ -1,6 +1,8 @@
 <div id="mapElement" #mapElement ></div>
 
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat && !chatPrvd.areaLobby }">
+
+  
   <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover' && !chatPrvd.areaLobby">
   <!--<ion-toolbar>-->
     <div class="drag-container" [@sliderState]="topSlider.getState()">
@@ -32,6 +34,8 @@
 
   </ion-toolbar>
 
+    
+  
   <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state" class="post-lock">
     <button ion-button class="send-request-btn" *ngIf="!postUnlockData.password" (click)="sendLineAccessRequest(postUnlockData.id)">
 		Request Access
@@ -49,6 +53,7 @@
 	<span class="red" (click)="toggleTopSlider('unlock')"> Never Mind </span>
   </ion-toolbar>
 
+  
   <ion-toolbar [hidden]="postLock.hidden" [@slideState]="postLock.state" class="post-lock">
     <form (submit)="sendLockInfo($event, lockForm)" #lockForm="ngForm">
       <ion-item>
@@ -67,7 +72,8 @@
     <form (submit)="sendCustAddressInfo($event, custAddressForm)" #custAddressForm="ngForm">
       <p class="address-label">If you want network in a different location, type it in below..</p>
       <ion-item>
-        <ion-input type="text" placeholder="Choose a place where you hang out!" name="custumAddress" [(ngModel)]="postCustAddressData.custumAddress" required (keyup)="updateNearByList()"></ion-input>
+        <!-- <ion-input type="text" placeholder="Choose a place where you hang out!" name="custumAddress" [(ngModel)]="postCustAddressData.custumAddress" required (keyup)="updateNearByList()"> </ion-input> -->
+		<ion-searchbar #searchbar placeholder="Choose a place where you hang out!" [hidden]="!search" [(ngModel)] = "searchModel" name="searchModelName"></ion-searchbar>	
       </ion-item>
 		
       <button ion-button type="submit" class="submit" *ngIf="postCustAddressData.custumAddress">Submit</button>
@@ -188,7 +194,12 @@
 
 <!--Lobby Header-->
 <ion-header *ngIf="chatPrvd.isLobbyChat && !chatPrvd.areaLobby" class="lobby-header">
-  <ion-toolbar>
+
+
+	
+  
+  
+	<ion-toolbar>
       <ion-slides slidesPerView="5" class="netwrk-slider">
           <ion-slide *ngFor="let user of chatPrvd.currentLobby.users; let i = index" class="netwrk-slide">
               <div (tap)="goToProfile(user.id,user.public, user.role_name)">
@@ -219,12 +230,14 @@
               </span>
           </div>
     </ion-toolbar>
+	
+  
 </ion-header>
 
-<ion-content has-main-btn has-main-btn-label no-bounce (ionScrollEnd)="listenForScrollEnd($event)"
-  [ngClass]="{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': chatPrvd.getState() == 'area', 'lobby-content': chatPrvd.isLobbyChat && !chatPrvd.areaLobby, 'white-undercover': isUndercover &&
+<ion-content has-main-btn has-main-btn-label no-bounce scroll="true" (ionScroll)="processOnScroll($event)" (ionScrollEnd)="listenForScrollEnd($event)"
+  [ngClass] = "{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': chatPrvd.getState() == 'area', 'lobby-content': chatPrvd.isLobbyChat && !chatPrvd.areaLobby, 'white-undercover': isUndercover &&
   (chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': chatPrvd.getState() == 'undercover'}"
-  [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin}" *ngIf="!settings.isNewlineScope">
+  [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin}" class="my-content" *ngIf="!settings.isNewlineScope">
 
   <ion-refresher (ionRefresh)="refreshChat($event)">
     <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
@@ -393,13 +406,13 @@
 
         <p class="message-item message-container">
 
-            <span class="location" *ngIf="message.place_name && message.messageable_type=='Network' && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat" (click)="viewLineLocation(message)">
+            <span class="location" *ngIf="message.place_name && message.messageable_type=='Network' && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat" (click)="normalizeMainBtn($event); viewLineLocation(message)">
                 <ng-container >
                     {{ message.place_name }}
                 </ng-container>
             </span>
 
-             <span class="username" *ngIf="message.user && message.messageable_type=='Network'" (click)="openLobbyForPinned(message)">
+             <span class="username" *ngIf="message.user && message.messageable_type=='Network'" (click)="normalizeMainBtn($event); openLobbyForPinned(message)">
                 <ng-container *ngIf="message.public">
                 {{ message.user.name }}
                 </ng-container>
@@ -408,7 +421,7 @@
                 </ng-container>
              </span>
 
-             <span class="username" *ngIf="message.user && message.messageable_type=='Room'" (click)="openLobbyForLineMessage(message)">
+             <span class="username" *ngIf="message.user && message.messageable_type=='Room'" (click)="normalizeMainBtn($event); openLobbyForLineMessage(message)">
                 <ng-container *ngIf="message.public">
                 {{ message.user.name }}
                 </ng-container>
@@ -483,7 +496,7 @@
         </p>
 
         <ng-container>
-            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message, user.id, $event)" [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="chatPrvd.areaLobby && !message.locked_by_user || chatPrvd.isLobbyChat && !message.locked_by_user || chatPrvd.getState() == 'area' && !message.locked_by_user"  (press)="openFeedbackModal(message, i)">
+            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message, user.id, $event);getGoodStuff('pinnedStuff'); " [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="chatPrvd.areaLobby && !message.locked_by_user || chatPrvd.isLobbyChat && !message.locked_by_user || chatPrvd.getState() == 'area' && !message.locked_by_user"  (press)="openFeedbackModal(message, i)">
                 <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
             </button>
 
@@ -499,9 +512,9 @@
                 Share
             </button>
 			
-			<button class="button " *ngIf="chatPrvd.isLobbyChat||chatPrvd.areaLobby" (click)="showMyReply(message)">
+			<!-- <button class="button " *ngIf="chatPrvd.isLobbyChat||chatPrvd.areaLobby" (click)="showMyReply(message)">
                 Reply
-            </button>
+            </button> -->
         </ng-container>
 
         <ng-container *ngIf="user.id != message.user_id && message.locked_by_user">
@@ -685,25 +698,25 @@
   </div>
 
   <div class="tip tail-bottom" *ngIf="settings.isNewlineScope == true">
-    Start your network here?
+    {{coachMarkText}}
   </div>
 
   <button ion-button class="back-nav-btn" (tap)="goBack();" clear *ngIf="settings.isNewlineScope == true">
         <span ion-text>No, I’ll move elsewhere</span>
   </button>
 
-  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" [disabled]="chatPrvd.isMainBtnDisabled" (press)="goToHoldScreen()" (click)="setCustomAddressOnMap(coords);" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}"><!--  (click)="openLinePage();"  -->
+  <button class="{{chatPrvd.mainBtn.state}}" isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" [disabled]="chatPrvd.isMainBtnDisabled" (press)="normalizeMainBtn($event); goToHoldScreen()" (click)="normalizeMainBtn($event,'openLinePage');" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}"><!--  (click)="openLinePage();"  -->
     <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
   </button>
   
-  <button isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="!settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn 2 has-footer transparent chatMainBtn" (press)="goToHoldScreen()" (click)="handleMainBtnClick($event)" [disabled]="chatPrvd.isMainBtnDisabled" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
+  <button class="{{chatPrvd.mainBtn.state}}" isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="!settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (press)="normalizeMainBtn($event); goToHoldScreen()" (click)="normalizeMainBtn($event,'handleMainBtnClick');" [disabled]="chatPrvd.isMainBtnDisabled" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}">
   </button>
 
-  <button class="netwrk-button" (click)="eventClickTrigger(); toggleTopSlider('address');" *ngIf="isUndercover && !chatPrvd.isLobbyChat && !settings.isNewlineScope && chatPrvd.getState() == 'undercover'">
+  <button class="netwrk-button" (click)="loadMaps(); eventClickTrigger(); toggleTopSlider('address');" *ngIf="isUndercover && !chatPrvd.isLobbyChat && !settings.isNewlineScope && chatPrvd.getState() == 'undercover'">
       <img src="assets/icon/wifi.png"/>
   </button>
 
-  <div class="flip-container hover" [ngClass]="{'hover' : flipHover }" *ngIf="chatPrvd.isLobbyChat || chatPrvd.areaLobby">
+  <div class="flip-container hover" [ngClass]="{'hover' : flipHover }" *ngIf="(chatPrvd.isLobbyChat || chatPrvd.areaLobby || chatPrvd.getState() == 'area') && !hideTextContainer">
     <ion-item class="text front" #inputItem *ngIf="(chatPrvd.currentLobby.currentUserPresent && chatPrvd.isLobbyChat) || !mainInput.hidden" [@fadeState]="mainInput.state" [ngClass]="{ 'has-post-btn' : chatPrvd.postBtn.state}">
       <div item-content id="textInpBtns" [@bgState]="chatPrvd.bgState.state">
         <button class="noBtn" ion-button [@inputState]="chatPrvd.chatBtns.state[0]" (click)="openCamera();
@@ -739,7 +752,7 @@
         [placeholder]="placeholderText"
         (keyup)="getCaretPos(textInput); calculateInputChar(textInput)"
         (tap)="hideTopSlider(activeTopForm);"
-        (focus)="inputOnFocus()">
+        (focus)="inputOnFocus()" >
       </ion-input>
 
       <button ion-button item-right clear [ngClass]="{ 'post-button' : chatPrvd.postBtn.state, 'disabled' : chatPrvd.postBtn.disabled }" (tap)="postMessage()" class="post-message">

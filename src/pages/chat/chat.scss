@@ -1690,34 +1690,58 @@ page-chat{
 		}
 		.post-address{
 			.toolbar-content{
-				.automplete-address-list{
-					border: 1px solid #5b87aa;					
+				.searchbar-input{
+					border: 1px solid #5b87aa;
+					box-shadow: none;
+					border-radius: 27px;
 				}
 			}
 		}
-	}
-}
-.autocomplete-suggestions {
-	border: 1px solid #d8d1d1;
-	background: #fff;
-    cursor: default;
-    overflow: auto;
-	top: -67px;
-	z-index: 10;
-    position: relative;
-    box-shadow: 0px 0px 10px 0px #999;
-    border-radius: 10px;
-	max-width: 300px;
-	margin: 10px auto 0;
-	height: 98px;
-    .list{
-	    margin: 0px;
-		.autocomplete-suggestion{
-			border-top: none;
-			padding: 0 10px;
-		}
+		
 	}
 	
+		
+}
+
+.good-stuff{
+	.alert-wrapper{
+		border: 1px solid #5b87aa;
+		padding: 11px 0px;
+		height: auto !important;
+		background: #fff;
+		color: #5b87aa;
+		margin: 0 auto;
+		.alert-head{
+			padding: 10px 20px;
+		}
+		.toolbar-content {                    
+			padding: 0 17px;
+		}
+		.good-stuff-content{				
+			height: auto;				
+		}	
+		.popup-icon{
+			display: inline;
+			margin-bottom: -3px;
+			width: 25px;
+		}
+		.try-span{
+			.button-inner{
+				float: right;
+			}
+			color: #5b87aa;
+		}
+		.label-16,
+		.label-18{
+			color: #5b87aa;
+		}
+		.alert-button-group{
+			padding: 0px !important;
+		}		
+		.normal-text{
+			font-weight: normal;
+		}
+	}
 }
 
 .labels {
@@ -1728,4 +1752,18 @@ page-chat{
   text-align: center;
   width: 30px;
   white-space: nowrap;
+}
+
+.label-18{
+	font-size: 18px;				
+}
+.label-16{
+	font-size: 16px;				
+}
+.right{
+    float: right;
+	margin-right: 6px;
+}
+.center{
+	text-align: center;
 }

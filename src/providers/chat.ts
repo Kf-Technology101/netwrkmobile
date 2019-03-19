@@ -39,7 +39,7 @@ export class Chat {
   public isLandingPage: boolean;
   public areaLobby: boolean = false;
   public areaFilter : boolean=false;
-  public holdFilter : boolean=true;
+  public holdFilter : boolean=false;
 
   public appendContainer = new Toggleable('off', true);
   public appendLineContainer = new Toggleable('off', true);
@@ -977,4 +977,19 @@ export class Chat {
       });
     })
   }
+  
+  public getCustomAreaNetworks(latLng:any){	
+	let data: any = {
+      post_code: latLng.zipCode,
+      lat: latLng.lat,
+      lng: latLng.lng,
+	  offset: 0,
+	  limit: 50
+    };
+	let seq = this.api.get('messages/nearby_search', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+  
+  
 }

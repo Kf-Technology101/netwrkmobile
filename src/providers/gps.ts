@@ -152,7 +152,7 @@ export class Gps {
     return this.http.get(url, options);
   }
 
-  private parseGoogleAddress(data: any): number {
+  public parseGoogleAddress(data: any): number {
     for (let i = 0; i < data.length; i++) {
       for (let j = 0; j < data[i].address_components.length; j++) {
         for (let z = 0; z < data[i].address_components[j].types.length; z++) {

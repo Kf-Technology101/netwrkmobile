@@ -978,6 +978,8 @@ export class Chat {
     })
   }
   
+  
+  /*Fetch all networks nearby latLng with in 100Yards*/
   public getCustomAreaNetworks(latLng:any){	
 	let data: any = {
       post_code: latLng.zipCode,
@@ -991,5 +993,12 @@ export class Chat {
     return seqMap;
   }
   
+  /*Fetch single record wth unique message_id */
+  public getMessageIDDetails(message_id:any):any {
+	  // http://18.188.223.201:3000/api/v1/messages/584
+      let mess = this.api.get('messages/' + message_id ).share();
+      let messMap = mess.map(res => res.json());
+      return messMap;
+  }
   
 }

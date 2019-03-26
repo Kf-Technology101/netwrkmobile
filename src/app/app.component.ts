@@ -31,7 +31,7 @@ export class MyApp {
     rootPage:any = LogInPage;
 
    @ViewChild(Nav) navChild:Nav;
-
+	
     constructor(
         public platform: Platform,
         public app: App,
@@ -57,17 +57,11 @@ export class MyApp {
             this.toolsPrvd.doBackButton();
             return true;
         });
-
-        this.deeplinks.routeWithNavController(this.navChild, {
-            '/login': LogInPage,
-            '/landing': ChatPage
-        }).subscribe((match) => {
-            console.log('Successfully routed', match);
-            this.getLogin();
-            this.getSimInfo();
-        }, (err) => {
-            console.log('Unmatched Route', err);
-        });
+		
+		this.platform.ready().then(() => {
+			this.subscribeRoutes();
+		});
+       
 
         platform.ready().then(() => {
             permission.checkCameraPermissions().then(permissionOk => {
@@ -83,7 +77,8 @@ export class MyApp {
     pushSetup(){
         const options: PushOptions = {
             android: {
-                senderID:'650336583017'
+                senderID:'650336583017',
+				forceShow: true
             },
             ios: {
                 alert: 'true',
@@ -93,21 +88,23 @@ export class MyApp {
         };
 
         const pushObject: PushObject = this.push.init(options);
-
         pushObject.on('notification').subscribe((notification: any) => {
-            console.log('Received a notification', notification);
-            if (notification.additionalData.foreground) {
-
-            } else {
-                let authType = this.authPrvd.getAuthType();
-                let authData = this.authPrvd.getAuthData();
-
-                if (authType && authData) {
-                    this.gps.getMyZipCode().then(res => {
-                        this.app.getRootNav().setRoot(ChatPage, {message:notification.additionalData.child_message});
-                    });
-                }
-            }
+			let message  = JSON.parse(notification.additionalData.child_message);
+			
+			pushObject.finish().then(e => {
+				let messageData:any;
+				messageData = {
+					messagePermalink : message.id
+				};
+				
+				if (notification.additionalData.foreground){
+				}else{
+					this.toolsPrvd.showLoader();
+					this.storage.set('parameterData', messageData);
+					this.goToPage();
+				} 	 
+			});
+			
         });
 
         pushObject.on('registration').subscribe((registration: any) => {
@@ -116,7 +113,7 @@ export class MyApp {
         });
 
         pushObject.on('error').subscribe(error => {
-            console.error('Error with Push plugin', error)
+           
         });
     }
 
@@ -129,8 +126,10 @@ export class MyApp {
 
     private goToPage():void {
         this.gps.getMyZipCode().then(res => {
-            this.app.getRootNav().setRoot(ChatPage);
-        }, err => this.app.getRootNav().setRoot(ChatPage));
+			this.app.getRootNav().setRoot(ChatPage);
+		}, err => {
+			this.app.getRootNav().setRoot(ChatPage)
+		});
         this.toolsPrvd.hideSplashScreen();
     }
 
@@ -164,4 +163,25 @@ export class MyApp {
             },
             err => console.error('Unable to get sim info: ', err));
     }
+	
+	private subscribeRoutes(){
+		this.deeplinks.routeWithNavController(this.navChild, {
+			'/login': LogInPage,
+			'/landing/:messagePermalink': ChatPage      
+		}).subscribe((match) => {
+			if(match.$args){
+				this.toolsPrvd.showLoader();
+				this.storage.set('parameterData', match.$args);
+			}
+			this.getLogin();
+			this.getSimInfo();
+		}, (nomatch) => { 
+			console.log('Got a deeplink that did not match');
+			this.subscribeRoutes();
+		},() => {
+			console.log('Got a deeplink that empty match');
+		});
+	}
+	
+	 
 }

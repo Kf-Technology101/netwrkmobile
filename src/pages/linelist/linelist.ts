@@ -252,7 +252,7 @@ export class LinePage {
         public videoservice: VideoService,
         public feedbackService: FeedbackService
         ) {
-
+		console.log('[Line Page]');
         this.chatPrvd.isLandingPage = false;
         this.user = this.authPrvd.getAuthData();
     }
@@ -564,7 +564,7 @@ export class LinePage {
                             let subject = message.text_with_links ? message.text_with_links : '';
                             let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
                             if (this.plt.is('ios')){
-                                this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://landing').then(res => {
+                                this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://landing/'+message.id).then(res => {
                                         this.toolsPrvd.showToast('Message successfully shared');
                                         if (!message.social) {
                                             console.log('this user:', this.user);
@@ -582,7 +582,7 @@ export class LinePage {
                                     }
                                 );
                             }else{
-                                this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
+                                this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
                                         this.toolsPrvd.showToast('Message successfully shared');
                                         if (!message.social) {
                                             console.log('this user:', this.user);

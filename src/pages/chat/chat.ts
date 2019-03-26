@@ -275,6 +275,7 @@ export class ChatPage implements DoCheck {
   public scrollTop:number = 0;
   public hideTextContainer:boolean = false;
   
+  public parameterData:any;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -312,7 +313,7 @@ export class ChatPage implements DoCheck {
     public nativeGeocoder   : NativeGeocoder,
     public feedbackService: FeedbackService
   ) {
-	  console.log('[Chat Page]');
+	  
       this.user = this.authPrvd.getAuthData();
       this.chatPrvd.isLandingPage = true;
       this.undercoverPrvd.setUndercover(true);
@@ -424,7 +425,7 @@ export class ChatPage implements DoCheck {
             let subject = message.text_with_links ? message.text_with_links : '';
             let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
             if (this.plt.is('ios')){
-                this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://landing').then(res => {
+                this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
                         this.toolsPrvd.showToast('line shared successfully ');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
                             this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
@@ -446,7 +447,7 @@ export class ChatPage implements DoCheck {
                     }
                 );
             }else{
-                this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
+				this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
                         this.toolsPrvd.showToast('line shared successfully');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
                             this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
@@ -1278,7 +1279,7 @@ export class ChatPage implements DoCheck {
                           let subject = message.text_with_links ? message.text_with_links : '';
                           let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
                           if (this.plt.is('ios')){
-                              this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://landing').then(res => {
+                              this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
                                       this.toolsPrvd.showToast('Message successfully shared');
                                       this.openConversationLobbyForPinnedFormMessage(message);
                                   }, err =>{
@@ -1286,7 +1287,7 @@ export class ChatPage implements DoCheck {
                                   }
                               );
                           }else{
-                              this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing').then(res => {
+							  this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
                                       this.toolsPrvd.showToast('Message successfully shared');
                                       this.openConversationLobbyForPinnedFormMessage(message);
                                   }, err =>{
@@ -1349,7 +1350,7 @@ export class ChatPage implements DoCheck {
 
   private updateMessages(scroll?:boolean):Promise<any> {
     return new Promise((resolve, reject) => {
-      console.log('(updateMessages) isUndercover:', this.isUndercover);
+	  console.log('(updateMessages) isUndercover:', this.isUndercover);
       this.chatPrvd.showMessages(this.chatPrvd.postMessages, 'chat', this.isUndercover).then(res => {
         console.log('[SHOW MESSAGES] res:', res);
         this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(res.messages);
@@ -1854,7 +1855,7 @@ export class ChatPage implements DoCheck {
 
   private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
     return new Promise((resolve, reject) => {
-      if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby || forced && !this.chatPrvd.areaLobby ) {
+      if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && !this.parameterData || forced && !this.chatPrvd.areaLobby && !this.parameterData) {
         this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
         .subscribe(res => {
           res = this.chatPrvd.organizeMessages(res.messages);
@@ -1931,7 +1932,8 @@ export class ChatPage implements DoCheck {
   }
 
   private getAndUpdateUndercoverMessages() {
-      if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
+	  this.parameterData = this.storage.get('parameterData');
+      if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat && !this.parameterData) {
           this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
               if (res) {
                   if (res.messages && res.messages.length > 0) {
@@ -1953,7 +1955,12 @@ export class ChatPage implements DoCheck {
           }, err => {
               this.toolsPrvd.hideLoader();
           });
-      }
+      }else{
+		if (this.parameterData) {
+			this.toolsPrvd.showLoader();
+			this.openLobbyForShareLink();
+		}
+	  }
   }
 
   private startMessageUpdateTimer() {
@@ -2061,7 +2068,7 @@ export class ChatPage implements DoCheck {
     return new Promise(resolve => {
       console.log('%c [CHAT] constructorLoad ', 'background: #1287a8;color: #ffffff');
       this.keyboard.disableScroll(true);
-
+	
       this.setCustomTransitions();
       this.keyboard.onKeyboardShow().subscribe(res => {
         //this.topSlider.setState('slideUp');
@@ -2175,7 +2182,8 @@ export class ChatPage implements DoCheck {
       if (this.messageParam) {
         this.openNotificationMessage(this.messageParam);
       }
-
+	  
+	  
       if (this.chatPrvd.bgState.getState() == 'stretched') {
         this.toggleChatOptions();
       }
@@ -2403,7 +2411,7 @@ export class ChatPage implements DoCheck {
       let cont1 = this.getTopSlider('address');
       cont1.setState('slideUp');
       cont1.hide();
-console.log('[this.chatPrvd.getState]'+this.chatPrvd.getState());
+
       if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
           if(this.chatPrvd.getState() == 'undercover'){
               this.pageNavLobby=true;
@@ -2518,6 +2526,7 @@ console.log('[this.chatPrvd.getState]'+this.chatPrvd.getState());
                   this.chatPrvd.isMainBtnDisabled = false;
                   this.chatPrvd.areaLobby=true;
                   this.toolsPrvd.hideLoader();
+				  this.socialLoaderHidden = true;
               }, err => {
                   this.chatPrvd.areaLobby=true;
                   this.placeholderText = 'What do you want to talk about?';
@@ -2525,6 +2534,7 @@ console.log('[this.chatPrvd.getState]'+this.chatPrvd.getState());
                   this.startMessageUpdateTimer();
                   this.chatPrvd.allowUndercoverUpdate = true;
                   this.toolsPrvd.hideLoader();
+				  this.socialLoaderHidden = true;
               });
         }
   }
@@ -2667,7 +2677,7 @@ console.log('[this.chatPrvd.getState]'+this.chatPrvd.getState());
 
   private onEnter():void {
     console.log('%c [CHAT] ionViewDidEnter ', 'background: #1287a8;color: #ffffff');
-
+	
     this.toolsPrvd.showLoader();
 
     if(!this.chatPrvd.isLobbyChat){
@@ -2738,6 +2748,8 @@ console.log('[this.chatPrvd.getState]'+this.chatPrvd.getState());
     }, 1);
 
     this.user = this.authPrvd.getAuthData();
+	
+	
 
   }
 
@@ -3231,4 +3243,44 @@ console.log('[this.chatPrvd.getState]'+this.chatPrvd.getState());
 	this.hideTextContainer = true;
   }
 	
+  /*
+	Opens up lobby for shared line or for notifications 
+  */	
+  private openLobbyForShareLink(){
+	  
+	let line_permalink = this.parameterData.messagePermalink;
+	/* let alert = this.alertCtrl.create({
+		subTitle: 'openLobbyForShareLink: '+line_permalink,
+		buttons: [{
+			text: 'Ok',
+			role: 'cancel'
+		}]
+	});
+	alert.present(); */
+
+	this.parameterData = null;  
+	this.storage.set('parameterData','');
+	this.chatPrvd.getMessageIDDetails(line_permalink).subscribe(res => {
+		let message = res.message;
+		this.chatPrvd.postMessages=[];
+		if(message.messageable_type == "Network"){
+			if(message.undercover){ 										// Open line lobby
+				this.openLobbyForPinned(message);
+			}else if(!message.undercover){ 									// Open conversation lobby
+				this.openConversationLobbyForPinned(message);
+			}					
+		}else if(message.messageable_type == "Room"){
+			this.chatPrvd.getParentLobby(message).subscribe(parentRes => {
+				let parentMessage = parentRes.messages;
+				if(parentMessage.undercover){ 								// Open line lobby
+					this.openLobbyForPinned(parentMessage);
+				}else if(!parentMessage.undercover){ 						// Open conversation lobby 
+					this.openConversationLobbyForPinned(parentMessage);
+				}
+			});
+		}
+	}); 	
+  }
+  
+  
 }

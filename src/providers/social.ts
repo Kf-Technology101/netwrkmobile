@@ -94,16 +94,20 @@ export class Social {
             }
           }).share();
           seq.map(res => res.json()).subscribe( res => {
+            console.log('[Twitter connect] twitter res:', res);
             this.setSocialAuth(data, Social.TWITTER);
           }, err => {
+            console.error('[Twitter connect] twitter error:', err);
           });
+          console.log('[Twitter connect] res:', data);
           if ((<any>Object).values(data)) {
             this.connect.twitter = true;
           }
         }, err => {
+          console.error('[Twitter connect] err:', err);
           let alert = this.alertCtrl.create({
             title: '',
-            subTitle: err,
+            subTitle: 'You might need to install Twitter app to be able to login',
             buttons: ['Ok']
           });
           alert.present();
@@ -127,7 +131,7 @@ export class Social {
   }
 
   connectToInstagram():Promise<any> {
-	return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const clientId = '2d3db558942e4eaabfafc953263192a7';
       const clientSecret = 'bcf35f1ba4e94d59ad9f2c6c1322c640';
       const redirectUrl = this.api.hostUrl + '/loader';
@@ -144,28 +148,31 @@ export class Social {
         clearcache: 'yes'
       });
       browser.on('loadstop').subscribe(res => {
+        console.log('instagram auth res:', res);
         if (res.url.indexOf('access_token=') != -1 && !instagramData.token) {
           browser.hide();
           const accessToken = this.getAccessToken(res);
           instagramData.token = accessToken ? accessToken : false;
-          
+          console.log('[instagram] instagramData:', instagramData);
           if (instagramData.token) {
             let seq = this.api.post('profiles/connect_social', {
               user: instagramData
             }).share();
             seq.map(res => res.json()).subscribe(res => {
+              console.log('[instagram] res:', res);
               if (res.message == 'ok') { browser.close(); resolve(); }
               else browser.show();
             }, err => {
-             
+              console.error('[instagram] err:', err);
               browser.show();
               reject();
             });
           } else console.warn('[INSTAGRAM] No access token');
         }
-      }, err => { reject(err); });
+      }, err => { console.log(err); reject(err); });
 
       browser.on('exit').subscribe(res => {
+        console.log('browser close');
         reject();
       }, err => { console.error(err); reject(err); })
     });

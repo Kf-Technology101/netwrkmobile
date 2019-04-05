@@ -8,7 +8,6 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
 import { HoldScreenPage } from '../../pages/hold-screen/hold-screen';
 import { NetwrklistPage } from '../netwrklist/netwrklist';
-import { ChatPage } from '../chat/chat';
 
 // Providers
 import { Profile } from '../../providers/profile';
@@ -23,7 +22,6 @@ import { Camera } from '../../providers/camera';
 import { Api } from '../../providers/api';
 import { ReportService } from '../../providers/reportservice';
 import { VideoService } from '../../providers/videoservice';
-import { LocalStorage } from '../../providers/local-storage';
 
 import { Toggleable } from '../../includes/toggleable';
 // Animations
@@ -90,8 +88,7 @@ export class ProfilePage {
     public cameraPrev: CameraPreview,
     public cameraPrvd: Camera,
     public report: ReportService,
-    public videoservice: VideoService,
-	public storage: LocalStorage
+    public videoservice: VideoService
   ) {
     this.loadConstructor();
   }
@@ -145,28 +142,21 @@ export class ProfilePage {
       console.error('removeMessage err:', err);
     });
   }
-  
-  public editMessage(messageId:number):void{
-	this.toolsPrvd.showLoader();
-	this.storage.set("edit-post", messageId);
-	this.toolsPrvd.pushPage(ChatPage);
-	this.toolsPrvd.hideLoader(); 
-  }
 
-  choosePerson(post) {
-	this.activePerson.name=post.role_name ? post.role_name:post.user.name;
-	this.activePerson.imageUrl=post.public ? post.user.avatar_url : post.user.hero_avatar_url;
-	this.activePerson.description=post.description;
-	this.profile.user.hero_avatar_url=post.public ? post.user.avatar_url : post.user.hero_avatar_url;
-	this.profile.user.avatar_url=post.public ? post.user.avatar_url : post.user.hero_avatar_url;
-	this.profile.user.role_name=post.role_name ? post.role_name:post.user.name;
-	this.profile.user.description=post.description;
-	this.undercoverPrvd.setPerson(this.activePerson).then(data => {
-		this.loadOwnProfile();
-	}, err => {
+    choosePerson(post) {
+        this.activePerson.name=post.role_name ? post.role_name:post.user.name;
+        this.activePerson.imageUrl=post.public ? post.user.avatar_url : post.user.hero_avatar_url;
+        this.activePerson.description=post.description;
+        this.profile.user.hero_avatar_url=post.public ? post.user.avatar_url : post.user.hero_avatar_url;
+        this.profile.user.avatar_url=post.public ? post.user.avatar_url : post.user.hero_avatar_url;
+        this.profile.user.role_name=post.role_name ? post.role_name:post.user.name;
+        this.profile.user.description=post.description;
+        this.undercoverPrvd.setPerson(this.activePerson).then(data => {
+            this.loadOwnProfile();
+        }, err => {
 
-	});
-  }
+        });
+    }
 
   private toggleUserBlock():any {
     this.toolsPrvd.showLoader();

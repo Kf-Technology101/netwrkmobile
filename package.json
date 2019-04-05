@@ -84,14 +84,14 @@
     "ionic-angular": "3.9.2",
     "ionic-native": "^2.9.0",
     "ionic-plugin-deeplinks": "^1.0.17",
-    "ionic-plugin-keyboard": "^2.2.1",
+    "ionic-plugin-keyboard": "~2.2.1",
     "ionicons": "3.0.0",
     "moment": "^2.22.1",
     "ng2-cable": "^2.0.7",
     "phonegap-plugin-push": "~2.2.3",
     "rxjs": "5.4.2",
     "sw-toolbox": "3.6.0",
-    "twitter-connect-plugin": "git+https://github.com/ManifestWebDesign/twitter-connect-plugin.git",
+    "twitter-connect-plugin": "~0.6.0",
     "zone.js": "0.8.26"
   },
   "devDependencies": {
@@ -125,9 +125,6 @@
       "cordova-plugin-compat": {},
       "cordova-plugin-add-swift-support": {},
       "cordova-plugin-inappbrowser": {},
-      "twitter-connect-plugin": {
-        "FABRIC_KEY": "0b15d44d213d573ac860629f837562b2bf37ce9f"
-      },
       "ionic-plugin-deeplinks": {
         "URL_SCHEME": "netwrkapp",
         "DEEPLINK_SCHEME": "https",
@@ -146,7 +143,6 @@
         "DEEPLINK_5_SCHEME": " ",
         "DEEPLINK_5_HOST": " "
       },
-      "ionic-plugin-keyboard": {},
       "cordova-plugin-facebook4": {
         "APP_ID": "390382104668705",
         "APP_NAME": "Netwrk",
@@ -157,8 +153,14 @@
       "phonegap-plugin-push": {
         "SENDER_ID": "650336583017"
       },
-      "cordova-plugin-background-mode": {}
+      "cordova-plugin-background-mode": {},
+      "twitter-connect-plugin": {
+        "FABRIC_KEY": "af26a69d14f099d0a7d91e02a5f100a1c30a6273"
+      },
+      "ionic-plugin-keyboard": {}
     },
-    "platforms": []
+    "platforms": [
+      "ios"
+    ]
   }
 }

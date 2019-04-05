@@ -151,14 +151,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "ionic-plugin-keyboard": {
-    "source": {
-      "type": "registry",
-      "id": "ionic-plugin-keyboard"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "com.synconset.imagepicker": {
     "source": {
       "type": "registry",
@@ -193,16 +185,6 @@
     },
     "is_top_level": true,
     "variables": {}
-  },
-  "twitter-connect-plugin": {
-    "source": {
-      "type": "registry",
-      "id": "https://github.com/ManifestWebDesign/twitter-connect-plugin"
-    },
-    "is_top_level": true,
-    "variables": {
-      "FABRIC_KEY": "0b15d44d213d573ac860629f837562b2bf37ce9f"
-    }
   },
   "ionic-plugin-deeplinks": {
     "source": {
@@ -260,6 +242,24 @@
     "source": {
       "type": "registry",
       "id": "cordova-plugin-background-mode"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "twitter-connect-plugin": {
+    "source": {
+      "type": "registry",
+      "id": "twitter-connect-plugin"
+    },
+    "is_top_level": true,
+    "variables": {
+      "FABRIC_KEY": "af26a69d14f099d0a7d91e02a5f100a1c30a6273"
+    }
+  },
+  "ionic-plugin-keyboard": {
+    "source": {
+      "type": "registry",
+      "id": "ionic-plugin-keyboard"
     },
     "is_top_level": true,
     "variables": {}

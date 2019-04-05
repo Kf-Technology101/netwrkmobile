@@ -292,7 +292,7 @@ export class Chat {
 
   public openLobbyForPinned(message:any):Promise<any> {
     return new Promise ((resolve, reject) => {
-      if (!this.isLobbyChat) {
+      if (!this.isLobbyChat) { 
         this.getLocationLobby(message.id).subscribe(res => {
           if (res && res.messages && res.room_id) {
             this.postMessages = [];
@@ -460,12 +460,23 @@ export class Chat {
 
   public sendMessage(data: any):any {
     return new Promise((resolve, reject) => {
-      let params = {
-        message: data,
-        post_code: this.localStorage.get('chat_zip_code'),
-        room_id: this.currentLobby.id
-      };
-      params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
+		
+		let params:any; 
+		if(this.currentLobbyMessage.messageable_type == 'Room'){
+			params = {
+				message: data,
+				post_code: this.localStorage.get('chat_zip_code'),
+				reply_to_message_id: this.currentLobby.id
+			};  
+		}else{
+			params = {
+				message: data,
+				post_code: this.localStorage.get('chat_zip_code'),
+				room_id: this.currentLobby.id
+			}; 
+		}
+	  
+	  params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
       params.message.lat = this.gps.coords.lat;
       params.message.lng = this.gps.coords.lng;
 
@@ -554,7 +565,6 @@ export class Chat {
 
     let seq = this.api.get('messages', data).share();
     let seqMap = seq.map(res => res.json());
-
     return seqMap;
   }
 
@@ -627,14 +637,14 @@ export class Chat {
   }
 
   public organizeMessages(data: any): any {
-    let messages: Array<any> = [];
+	let messages: Array<any> = [];
     for (let i in data) {
       data[i].date = moment(data[i].created_at).fromNow();
         if(messages.indexOf(data[i])==-1){
             messages.push(data[i]);
         }
     }
-    return messages;
+	return messages;
   }
 
   public getNetwork(): any {
@@ -920,6 +930,7 @@ export class Chat {
   }
 
   public showMessages(messages:any, location: any, isUndercover?: boolean):Promise<any> {
+	   console.log('[ChatPage][showMessages]');
     let loadMessages:any;
     let arg:any;
     switch (location) {
@@ -999,6 +1010,19 @@ export class Chat {
       let mess = this.api.get('messages/' + message_id ).share();
       let messMap = mess.map(res => res.json());
       return messMap;
+  }
+  
+  /*Fetch all replies for particular message*/
+  public getAllMessageReplies(messageId:number){	
+	//http://18.188.223.201:3000/api/v1/messages/768/reply/messages 
+	let offset : number = this.postMessages && this.postMessages.length > 1 ? this.postMessages.length-1 : 0;
+	let data: any = {
+		limit : 15, 
+		offset :  offset
+	}
+	let seq = this.api.get('messages/'+messageId+'/reply/messages',data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
   }
   
 }

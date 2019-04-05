@@ -11,7 +11,9 @@
     <allow-intent href="sms:*" />
     <allow-intent href="mailto:*" />
     <allow-intent href="geo:*" />
-    <preference name="SplashScreenDelay" value="5000" />
+    <preference name="SplashScreenDelay" value="100" />
+    <preference name="FadeSplashScreenDuration" value="1000" />
+    <preference name="AutoHideSplashScreen" value="true" />
     <preference name="webviewbounce" value="false" />
     <preference name="UIWebViewBounce" value="false" />
     <preference name="DisallowOverscroll" value="true" />
@@ -22,7 +24,8 @@
     <preference name="SplashShowOnlyFirstTime" value="false" />
     <preference name="SplashScreen" value="screen" />
     <preference name="ShowSplashScreenSpinner" value="true" />
-    <preference name="AutoHideSplashScreen" value="true" />
+    <preference name="TwitterConsumerKey" value="e7pst18itbnoQsejKXtFcCDtH" />
+    <preference name="TwitterConsumerSecret" value="9JEaBVUQR8AUj29OKcelPetYRPCYfGdNHky5gUwSfiEURzJBdU" />
     <platform name="android">
         <allow-intent href="market:*" />
         <icon density="ldpi" src="resources/android/icon/drawable-ldpi-icon.png" />
@@ -110,9 +113,6 @@
     <plugin name="cordova-plugin-compat" spec="^1.2.0" />
     <plugin name="cordova-plugin-add-swift-support" spec="^1.7.2" />
     <plugin name="cordova-plugin-inappbrowser" spec="^3.0.0" />
-    <plugin name="twitter-connect-plugin" spec="git+https://github.com/ManifestWebDesign/twitter-connect-plugin.git">
-        <variable name="FABRIC_KEY" value="0b15d44d213d573ac860629f837562b2bf37ce9f" />
-    </plugin>
     <plugin name="ionic-plugin-deeplinks" spec="^1.0.17">
         <variable name="URL_SCHEME" value="netwrkapp" />
         <variable name="DEEPLINK_SCHEME" value="https" />
@@ -131,7 +131,6 @@
         <variable name="DEEPLINK_5_SCHEME" value=" " />
         <variable name="DEEPLINK_5_HOST" value=" " />
     </plugin>
-    <plugin name="ionic-plugin-keyboard" spec="^2.2.1" />
     <plugin name="cordova-plugin-facebook4" spec="^2.3.0">
         <variable name="APP_ID" value="390382104668705" />
         <variable name="APP_NAME" value="Netwrk" />
@@ -143,4 +142,9 @@
         <variable name="SENDER_ID" value="650336583017" />
     </plugin>
     <plugin name="cordova-plugin-background-mode" spec="~0.7.2" />
+    <plugin name="twitter-connect-plugin" spec="~0.6.0">
+        <variable name="FABRIC_KEY" value="af26a69d14f099d0a7d91e02a5f100a1c30a6273" />
+    </plugin>
+    <plugin name="ionic-plugin-keyboard" spec="~2.2.1" />
+    <engine name="ios" spec="~4.5.5" />
 </widget>

@@ -83,6 +83,7 @@ export class UndercoverCharacterPage {
   }
 
   private goBack() {
+	this.storage.set('edit-post','');
     this.toolsPrvd.popPage();
   }
   private getPersons() {

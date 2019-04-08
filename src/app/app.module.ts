@@ -66,6 +66,10 @@ import { ReportService } from '../providers/reportservice';
 import { VideoService } from '../providers/videoservice';
 import { FeedbackService } from '../providers/feedback.service';
 
+//Pipes
+import { ContactListPipe } from '../pipes/contact-list';
+import { EmojiFilter } from '../pipes/emoji-filter.pipe';
+
 // Native services
 import { Geolocation } from '@ionic-native/geolocation';
 import { CameraPreview } from '@ionic-native/camera-preview';
@@ -87,6 +91,41 @@ import { NativeGeocoder } from '@ionic-native/native-geocoder';
 import { Ng2CableModule } from 'ng2-cable';
 // Google Maps
 import { GoogleMapsModule } from 'google-maps-angular2';
+
+let declarations_pages = [
+  // Autosize,
+  MyApp,
+
+  LogInPage,
+  SignUpPage,
+  SignUpConfirmPage,
+  SignUpAfterFbPage,
+  SignUpFacebookPage,
+
+  HoldScreenPage,
+
+  ProfilePage,
+  ProfileSettingPage,
+  
+  LinePage,
+  NetwrklistPage,
+  NetworkContactListPage,
+  LegendaryModal,
+  FeedbackShareModal,
+  FeedbackModal,
+  MapsModal,
+  BlacklistModal,
+  ArealistModal,
+
+  ChatPage,
+  UndercoverCharacterPage,
+
+  CameraPage,
+  
+  
+	ContactListPipe,
+	EmojiFilter,
+];
 
 let pages = [
   // Autosize,
@@ -117,16 +156,17 @@ let pages = [
   UndercoverCharacterPage,
 
   CameraPage,
+  
 ];
-
 export function declarations() {
-  return pages;
+  return declarations_pages;
 }
 
 export function entryComponents() {
   return pages;
 }
-
+		
+	
 export function providers() {
   return [
     User,
@@ -174,7 +214,8 @@ export function providers() {
     VideoService,
     FeedbackService,
     AppAvailability,
-
+	
+	
     Places
     // Keep this to enable Ionic's runtime error handling during development
   ];
@@ -191,9 +232,14 @@ export function providers() {
     GoogleMapsModule.forRoot({
       url: 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBjoCQlLGverzDsYq0bpYpxXO9E20FT3yI'
     })
-  ],
+  ], 
+ /*  exports: [
+    ContactListPipe,
+	EmojiFilter
+  ], */
   bootstrap: [IonicApp],
   entryComponents: entryComponents(),
-  providers: providers()
+  providers: providers(),
+ 
 })
 export class AppModule {}

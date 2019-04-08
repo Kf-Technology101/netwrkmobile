@@ -245,6 +245,11 @@
                     <button *ngIf="ownProfile" ion-button class="remove-message-btn" (tap)="removeMessage(post.id)">
                         <ion-icon ios="ios-trash-outline" md="ios-trash-outline" color="dark"></ion-icon>
                     </button>
+					
+					<!-- <button *ngIf="ownProfile && post.undercover" ion-button class="remove-message-btn {{post.id}}" (tap)="editMessage(post.id)">
+                        <ion-icon ios="ios-create-outline" md="ios-create-outline" color="dark"></ion-icon>
+                    </button>  -->
+					<!-- ios-settings-outline -->
                 </ion-card-content>
               </ion-card>
 

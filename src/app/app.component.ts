@@ -108,13 +108,9 @@ export class MyApp {
         });
 
         pushObject.on('registration').subscribe((registration: any) => {
-            console.log('Device Registration', registration);
             this.authPrvd.setDeviceRegistration(registration.registrationId);
         });
 
-        pushObject.on('error').subscribe(error => {
-           
-        });
     }
 
     public init = () => {
@@ -158,7 +154,6 @@ export class MyApp {
 
     private getSimInfo() {
         this.sim.getSimInfo().then(info => {
-                console.log('Sim info: ', info);
                 this.storage.set('country_code', info.countryCode);
             },
             err => console.error('Unable to get sim info: ', err));
@@ -169,17 +164,18 @@ export class MyApp {
 			'/login': LogInPage,
 			'/landing/:messagePermalink': ChatPage      
 		}).subscribe((match) => {
+			console.log('match subscribeRoutes');
 			if(match.$args){
-				this.toolsPrvd.showLoader();
+				this.toolsPrvd.showLoader();				
 				this.storage.set('parameterData', match.$args);
 			}
 			this.getLogin();
 			this.getSimInfo();
 		}, (nomatch) => { 
-			console.log('Got a deeplink that did not match');
+			// console.log('no match subscribeRoutes');
 			this.subscribeRoutes();
 		},() => {
-			console.log('Got a deeplink that empty match');
+			// console.log('empty match subscribeRoutes');
 		});
 	}
 	

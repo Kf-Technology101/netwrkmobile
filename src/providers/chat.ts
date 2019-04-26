@@ -84,7 +84,7 @@ export class Chat {
   public currentLobbyMessage:any;
 
   public allowUndercoverUpdate:boolean = true;
-
+ 
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -135,7 +135,7 @@ export class Chat {
   }
 
   public followUserToLine(messageId:number):any {
-	  this.updateSyncMessage(messageId);
+	  // this.updateSyncMessage(messageId);
       this.user = this.authPrvd.getAuthData();
     let mess = this.api.post('user_followed', {
         message_id: messageId,
@@ -292,16 +292,20 @@ export class Chat {
 
   public openLobbyForPinned(message:any):Promise<any> {
     return new Promise ((resolve, reject) => {
+		this.gps.coords.lat = parseFloat(message.lat);
+		this.gps.coords.lng = parseFloat(message.lng);
+		
       if (!this.isLobbyChat) { 
-        this.getLocationLobby(message.id).subscribe(res => {
-          if (res && res.messages && res.room_id) {
-            this.postMessages = [];
+	    this.getLocationLobby(message.id).subscribe(res => {
+		  if (res && res.messages && res.room_id) {
+			this.postMessages = [];
             this.postLineMessages = [];
             this.postAreaMessages = [];
-
-           if (res.messages && res.messages.length > 0) {
-              this.postMessages = this.postMessages.concat(res.messages);
-           }
+			
+			message.isMain = true;
+			if (res.messages && res.messages.length > 0) {
+				this.postMessages = this.postMessages.concat(res.messages);
+			}
 
             if(this.areaLobby){
                 if(this.postAreaMessages.indexOf(message)==-1){
@@ -309,12 +313,11 @@ export class Chat {
                 }
             }else if(!this.isLobbyChat){
                 this.postMessages.push(message);
-
                 if(this.postLineMessages.indexOf(message)==-1){
                     this.postLineMessages.unshift(message);
                 }
             }
-
+			console.log('this.postMessages:::',this.postMessages);
             this.currentLobby.id = res.room_id;
             this.currentLobbyMessage = message;
             this.startLobbySocket(res.room_id);
@@ -460,9 +463,8 @@ export class Chat {
 
   public sendMessage(data: any):any {
     return new Promise((resolve, reject) => {
-		
-		let params:any; 
-		if(this.currentLobbyMessage.messageable_type == 'Room'){
+		let params:any;
+	    if(this.currentLobbyMessage != undefined && this.currentLobbyMessage.messageable_type == 'Room'){
 			params = {
 				message: data,
 				post_code: this.localStorage.get('chat_zip_code'),
@@ -475,10 +477,10 @@ export class Chat {
 				room_id: this.currentLobby.id
 			}; 
 		}
-	  
+
 	  params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
       params.message.lat = this.gps.coords.lat;
-      params.message.lng = this.gps.coords.lng;
+      params.message.lng = this.gps.coords.lng; 
 
       if (params.room_id) params.message.network_id = null;
 
@@ -600,7 +602,7 @@ export class Chat {
 
     if (params) Object.assign(data, params);
 
-    let seq = this.api.get('messages/nearby', data).share();
+    let seq = this.api.get('messages/nearby', data).share(); 
     let seqMap = seq.map(res => res.json());
 
     // console.log('===================================');
@@ -610,20 +612,16 @@ export class Chat {
 
   public getMessagesByUserId(params: any):any {
     let data: any = {
-      network_id: this.networkPrvd.getNetworkId(),
-      lat: this.gps.coords.lat,
-      lng: this.gps.coords.lng,
       limit: 20,
-      social: ['facebook', 'twitter'], // gavnocod
-      post_code: this.localStorage.get('chat_zip_code')
     };
-
+	
     if (params) Object.assign(data, params);
 
     let seq = this.api.get('messages/profile_messages', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }
+
 
   public saveNetwork(network: any) {
     this.localStorage.set('current_network', network);
@@ -673,8 +671,6 @@ export class Chat {
       for (let i of dataImages) {
         images.push(i);
       }
-
-      // console.log(images);
 
       var getFileBlob = function (url, cb) {
         // console.log(url, cb);
@@ -991,14 +987,16 @@ export class Chat {
   
   
   /*Fetch all networks nearby latLng with in 100Yards*/
-  public getCustomAreaNetworks(latLng:any){	
+  public getCustomAreaNetworks(params:any = null){	
+    let offset = params && params.offset ? params.offset : 0;
 	let data: any = {
-      post_code: latLng.zipCode,
-      lat: latLng.lat,
-      lng: latLng.lng,
-	  offset: 0,
+      post_code: params.zipCode,
+      lat: params.lat,
+      lng: params.lng,
+	  offset: offset,
 	  limit: 50
     };
+	
 	let seq = this.api.get('messages/nearby_search', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
@@ -1015,12 +1013,12 @@ export class Chat {
   /*Fetch all replies for particular message*/
   public getAllMessageReplies(messageId:number){	
 	//http://18.188.223.201:3000/api/v1/messages/768/reply/messages 
-	let offset : number = this.postMessages && this.postMessages.length > 1 ? this.postMessages.length-1 : 0;
-	let data: any = {
-		limit : 15, 
-		offset :  offset
-	}
-	let seq = this.api.get('messages/'+messageId+'/reply/messages',data).share();
+	// let offset : number = params.offset ? params.offset : 0;
+	// let data: any = {
+		// limit : 15, 
+		// offset :  offset
+	// }
+	let seq = this.api.get('messages/'+messageId+'/reply/messages').share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }

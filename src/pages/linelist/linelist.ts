@@ -496,9 +496,10 @@ export class LinePage {
             let images = [];
             let messageParams: any = {};
             let message: any = {};
-
-            if(this.slideAvatarPrvd.sliderPosition == 'left' && this.storage.get('slider_position')=='left'){
-                publicUser=true;
+			
+			this.saveNetworkName();
+            if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
+                publicUser=true; 
             }else{
                 publicUser=false;
             }
@@ -511,7 +512,7 @@ export class LinePage {
 			// alert('editMessage : '+this.editPostId)
 			this.storage.set('edit-post','');
             messageParams = {
-				messageId:this.editPostId ? this.editPostId : 0,
+				messageId:this.editPostId ? this.editPostId : null,
                 text: emoji ?  emoji : this.txtIn.value,
                 text_with_links: emoji ?  emoji : this.txtIn.value,
                 user_id: this.user ? this.user.id : 0,
@@ -528,7 +529,7 @@ export class LinePage {
                 expire_date: this.postTimerObj.expireDate ? this.postTimerObj.expireDate : null,
                 timestamp: Math.floor(new Date().getTime()/1000)
             };
-
+			
             if (params) Object.assign(messageParams, params);
 
             message = Object.assign(message, messageParams);
@@ -624,6 +625,7 @@ export class LinePage {
 					}
 				}
 			}).catch(err => {
+				console.log('err: '+JSON.stringify(err));
 				this.toolsPrvd.hideLoader();
 			});
 		
@@ -1242,28 +1244,31 @@ export class LinePage {
     }
 
     public goBackOnLanding(event:any):void {
-        this.cameraPrvd.takenPictures=[];
-        if (this.cameraPrvd.takenPictures.length == 0) {
-            this.chatPrvd.mainLineBtn.setState('normal');
-            this.chatPrvd.appendLineContainer.setState('off');
-            if (this.txtIn.value.trim().length == 0)
-                this.chatPrvd.postBtn.setState(false);
-            setTimeout(() => {
-                this.chatPrvd.appendLineContainer.hide();
-            }, chatAnim/2);
-        }
-        this.chatPrvd.isLandingPage = true;
-        this.chatPrvd.postMessages = [];
-        this.chatPrvd.isCleared = true;
-        this.setting.isNewlineScope=false;
-        this.canRefresh=true;
-        this.refreshChat();
-        this.app.getRootNav().setRoot(ChatPage);
+		if(this.editPostId > 0){
+			this.storage.set('edit-post','');
+			this.navCtrl.popTo(this.navCtrl.getByIndex(this.navCtrl.length() - 4));
+		}else{
+			this.cameraPrvd.takenPictures=[];
+			if (this.cameraPrvd.takenPictures.length == 0) {
+				this.chatPrvd.mainLineBtn.setState('normal');
+				this.chatPrvd.appendLineContainer.setState('off');
+				if (this.txtIn.value.trim().length == 0)
+					this.chatPrvd.postBtn.setState(false);
+				setTimeout(() => {
+					this.chatPrvd.appendLineContainer.hide();
+				}, chatAnim/2);
+			}
+			this.chatPrvd.isLandingPage = true;
+			this.chatPrvd.postMessages = [];
+			this.chatPrvd.isCleared = true;
+			this.setting.isNewlineScope=false;
+			this.canRefresh=true;
+			this.refreshChat();
+			this.app.getRootNav().setRoot(ChatPage);
+		}
     }
 
     private onEnter():void {
-        console.log('%c [CHAT] ionViewDidEnter ', 'background: #1287a8;color: #ffffff');
-
         this.toolsPrvd.showLoader();
         this.chatPrvd.isMessagesVisible = false;
         this.chatPrvd.loadedImages = 0;
@@ -1283,7 +1288,7 @@ export class LinePage {
         });
 
         this.events.subscribe('message:received', res => {
-            console.log('message:received res:', res);
+           
             if (res.messageReceived && this.chatPrvd.isCleared) {
                 this.refreshChat();
             }
@@ -1315,25 +1320,25 @@ export class LinePage {
         }
 
         if(this.user.role_name=='Temporary gathering' && this.slideAvatarPrvd.sliderPosition == 'right'){
-            this.toggleTopSlider('timer')
+            this.toggleTopSlider('timer');
         }
     }
 
     ionViewDidEnter() {
-        console.log("I m in linelist ionViewDidEnter() ::::");
-		this.setProfileData();
-        this.storage.set('slider_position', 'right');
-        this.slideAvatarPrvd.setSliderPosition('right');
-		this.editPostId = this.storage.get('edit-post');
-		// alert(this.editPostId+": this.editPostId");
-		
+        this.editPostId = this.storage.get('edit-post');
 		if(this.editPostId > 0){
 			this.chatPrvd.getMessageIDDetails(this.editPostId).subscribe(res => {
 				this.editMessage = res.message;
-				this.lineTitle = this.editMessage.text_with_links; 
+				this.lineTitle = this.editMessage.text_with_links; 				
+				this.setProfileData();
 			}); 				
+		}else{
+			this.setProfileData();
 		}
 		
+		/* this.storage.set('slider_position', 'right');
+		this.slideAvatarPrvd.setSliderPosition('right'); */
+				
         this.onEnter();
         if (this.chatPrvd.bgState.getState() == 'stretched') {
             this.toggleChatOptions();
@@ -1395,8 +1400,14 @@ export class LinePage {
     }
 
     setProfileData() {
-        this.profile.userName = this.user.role_name;
-        this.profile.userDescription = this.user.role_description;
+		console.log("Edit Message:::: ",this.editMessage);
+		if(this.editPostId > 0 && this.editMessage){
+			this.profile.userName = this.editMessage.role_name;
+		}else{
+			this.profile.userName = this.user.role_name;
+			this.profile.userDescription = this.user.role_description;
+		}
+			
     }
 
     ionViewWillLeave() {

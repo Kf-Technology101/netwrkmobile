@@ -362,7 +362,7 @@ page-network-no {
       }
     }
     &.netwrk-content,
-    &.white-undercover {
+	&.white-undercover {
       background: color($colors, white);
     }
     &.black-undercover {
@@ -801,12 +801,14 @@ page-network-no {
   }
 
   .content {
+	background: transparent !important;
+    position: absolute;
+    top: 0;
+  
     &.lobby-content {
       margin-top: 90px;
     }
-    position: absolute;
-    top: 0;
-    background: transparent !important;
+		 
     .refresher-pulling-icon,
     .refresher-refreshing-icon {
       padding: 5px;
@@ -1766,4 +1768,34 @@ page-chat{
 }
 .center{
 	text-align: center;
+}
+
+.gm-style .gm-style-iw{
+    font-weight: 500;
+}
+.gm-style .gm-style-iw-c{
+	top: 14px;
+	background: transparent !important;
+	box-shadow: none;
+}
+.gm-style .gm-style-iw-t::after{
+	display:none;
+	background: transparent !important;
+}
+.gm-ui-hover-effect{
+	display:none !important;
+}
+
+.gm-style .gm-style-iw-c .gm-style-iw-d::-webkit-scrollbar-thumb{
+	background: transparent !important;
+	border: none !important;
+}
+
+.gm-style .gm-style-iw-d{
+	overflow: auto !important
+}	
+
+.gm-style-iw-d div{
+	color: #6885A8;
+    font-size: 14px;
 }

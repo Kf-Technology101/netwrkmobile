@@ -27,10 +27,10 @@ import { UpgradeAdapter } from '@angular/upgrade';
 
 
 export class MyApp {
-
+	
     rootPage:any = LogInPage;
 
-   @ViewChild(Nav) navChild:Nav;
+    @ViewChild(Nav) navChild:Nav;
 	
     constructor(
         public platform: Platform,
@@ -59,7 +59,23 @@ export class MyApp {
         });
 		
 		this.platform.ready().then(() => {
-			this.subscribeRoutes();
+			this.deeplinks.routeWithNavController(this.navChild, {
+				'/login': LogInPage,
+				'/landing/:messagePermalink': ChatPage      
+			}).subscribe((match) => {
+				if(match.$args){
+					// this.toolsPrvd.showToast('messagePermalink: '+JSON.stringify(match.$args));
+					this.toolsPrvd.showLoader();				
+					this.storage.set('parameterData', match.$args);
+				}
+				this.getLogin();
+				this.getSimInfo();
+			}, (nomatch) => { 
+				// this.storage.set('parameterData', '{"messagePermalink":947}');
+				// this.toolsPrvd.showToast('no match subscribeRoutes');
+			},() => {
+				// this.toolsPrvd.showToast('empty match subscribeRoutes');
+			});
 		});
        
 
@@ -154,30 +170,9 @@ export class MyApp {
 
     private getSimInfo() {
         this.sim.getSimInfo().then(info => {
-                this.storage.set('country_code', info.countryCode);
-            },
-            err => console.error('Unable to get sim info: ', err));
+				this.storage.set('country_code', info.countryCode);
+			},
+			err => console.error('Unable to get sim info: ', err));
     }
-	
-	private subscribeRoutes(){
-		this.deeplinks.routeWithNavController(this.navChild, {
-			'/login': LogInPage,
-			'/landing/:messagePermalink': ChatPage      
-		}).subscribe((match) => {
-			console.log('match subscribeRoutes');
-			if(match.$args){
-				this.toolsPrvd.showLoader();				
-				this.storage.set('parameterData', match.$args);
-			}
-			this.getLogin();
-			this.getSimInfo();
-		}, (nomatch) => { 
-			// console.log('no match subscribeRoutes');
-			this.subscribeRoutes();
-		},() => {
-			// console.log('empty match subscribeRoutes');
-		});
-	}
-	
 	 
 }

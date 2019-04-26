@@ -1,5 +1,5 @@
 import { Component, ViewChild, NgZone, ElementRef } from '@angular/core';
-import { NavController, NavParams, Slides, Content, Platform, AlertController } from 'ionic-angular';
+import { NavController, NavParams, Slides, Content, Platform, AlertController, App } from 'ionic-angular';
 
 import { Keyboard } from '@ionic-native/keyboard';
 import { CameraPreview } from '@ionic-native/camera-preview';
@@ -24,6 +24,7 @@ import { Api } from '../../providers/api';
 import { ReportService } from '../../providers/reportservice';
 import { VideoService } from '../../providers/videoservice';
 import { LocalStorage } from '../../providers/local-storage';
+import { Settings } from '../../providers/settings';
 
 import { Toggleable } from '../../includes/toggleable';
 // Animations
@@ -91,7 +92,10 @@ export class ProfilePage {
     public cameraPrvd: Camera,
     public report: ReportService,
     public videoservice: VideoService,
-	public storage: LocalStorage
+	public storage: LocalStorage,
+	public settings: Settings,
+	public app: App
+	
   ) {
     this.loadConstructor();
   }
@@ -239,8 +243,6 @@ export class ProfilePage {
       this.socialPrvd.connect.instagram = this.socialPrvd.getInstagramData();
       this.socialPrvd.connect.twitter = this.socialPrvd.getTwitterData();
       this.socialPrvd.connect.snapchat = false;
-
-      console.log(this.socialPrvd.connect.facebook);
     }
 
   private goToHoldScreen():void {
@@ -250,8 +252,9 @@ export class ProfilePage {
   private goBack():void {
       this.chatPrvd.postMessages=[];
       this.chatPrvd.isCleared = true;
-      this.toolsPrvd.popPage();
-
+	  this.settings.isNewlineScope=false;
+	  this.settings.isCreateLine=false;
+	  this.app.getRootNav().setRoot(ChatPage);
   }
 
   private toggleProfilePageAnimation(state:boolean):void {
@@ -291,7 +294,7 @@ export class ProfilePage {
   }
 
   doInfinite(scroll):void {
-    this.showMessages(this.undercoverPrvd.isUndercover).then(res => {
+	this.showMessages(this.undercoverPrvd.isUndercover).then(res => {
       if (res == 'ok') scroll.complete();
     }, err => scroll.complete());
   }
@@ -350,8 +353,6 @@ export class ProfilePage {
         public: this.profileTypePublic
       };
 
-      console.log('[Profile](showMessages) params:', params);
-
       if (this.ownProfile) {
         params.public = this.slideAvatarPrvd.sliderPosition == 'right' ? false : true;
       } else {
@@ -359,7 +360,6 @@ export class ProfilePage {
       }
 
       let mesReq = this.chatPrvd.getMessagesByUserId(params).subscribe(res => {
-        console.log('[getMessagesByUserId] res:', res);
         if (res) {
           if (res.messages && res.messages.length == 0) this.postLoaded = true;
           if (params.offset == 0) this.posts = [];
@@ -373,7 +373,6 @@ export class ProfilePage {
           resolve('ok');
         }
       }, err => {
-        console.error('[getMessagesByUserId] err', err);
         this.postLoading = false;
         this.toolsPrvd.hideLoader();
         mesReq.unsubscribe();

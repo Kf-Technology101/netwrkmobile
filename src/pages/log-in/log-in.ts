@@ -1,7 +1,5 @@
-
-
 import { Component,ViewChild, ElementRef } from '@angular/core';
-import { IonicPage, NavController, NavParams,Events,AlertController } from 'ionic-angular';
+import { NavController, NavParams,Events,AlertController } from 'ionic-angular';
 
 // Pages
 import { SignUpPage } from '../sign-up/sign-up';
@@ -30,7 +28,7 @@ import {scaleMainBtn,toggleFade,
 // Custom classes
 import { Toggleable } from '../../includes/toggleable';
 
-@IonicPage()
+
 @Component({
     selector: 'page-log-in',
     templateUrl: 'log-in.html',

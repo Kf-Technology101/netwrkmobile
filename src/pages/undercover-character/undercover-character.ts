@@ -15,6 +15,7 @@ import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Auth } from '../../providers/auth';
 
+
 import { heroes } from '../../includes/heroes';
 import { heroesLines } from '../../includes/heroesLines';
 import * as moment from 'moment';
@@ -83,12 +84,19 @@ export class UndercoverCharacterPage {
   }
 
   private goBack() {
-	this.storage.set('edit-post','');
-    this.toolsPrvd.popPage();
+	if(this.storage.get('edit-post')){
+		this.storage.set('edit-post','');
+		this.navCtrl.popTo(this.navCtrl.getByIndex(this.navCtrl.length() - 3));
+		// this.toolsPrvd.popPage();
+	}else{
+		this.toolsPrvd.popPage();
+	}
+	
+	// this.navCtrl.popToRoot();
   }
+  
   private getPersons() {
     let age = moment().diff(this.user.date_of_birthday, 'years');
-    console.log('[UndercoverCharacterPage][getPersons] age ', age);
     if (age >= 13 && age < 20) {
       age = 13;
     } else if (age >= 20 && age < 40) {
@@ -96,23 +104,24 @@ export class UndercoverCharacterPage {
     } else {
       age = 40;
     }
-
-    if(this.settings.isCreateLine){
-        this.persons.push(heroes.default);
+	
+	if(this.settings.isCreateLine){
+		this.persons.push(heroes.default);
         for (let i = 0; i < heroes[age].length; i++) {
             this.persons.push(heroes[age][i]);
         }
     }else{
-        this.persons.push(heroesLines.default);
+		this.persons.push(heroesLines.default);
         for (let i = 0; i < heroesLines[age].length; i++) {
             this.persons.push(heroesLines[age][i]);
         }
     }
-
-    let defaultHero = this.persons[0];
+	
+	let defaultHero = this.persons[0];
     let secondHero = this.persons[1];
-    this.persons[0] = secondHero;
+	this.persons[0] = secondHero;
     this.persons[1] = defaultHero;
+	
     console.log('characters:', this.persons);
   }
 

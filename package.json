@@ -58,7 +58,7 @@
     "cordova-base64-to-gallery": "^4.1.3",
     "cordova-plugin-add-swift-support": "^1.7.2",
     "cordova-plugin-android-permissions": "^1.0.0",
-    "cordova-plugin-background-mode": "~0.7.2",
+    "cordova-plugin-background-mode": "^0.7.2",
     "cordova-plugin-camera-preview": "^0.9.0",
     "cordova-plugin-compat": "^1.2.0",
     "cordova-plugin-contacts": "^3.0.1",
@@ -71,7 +71,6 @@
     "cordova-plugin-http": "^1.2.0",
     "cordova-plugin-inappbrowser": "^3.0.0",
     "cordova-plugin-ionic-keyboard": "^2.0.5",
-    "cordova-plugin-ionic-webview": "^1.1.19",
     "cordova-plugin-nativegeocoder": "~3.1.3",
     "cordova-plugin-network-information": "^2.0.1",
     "cordova-plugin-sim": "^1.3.3",
@@ -104,7 +103,6 @@
       "cordova-plugin-whitelist": {},
       "cordova-plugin-device": {},
       "cordova-plugin-splashscreen": {},
-      "cordova-plugin-ionic-webview": {},
       "cordova-plugin-ionic-keyboard": {},
       "cordova-plugin-file": {},
       "cordova-plugin-geolocation": {},
@@ -157,8 +155,11 @@
       "phonegap-plugin-push": {
         "SENDER_ID": "650336583017"
       },
-      "cordova-plugin-background-mode": {}
+      "cordova-plugin-background-mode": {},
+      "cordova-plugin-ionic-webview": {}
     },
-    "platforms": []
+    "platforms": [
+      "ios"
+    ]
   }
 }

@@ -989,12 +989,13 @@ export class Chat {
   /*Fetch all networks nearby latLng with in 100Yards*/
   public getCustomAreaNetworks(params:any = null){	
     let offset = params && params.offset ? params.offset : 0;
+    let limit = params && params.limit ? params.limit : 50;
 	let data: any = {
       post_code: params.zipCode,
       lat: params.lat,
       lng: params.lng,
 	  offset: offset,
-	  limit: 50
+	  limit: limit 
     };
 	
 	let seq = this.api.get('messages/nearby_search', data).share();

@@ -3,7 +3,7 @@
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat && !chatPrvd.areaLobby }">
 
   
-  <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover' && !chatPrvd.areaLobby">
+  <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover' && !chatPrvd.areaLobby && !netwrkFeed">
   <!--<ion-toolbar>-->
     <div class="drag-container" [@sliderState]="topSlider.getState()">
       <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">
@@ -34,7 +34,6 @@
 
   </ion-toolbar>
 
-    
   
   <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state" class="post-lock">
     <button ion-button class="send-request-btn" *ngIf="!postUnlockData.password" (click)="sendLineAccessRequest(postUnlockData.id)">
@@ -91,7 +90,7 @@
 
   
   <!--Area Header-->
-  <div *ngIf="!isUndercover || !chatPrvd.areaLobby && chatPrvd.getState() == 'area'" class="netwrk-header">
+  <div *ngIf="!isUndercover && !netwrkFeed || !chatPrvd.areaLobby && chatPrvd.getState() == 'area' && !netwrkFeed" class="netwrk-header">
     <ion-toolbar class="area-head">
         <img class="ic user-icon" src="assets/images/sun_icon.png" (click)="goToLegendaryList()" style="float:left;width:34px;height:34px;">
 
@@ -192,11 +191,11 @@
 
 	
 	
-	</ion-header>
+</ion-header>
 
 
 <!--Lobby Header-->
-<ion-header *ngIf="chatPrvd.isLobbyChat && !chatPrvd.areaLobby" class="lobby-header">
+<ion-header *ngIf="(chatPrvd.isLobbyChat || netwrkFeed) && !chatPrvd.areaLobby" class="lobby-header">
   
 	<ion-toolbar>
       <ion-slides slidesPerView="5" class="netwrk-slider">
@@ -212,7 +211,7 @@
       </ion-slides>
     </ion-toolbar>
 
-    <ion-toolbar  class="area-head">
+    <ion-toolbar class="area-head">
           <div ion-text color="bk" class="lines-subhead-tip">
               <span class="subhead-container">
                 <div class="flex-ch netwrk-name">
@@ -223,10 +222,17 @@
                         {{ chatPrvd.currentLobbyMessage.user.name }}
                     </span>
                 </div>
+				<div class="flex-ch netwrk-feed-btn">
+                    <button ion-button class="netwrk-icon" (click)="getNetwrkFeedLines()">
+                        <img class="netwrk-img" src="assets/icon/netwrk-chat.svg">
+                    </button>
+                </div>
                 <div class="flex-ch">
                     <span class="lobby-icon"></span>  <span class="netwrk-users"> {{chatPrvd.currentLobbyMessage.points}} </span>
                 </div>
               </span>
+			 
+		
           </div>
     </ion-toolbar>
 	
@@ -236,9 +242,9 @@
 <ion-content has-main-btn has-main-btn-label no-bounce scroll="true" (ionScroll)="processOnScroll($event)" (ionScrollEnd)="listenForScrollEnd($event)" 
   [ngClass] = "{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': chatPrvd.getState() == 'area', 'lobby-content': chatPrvd.isLobbyChat && !chatPrvd.areaLobby, 'white-undercover': isUndercover &&
   (chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': chatPrvd.getState() == 'undercover'}"
-  [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin, 'position':contentPosition}" class="my-content" *ngIf="!settings.isNewlineScope" >
+  [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin, 'position':contentPosition,'margin-top':contentMarginTop}" class="my-content" *ngIf="!settings.isNewlineScope" >
 
-  <ion-refresher (ionRefresh)="refreshChat($event)">
+  <ion-refresher (ionRefresh)="refreshChat($event)" *ngIf="!netwrkFeed">
     <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
   </ion-refresher>
 
@@ -417,7 +423,7 @@
 
         <p class="message-item message-container" (click)="openReplyLobby(message)" >
 
-            <span class="location" *ngIf="message.place_name && message.messageable_type=='Network' && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat" (click)="normalizeMainBtn($event); viewLineLocation(message)">
+            <span class="location" *ngIf="message.place_name && message.messageable_type=='Network' && !chatPrvd.areaLobby && (!chatPrvd.isLobbyChat || netwrkFeed) " (click)="normalizeMainBtn($event); viewLineLocation(message)">
                 <ng-container >
                     {{ message.place_name }}
                 </ng-container>
@@ -523,15 +529,15 @@
         </p>
 
         <ng-container>
-            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message, user.id, $event);getGoodStuff('pinnedStuff'); " [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="chatPrvd.areaLobby && !message.locked_by_user || chatPrvd.isLobbyChat && !message.locked_by_user || chatPrvd.getState() == 'area' && !message.locked_by_user"  (press)="openFeedbackModal(message, i)">
+            <button class="feedback-button" (tap)="feedbackService.toggleLikes(message, user.id, $event);getGoodStuff('pinnedStuff'); " [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="chatPrvd.areaLobby && !message.locked_by_user || (chatPrvd.isLobbyChat && !netwrkFeed) && !message.locked_by_user || chatPrvd.getState() == 'area' && !message.locked_by_user"  (press)="openFeedbackModal(message, i)">
                 <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
             </button>
 
-            <button ion-button class="" color="bk" item-end (click)="followNearByNetwork(message,i)" [ngClass]="{ 'feedback-follow' : message.is_followed, 'feedback-unfollow' : !message.is_followed }"  *ngIf="user.id != message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && chatPrvd.getState() != 'area'">
+            <button ion-button class="" color="bk" item-end (click)="followNearByNetwork(message,i)" [ngClass]="{ 'feedback-follow' : message.is_followed, 'feedback-unfollow' : !message.is_followed }"  *ngIf="user.id != message.user_id && !chatPrvd.areaLobby && (!chatPrvd.isLobbyChat || netwrkFeed) && chatPrvd.getState() != 'area'">
                 <ion-icon ios="ios-add" md="md-add"></ion-icon>
             </button>
 			
-            <button ion-button class="feedback-setting-button" color="bk" item-end (tap)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat && message.messageable_type=='Network'">
+            <button ion-button class="feedback-setting-button" color="bk" item-end (tap)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && (!chatPrvd.isLobbyChat || netwrkFeed) && message.messageable_type=='Network'">
                 <ion-icon ios="ios-settings" md="md-settings"></ion-icon>
             </button>
 
@@ -737,7 +743,7 @@
   </button>
 
 
-  <button class="netwrk-button" (click)="loadMaps(); eventClickTrigger(); toggleTopSlider('address');" *ngIf="isUndercover && !chatPrvd.isLobbyChat && !settings.isNewlineScope && chatPrvd.getState() == 'undercover'">
+  <button class="netwrk-button" (click)="loadMaps(); eventClickTrigger(); toggleTopSlider('address');" *ngIf="isUndercover && !chatPrvd.isLobbyChat && !settings.isNewlineScope && chatPrvd.getState() == 'undercover' && !netwrkFeed">
       <img src="assets/icon/wifi.png"/>
   </button>
 

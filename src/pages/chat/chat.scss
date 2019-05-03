@@ -101,7 +101,8 @@ page-chat,page-hold {
     width: 100%;
     background: transparent;
     height: 84px;
-
+	padding-top: 15px;
+	
     ion-toolbar {
       padding: 0;
       .toolbar-content {
@@ -136,7 +137,17 @@ page-chat,page-hold {
           margin: 10px 5px;
         }
       }
-    }
+	  .netwrk-feed-btn{
+		.netwrk-icon{
+			top: -16px !important; 
+		}
+	  }
+	  
+	  &.area-head{
+		height:63px;
+	  }
+	}
+	
 
     .toolbar {
 //      border-bottom: 1px solid color($colors, bk);
@@ -1444,7 +1455,7 @@ page-network-no {
     }
     .subhead-container {
       display: flex;
-      width: 150px;
+      width: 170px;
       border-radius: 20px;
       border: 1px solid color($colors, bk);
       margin: auto;

@@ -76,6 +76,12 @@ export class NetwrklistPage {
 	  console.log('[Netwrk List Page]');
       this.user = this.authPrvd.getAuthData();
       this.places.displayNearRoutes=false;
+	  this.gpsPrvd.getMyZipCode();
+	  let loc = {
+		  lat : parseFloat(this.gpsPrvd.coords.lat),
+		  lng : parseFloat(this.gpsPrvd.coords.lng)
+	  }
+	  this.storage.set('custom_coordinates',loc);	  
   }
 
     ionViewDidEnter() {
@@ -186,4 +192,16 @@ export class NetwrklistPage {
           }
       });
   }
+  
+  public openLineLobby(message:any){
+	  if(this.user.id != message.user_id && message.locked_by_user){
+		 console.log('Private Line...') 
+	  }else{
+		this.toolsPrvd.showLoader();
+		this.storage.set('parameterData', '{"messagePermalink":'+message.id+'}');
+		this.chatPrvd.isCleared = true;
+        this.app.getRootNav().setRoot(ChatPage);
+	  }
+  }
+  
 }

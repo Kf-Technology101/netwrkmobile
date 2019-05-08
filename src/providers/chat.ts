@@ -290,7 +290,7 @@ export class Chat {
     } else console.error('[handleUserChatJoinRequest] Lobby object does not contain {id} property');
   }
 
-  public openLobbyForPinned(message:any):Promise<any> {
+  public openLobbyForPinned(message:any,getMessagesOnly:boolean = false):Promise<any> {
     return new Promise ((resolve, reject) => {
 		this.gps.coords.lat = parseFloat(message.lat);
 		this.gps.coords.lng = parseFloat(message.lng);
@@ -318,21 +318,28 @@ export class Chat {
                 }
             }
 			console.log('this.postMessages:::',this.postMessages);
-            this.currentLobby.id = res.room_id;
-            this.currentLobbyMessage = message;
-            this.startLobbySocket(res.room_id);
-            this.getLocationLobbyUsers(message.id).subscribe(res => {
-              if (res && res.users && res.host_id) {
-                this.currentLobby.users = res.users;
-                this.currentLobby.hostId = res.host_id;
-                this.currentLobby.isAddButtonAvailable = !this.isCurrentUserBelongsToChat(this.currentLobby.users);
-                resolve();
-              } else {
-                reject('[getLocationLobbyUsers] Server returned no users or host_id');
-              }
-            }, err => {
-              console.error(err);
-              reject(err); });
+			if(!getMessagesOnly){
+				
+				this.currentLobby.id = res.room_id;
+				this.currentLobbyMessage = message;
+				this.startLobbySocket(res.room_id);
+				
+				this.getLocationLobbyUsers(message.id).subscribe(res => {
+				  if (res && res.users && res.host_id) {
+					this.currentLobby.users = res.users;
+					this.currentLobby.hostId = res.host_id;
+					this.currentLobby.isAddButtonAvailable = !this.isCurrentUserBelongsToChat(this.currentLobby.users);
+					resolve();
+				  } else {
+					reject('[getLocationLobbyUsers] Server returned no users or host_id');
+				  }
+			
+				}, err => {
+				  console.error(err);
+				  reject(err); });
+			}else{
+				resolve();
+			}
           } else {
             reject('[getLocationLobby] no res or res.messages');
           }
@@ -483,8 +490,6 @@ export class Chat {
       params.message.lng = this.gps.coords.lng; 
 
       if (params.room_id) params.message.network_id = null;
-
-      console.info('[sendMessage] params:', params);
 
       if (data.images && data.images.length > 0) {
         // this.tools.showLoader();

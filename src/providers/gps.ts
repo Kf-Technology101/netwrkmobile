@@ -98,21 +98,20 @@ export class Gps {
 
   public getMyZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
-
-        let options: GeolocationOptions = {
+		let options: GeolocationOptions = {
             timeout: 10000,
             enableHighAccuracy: true,
             maximumAge: 3000
         }
 
       if(this.watch) {
-        this.coords.lat = null;
-        this.coords.lng = null;
         this.watch.unsubscribe();
       }
-
+	   
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
-        if (resp.coords) {
+		if (resp.coords) {
+		  this.coords.lat = null;
+		  this.coords.lng = null;
           if (!this.coords.lat && !this.coords.lng) {
               if (this.loc.isCustomCoordAvaliable()) {
                   this.coords = this.loc.getCoordObject();
@@ -127,8 +126,22 @@ export class Gps {
                   this.getZipCode();
               }, 60000);
           }
-        } else reject();
-      }, err => {
+        } else{
+			if(this.localStorage.get('custom_coordinates')){
+				let strorageLocation = this.localStorage.get('custom_coordinates');
+				this.coords.lat = parseFloat(strorageLocation.lat);
+                this.coords.lng = parseFloat(strorageLocation.lng);
+				this.getZipCode().then(zip => {
+                  resolve({zip_code: zip});
+				}).catch(err => reject(err));
+			}else{
+			 this.getZipCode().then(zip => {
+				resolve({ zip_code: zip });
+			 }).catch(err => reject(err));
+			}
+		}
+      }, err => { 
+		  console.log('geolocation.watchPosition::------',err);
           this.getZipCode().then(zip => {
               resolve({ zip_code: zip });
           }).catch(err => reject(err));
@@ -195,10 +208,9 @@ export class Gps {
 
   public getZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (this.coords.lat && this.coords.lng) {
-        console.log('my lat:', this.coords.lat, 'my lng:', this.coords.lng);
+	  if (this.coords.lat && this.coords.lng) {
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
-          console.log('[my Location] res:', res);
+          
             let zipCode: any = this.parseGoogleAddress(res.results);
 
             this.loc.saveCurrentLocation({
@@ -208,7 +220,6 @@ export class Gps {
                 zip:<number> zipCode
             });
 
-            // console.log('zipCode:', zipCode);
             if (this.localStorage.get('chat_zip_code') === null) {
                 this.localStorage.set('chat_zip_code', zipCode);
             }

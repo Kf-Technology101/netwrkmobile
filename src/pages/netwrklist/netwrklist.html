@@ -43,7 +43,7 @@
 
     <div class="chat-container visible">
        <div class="visible item-line" *ngFor="let message of netwrkLineList; let i = index" >
-	   {{message.id}}
+	   
             <ng-container *ngIf="user.id != message.user_id && !locked_by_user">
                 <img *ngIf="message.user" [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
                 <img *ngIf="!message.user" [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">

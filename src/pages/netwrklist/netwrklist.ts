@@ -55,7 +55,8 @@ export class NetwrklistPage {
   public isUndercover: boolean;
   public user: any = {};
   public netwrkLineList: any = [];
-
+  public isProcessing: boolean;
+  
   constructor(
     private viewCtrl: ViewController,
     private api: Api,
@@ -73,19 +74,20 @@ export class NetwrklistPage {
     public authPrvd: Auth,
     elRef: ElementRef
   ) {
-	  console.log('[Netwrk List Page]');
       this.user = this.authPrvd.getAuthData();
       this.places.displayNearRoutes=false;
+	  this.storage.rm('local_coordinates');
 	  this.gpsPrvd.getMyZipCode();
 	  let loc = {
 		  lat : parseFloat(this.gpsPrvd.coords.lat),
 		  lng : parseFloat(this.gpsPrvd.coords.lng)
 	  }
-	  this.storage.set('custom_coordinates',loc);	  
+	  this.storage.set('local_coordinates',loc);	  
   }
 
     ionViewDidEnter() {
         this.toolsPrvd.showLoader();
+		this.isProcessing = true;
         this.getAndUpdateUndercoverMessages()
 		 this.toolsPrvd.hideLoader();
     }
@@ -94,6 +96,7 @@ export class NetwrklistPage {
 		console.log('[netwrkLineList]'+this.netwrkLineList);
         this.chatPrvd.getNearByMessages(this.netwrkLineList, null, false).subscribe(res => {
             this.netwrkLineList=res.messages;
+			this.isProcessing = false;
         }, err => {
             this.toolsPrvd.hideLoader();
         });
@@ -124,17 +127,19 @@ export class NetwrklistPage {
     }
 
     public resetFilter():void {
-		console.log(this.chatPrvd.holdFilter);
-		this.toolsPrvd.showLoader();
-        if(this.chatPrvd.holdFilter){
-            this.chatPrvd.holdFilter=false;
-            this.getAndUpdateUndercoverMessages();
-			this.toolsPrvd.hideLoader();
-        }else{
-            this.chatPrvd.holdFilter=true;
-            this.getAndUpdateUndercoverMessages();
-			this.toolsPrvd.hideLoader();
-        }
+		if(!this.isProcessing){
+			this.isProcessing = true;
+			this.toolsPrvd.showLoader();
+			if(this.chatPrvd.holdFilter){
+				this.chatPrvd.holdFilter=false;
+				this.getAndUpdateUndercoverMessages();
+				this.toolsPrvd.hideLoader();
+			}else{
+				this.chatPrvd.holdFilter=true;
+				this.getAndUpdateUndercoverMessages();
+				this.toolsPrvd.hideLoader();
+			}
+		}
     }
 
     public followNearByNetwork(message) {

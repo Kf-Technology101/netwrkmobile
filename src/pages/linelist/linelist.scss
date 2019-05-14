@@ -84,6 +84,13 @@ page-linelist,page-netwrklist {
     &.header::after {
       background: none;
     }
+	
+	.error {
+		color: red;
+		float: left;
+		margin-left: 24px;
+		margin-bottom: 5px;
+	}
 
     .toolbar-background {
       border: none;

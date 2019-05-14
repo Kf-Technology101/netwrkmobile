@@ -111,6 +111,7 @@ export class LinePage {
   @HostBinding('class') colorClass = 'transparent-background';
 
     public isUndercover: boolean;
+    public noErrors: boolean = true;
     public map: any;
 
   @ViewChild(Content) content: Content;
@@ -487,15 +488,20 @@ export class LinePage {
     }
 
     public inputOnFocus():void {
-        if (!this.chatPrvd.isLobbyChat) this.setDefaultTimer();
+		if (!this.chatPrvd.isLobbyChat) this.setDefaultTimer();
     }
 
-    private postMessage(emoji?: string, params?: any):void {
+    private postMessage(emoji?: string, params?: any) {
         try {
 			let publicUser: boolean;
             let images = [];
             let messageParams: any = {};
             let message: any = {};
+			
+			if(this.user.role_name=='Private network' && (!this.postLockData.password || !this.postLockData.hint)){
+				this.noErrors = false;
+				return false;
+			}
 			
 			this.saveNetworkName();
             if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
@@ -503,7 +509,8 @@ export class LinePage {
             }else{
                 publicUser=false;
             }
-
+// alert(this.slideAvatarPrvd.sliderPosition);
+// return false;
             if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
 
             if (params && params.social && !this.chatPrvd.isLobbyChat)
@@ -780,8 +787,15 @@ export class LinePage {
         return a[container];
     }
 
-    private hideTopSlider(container:string):void {
+    private hideTopSlider(container:string) {
         let cont = this.getTopSlider(container);
+		if(container == 'lock'){
+			if(!this.postLockData.password || !this.postLockData.hint){
+				this.noErrors = false;
+				return false;
+			}
+		}
+		
         if (cont && cont.isVisible()) {
             cont.setState('slideUp');
             this.activeTopForm = null;
@@ -797,7 +811,7 @@ export class LinePage {
         this.postLockData[type] = event.target.value.trim();
     }
 
-    private toggleTopSlider(container:string):void {
+    private toggleTopSlider(container:string) {
         this.inputOnFocus();
         //if (this.plt.is('ios'))
         //    this.keyboard.show();
@@ -806,10 +820,17 @@ export class LinePage {
         //   this.toolsPrvd.showToast('What do you want to hang?');
         //   return;
         // }
-        console.log('ACTIVE TOP SLIDER:', this.activeTopForm);
+		
         let cont = this.getTopSlider(container);
-        if (this.activeTopForm)
-            this.hideTopSlider(this.activeTopForm);
+        if (this.activeTopForm){
+			if(!this.postLockData.password || !this.postLockData.hint){
+				this.noErrors = false;
+				return false;
+			}else{
+				this.noErrors = true;
+				this.hideTopSlider(this.activeTopForm);
+			}
+		}
 
         if (cont.isVisible()) {
             cont.setState('slideUp');
@@ -1315,10 +1336,10 @@ export class LinePage {
 
         this.user = this.authPrvd.getAuthData();
 
-        if(this.user.role_name=='Private network' && this.slideAvatarPrvd.sliderPosition == 'right'){
-            this.toggleTopSlider('lock');
+        if(this.user.role_name=='Private network'){
+			this.toggleTopSlider('lock');
         }
-
+		
         if(this.user.role_name=='Temporary gathering' && this.slideAvatarPrvd.sliderPosition == 'right'){
             this.toggleTopSlider('timer');
         }

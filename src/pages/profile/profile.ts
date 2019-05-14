@@ -6,7 +6,7 @@ import { CameraPreview } from '@ionic-native/camera-preview';
 
 // Pages
 import { ProfileSettingPage } from '../profile-setting/profile-setting';
-import { HoldScreenPage } from '../../pages/hold-screen/hold-screen';
+import { HoldScreenPage } from '../hold-screen/hold-screen';
 import { NetwrklistPage } from '../netwrklist/netwrklist';
 import { ChatPage } from '../chat/chat';
 

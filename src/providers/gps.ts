@@ -50,8 +50,8 @@ export class Gps {
 
   public getNetwrk(zipCode: number): any {
     let seq = this.api.get('networks', { post_code: zipCode }).share();
-    let seqMap = seq.map(res => res.json());
-    return seqMap;
+	let seqMap = seq.map(res => res.json());
+	return seqMap;
   }
 
   public createNetwrk(zipCode: number):any {
@@ -109,6 +109,7 @@ export class Gps {
       }
 	   
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
+		console.log('geolocation.watchPosition::: ',resp);
 		if (resp.coords) {
 		  this.coords.lat = null;
 		  this.coords.lng = null;
@@ -127,8 +128,8 @@ export class Gps {
               }, 60000);
           }
         } else{
-			if(this.localStorage.get('custom_coordinates')){
-				let strorageLocation = this.localStorage.get('custom_coordinates');
+			if(this.localStorage.get('local_coordinates')){
+				let strorageLocation = this.localStorage.get('local_coordinates');
 				this.coords.lat = parseFloat(strorageLocation.lat);
                 this.coords.lng = parseFloat(strorageLocation.lng);
 				this.getZipCode().then(zip => {

@@ -84,7 +84,7 @@ export class Chat {
   public currentLobbyMessage:any;
 
   public allowUndercoverUpdate:boolean = true;
- 
+  public request_type: any = null;
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -157,7 +157,6 @@ export class Chat {
   public detectNetwork():any {
     return new Promise((resolve, reject) => {
       this.gps.getNetwrk(this.localStorage.get('chat_zip_code')).subscribe(res => {
-        console.log('(detectNetwork) res:', res);
         resolve(res);
       }, err => {
         console.error(err);
@@ -470,6 +469,7 @@ export class Chat {
 
   public sendMessage(data: any):any {
     return new Promise((resolve, reject) => {
+		console.log("Send Message");
 		let params:any;
 	    if(this.currentLobbyMessage != undefined && this.currentLobbyMessage.messageable_type == 'Room'){
 			params = {
@@ -489,10 +489,13 @@ export class Chat {
       params.message.lat = this.gps.coords.lat;
       params.message.lng = this.gps.coords.lng; 
 
-      if (params.room_id) params.message.network_id = null;
-
+	  if (params.room_id) params.message.network_id = null;
+	  if(this.request_type != '' || this.request_type != null){
+		params.message.message_type = this.request_type;
+	  }
+	  this.request_type = null;
+			 
       if (data.images && data.images.length > 0) {
-        // this.tools.showLoader();
         this.sendMessageWithImage(params, data.images).then(res => {
           console.log('[sendMessageWithImage] res:', res);
           resolve(res);
@@ -503,7 +506,7 @@ export class Chat {
           resolve(res);
         }, err => reject(err));
       }
-    })
+    });
   }
 
   public lockMessage(lock:any):any {
@@ -994,15 +997,16 @@ export class Chat {
   /*Fetch all networks nearby latLng with in 100Yards*/
   public getCustomAreaNetworks(params:any = null){	
     let offset = params && params.offset ? params.offset : 0;
-    let limit = params && params.limit ? params.limit : 50;
+    let limit = params && params.limit ? params.limit : 100;
 	let data: any = {
-      post_code: params.zipCode,
+      post_code: params.post_code,
       lat: params.lat,
       lng: params.lng,
+	  message_type: params && params.message_type?params.message_type:'',
 	  offset: offset,
 	  limit: limit 
     };
-	
+	 
 	let seq = this.api.get('messages/nearby_search', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;

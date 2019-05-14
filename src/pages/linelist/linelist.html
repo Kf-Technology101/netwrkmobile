@@ -68,10 +68,16 @@
                 <ion-input type="password" placeholder="Password" name="password"
                 [(ngModel)]="postLockData.password" required></ion-input>
             </ion-item>
+			<div class="error" *ngIf="!noErrors && !postLockData.password"> 
+				Password is required.
+			</div>
             <ion-item>
                 <ion-input type="text" placeholder="Hint" name="hint"
                 [(ngModel)]="postLockData.hint" required></ion-input>
             </ion-item>
+			<div class="error" *ngIf="!noErrors && !postLockData.hint"> 
+				Hint is required.
+			</div>
             <button ion-button type="submit" class="submit" *ngIf="postLockData.password && postLockData.hint">Lock it</button>
         </form>
     </ion-toolbar>

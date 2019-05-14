@@ -21,7 +21,7 @@
       </div>
     </div>
 
-    <button *ngIf="chatPrvd.postMessages.length == 0 && !chatPrvd.postBtn.state"
+    <button *ngIf="chatPrvd.postMessages.length == 0 && !chatPrvd.postBtn.state && !settings.isNewlineScope"
             class="side refresh-btn top-icon" (tap)="refreshChat();initLpMap()"
             [hidden]="!canRefresh" ion-button>
       <ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>
@@ -29,7 +29,7 @@
 
     <button ion-button class="side clear-btn" (tap)="clearMessages(chatPrvd.postMessages)"
             *ngIf="chatPrvd.postMessages.length > 0 && !chatPrvd.isLobbyChat">
-      Clear
+      Clear 
     </button>
 
   </ion-toolbar>
@@ -115,9 +115,15 @@
                 </div>
            </span>
         </div>
-
-        <button ion-button class="side clear-btn legendary-icon" (tap)="clearMessages(chatPrvd.postMessages)" *ngIf="!chatPrvd.areaLobby">
-           Clear
+		
+		<button *ngIf="chatPrvd.postMessages.length == 0 && !chatPrvd.postBtn.state"
+            class="side refresh-btn top-icon" (tap)="refreshChat();initLpMap()"
+            [hidden]="!canRefresh" ion-button>
+			<ion-icon ios="ios-refresh-circle" md="ios-refresh-circle"></ion-icon>
+		</button>
+	
+        <button ion-button class="side clear-btn legendary-icon" (tap)="clearMessages(chatPrvd.postMessages)" *ngIf="chatPrvd.postMessages.length > 0 && !chatPrvd.areaLobby">
+           Clear 
         </button>
     </ion-toolbar>
   </div>
@@ -153,7 +159,8 @@
                         <span class="message-date" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">{{ message.dateStr }}</span>
 
                         <span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
-                            <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post">
+                            <!-- <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post"> -->
+							<a *ngIf="message.post_url" href="#" (click)="openLinkInBrowser(message)" class="open-post" >	
                                 <ion-icon ios="ios-open-outline" md="ios-open-outline"></ion-icon>
                             </a>
                         </span>
@@ -326,7 +333,8 @@
           <span class="message-date">{{ message.dateStr }}</span>
 
           <span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
-            <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post">
+            <!-- <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post"> -->
+			<a *ngIf="message.post_url" href="#" (click)="openLinkInBrowser(message)" class="open-post" >	
               <ion-icon ios="ios-open-outline" md="ios-open-outline"></ion-icon>
             </a>
           </span>
@@ -384,6 +392,7 @@
         </span>
       </div>
     </div>
+	
     <div class="message 789" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
 	  <div *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' && (message.is_followed || message.user_id == user.id || message.user_id != user.id) && message.message_type !='ACCESS_REQUEST' && !chatPrvd.isLobbyChat|| chatPrvd.isLobbyChat && !message.has_expired && isUndercover && (message.message_type !='ACCESS_REQUEST' && message.messageable_type !='Network' || message.isMain) || !chatPrvd.isLobbyChat && chatPrvd.areaLobby && message.message_type !='ACCESS_REQUEST' && !message.line_locked_by_user && chatPrvd.getState() == 'area' || chatPrvd.getState() == 'area' && message.undercover && !message.has_expired && message.message_type !='ACCESS_REQUEST' && !message.line_locked_by_user && !chatPrvd.isLobbyChat">
         
@@ -463,7 +472,8 @@
 			  </span> 
 
               <span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
-                <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post">
+                <!-- <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post"> -->
+				<a *ngIf="message.post_url" href="#" (click)="openLinkInBrowser(message)" class="open-post" >	
                   <ion-icon ios="ios-open-outline" md="ios-open-outline"></ion-icon>
                 </a>
               </span>
@@ -581,7 +591,8 @@
 			<span class="message-date" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">{{ message.dateStr }}</span>
 
 			<span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
-				<a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post">
+				<!-- <a *ngIf="message.post_url" href="{{ message.post_url }}" class="open-post" target="_blank"> -->
+				<a *ngIf="message.post_url" href="#" (click)="openLinkInBrowser(message)" class="open-post" >				
 					<ion-icon ios="ios-open-outline" md="ios-open-outline"></ion-icon>
 				</a>
 			</span>
@@ -609,7 +620,7 @@
   </div>
 
   <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>	
   </ion-infinite-scroll>
 </ion-content>
 

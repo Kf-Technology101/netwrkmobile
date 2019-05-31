@@ -379,17 +379,21 @@ export class ChatPage implements DoCheck {
     public feedbackService: FeedbackService,
 	public iab: InAppBrowser
   ) {
-	  
-      this.user = this.authPrvd.getAuthData();
-      this.chatPrvd.isLandingPage = true;
-      this.undercoverPrvd.setUndercover(true);
-      this.isUndercover=true;
-	  this.pageNav=true;
-      this.pageNavLobby=true;
-      plt.ready().then(() => {
-          this.registerDevice();
-      });
-	  this.initMap();
+	  if(this.storage.get('new_signUp')){
+		this.storage.rm('new_signUp');
+		this.toolsPrvd.pushPage(HoldScreenPage);
+	  }else{
+		  this.user = this.authPrvd.getAuthData();
+		  this.chatPrvd.isLandingPage = true;
+		  this.undercoverPrvd.setUndercover(true);
+		  this.isUndercover=true;
+		  this.pageNav=true;
+		  this.pageNavLobby=true;
+		  plt.ready().then(() => {
+			  this.registerDevice();
+		  });
+		  this.initMap();
+	  }
   }
 
   public registerDevice() {
@@ -1400,6 +1404,7 @@ export class ChatPage implements DoCheck {
 			  }else if(this.isReplyMode){ 
 				res.notification_type="new_reply"; 
 			  }
+			 
 			  this.chatPrvd.sendNotification(res).subscribe(notificationRes => {
                 console.log('Notification Res', notificationRes);
               }, err => console.error(err));
@@ -1509,49 +1514,50 @@ export class ChatPage implements DoCheck {
   }
 
   private openFeedbackModal(messageData: any, mIndex: number):void {
-	  
-    this.toolsPrvd.showLoader();
-	
-    this.chatPrvd.sendFeedback(messageData, mIndex).then(res => {
-      res['isUndercover'] = this.isUndercover;
-      res['message'] = messageData;
-      let feedbackModal = this.modalCtrl.create(FeedbackModal,res);
-      setTimeout(() => {
-        feedbackModal.present();
+	if(messageData.messageable_type != "Network"){
+		this.toolsPrvd.showLoader();
 		
-      }, chatAnim/2);
-      feedbackModal.onDidDismiss(data => {
-        this.setMainBtnStateRelativeToEvents();
-        if (data) {
-          if (data.like) {
-            this.chatPrvd.postMessages[mIndex].likes_count = data.like.total;
-            this.chatPrvd.postMessages[mIndex].like_by_user = data.like.isActive;
-          }
-          if (data.legendary) {
-            this.chatPrvd.postMessages[mIndex].legendary_count = data.legendary.total;
-            this.chatPrvd.postMessages[mIndex].legendary_by_user = data.legendary.isActive;
-          }
-          if (data.isBlocked) {
-            for (let i = 0; i < this.chatPrvd.postMessages.length; i++) {
-              if (this.chatPrvd.postMessages[i].id == messageData.id) {
-                this.chatPrvd.postMessages = this.chatPrvd.postMessages.splice(i, 1);
-                break;
-              }
-            }
-            switch(this.chatPrvd.getState()) {
-              case 'undercover':
-                this.messagesInterval = true;
-                clearTimeout(this.messIntObject);
-                this.startMessageUpdateTimer();
-                break;
-              case 'area':
-                this.updateMessages(false);
-                break;
-            }
-          }
-        } else console.warn('[likeClose] Error, no data returned');
-      });
-    })
+		this.chatPrvd.sendFeedback(messageData, mIndex).then(res => {
+		  res['isUndercover'] = this.isUndercover;
+		  res['message'] = messageData;
+		  let feedbackModal = this.modalCtrl.create(FeedbackModal,res);
+		  setTimeout(() => {
+			feedbackModal.present();
+			
+		  }, chatAnim/2);
+		  feedbackModal.onDidDismiss(data => {
+			this.setMainBtnStateRelativeToEvents();
+			if (data) {
+			  if (data.like) {
+				this.chatPrvd.postMessages[mIndex].likes_count = data.like.total;
+				this.chatPrvd.postMessages[mIndex].like_by_user = data.like.isActive;
+			  }
+			  if (data.legendary) {
+				this.chatPrvd.postMessages[mIndex].legendary_count = data.legendary.total;
+				this.chatPrvd.postMessages[mIndex].legendary_by_user = data.legendary.isActive;
+			  }
+			  if (data.isBlocked) {
+				for (let i = 0; i < this.chatPrvd.postMessages.length; i++) {
+				  if (this.chatPrvd.postMessages[i].id == messageData.id) {
+					this.chatPrvd.postMessages = this.chatPrvd.postMessages.splice(i, 1);
+					break;
+				  }
+				}
+				switch(this.chatPrvd.getState()) {
+				  case 'undercover':
+					this.messagesInterval = true;
+					clearTimeout(this.messIntObject);
+					this.startMessageUpdateTimer();
+					break;
+				  case 'area':
+					this.updateMessages(false);
+					break;
+				}
+			  }
+			} else console.warn('[likeClose] Error, no data returned');
+		  });
+		})
+	}
   }
 
   private goToLegendaryList():void {
@@ -2114,6 +2120,7 @@ export class ChatPage implements DoCheck {
   private getAndUpdateUndercoverMessages() {	  
       if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
           this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
+			  console.log(res.messages);
               if (res) {
 				  if (res.messages && res.messages.length > 0) {
                       for (let i in this.chatPrvd.postMessages) {
@@ -3607,7 +3614,7 @@ export class ChatPage implements DoCheck {
 				let loc:any = {
 					lat: parseFloat(marker.message.lat),
 					lng: parseFloat(marker.message.lng),
-					place_name: marker.message.text,
+					place_name: marker.message.place_name,
 					zipcode: parseInt(marker.message.post_code)
 				};	
 				if(!self.flgEditPost){					
@@ -3765,6 +3772,24 @@ export class ChatPage implements DoCheck {
 	}
 	this.map.fitBounds(bounds);       // auto-zoom
 	this.map.panToBounds(bounds);     // auto-center
+  }
+  
+  public loadImage(message:any){
+	if(message.user){
+		switch(message.messageable_type){		
+			case 'Network':
+				return message.avatar_url;
+			break;
+			case 'Room':
+				return message.public ? message.user.avatar_url : message.user.hero_avatar_url;
+			break;
+			case 'Reply':
+				return message.public ? message.user.avatar_url : message.user.hero_avatar_url;
+			break;
+		}
+	}else if(!message.user){
+		return toolsPrvd.defaultAvatar;
+	}
   }
 
 }

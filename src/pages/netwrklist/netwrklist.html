@@ -45,8 +45,10 @@
        <div class="visible item-line" *ngFor="let message of netwrkLineList; let i = index" >
 	   
             <ng-container *ngIf="user.id != message.user_id && !locked_by_user">
-                <img *ngIf="message.user" [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
-                <img *ngIf="!message.user" [src]="toolsPrvd.defaultAvatar" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
+                <img *ngIf="message.user" [src]="message.avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
+				
+                <img *ngIf="!message.user" [src]="message.avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)"> 
+				<!-- [src]= toolsPrvd.defaultAvatar -->
 
                 <p class="message-container">
                     <span class="" [ngClass]="{ 'isFollowed' : message.is_followed }">
@@ -65,10 +67,10 @@
 
                     <ng-container class="username" *ngIf="message.user">
                         <div (click)="openLineLobby(message)" *ngIf="message.public">
-                            {{ message.user.name }}
+                            {{ message.title }}
                         </div >
                         <div (click)="openLineLobby(message)" *ngIf="!message.public">
-                            {{ message.user.role_name }}
+                            {{ message.role_name }}
                         </div>
                     </ng-container>
 

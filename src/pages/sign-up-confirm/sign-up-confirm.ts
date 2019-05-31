@@ -52,8 +52,6 @@ export class SignUpConfirmPage {
   }
 
   doSignUp() {
-    console.log('data', this.auth.registerData);
-    console.log('sms', this.confirmCode);
     this.tools.showLoader();
     if (this.confirmCode == this.auth.confirmCode &&
         this.termsAgreement) {
@@ -61,7 +59,6 @@ export class SignUpConfirmPage {
         .map(res => res.json())
         .subscribe(resp => {
           this.tools.hideLoader();
-          console.log(resp);
           this.tools.pushPage(SignUpFacebookPage);
         }, err => {
           this.tools.hideLoader();

@@ -8,7 +8,6 @@ import { FeedbackService } from "../../providers/feedback.service";
 // Pages
 import { SignUpPage } from '../sign-up/sign-up';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
-import { SignUpFacebookPage } from '../sign-up-facebook/sign-up-facebook';
 import { HoldScreenPage } from '../hold-screen/hold-screen';
 
 
@@ -35,7 +34,7 @@ import { Gps } from '../../providers/gps';
   selector: 'page-sign-up-facebook',
   templateUrl: 'sign-up-facebook.html'
 })
-export class SignUpFacebookPage {
+export class SignUpFacebookPage { 
 
   constructor(
     public events: Events,
@@ -47,9 +46,6 @@ export class SignUpFacebookPage {
     private storage: LocalStorage,
     private alertCtrl: AlertController,
     private gps: Gps,
-  
-  
-  
     public navCtrl: NavController,
     public navParams: NavParams,
     public socialPrvd: Social,
@@ -82,6 +78,7 @@ export class SignUpFacebookPage {
           // ###################################################################
 
           this.toolsPrvd.showToast('Facebook successfully connected');
+		  this.storage.set('new_signUp', true);
           this.toolsPrvd.pushPage(ChatPage);
         }, err => {
           console.log(err);
@@ -93,6 +90,7 @@ export class SignUpFacebookPage {
 
 
   public skipConnectToFacebook() {
+	  this.storage.set('new_signUp', true);
       this.toolsPrvd.pushPage(ChatPage);
   }
 

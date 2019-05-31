@@ -191,8 +191,7 @@ ion-app {
       height: 100%;
       .city-bg {
         position: absolute;
-        background: url('../assets/images/city-bg_c_tw.png') no-repeat left,
-                    url('../assets/images/waves_test.gif');
+        //background: url('../assets/images/city-bg_c_tw.png') no-repeat left, //url('../assets/images/waves_test.gif');        
         background-size: cover, 70px;
         background-position-y: 0px;
         width: 100%;

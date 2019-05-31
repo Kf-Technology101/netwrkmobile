@@ -61,26 +61,33 @@ export class UndercoverCharacterPage {
   }
 
   choosePerson(avatar) {
+	  console.log('Line avatar goes here::::: ',avatar);
+	  console.log(this.settings.isCreateLine);
      this.activePerson.name=avatar.name;
      this.activePerson.imageUrl=avatar.imageUrl;
      this.activePerson.description=avatar.description;
-
-    this.undercoverPrvd.setPerson(this.activePerson).then(data => {
-      if (this.storage.get('first_time_hero') === null) {
-        this.firstTimeHero = false;
-        this.storage.set('first_time_hero', this.firstTimeHero);
-      }
-        if(this.settings.isCreateLine){
-            this.settings.isCreateLine=false;
-            this.toolsPrvd.pushPage(LinePage);
-        }else{
-            this.toolsPrvd.pushPage(ChatPage, {
-                action: 'undercover'
-            });
-        }
-    }, err => {
-      this.settings.isCreateLine=false;
-    });
+	 if(this.settings.isCreateLine){
+		this.settings.isCreateLine = false;
+		this.settings.lineAvatar = this.activePerson;
+		if(avatar.name == "Public network"){
+			console.log('pub');
+			this.slideAvatarPrvd.setSliderPosition('left');
+		}else{
+			console.log('pri');
+			this.slideAvatarPrvd.setSliderPosition('right');
+		}
+		console.log(this.slideAvatarPrvd.sliderPosition);
+		this.toolsPrvd.pushPage(LinePage);
+	 }else{
+		this.undercoverPrvd.setPerson(this.activePerson).then(data => {
+		  if (this.storage.get('first_time_hero') === null) {
+			this.firstTimeHero = false;
+			this.storage.set('first_time_hero', this.firstTimeHero);
+		  }
+		}, err => {
+		  this.settings.isCreateLine=false;
+		});
+	 }
   }
 
   private goBack() {

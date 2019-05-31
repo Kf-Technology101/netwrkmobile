@@ -71,7 +71,7 @@ export class MyApp {
 				this.getLogin();
 				this.getSimInfo();
 			}, (nomatch) => { 
-				// this.storage.set('parameterData', '{"messagePermalink":947}');
+				// this.storage.set('parameterData', '{"messagePermalink":50}');
 				// this.toolsPrvd.showToast('no match subscribeRoutes');
 			},() => {
 				// this.toolsPrvd.showToast('empty match subscribeRoutes');

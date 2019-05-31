@@ -149,7 +149,7 @@
                     <p class="message-item">
                         <span class="username" *ngIf="message.user" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">
                             <ng-container *ngIf="message.public">
-                                {{ message.user.name }}
+                                {{ message.title }}
                             </ng-container>
                             <ng-container *ngIf="!message.public">
                                 {{ message.role_name }}
@@ -284,21 +284,10 @@
     <div class="message 456" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
       <div class="message-container {{message.undercover}}" *ngIf="!message.social && !chatPrvd.areaLobby && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.user_id==user.id || (chatPrvd.getState() == 'area' || !isUndercover) && message.messageable_type=='Network' && !message.undercover && !message.social && !chatPrvd.areaLobby && !chatPrvd.isLobbyChat" [ngClass]="{'isLobby': chatPrvd.getState() == 'area' }">
 
-		<img *ngIf="message.user && message.messageable_type=='Network'" (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar conversation"
+		<img (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
+         src="{{loadImage(message)}}" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
-
-        <img *ngIf="!message.user && message.messageable_type=='Network'" (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="toolsPrvd.defaultAvatar" class="chat-avatar conversation"
-        (error)="chatPrvd.updateAvatarUrl($event)">
-
-        <img *ngIf="!message.user && message.messageable_type=='Room'" (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="toolsPrvd.defaultAvatar" class="chat-avatar conversation"
-        (error)="chatPrvd.updateAvatarUrl($event)">
-
-        <img *ngIf="message.user && message.messageable_type=='Room'" (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar conversation"
-        (error)="chatPrvd.updateAvatarUrl($event)">
+		
 		
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover' && message.messageable_type=='Network'">1</span>
 
@@ -314,11 +303,11 @@
 
          <span class="username" *ngIf="message.user && message.messageable_type=='Network'" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">
             <ng-container *ngIf="message.public">
-            {{ message.user.name }}
-            </ng-container>
-            <ng-container *ngIf="!message.public">
-            {{ message.role_name }}
-            </ng-container>
+				{{ message.title }}
+			</ng-container>
+			<ng-container *ngIf="!message.public">
+				{{ message.role_name }}
+			</ng-container>
           </span>
 
           <span class="username" *ngIf="message.user && message.messageable_type=='Room'" (click)="openConversationMessage(message)" (tap)="openConversationMessage(message)">
@@ -326,7 +315,7 @@
             {{ message.user.name }}
             </ng-container>
             <ng-container *ngIf="!message.public">
-            {{ message.role_name }}
+            {{ message.user.role_name }}
             </ng-container>
           </span>
 
@@ -396,37 +385,12 @@
     <div class="message 789" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
 	  <div *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' && (message.is_followed || message.user_id == user.id || message.user_id != user.id) && message.message_type !='ACCESS_REQUEST' && !chatPrvd.isLobbyChat|| chatPrvd.isLobbyChat && !message.has_expired && isUndercover && (message.message_type !='ACCESS_REQUEST' && message.messageable_type !='Network' || message.isMain) || !chatPrvd.isLobbyChat && chatPrvd.areaLobby && message.message_type !='ACCESS_REQUEST' && !message.line_locked_by_user && chatPrvd.getState() == 'area' || chatPrvd.getState() == 'area' && message.undercover && !message.has_expired && message.message_type !='ACCESS_REQUEST' && !message.line_locked_by_user && !chatPrvd.isLobbyChat">
         
-		<img *ngIf="message.user && message.messageable_type=='Network'"
-        (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
-        (error)="chatPrvd.updateAvatarUrl($event)">
-
-        <img *ngIf="!message.user && message.messageable_type=='Network'"
-        (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
-        (error)="chatPrvd.updateAvatarUrl($event)">
-
-        <img *ngIf="message.user && message.messageable_type=='Room'"
-        (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
-        (error)="chatPrvd.updateAvatarUrl($event)">
-
-        <img *ngIf="!message.user && message.messageable_type=='Room'"
-        (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
+		
+		<img (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
+         src="{{loadImage(message)}}" class="chat-avatar"
         (error)="chatPrvd.updateAvatarUrl($event)">
 		
-		<img *ngIf="message.user && message.messageable_type=='Reply'"
-        (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
-        (error)="chatPrvd.updateAvatarUrl($event)">
-
-        <img *ngIf="!message.user && message.messageable_type=='Reply'"
-        (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-        [src]="toolsPrvd.defaultAvatar" class="chat-avatar"
-        (error)="chatPrvd.updateAvatarUrl($event)">
 		
-
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span> 
 
         <p class="message-item message-container" (click)="openReplyLobby(message)" >
@@ -439,7 +403,7 @@
 
              <span class="username" *ngIf="message.user && message.messageable_type=='Network'" (click)="normalizeMainBtn($event); openLobbyForPinned(message)">
                 <ng-container *ngIf="message.public">
-                {{ message.user.name }}
+                {{ message.title }}
                 </ng-container>
                 <ng-container *ngIf="!message.public">
                 {{ message.role_name }}
@@ -565,6 +529,7 @@
 	
 	  <div class="message-container false isLobby message-request" *ngIf="chatPrvd.isLobbyChat && message.message_type =='ACCESS_REQUEST' && chatPrvd.postLineMessages[0].user_id == user.id && message.deleted!=true">
 	  <!-- <div *ngIf="isParentOwnerUser(message)"> -->
+		
 		<img *ngIf="message.user" (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
 		[src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar conversation"
 		(error)="chatPrvd.updateAvatarUrl($event)">

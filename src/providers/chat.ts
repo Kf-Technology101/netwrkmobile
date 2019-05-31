@@ -502,9 +502,19 @@ export class Chat {
         }).catch(err => reject(err));
       } else {
         this.sendMessageWithoutImage(params).subscribe(res => {
-          console.log('SEND MESSAGE WITHOUT IMAGE');
-          resolve(res);
-        }, err => reject(err));
+			this.updateAvatar(res.id, data.line_avatar, null, 'avatar').then(result => {
+				res.avatar_url = result.avatar_url;
+				res.avatar_file_name = result.avatar_file_name;
+				
+				console.log('[updateAvatar] res:', res);
+				console.log('SEND MESSAGE WITHOUT IMAGE');
+				resolve(res);
+			}, error => {
+				this.tools.hideLoader();
+				console.error('updateAvatar ERROR', error);
+				reject(error);
+			});
+		}, err => reject(err));
       }
     });
   }
@@ -749,13 +759,40 @@ export class Chat {
 
   private sendMessageWithoutImage(data: any) {
     data.message.images = [];
-    // console.log('data', data);
+    console.log('data', data);
     let seq = this.api.post('messages', data).share();
     let seqMap = seq.map(res => res.json());
-
-    return seqMap;
+	return seqMap;
   }
 
+
+  public updateAvatar(id:any, files: any, data?: any, fieldName?: string) {
+    return new Promise((resolve, reject) => {
+      let xhr: XMLHttpRequest = new XMLHttpRequest();
+      let formData = this.api.createFormData(data);
+      formData.append(`message[${fieldName}]`, files[0], files[0].name);
+      formData.append(`message[id]`, id);
+      formData.append('type', 'update');
+
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            let res = JSON.parse(xhr.response);
+            resolve(res);
+          } else {
+            reject(xhr.response);
+          }
+        }
+      };
+
+      xhr.open('PUT', `${this.api.url}/messages/update_message_avatar`, true);
+	  xhr.setRequestHeader(
+                  'Authorization', this.localStorage.get('auth_data').auth_token);
+      xhr.send(formData);
+    });
+  }
+  
+  
   public updateAppendContainer() {
     let pictures = this.cameraPrvd.takenPictures;
     if (pictures && pictures.length > 0) {

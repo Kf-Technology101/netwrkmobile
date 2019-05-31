@@ -13,7 +13,6 @@ import { Chat } from '../../providers/chat';
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
-import { Settings } from '../../providers/settings';
 import { Auth } from '../../providers/auth';
 import { User } from '../../providers/user';
 
@@ -66,7 +65,6 @@ export class HoldScreenPage {
     public undercoverPrvd: UndercoverProvider,
     public toolsPrvd: Tools,
     public chatPrvd: Chat,
-    public settings: Settings,
     public zone: NgZone,
     public gpsPrvd: Gps,
     public userPrvd: User,

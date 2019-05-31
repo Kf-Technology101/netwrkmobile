@@ -202,7 +202,8 @@ export class Gps {
     let seq = this.getAddressDetail(url, {
       latlng: coords,
       sensor: true,
-      key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'
+      // key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'
+      key: 'AIzaSyCUp-DKMDieimZiJYuTQCOUK96v1PvsViQ'
     }).share();
     return seq;
   }
@@ -211,11 +212,11 @@ export class Gps {
     return new Promise((resolve, reject) => {
 	  if (this.coords.lat && this.coords.lng) {
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
-          
+          console.log('i m in getZipCode::::::: ',res);
             let zipCode: any = this.parseGoogleAddress(res.results);
 
             this.loc.saveCurrentLocation({
-                name:<string> res.results[0].formatted_address,
+                // name:<string> res.results[0].formatted_address,
                 lat:<number> this.coords.lat,
                 lng:<number> this.coords.lng,
                 zip:<number> zipCode

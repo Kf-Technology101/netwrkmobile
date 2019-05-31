@@ -15,6 +15,7 @@ export class Settings {
     public ucCameraState: string;
     public isNewlineScope=false;
     public isCreateLine=false;
+    public lineAvatar:any;
 
     constructor(
     private storage: LocalStorage,

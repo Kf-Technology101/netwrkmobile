@@ -116,7 +116,7 @@ export class LinePage {
 
   @ViewChild(Content) content: Content;
   @ViewChild('galleryCont') gCont;
-  @ViewChild('textInput') txtIn;
+  // @ViewChild('textInput') txtIn;
   @ViewChild('directions') directionCont;
   @ViewChild('mapElement') mapElement: ElementRef;
 
@@ -138,7 +138,7 @@ export class LinePage {
     ];
     private messagesInterval:boolean;
     private messIntObject:any;
-
+	public txtIn:any;
     public isSocialPostsLoaded:boolean = false;
 
     emoticX = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C'];
@@ -150,7 +150,8 @@ export class LinePage {
     contentBlock: any = undefined;
 
     public chatUsers: any = [];
-
+	public tempFiles: any = [];
+	
     public user: any;
 
     public shareCheckbox: any = {
@@ -180,6 +181,7 @@ export class LinePage {
 
     private contentPadding: string;
     private contentMargin: string;
+    private bottomMargin: string;
 
     private canRefresh: boolean = true;
     private idList: any = [];
@@ -220,6 +222,7 @@ export class LinePage {
     public editPostId: number = 0;
     public editMessage: any = null;
 	public lineTitle: string = ''
+	public lineimg: string = ''
 
     constructor(
         private viewCtrl: ViewController,
@@ -259,7 +262,7 @@ export class LinePage {
 			console.log('[Line Page]');
 			this.chatPrvd.isLandingPage = false;
 			this.user = this.authPrvd.getAuthData();
-			
+			this.bottomMargin="115px";
 		}
 
 
@@ -284,6 +287,7 @@ export class LinePage {
         this.chatPrvd.bgState.setState((this.chatPrvd.bgState.getState() == 'stretched') ? 'compressed' : 'stretched');
 
         if (this.chatPrvd.bgState.getState() == 'stretched') {
+			this.bottomMargin="65px";
             this.chatPrvd.postBtn.setState(false);
             for (let i = 0; i < this.chatPrvd.chatBtns.state.length; i++) {
                 setTimeout(() => {
@@ -291,7 +295,8 @@ export class LinePage {
                 }, chatAnim/3 + (i*50));
             }
         } else {
-            if (this.txtIn.value.trim() != '' ||
+			this.bottomMargin="115px";			
+            if (this.txtIn.trim() != '' ||
                 this.cameraPrvd.takenPictures.length > 0) {
                 this.chatPrvd.postBtn.setState(true);
             }
@@ -302,7 +307,7 @@ export class LinePage {
     }
 
     private changePlaceholderText():void {
-        this.placeholderText = 'What should people know?';
+        this.placeholderText = 'Add a description or #categories';
     }
 
     private generateEmoticons():void {
@@ -359,7 +364,6 @@ export class LinePage {
         if (!visibility) {
             if (container.hidden) {
                 this.chatPrvd.mainLineBtn.setState('moved-n-scaled');
-
                 container.show();
                 container.setState('on');
                 this.setContentPadding(true);
@@ -471,8 +475,8 @@ export class LinePage {
     private updatePost(data: any, message?:any, emoji?:any):void {
         // this.toolsPrvd.hideLoader();
         if (!emoji) {
-            this.txtIn.value = '';
-            this.setMainBtnStateRelativeToEvents();
+            this.txtIn = '';
+			this.setMainBtnStateRelativeToEvents();
             this.chatPrvd.postBtn.setState(false);
 
             if (this.postTimer.isVisible()) {
@@ -498,32 +502,42 @@ export class LinePage {
             let messageParams: any = {};
             let message: any = {};
 			
-			if(this.user.role_name=='Private network' && (!this.postLockData.password || !this.postLockData.hint)){
+			if(this.slideAvatarPrvd.sliderPosition == 'right' && (!this.postLockData.password || !this.postLockData.hint)){
 				this.noErrors = false;
 				return false;
 			}
 			
-			this.saveNetworkName();
+			if(!this.lineTitle){
+				this.noErrors = false;
+				return false;
+			}
+			 
+			// this.saveNetworkName();
+			let lineRole = '';
             if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
                 publicUser=true; 
-            }else{
+			}else{
                 publicUser=false;
-            }
-// alert(this.slideAvatarPrvd.sliderPosition);
-// return false;
+			}
+			
+			this.user = this.authPrvd.getAuthData();
+			console.log(this.user);
+
             if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
 
             if (params && params.social && !this.chatPrvd.isLobbyChat)
                 this.setDefaultTimer();
-
+			
+			let lineAvtr = this.setting.lineAvatar;
 			// alert('editMessage : '+this.editPostId)
 			this.storage.set('edit-post','');
             messageParams = {
 				messageId:this.editPostId ? this.editPostId : null,
-                text: emoji ?  emoji : this.txtIn.value,
-                text_with_links: emoji ?  emoji : this.txtIn.value,
+                text: emoji ?  emoji : this.txtIn,
+                text_with_links: emoji ?  emoji : this.txtIn,
                 user_id: this.user ? this.user.id : 0,
-                role_name: this.user.role_name,
+                role_name: lineAvtr.name,
+                title: this.lineTitle,
                 place_name: this.gpsPrvd.place_name,
                 images: emoji ? [] : images,
                 video_urls: params && params.video_urls ? params.video_urls : [],
@@ -534,7 +548,8 @@ export class LinePage {
                 password: this.postLockData.password ? this.postLockData.password : null,
                 hint: this.postLockData.hint ? this.postLockData.hint : null,
                 expire_date: this.postTimerObj.expireDate ? this.postTimerObj.expireDate : null,
-                timestamp: Math.floor(new Date().getTime()/1000)
+                timestamp: Math.floor(new Date().getTime()/1000),
+				line_avatar : this.tempFiles
             };
 			
             if (params) Object.assign(messageParams, params);
@@ -544,8 +559,10 @@ export class LinePage {
 			message.image_urls = messageParams.social_urls ? messageParams.social_urls : imageUrls;
             message.isTemporary = false;
             message.temporaryFor = 0;
-
 			this.toolsPrvd.showLoader();
+			
+			console.log(messageParams);
+			
 			this.chatPrvd.sendMessage(messageParams).then(res => {
 				message.id=res.id;
 				console.log("my res after result return");
@@ -770,7 +787,7 @@ export class LinePage {
         if (this.cameraPrvd.takenPictures.length == 0) {
             this.chatPrvd.mainLineBtn.setState('normal');
             this.chatPrvd.appendLineContainer.setState('off');
-            if (this.txtIn.value.trim().length == 0)
+            if (this.txtIn.trim().length == 0)
                 this.chatPrvd.postBtn.setState(false);
             setTimeout(() => {
                 this.chatPrvd.appendLineContainer.hide();
@@ -790,7 +807,7 @@ export class LinePage {
     private hideTopSlider(container:string) {
         let cont = this.getTopSlider(container);
 		if(container == 'lock'){
-			if(!this.postLockData.password || !this.postLockData.hint){
+			if(this.slideAvatarPrvd.sliderPosition == 'right' && (!this.postLockData.password || !this.postLockData.hint )){
 				this.noErrors = false;
 				return false;
 			}
@@ -823,7 +840,7 @@ export class LinePage {
 		
         let cont = this.getTopSlider(container);
         if (this.activeTopForm){
-			if(!this.postLockData.password || !this.postLockData.hint){
+			if(this.slideAvatarPrvd.sliderPosition == 'right' && (!this.postLockData.password || !this.postLockData.hint)){
 				this.noErrors = false;
 				return false;
 			}else{
@@ -842,6 +859,7 @@ export class LinePage {
             this.activeTopForm = container;
             cont.show();
             cont.setState('slideDown');
+			
             // if (container == 'lock' || container == 'timer') {
             setTimeout(() => {
                 this.setMainBtnStateRelativeToEvents();
@@ -1073,11 +1091,11 @@ export class LinePage {
 
     private setMainBtnStateRelativeToEvents():void {
         if (this.shareLineContainer.getState() == 'on' || this.emojiLineContainer.getState() == 'on') {
-            this.chatPrvd.mainLineBtn.setState('moved-n-scaled');
+			this.chatPrvd.mainLineBtn.setState('moved-n-scaled');
         } else if (this.chatPrvd.appendLineContainer.getState() == 'on'){
-            this.chatPrvd.mainLineBtn.setState('above_append');
+			this.chatPrvd.mainLineBtn.setState('above_append');
         } else {
-            this.chatPrvd.mainLineBtn.setState('normal');
+			this.chatPrvd.mainLineBtn.setState('normal');
         }
     }
 
@@ -1133,11 +1151,11 @@ export class LinePage {
                 if (this.chatPrvd.appendLineContainer.hidden) {
                     this.chatPrvd.mainLineBtn.setState('normal');
                 }
-                if (this.txtIn.value.trim() == '' &&
+                if (this.txtIn.trim() == '' &&
                     !this.chatPrvd.appendLineContainer.isVisible() &&
                     !this.activeTopForm) {
                     this.chatPrvd.postBtn.setState(false);
-                } else if (this.txtIn.value.trim() == '' &&
+                } else if (this.txtIn.trim() == '' &&
                     this.activeTopForm) {
                     this.chatPrvd.mainLineBtn.setState('minimised');
                 }
@@ -1270,15 +1288,6 @@ export class LinePage {
 			this.navCtrl.popTo(this.navCtrl.getByIndex(this.navCtrl.length() - 4));
 		}else{
 			this.cameraPrvd.takenPictures=[];
-			if (this.cameraPrvd.takenPictures.length == 0) {
-				this.chatPrvd.mainLineBtn.setState('normal');
-				this.chatPrvd.appendLineContainer.setState('off');
-				if (this.txtIn.value.trim().length == 0)
-					this.chatPrvd.postBtn.setState(false);
-				setTimeout(() => {
-					this.chatPrvd.appendLineContainer.hide();
-				}, chatAnim/2);
-			}
 			this.chatPrvd.isLandingPage = true;
 			this.chatPrvd.postMessages = [];
 			this.chatPrvd.isCleared = true;
@@ -1336,8 +1345,8 @@ export class LinePage {
 
         this.user = this.authPrvd.getAuthData();
 
-        if(this.user.role_name=='Private network'){
-			this.toggleTopSlider('lock');
+        if(this.slideAvatarPrvd.sliderPosition == 'right'){
+			this.toggleTopSlider('lock');			
         }
 		
         if(this.user.role_name=='Temporary gathering' && this.slideAvatarPrvd.sliderPosition == 'right'){
@@ -1419,22 +1428,57 @@ export class LinePage {
                     this.toolsPrvd.hideLoader();
                 });
     }
-
+	
+	public setLineName(){
+		console.log('setLineName');
+		if(!this.lineTitle){
+			this.noErrors = false;
+			return false;
+		}else{
+			this.noErrors = true;
+		}
+	}
+	
+	
     setProfileData() {
-		console.log("Edit Message:::: ",this.editMessage);
 		if(this.editPostId > 0 && this.editMessage){
 			this.profile.userName = this.editMessage.role_name;
+			this.lineTitle = this.editMessage.title;
 		}else{
+			this.lineTitle = '';
 			this.profile.userName = this.user.role_name;
-			this.profile.userDescription = this.user.role_description;
+			// this.profile.userDescription = this.user.role_description;
 		}
 			
     }
+	
+	
+  public filesAdded(event): void {
+    this.toolsPrvd.showLoader(); 
+    let files: FileList = (<HTMLInputElement>event.target).files;    
+    let fieldName: string = "avatar";
+    
+	console.log('linelistts files1:', files);
+	if(files.length > 0){
+		this.tempFiles = [];
+		for (let i = 0; i < files.length; i++) {
+		  this.tempFiles.push(files.item(i));
+		  let reader = new FileReader();
+		  reader.onload = e => this.lineimg = reader.result;
+		  reader.readAsDataURL(files.item(i));
+		}
+	}
+	
+	this.toolsPrvd.hideLoader();
+	console.log('linelistts filesAdded tempFiles:', this.tempFiles);    
+  }
+  
+
 
     ionViewWillLeave() {
         this.profile.saveChangesOnLeave();
         this.setProfileData();
-        this.profile.user.role_name = this.profile.userName;
+        // this.profile.user.role_name = this.profile.userName;
 
         console.log('%c [CHAT] ionViewWillLeave ', 'background: #1287a8;color: #ffffff');
         this.navParams.data = {};

@@ -202,20 +202,14 @@
                 <ion-card-content>
                   <ion-card-title>
 
-                      <img *ngIf="post.user" [src]="post.public ? post.user.avatar_url : post.user.hero_avatar_url" class="chat-avatar conversation"
+                      <img [src]="post.avatar_url" class="chat-avatar conversation"
                       (error)="chatPrvd.updateAvatarUrl($event)">
 
-                      <img *ngIf="!post.user" [src]="toolsPrvd.defaultAvatar" class="chat-avatar conversation" (error)="chatPrvd.updateAvatarUrl($event)">
-
-                      <span class="username" *ngIf="post.user">
-                          <ng-container *ngIf="!post.role_name">
-                          {{ post.user.name }}
-                          </ng-container>
-                          <ng-container *ngIf="post.role_name">
-                          {{ post.role_name }}
+                      <span class="username">
+                          <ng-container>
+                          {{ post.title}}
                           </ng-container>
                       </span>
-
 
                       <ng-container *ngIf="post.social">
                       Casted via

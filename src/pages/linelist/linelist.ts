@@ -565,9 +565,8 @@ export class LinePage {
 			
 			this.chatPrvd.sendMessage(messageParams).then(res => {
 				message.id=res.id;
-				console.log("my res after result return");
-				console.log(res);
-				
+				message.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
+				res.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
 				if ((message.text && message.text.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
 					let alert = this.alertCtrl.create({
 						subTitle: 'Share the line with your friends?',

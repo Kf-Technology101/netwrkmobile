@@ -504,6 +504,7 @@ export class ChatPage implements DoCheck {
                         this.toolsPrvd.showToast('line shared successfully ');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
 							this.coachMarkText = res.privateLineCount+" networks are now visible.";
+							
                             this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                                 console.log('getLocationLobbyUsers:', res);
                                 this.feedbackService.pointsOnJoinLine(message.id, this.user.id);
@@ -3776,20 +3777,27 @@ export class ChatPage implements DoCheck {
   
   public loadImage(message:any){
 	if(message.user){
+		let returnData:any;
 		switch(message.messageable_type){		
 			case 'Network':
-				return message.avatar_url;
+				returnData= message.avatar_url;
 			break;
 			case 'Room':
-				return message.public ? message.user.avatar_url : message.user.hero_avatar_url;
+				returnData= message.public ? message.user.avatar_url : message.user.hero_avatar_url;
 			break;
 			case 'Reply':
-				return message.public ? message.user.avatar_url : message.user.hero_avatar_url;
+				returnData= message.public ? message.user.avatar_url : message.user.hero_avatar_url;
 			break;
 		}
+		return returnData;
 	}else if(!message.user){
-		return toolsPrvd.defaultAvatar;
+		return this.toolsPrvd.defaultAvatar;
 	}
+  }
+  
+  public getVisibleNetwrks(message:any){
+	console.log(message);
+	  
   }
 
 }

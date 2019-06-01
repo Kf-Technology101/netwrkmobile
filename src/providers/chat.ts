@@ -60,6 +60,7 @@ export class Chat {
 
   public imagesToLoad:any;
   public loadedImages:any;
+  
   public scrollTimer:any = {
     timeout: null,
     interval: null
@@ -85,6 +86,8 @@ export class Chat {
 
   public allowUndercoverUpdate:boolean = true;
   public request_type: any = null;
+  public updatedLineAvatarData: any = null;
+
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -502,18 +505,18 @@ export class Chat {
         }).catch(err => reject(err));
       } else {
         this.sendMessageWithoutImage(params).subscribe(res => {
-			this.updateAvatar(res.id, data.line_avatar, null, 'avatar').then(result => {
-				res.avatar_url = result.avatar_url;
-				res.avatar_file_name = result.avatar_file_name;
-				
-				console.log('[updateAvatar] res:', res);
-				console.log('SEND MESSAGE WITHOUT IMAGE');
+			if(data.line_avatar.length > 0){
+				this.updateAvatar(res.id, data.line_avatar, null, 'avatar').then(result => {
+					this.updatedLineAvatarData = result;
+					resolve(res);
+				}, error => {
+					this.tools.hideLoader();
+					console.error('updateAvatar ERROR', error);
+					reject(error);
+				});
+			}else{
 				resolve(res);
-			}, error => {
-				this.tools.hideLoader();
-				console.error('updateAvatar ERROR', error);
-				reject(error);
-			});
+			}
 		}, err => reject(err));
       }
     });

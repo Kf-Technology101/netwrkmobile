@@ -361,6 +361,7 @@ export class ProfilePage {
 
       let mesReq = this.chatPrvd.getMessagesByUserId(params).subscribe(res => {
         if (res) {
+		  console.log(res.messages);
           if (res.messages && res.messages.length == 0) this.postLoaded = true;
           if (params.offset == 0) this.posts = [];
           for (let m of res.messages) {

@@ -106,13 +106,13 @@ export class Gps {
 
       if(this.watch) {
         this.watch.unsubscribe();
+		this.coords.lat = null;
+		this.coords.lng = null;
       }
 	   
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
 		console.log('geolocation.watchPosition::: ',resp);
-		if (resp.coords) {
-		  this.coords.lat = null;
-		  this.coords.lng = null;
+		if (resp.coords) {		  
           if (!this.coords.lat && !this.coords.lng) {
               if (this.loc.isCustomCoordAvaliable()) {
                   this.coords = this.loc.getCoordObject();

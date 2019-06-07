@@ -110,6 +110,7 @@ export class LinePage {
 
   @HostBinding('class') colorClass = 'transparent-background';
 
+    public textareaFocused: boolean = false;
     public isUndercover: boolean;
     public noErrors: boolean = true;
     public map: any;
@@ -262,7 +263,7 @@ export class LinePage {
 			console.log('[Line Page]');
 			this.chatPrvd.isLandingPage = false;
 			this.user = this.authPrvd.getAuthData();
-			this.bottomMargin="115px";
+			this.bottomMargin="27%";
 		}
 
 
@@ -282,7 +283,6 @@ export class LinePage {
     }
 
     private toggleChatOptions():void {
-
         this.chatPrvd.plusBtn.setState((this.chatPrvd.plusBtn.getState() == 'spined') ? 'default' : 'spined');
         this.chatPrvd.bgState.setState((this.chatPrvd.bgState.getState() == 'stretched') ? 'compressed' : 'stretched');
 
@@ -295,7 +295,7 @@ export class LinePage {
                 }, chatAnim/3 + (i*50));
             }
         } else {
-			this.bottomMargin="115px";			
+			this.bottomMargin="27%";			
             if (this.txtIn.trim() != '' ||
                 this.cameraPrvd.takenPictures.length > 0) {
                 this.chatPrvd.postBtn.setState(true);
@@ -491,9 +491,44 @@ export class LinePage {
         }
     }
 
+	public inputOnBlur():void {
+		this.textareaFocused = false;
+	}	
+	
     public inputOnFocus():void {
-		if (!this.chatPrvd.isLobbyChat) this.setDefaultTimer();
-    }
+		this.textareaFocused = true;
+		this.keyboard.onKeyboardShow().subscribe(res => {
+			try {
+				let scrollEl = <HTMLElement>document.querySelector('.description-box');
+				if (scrollEl && this.textareaFocused)
+					scrollEl.style.bottom = res.keyboardHeight + 'px';
+			} catch (e) {
+				// this.toolsPrvd.showToast('on-keyboard-show error');
+				console.error('on-keyboard-show error:', e);
+			}
+			
+			this.chatPrvd.mainLineBtn.setState('minimised');
+		}, err =>{
+			console.error(err);
+			// this.toolsPrvd.showToast('on-keyboard-show error 2');
+		}); 
+		
+		this.keyboard.onKeyboardHide().subscribe(res => {
+            try {
+				let scrollEl = <HTMLElement>document.querySelector('.description-box');
+				if (scrollEl)
+					scrollEl.style.bottom = '27%';
+			} catch (e) {
+				console.error('on-keyboard-hide error:', e);
+				// this.toolsPrvd.showToast('on-keyboard-hide error');
+			}
+			this.chatPrvd.mainLineBtn.setState('normal');              
+            
+		}, err =>{
+			console.error(err);
+			// this.toolsPrvd.showToast('on-keyboard-hide error 2');
+		}); 
+	}
 
     private postMessage(emoji?: string, params?: any) {
         try {
@@ -566,8 +601,8 @@ export class LinePage {
 			this.chatPrvd.sendMessage(messageParams).then(res => {
 				message.id=res.id;
 				message.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
-				res.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
-				if ((message.text && message.text.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
+				// res.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
+				if ((message.title && message.title.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
 					let alert = this.alertCtrl.create({
 						subTitle: 'Share the line with your friends?',
 						buttons: [{
@@ -696,6 +731,7 @@ export class LinePage {
         // this.toolsPrvd.showLoader();
         // this.chatPrvd.sendMessage(messageParams).then(res => {
             this.setting.isNewlineScope=false;
+			messageParams.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
             this.app.getRootNav().setRoot(ChatPage, {message:messageParams});
 			this.toolsPrvd.hideLoader();
 			// this.chatPrvd.postMessages.unshift(message);
@@ -828,7 +864,7 @@ export class LinePage {
     }
 
     private toggleTopSlider(container:string) {
-        this.inputOnFocus();
+        // this.inputOnFocus();
         //if (this.plt.is('ios'))
         //    this.keyboard.show();
         // if ((container == 'lock' || container == 'timer')
@@ -1101,11 +1137,11 @@ export class LinePage {
     private constructorLoad():Promise<any> {
         return new Promise(resolve => {
             console.log('%c [CHAT] constructorLoad ', 'background: #1287a8;color: #ffffff');
-            this.keyboard.disableScroll(true);
+            // this.keyboard.disableScroll(true);
 
             this.setCustomTransitions();
 
-            this.keyboard.onKeyboardShow().subscribe(res => {
+            /* this.keyboard.onKeyboardShow().subscribe(res => {
                 this.topSlider.setState('slideUp');
                 this.chatPrvd.postBtn.setState(true);
                 if (this.plt.is('ios')) {
@@ -1120,16 +1156,16 @@ export class LinePage {
                     } catch (e) {
                         console.error('on-keyboard-show error:', e);
                     }
-                }
+                } 
                 this.chatPrvd.mainLineBtn.setState('minimised');
                 if (!this.chatPrvd.appendLineContainer.hidden) {
                     this.chatPrvd.mainLineBtn.setState('above_append');
                 }
-            }, err => console.error(err));
+            }, err => console.error(err)); */
 
-            this.keyboard.onKeyboardHide().subscribe(res => {
+           /*  this.keyboard.onKeyboardHide().subscribe(res => {
                 this.topSlider.setState('slideDown');
-                if (this.plt.is('ios')) {
+                 if (this.plt.is('ios')) {
                     try {
                         let footerEl = <HTMLElement>document.querySelector(this.pageTag + ' .lineChatFooter');
                         let scrollEl = <HTMLElement>document.querySelector(this.pageTag + ' .scroll-content');
@@ -1143,7 +1179,7 @@ export class LinePage {
                     } catch (e) {
                         console.error('on-keyboard-hide error:', e);
                     }
-                }
+                } 
                 if (!this.chatPrvd.appendLineContainer.hidden) {
                     this.chatPrvd.mainLineBtn.setState('above_append');
                 }
@@ -1158,7 +1194,7 @@ export class LinePage {
                     this.activeTopForm) {
                     this.chatPrvd.mainLineBtn.setState('minimised');
                 }
-            }, err =>  console.error(err));
+            }, err =>  console.error(err)); */
 
             this.user = this.authPrvd.getAuthData();
             if (!this.user)
@@ -1354,6 +1390,9 @@ export class LinePage {
     }
 
     ionViewDidEnter() {
+		this.plt.ready().then(() => {
+		  this.keyboard.disableScroll(true);
+		});
         this.editPostId = this.storage.get('edit-post');
 		if(this.editPostId > 0){
 			this.chatPrvd.getMessageIDDetails(this.editPostId).subscribe(res => {

@@ -12,6 +12,7 @@ import { HoldScreenPage } from '../hold-screen/hold-screen';
 
 
 import { ChatPage } from '../chat/chat';
+import { ProfileNameImgPage } from '../profile-name-img/profile-name-img';
 
 // Providers
 import { Auth } from '../../providers/auth';
@@ -91,7 +92,7 @@ export class SignUpFacebookPage {
 
   public skipConnectToFacebook() {
 	  this.storage.set('new_signUp', true);
-      this.toolsPrvd.pushPage(ChatPage);
+      this.toolsPrvd.pushPage(ProfileNameImgPage);
   }
 
   ionViewDidLoad() {

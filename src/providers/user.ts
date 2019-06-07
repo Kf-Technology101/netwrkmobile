@@ -2,12 +2,14 @@ import { Injectable } from '@angular/core';
 
 import { Api } from './api';
 import { Auth } from './auth';
+import { LocalStorage } from './local-storage';
 
 @Injectable()
 export class User {
 
   constructor(
     private api: Api,
+	public localStorage: LocalStorage,
     private auth: Auth
   ) {}
 
@@ -35,6 +37,33 @@ export class User {
       xhr.send(formData);
     });
   }
+  
+  
+  public updateProfileNameAvatar(id:any, files: any, data?: any, fieldName?: string) {
+    return new Promise((resolve, reject) => {
+      let xhr: XMLHttpRequest = new XMLHttpRequest();
+      let formData = this.api.createFormData(null);
+      formData.append(`user[${fieldName}]`, files[0], files[0].name);
+      formData.append(`user[name]`, data.name);
+      formData.append('type', 'update');
+
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            let res = JSON.parse(xhr.response);
+            resolve(res);
+          } else {
+            reject(xhr.response);
+          }
+        }
+      };
+
+      xhr.open('PUT', `${this.api.url}/registrations/${id}`, true);
+	  xhr.setRequestHeader('Authorization', this.localStorage.get('auth_data').auth_token);
+      xhr.send(formData);
+    });
+  }
+  
 
   public getFacebookFriendProfile(friendId) {
     let seq = this.api.get(

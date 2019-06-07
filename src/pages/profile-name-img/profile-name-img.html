@@ -1,0 +1,51 @@
+<!-- <ion-header>
+
+  <ion-navbar>
+    <ion-title>profile-name-img</ion-title>
+  </ion-navbar>
+
+</ion-header> -->
+
+
+<ion-content padding>
+
+	<ion-row class="input-section" >
+		<ion-col>
+		  <ion-item class="no-style">
+			<ion-input
+			  text-center type="text" placeholder="Choose a name"
+			  [(ngModel)]="userName"
+			  [ngClass]="{'has-value' : userName}" class="userName"></ion-input>
+		  </ion-item>
+		</ion-col>
+	</ion-row>
+	
+	<ion-row class="avatar-section" >
+	  <ion-col>	
+		
+		  <div class="avatar">
+			<img [src]="lineimg" 
+			(error)="chatPrvd.updateAvatarUrl($event)">
+			<div class="add-container">
+			  <button color="bk" ion-button>
+				<ion-icon name="add"></ion-icon>
+			  </button>
+			  <input #input type="file" class="file-type" (change)="loadImage($event)">
+			</div>
+		  </div>
+		
+	  </ion-col>
+	</ion-row>
+	
+</ion-content>
+
+
+<ion-footer>
+  <button ion-button color="bk"
+	class="main-action-btn medium transparent" outline (click)="filesAdded($event)">
+	<ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
+  </button>
+</ion-footer>
+
+
+

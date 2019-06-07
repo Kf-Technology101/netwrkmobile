@@ -9,13 +9,14 @@ import { Deeplinks } from '@ionic-native/deeplinks';
 import { LogInPage } from '../pages/log-in/log-in';
 import { ChatPage } from '../pages/chat/chat';
 import { HoldScreenPage } from '../pages/hold-screen/hold-screen';
-
+ 
 // Providers
 import { Api } from '../providers/api';
 import { Auth } from '../providers/auth';
 import { Gps } from '../providers/gps';
 import { LocalStorage } from '../providers/local-storage';
 import { Tools } from '../providers/tools';
+import { Chat } from '../providers/chat';
 import { UndercoverProvider } from '../providers/undercover';
 import { PermissionsService } from '../providers/permissionservice';
 import { NetworkCheck } from '../providers/networkcheck';
@@ -48,12 +49,10 @@ export class MyApp {
         private permission: PermissionsService,
         private network: NetworkCheck,
         private push: Push,
+		private chatPrvd: Chat,
         private gps: Gps
         ) {
-
-        this.init();
-
-        platform.registerBackButtonAction(() => {
+		platform.registerBackButtonAction(() => {
             this.toolsPrvd.doBackButton();
             return true;
         });
@@ -63,26 +62,24 @@ export class MyApp {
 				'/login': LogInPage,
 				'/landing/:messagePermalink': ChatPage      
 			}).subscribe((match) => {
+				// this.toolsPrvd.showToast('matched subscribeRoutes');
 				if(match.$args){
-					// this.toolsPrvd.showToast('messagePermalink: '+JSON.stringify(match.$args));
-					this.toolsPrvd.showLoader();				
-					this.storage.set('parameterData', match.$args);
+					this.toolsPrvd.showSplashScreen();
+					this.initCheckLogin(match.$args.messagePermalink);
+					// this.storage.set('parameterData', match.$args.messagePermalink);
+				}else{
+					this.init();
 				}
-				this.getLogin();
-				this.getSimInfo();
 			}, (nomatch) => { 
-				// this.storage.set('parameterData', '{"messagePermalink":137}');
+				this.init();
+				// this.toolsPrvd.showSplashScreen(); 
+				// this.initCheckLogin(137);  
 				// this.toolsPrvd.showToast('no match subscribeRoutes');
-			},() => {
-				// this.toolsPrvd.showToast('empty match subscribeRoutes');
 			});
 		});
        
 
         platform.ready().then(() => {
-            permission.checkCameraPermissions().then(permissionOk => {
-                this.storage.set('enable_uc_camera', permissionOk ? true : false);
-            });
             this.authPrvd.removeDeviceRegistration();
             this.pushSetup();
         });
@@ -105,8 +102,9 @@ export class MyApp {
 
         const pushObject: PushObject = this.push.init(options);
         pushObject.on('notification').subscribe((notification: any) => {
-			let message  = JSON.parse(notification.additionalData.child_message);
+			this.toolsPrvd.showSplashScreen();
 			
+			let message  = JSON.parse(notification.additionalData.child_message);
 			pushObject.finish().then(e => {
 				let messageData:any;
 				messageData = {
@@ -115,9 +113,14 @@ export class MyApp {
 				
 				if (notification.additionalData.foreground){
 				}else{
-					this.toolsPrvd.showLoader();
-					this.storage.set('parameterData', messageData);
-					this.goToPage();
+					// this.toolsPrvd.showLoader();
+					// this.storage.set('parameterData', messageData);
+					// this.goToPage();
+					
+					this.initCheckLogin(message.id); 
+					/* this.chatPrvd.getMessageIDDetails(message.id).subscribe(res => {		this.app.getRootNav().setRoot(ChatPage, {message:res.message});
+					});	
+					this.toolsPrvd.hideSplashScreen();	 */				
 				} 	 
 			});
 			
@@ -130,11 +133,24 @@ export class MyApp {
     }
 
     public init = () => {
-        this.network.networkStatus();
+		this.network.networkStatus();
         this.getLogin();
         this.getSimInfo();
         this.statusBar.styleDefault();
     };
+	
+	public initCheckLogin(messageParamsId){
+		let authType = this.authPrvd.getAuthType();
+        let authData = this.authPrvd.getAuthData();
+		this.getSimInfo();
+        if (authType && authData) {
+		  this.chatPrvd.getMessageIDDetails(messageParamsId).subscribe(res => {	 
+			this.app.getRootNav().setRoot(ChatPage, {message:res.message});			
+		  });
+		}else{
+			this.toolsPrvd.hideSplashScreen();
+		}		
+	}
 
     private goToPage():void {
         this.gps.getMyZipCode().then(res => {

@@ -74,13 +74,12 @@ export class HoldScreenPage {
     private storage: LocalStorage,
     public splash: SplashScreen
   ) {
-    this.users = this.authPrvd.getAuthData();
-    this.gpsPrvd.getMyZipCode();
-
-      platform.ready().then(() => {
-          this.registerDevice();
-      });
-  }
+		this.users = this.authPrvd.getAuthData();
+		this.gpsPrvd.getMyZipCode();
+		platform.ready().then(() => {
+		  this.registerDevice();
+		});
+	}
 
     public registerDevice() {
         let params: any;

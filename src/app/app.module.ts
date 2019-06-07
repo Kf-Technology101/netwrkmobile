@@ -34,6 +34,8 @@ import { UndercoverCharacterPage } from '../pages/undercover-character/undercove
 
 import { CameraPage } from '../pages/camera/camera';
 
+import { ProfileNameImgPage } from '../pages/profile-name-img/profile-name-img';
+
 // Modals
 import { LegendaryModal } from '../modals/legendaryhistory/legendaryhistory';
 import { FeedbackShareModal } from '../modals/feedbackshare/feedbackshare';
@@ -121,7 +123,7 @@ let declarations_pages = [
   UndercoverCharacterPage,
 
   CameraPage,
-  
+  ProfileNameImgPage,
   
 	ContactListPipe,
 	EmojiFilter,
@@ -156,6 +158,7 @@ let pages = [
   UndercoverCharacterPage,
 
   CameraPage,
+  ProfileNameImgPage
   
 ];
 export function declarations() {
@@ -228,7 +231,7 @@ export function providers() {
     HttpModule,
     BrowserAnimationsModule,
     Ng2CableModule,
-    IonicModule.forRoot(MyApp),
+    IonicModule.forRoot(MyApp, { scrollAssist: false } ),
     GoogleMapsModule.forRoot({
       url: 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBjoCQlLGverzDsYq0bpYpxXO9E20FT3yI'
     })

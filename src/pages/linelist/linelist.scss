@@ -8,13 +8,18 @@ page-linelist {
     background: #302f2f;
     &.netwrk-content.content-md {
       .scroll-content {
+		position: absolute;
         margin-top: 150px !important;
-        // margin-bottom: 70px;
+        margin-bottom: 0!important;;
+		padding-bottom: 0!important;
       }
     }
     &.netwrk-content.content-ios {
       .scroll-content {
+	    position: absolute;
         margin-top: 165px!important;
+		margin-bottom: 0!important;;
+		padding-bottom: 0!important;
       }
     }
 
@@ -22,29 +27,33 @@ page-linelist {
       // margin-bottom: 70px;
 
       .scroll-content {
+	    position: absolute;
         margin-top: 10px!important;
-        margin-bottom: inherit;
+        margin-bottom: 0!important;;
+		padding-bottom: 0!important;
       }
     }
 
     .scroll-content {
+	  position: absolute;
       margin-top: 0px!important;
-      // margin-bottom: 70px;
-      padding-bottom: inherit;
+      margin-bottom: 0!important;
+      padding-bottom: 0!important;
       border-top: none;
     }
 	
 	.avatar-section {
       .avatar {
-        position: relative;
-        text-align: center;
-        height: 178px;
-        width: 178px;
-        margin: auto;
-		top: 63%;
+		position: fixed;
+		text-align: center;
+		height: 25%;
+		width: 51%;
+		margin: 0;
+		top: 20%;
 		border-radius: 100%;
-		background-color: #fff;
-        .blocked-ico {
+		left: 28%;
+		right: 10%;
+		.blocked-ico {
           position: absolute;
           bottom: 5px;
           right: 5px;
@@ -141,6 +150,9 @@ page-linelist,page-netwrklist {
 page-linelist,page-netwrklist {
 
   .header {
+	.title-container{
+		top: 5px;
+	}
     &.header::after {
       background: none;
     }
@@ -179,11 +191,10 @@ page-linelist,page-netwrklist {
     .netwrk-input input {
       margin: 6px;
       padding: 0;
-      height: 26px;
-      background: white;
-      width: 188px;
-      border-radius: 15px;
-      font-size: 16px;
+      border-radius: 100px;
+      font-size: 17px;
+	  border: 2px solid #fff;
+	  color: #fff;
     }
 
     .toolbar-content {
@@ -265,10 +276,14 @@ page-linelist,page-netwrklist {
     }
 	
 	.description-box{
-		height:113px;
 		border-radius: 10px;
 		width: 91%;
 		margin: 0 2%;
+		background: transparent;
+		bottom: 23%;
+		height: 15%;
+		border: 2px solid #fff !important;
+		position: fixed;
 		.label-ios{
 			height:100%;
 			
@@ -439,6 +454,10 @@ page-linelist,page-netwrklist {
       width: 100%;
       height: 42px;
       background: transparent;
+	  color: #fff;
+	  font-size: 18px;
+      text-align: center;
+	
       input {
         width: 100%;
         height: 42px;

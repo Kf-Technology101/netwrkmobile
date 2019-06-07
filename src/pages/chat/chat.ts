@@ -63,6 +63,7 @@ import { Gps } from '../../providers/gps';
 import { Social } from '../../providers/social';
 import { Places } from '../../providers/places';
 import { User } from '../../providers/user';
+import { PermissionsService } from '../../providers/permissionservice';
 
 //import { GeocoderProvider } from '../../providers/geocoder';
 
@@ -167,7 +168,7 @@ export class ChatPage implements DoCheck {
   postUnlock  = new Toggleable('slideUp', true);
 
   public action:any;
-  public messageParam:any;
+  public messageParam:any = null;
   public postGeocodeData:any;
 
   flipHover: boolean;
@@ -289,6 +290,7 @@ export class ChatPage implements DoCheck {
   
   public isReplyMode: boolean = false;
   public netwrkFeed: boolean = false;
+  public priNetwrkFeed: boolean = false;
   public replyMessage: any;
   
   public repliesLength:number = 0;
@@ -377,22 +379,39 @@ export class ChatPage implements DoCheck {
     public videoservice: VideoService,
     public nativeGeocoder   : NativeGeocoder,
     public feedbackService: FeedbackService,
-	public iab: InAppBrowser
+	public iab: InAppBrowser,
+	private permission: PermissionsService
   ) {
+	  console.log('Chat Page');
 	  if(this.storage.get('new_signUp')){
 		this.storage.rm('new_signUp');
 		this.toolsPrvd.pushPage(HoldScreenPage);
 	  }else{
-		  this.user = this.authPrvd.getAuthData();
-		  this.chatPrvd.isLandingPage = true;
-		  this.undercoverPrvd.setUndercover(true);
-		  this.isUndercover=true;
-		  this.pageNav=true;
-		  this.pageNavLobby=true;
-		  plt.ready().then(() => {
-			  this.registerDevice();
-		  });
-		  this.initMap();
+			  this.user = this.authPrvd.getAuthData();		
+			  this.chatPrvd.isLandingPage = true;
+			  this.undercoverPrvd.setUndercover(true);
+			  this.isUndercover=true;
+			  this.pageNav=true;
+			  this.pageNavLobby=true;
+			  plt.ready().then(() => {
+				  this.registerDevice();
+			  });		
+			  
+		  if (this.navParams.get('message')) {			  
+			this.messageParam = this.navParams.get('message');
+			this.initMap();
+			this.openLobbyForPinned(this.messageParam);
+		  }else{
+			  this.parameterData = this.storage.get('parameterData');
+			  this.initMap();
+			  if(this.parameterData){
+				this.toolsPrvd.showLoader();
+				this.chatPrvd.socketsInit();
+				this.initResponseFromGPS();
+				this.setContentPadding(false);
+				this.openLobbyForShareLink();
+			  }
+		  }
 	  }
   }
 
@@ -918,17 +937,27 @@ export class ChatPage implements DoCheck {
   }
 
   private openCamera():void {
-    this.toggleContainer(this.emojiContainer, 'hide');
-    this.toggleContainer(this.shareContainer, 'hide');
-    this.mainInput.setState('fadeOutfast');
-    setTimeout(() => {
-      this.mainInput.hide();
-      this.chatPrvd.mainBtn.setState('minimisedForCamera');
-      setTimeout(() => {
-        this.chatPrvd.mainBtn.hide();
-        this.toolsPrvd.pushPage(CameraPage);
-      }, chatAnim/2);
-    }, animSpeed.fadeIn/2);
+	this.permission.checkCameraPermissions().then(permissionOk => {
+		this.storage.set('enable_uc_camera', permissionOk ? true : false);
+		if(permissionOk){
+			this.toggleContainer(this.emojiContainer, 'hide');
+			this.toggleContainer(this.shareContainer, 'hide');
+			this.mainInput.setState('fadeOutfast');
+			setTimeout(() => {
+			  this.mainInput.hide();
+			  this.chatPrvd.mainBtn.setState('minimisedForCamera');
+			  setTimeout(() => {
+				this.chatPrvd.mainBtn.hide();
+				this.toolsPrvd.pushPage(CameraPage);
+			  }, chatAnim/2);
+			}, animSpeed.fadeIn/2);
+		}else{
+			this.toggleContainer(this.emojiContainer, 'hide');
+			this.toggleContainer(this.shareContainer, 'hide');
+		}
+	});
+	
+    
   }
 
   private setContentPadding(status):void {
@@ -1399,7 +1428,7 @@ export class ChatPage implements DoCheck {
         this.chatPrvd.sendMessage(messageParams).then(res => {
           this.hideTopSlider(this.activeTopForm);
           message.id=res.id;
-          if(this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby){	  
+          if(this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby){
               if(!this.isReplyMode){ 
 				res.notification_type="new_message"; 
 			  }else if(this.isReplyMode){ 
@@ -1777,6 +1806,8 @@ export class ChatPage implements DoCheck {
   }
 
   private goToHoldScreen():void {
+	  this.netwrkFeed = false;
+	  this.priNetwrkFeed = false;	  
       this.chatPrvd.postMessages=[];
       this.chatPrvd.isCleared = true;
       this.toolsPrvd.pushPage(NetwrklistPage);
@@ -2016,14 +2047,24 @@ export class ChatPage implements DoCheck {
   private doInfinite(ev):void {  
 	console.log('doInfinite');
 	this.loaderState.setState('on');
+	
 	if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
 	  // setTimeout(() => {	
 	  if(!this.netwrkFeed){
-		this.chatPrvd.isMainBtnDisabled = true;
-		this.refreshChat(ev).then(succ => ev.complete(), err => ev.complete());
+		  if(!this.chatPrvd.lobbyOpened){
+			this.chatPrvd.isMainBtnDisabled = true;
+			this.refreshChat(ev).then(succ => ev.complete(), err => ev.complete());
+		  }else{
+			this.loaderState.setState('off');
+			ev.complete();  
+		  }
 	  }else{
 		this.chatPrvd.isMainBtnDisabled = true;
-		this.getNetwrkFeedLines().then(succ => ev.complete(), err => ev.complete());	  
+		if(this.priNetwrkFeed){
+		  this.getVisibleNetwrks().then(succ => ev.complete(), err => ev.complete());	
+		}else{
+		  this.getNetwrkFeedLines().then(succ => ev.complete(), err => ev.complete());	  
+		}
 	  }
       // }, 500);
     }else { 
@@ -2121,16 +2162,17 @@ export class ChatPage implements DoCheck {
   private getAndUpdateUndercoverMessages() {	  
       if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
           this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
-			  console.log(res.messages);
-              if (res) {
+			  if (res) {
 				  if (res.messages && res.messages.length > 0) {
-                      for (let i in this.chatPrvd.postMessages) {
-                          for (let j in res.messages) {
-                              if (this.chatPrvd.postMessages[i].id == res.messages[j].id) {
-                                  this.chatPrvd.postMessages.splice(i, 1);
-                              }
-                          }
-                      }
+					  if(this.chatPrvd.postMessages.length > 1){
+						  for (let i in this.chatPrvd.postMessages) {
+							  for (let j in res.messages) {
+								  if (this.chatPrvd.postMessages[i].id == res.messages[j].id) {
+									  this.chatPrvd.postMessages.splice(i, 1);
+								  }
+							  }
+						  }
+					  }
                       this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
                       this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(this.chatPrvd.postMessages);
                       this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
@@ -2146,8 +2188,7 @@ export class ChatPage implements DoCheck {
           }, err => {
               this.toolsPrvd.hideLoader();
           });
-      }
-	  
+      }	  
   }
 
   private startMessageUpdateTimer() {
@@ -2359,7 +2400,7 @@ export class ChatPage implements DoCheck {
       this.textStrings.require = 'Please fill all fields';
 
       this.action = this.navParams.get('action');
-      this.messageParam = this.navParams.get('message');
+      // this.messageParam = this.navParams.get('message');
       // console.log('navParams:', this.navParams);
       // console.log('chat action:', this.action);
       if (this.action) {
@@ -2444,38 +2485,40 @@ export class ChatPage implements DoCheck {
   }
 
   ngOnInit() {
-	console.log('ngOnInit');
-    this.chatPrvd.getBlacklist().subscribe(res => {
-      if (res && res.length > 0)
-        this.chatPrvd.localStorage.set('blacklist', res);
-    }, err => console.error(err));
-
-    this.authPrvd.getSocialStatus().subscribe(res => {
-      let socialArray = [ 'fb', 'twitter', 'instagram' ];
-      for (let i = 0; i < socialArray.length; i++) {
-        if (res[socialArray[i]]) {
-          this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
-        }
-      }
-    }, err => console.error(err));
-
-
-    if (this.chatPrvd.localStorage.get('last_zip_code') === null) {
-      this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
-    } else if (this.chatPrvd.localStorage.get('last_zip_code') != this.chatPrvd.localStorage.get('chat_zip_code')) {
-      this.chatPrvd.localStorage.set('first_time_undercover', null);
-      this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
-    }
 	
-    if (this.chatPrvd.localStorage.get('first_time_undercover') === null)
-      this.chatPrvd.localStorage.set('first_time_undercover', true);
-    else if (this.chatPrvd.localStorage.get('first_time_undercover')) {
-      this.chatPrvd.localStorage.set('first_time_undercover', false);
-    }
+		console.log('ngOnInit');
+		this.chatPrvd.getBlacklist().subscribe(res => {
+		  if (res && res.length > 0)
+			this.chatPrvd.localStorage.set('blacklist', res);
+		}, err => console.error(err));
+
+		this.authPrvd.getSocialStatus().subscribe(res => {
+		  let socialArray = [ 'fb', 'twitter', 'instagram' ];
+		  for (let i = 0; i < socialArray.length; i++) {
+			if (res[socialArray[i]]) {
+			  this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
+			}
+		  }
+		}, err => console.error(err));
+
+
+		if (this.chatPrvd.localStorage.get('last_zip_code') === null) {
+		  this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
+		} else if (this.chatPrvd.localStorage.get('last_zip_code') != this.chatPrvd.localStorage.get('chat_zip_code')) {
+		  this.chatPrvd.localStorage.set('first_time_undercover', null);
+		  this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
+		}
+		
+		if (this.chatPrvd.localStorage.get('first_time_undercover') === null)
+		  this.chatPrvd.localStorage.set('first_time_undercover', true);
+		else if (this.chatPrvd.localStorage.get('first_time_undercover')) {
+		  this.chatPrvd.localStorage.set('first_time_undercover', false);
+		}
+		
+		this.constructorLoad().then(res => {
+		  this.componentLoaded = true;
+		});
 	
-    this.constructorLoad().then(res => {
-      this.componentLoaded = true;
-    });
   }
 
   private initResponseFromGPS():Promise<any> {
@@ -2562,6 +2605,7 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForLockedChecked(message:any):void {
+
 	  if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
 		  if (this.chatPrvd.bgState.getState() == 'stretched') {
               this.toggleChatOptions();
@@ -2574,15 +2618,17 @@ export class ChatPage implements DoCheck {
           this.chatPrvd.postMessages = [];
 
 		  this.netwrkFeed = false;
+		  this.priNetwrkFeed = false;
           this.settings.isNewlineScope=false;
           this.chatPrvd.currentLobbyMessage=message;
+		  this.chatPrvd.lobbyOpened = true;
           this.chatPrvd.appendContainer.hidden = true;
           this.cameraPrvd.takenPictures = [];
           this.setMainBtnStateRelativeToEvents();
           this.placeholderText = 'What would you like to say?';
  
           this.chatPrvd.openLobbyForPinned(message).then(() => {
-              if(this.chatPrvd.currentLobby.isAddButtonAvailable){
+			  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
                   this.placeholderText = 'What do you want to talk about?';
               }else{
                   this.placeholderText = 'What would you like to say?';
@@ -2596,6 +2642,7 @@ export class ChatPage implements DoCheck {
 			  this.hideTextContainer = false;
               this.initLpMap();
 			  
+			  this.toolsPrvd.hideSplashScreen();
               this.toolsPrvd.hideLoader();
 
           }, err => {
@@ -2605,6 +2652,7 @@ export class ChatPage implements DoCheck {
               this.startMessageUpdateTimer();
               this.chatPrvd.allowUndercoverUpdate = true;
 			  
+			  this.toolsPrvd.hideSplashScreen();
               this.toolsPrvd.hideLoader();
           });
      }
@@ -2624,10 +2672,14 @@ export class ChatPage implements DoCheck {
           }else  if(this.chatPrvd.getState() == 'area'){
               this.pageNavLobby=false;
           }
+		  
           if(this.user.id != message.user_id && message.locked_by_user){
 			  this.netwrkFeed = false;
-			  this.showUnlockPostForm(message.id, message.hint)
+			  this.priNetwrkFeed = false;
+			  this.showUnlockPostForm(message.id, message.hint);
+			  this.toolsPrvd.hideSplashScreen();
           }else{
+			  console.log('i m to open lobby');
 			  this.openLobbyForLockedChecked(message);
           }
       }
@@ -2799,105 +2851,115 @@ export class ChatPage implements DoCheck {
 
   public handleMainBtnClick(event:any):void {
 	  this.chatPrvd.isMainBtnDisabled = true;
-      if (this.chatPrvd.bgState.getState() == 'stretched') {
-          this.toggleChatOptions();
-      }
-      let cont = this.getTopSlider('unlock');
-      cont.setState('slideUp');
-      cont.hide();
+	    if(this.messageParam){
+		  this.messageParam = null;	
+		  this.app.getRootNav().setRoot(ChatPage);			
+		}
+		
+		this.chatPrvd.lobbyOpened = false;
 
-      let cont0 = this.getTopSlider('address');
-      cont0.setState('slideUp');
-      cont0.hide();
-	  console.log('--------------------handleMainBtnClick---------------------')
-	  this.toolsPrvd.showLoader();
-	  this.storage.rm('custom_coordinates');
-	  this.gpsPrvd.getMyZipCode().then(zip => {
-		this.storage.rm('chat_zip_code');
-		this.storage.set('chat_zip_code', zip.zip_code);
-		this.storage.rm('custom_coordinates');
-		this.initLpMap();
-		if (this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
-		  this.chatPrvd.areaLobby=false;
-		  this.chatPrvd.isCleared = true;
-		  this.canRefresh = true;
-		  
-		  if(this.txtIn != undefined){ 
-			this.txtIn.value = '';
+	  // else{
+		  if (this.chatPrvd.bgState.getState() == 'stretched') {
+			  this.toggleChatOptions();
 		  }
-		  this.chatPrvd.appendContainer.hidden = true;
-		  this.cameraPrvd.takenPictures = [];
-		  this.chatPrvd.postMessages = [];
-		  this.placeholderText = 'What do you want to talk about?';
-		  this.setMainBtnStateRelativeToEvents();
+		  let cont = this.getTopSlider('unlock');
+		  cont.setState('slideUp');
+		  cont.hide();
 
-		  if(this.pageNavLobby){
-			  this.chatPrvd.setState('undercover');
-			  this.undercoverPrvd.setUndercover(true);
-			  this.isUndercover=true;
-		  }else{
-			  this.chatPrvd.setState('area');
-			  this.undercoverPrvd.setUndercover(false);
-			  this.isUndercover=false;
-		  }
+		  let cont0 = this.getTopSlider('address');
+		  cont0.setState('slideUp');
+		  cont0.hide();
 		  
-		  this.refreshChat(false, true).then(res => {
-			  this.chatPrvd.allowUndercoverUpdate = true;
-			  this.startMessageUpdateTimer();
-			  this.chatPrvd.toggleLobbyChatMode();
-			  this.chatPrvd.isMainBtnDisabled = false;
-			  // this.initLpMap();
-			  this.toolsPrvd.hideLoader();
-		  }, err => {
-			  this.chatPrvd.isMainBtnDisabled = false;
-			  this.toolsPrvd.hideLoader();
-			  console.error(err);
-		  });
-		} else {
-		  if(this.chatPrvd.areaLobby){
+		  this.toolsPrvd.showLoader();
+		  this.storage.rm('custom_coordinates');
+		  this.gpsPrvd.getMyZipCode().then(zip => {
+			this.storage.rm('chat_zip_code');
+			this.storage.set('chat_zip_code', zip.zip_code);
+			this.storage.rm('custom_coordinates');
+			this.initLpMap();
+			if (this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
 			  this.chatPrvd.areaLobby=false;
-			  this.chatPrvd.toggleLobbyChatMode();
-			  if(this.pageNav){
-				  this.setPostTimer(0);
-				  this.chatPrvd.postMessages=[];
+			  this.chatPrvd.isCleared = true;
+			  this.canRefresh = true;
+			  
+			  if(this.txtIn != undefined){ 
+				this.txtIn.value = '';
+			  }
+			  this.chatPrvd.appendContainer.hidden = true;
+			  this.cameraPrvd.takenPictures = [];
+			  this.chatPrvd.postMessages = [];
+			  this.placeholderText = 'What do you want to talk about?';
+			  this.setMainBtnStateRelativeToEvents();
+
+			  if(this.pageNavLobby){
 				  this.chatPrvd.setState('undercover');
 				  this.undercoverPrvd.setUndercover(true);
 				  this.isUndercover=true;
-				  this.chatPrvd.alreadyScolledToBottom = false;
-				  this.runUndecoverSlider(this.pageTag);
-				  this.startMessageUpdateTimer();
-				  this.flipInput();
-				  this.changePlaceholderText();
-
-				  this.messagesInterval = true;
-				  setTimeout(() => {
-					  this.content.resize();
-				  }, 1);
-				  setTimeout(() => {
-					  this.toolsPrvd.hideLoader();
-				  }, 1000);
 			  }else{
 				  this.chatPrvd.setState('area');
 				  this.undercoverPrvd.setUndercover(false);
 				  this.isUndercover=false;
-				  this.setPostTimer(3);
-				  this.placeholderText = 'Start a local conversation...';
-				  this.chatPrvd.postMessages=[];
-				  this.getAndUpdateUndercoverMessages();
-				  this.getUsers().then(res => {});
+			  }
+			  
+			  this.refreshChat(false, true).then(res => {
+				  this.chatPrvd.allowUndercoverUpdate = true;
+				  this.startMessageUpdateTimer();
+				  this.chatPrvd.toggleLobbyChatMode();
+				  this.chatPrvd.isMainBtnDisabled = false;
+				  // this.initLpMap();
+				  this.toolsPrvd.hideLoader();
+			  }, err => {
+				  this.chatPrvd.isMainBtnDisabled = false;
+				  this.toolsPrvd.hideLoader();
+				  console.error(err);
+			  });
+			} else {
+			  if(this.chatPrvd.areaLobby){
+				  this.chatPrvd.areaLobby=false;
+				  this.chatPrvd.toggleLobbyChatMode();
+				  if(this.pageNav){
+					  this.setPostTimer(0);
+					  this.chatPrvd.postMessages=[];
+					  this.chatPrvd.setState('undercover');
+					  this.undercoverPrvd.setUndercover(true);
+					  this.isUndercover=true;
+					  this.chatPrvd.alreadyScolledToBottom = false;
+					  this.runUndecoverSlider(this.pageTag);
+					  this.startMessageUpdateTimer();
+					  this.flipInput();
+					  this.changePlaceholderText();
+
+					  this.messagesInterval = true;
+					  setTimeout(() => {
+						  this.content.resize();
+					  }, 1);
+					  setTimeout(() => {
+						  this.toolsPrvd.hideLoader();
+					  }, 1000);
+				  }else{
+					  this.chatPrvd.setState('area');
+					  this.undercoverPrvd.setUndercover(false);
+					  this.isUndercover=false;
+					  this.setPostTimer(3);
+					  this.placeholderText = 'Start a local conversation...';
+					  this.chatPrvd.postMessages=[];
+					  this.getAndUpdateUndercoverMessages();
+					  this.getUsers().then(res => {});
+					  this.toolsPrvd.hideLoader();
+				  }
+			  }else{
+				  this.chatPrvd.areaLobby=false;
+				  this.goUndercover(event);
 				  this.toolsPrvd.hideLoader();
 			  }
-		  }else{
-			  this.chatPrvd.areaLobby=false;
-			  this.goUndercover(event);
+			}
+		  
+		  },err=>{
 			  this.toolsPrvd.hideLoader();
-		  }
-		}
-	  
-	  },err=>{
-		  this.toolsPrvd.hideLoader();
-		  console.log('error');
-	  });
+			  console.log('error');
+		  });
+		  
+	  // }
 	  
   }
 
@@ -2927,7 +2989,7 @@ export class ChatPage implements DoCheck {
     this.events.subscribe('image:pushed', res => {
       this.setDefaultTimer();
     });
-	this.parameterData = this.storage.get('parameterData');
+	
 	if(!this.parameterData){
 		this.events.subscribe('message:received', res => {
 			if (res.messageReceived && this.chatPrvd.isCleared) {
@@ -2956,13 +3018,12 @@ export class ChatPage implements DoCheck {
 		  }, err => console.error(err));
 		} else if (this.chatPrvd.getState() == 'undercover'){
 			this.initLpMap();
-			this.messageParam = this.navParams.get('message');
+			// this.messageParam = this.navParams.get('message');
 			if (this.messageParam) {
-				this.openLobbyForPinned(this.messageParam);
+				// this.openLobbyForPinned(this.messageParam);
 			}else{
 				this.messagesInterval = true;	
-				this.startMessageUpdateTimer();
-				
+				this.startMessageUpdateTimer();				
 			}
 		}
 
@@ -2974,12 +3035,6 @@ export class ChatPage implements DoCheck {
 		  this.chatPrvd.updateAppendContainer();
 		}, 1);
 		
-	}else if(this.parameterData){
-		this.toolsPrvd.showLoader();
-		this.chatPrvd.socketsInit();
-		this.initResponseFromGPS();
-		this.setContentPadding(false);
-		this.openLobbyForShareLink();
 	}
 			
     
@@ -2993,11 +3048,13 @@ export class ChatPage implements DoCheck {
   }
 
   ionViewDidEnter() {
-	this.onEnter();
-    if (this.chatPrvd.bgState.getState() == 'stretched') {
-       this.toggleChatOptions();
-    }	
-    this.toolsPrvd.hideLoader();
+		console.log('ionViewDidEnter');
+		this.onEnter();
+		if (this.chatPrvd.bgState.getState() == 'stretched') {
+		   this.toggleChatOptions();
+		}	
+		this.toolsPrvd.hideLoader();
+	
   }
 
   public viewLocation(params?:any):void {
@@ -3027,37 +3084,43 @@ export class ChatPage implements DoCheck {
   }
 
   ionViewDidLoad() {
-    if (this.chatPrvd.localStorage.get('enable_uc_camera') === null) {
-      this.chatPrvd.localStorage.set('enable_uc_camera', true);
-    }
-    this.chatPrvd.messageDateTimer.enableLogMessages = true;
-    this.generateEmoticons();
-    let socialArray = ['fb', 'twitter', 'instagram'];
-    this.authPrvd.getSocialStatus().subscribe(res => {
-      console.log('get social status:',res);
-      // Go through all social networks and toggle their switch if active
-      for (let i = 0; i < socialArray.length; i++) {
-        if (res[socialArray[i]]) {
-          this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
-        }
-      }
-    }, err => console.error(err));
+	
+		console.log('ionViewDidLoad');
+		if (this.chatPrvd.localStorage.get('enable_uc_camera') === null) {
+		  this.chatPrvd.localStorage.set('enable_uc_camera', true);
+		}
+		this.chatPrvd.messageDateTimer.enableLogMessages = true;
+		this.generateEmoticons();
+		let socialArray = ['fb', 'twitter', 'instagram'];
+		this.authPrvd.getSocialStatus().subscribe(res => {
+		  console.log('get social status:',res);
+		  // Go through all social networks and toggle their switch if active
+		  for (let i = 0; i < socialArray.length; i++) {
+			if (res[socialArray[i]]) {
+			  this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
+			}
+		  }
+		}, err => console.error(err));
+	
 	
   }
  
   ionViewWillLeave() {
-    this.navParams.data = {};
-    this.componentLoaded = false;
-    this.chatPrvd.closeSockets();                                               // unsubscribe from sockets events
-    if (this.global) this.global();                                             // stop click event listener
-    this.toggleContainer(this.emojiContainer, 'hide');                          // hide emojiContainer
-    this.toggleContainer(this.shareContainer, 'hide');                          // hide shareContainer
-    this.chatPrvd.messageDateTimer.stop();                                      // stop date timer for messages
-    clearInterval(this.chatPrvd.scrollTimer.interval);                          // stop scroll to bottom interval
-    this.messagesInterval = false;                                              // clear message update bool
-    clearTimeout(this.messIntObject);                                           // clear message update interval
-    this.slideAvatarPrvd.changeCallback = null;                                 // stop slider func.
-	setTimeout(function() { google.maps.event.trigger(this.map, 'resize') }, 600);	
+	
+		console.log('ionViewWillLeave');
+		this.navParams.data = {};
+		this.componentLoaded = false;
+		this.chatPrvd.closeSockets();                                               // unsubscribe from sockets events
+		if (this.global) this.global();                                             // stop click event listener
+		this.toggleContainer(this.emojiContainer, 'hide');                          // hide emojiContainer
+		this.toggleContainer(this.shareContainer, 'hide');                          // hide shareContainer
+		this.chatPrvd.messageDateTimer.stop();                                      // stop date timer for messages
+		clearInterval(this.chatPrvd.scrollTimer.interval);                          // stop scroll to bottom interval
+		this.messagesInterval = false;                                              // clear message update bool
+		clearTimeout(this.messIntObject);                                           // clear message update interval
+		this.slideAvatarPrvd.changeCallback = null;                                 // stop slider func.
+		setTimeout(function() { google.maps.event.trigger(this.map, 'resize') }, 600);	
+	
   }
   
   public loadMaps() {
@@ -3085,7 +3148,7 @@ export class ChatPage implements DoCheck {
 				fullscreenControl: false				
 			});
 			this.gpsPrvd.getZipCode().then(zip => {
-				let params = {
+				let params = { 
 					lat : parseFloat(this.gpsPrvd.coords.lat),
 					lng : parseFloat(this.gpsPrvd.coords.lng),
 					post_code : zip				
@@ -3269,6 +3332,7 @@ export class ChatPage implements DoCheck {
 		}
 	}else{
 		this.netwrkFeed = false;
+		this.priNetwrkFeed = false;
 		this.contentMarginTop = null;
 		if(this.scrollTop > 0){
 			this.content.scrollTo(0,0);
@@ -3642,7 +3706,7 @@ export class ChatPage implements DoCheck {
 		}else{
 			if(this.isReplyMode){
 				this.closeReplyMode();
-			}			
+			}	
 			this.clearMarkers();
 			this.hideTextContainer = true;
 			this.netwrkFeed = true;
@@ -3721,7 +3785,11 @@ export class ChatPage implements DoCheck {
   }
   
   /*Fetch lobby messages only.*/
-  public getLobbyMessages(message:any):void {	  
+  public getLobbyMessages(message:any):void {	
+	if(this.chatPrvd.mainBtn.getState() == 'minimised'){
+		this.chatPrvd.mainBtn.setState('normal'); 
+		console.log('normalised');
+	}else{	
 		this.chatPrvd.isMainBtnDisabled = true;
 		this.clearMarkers();
 		this.chatPrvd.postMessages = [];
@@ -3739,6 +3807,7 @@ export class ChatPage implements DoCheck {
 		  this.chatPrvd.isMainBtnDisabled = false;
 		  this.chatPrvd.toggleLobbyChatMode();
 		  this.netwrkFeed = false;
+		  this.priNetwrkFeed = false;
 		  this.initLpMap();
 		  this.toolsPrvd.hideLoader();
 
@@ -3751,7 +3820,7 @@ export class ChatPage implements DoCheck {
 		  this.netwrkFeed = false;
 		  this.toolsPrvd.hideLoader();
 		});
-     
+    }
   }
 
   public openLinkInBrowser(message:any){
@@ -3795,9 +3864,95 @@ export class ChatPage implements DoCheck {
 	}
   }
   
-  public getVisibleNetwrks(message:any){
-	console.log(message);
-	  
+  public getVisibleNetwrks(){
+	return new Promise((resolve, reject) => {
+		this.chatPrvd.isMainBtnDisabled = true;
+		let message = this.chatPrvd.currentLobbyMessage;
+		let offset = 0;
+		if(this.netwrkFeed){
+			offset = this.chatPrvd.postMessages.length;
+		}else{
+			if(this.isReplyMode){
+				this.closeReplyMode();
+			}			 
+			this.clearMarkers();
+			this.hideTextContainer = true;
+			this.netwrkFeed = true;
+			this.priNetwrkFeed = true;
+			this.chatPrvd.postMessages = [];
+			this.contentMarginTop = "65px";
+			this.chatPrvd.isLobbyChat = false;
+			this.chatPrvd.areaLobby=false;
+		}
+		
+		let iconSize=new google.maps.Size(35, 40);
+		let markerIcon: any;
+		let params: any = {
+		  user_id: message.user_id,
+		  lat: this.gpsPrvd.coords.lat,
+		  lng: this.gpsPrvd.coords.lng,
+		  offset: offset,
+		  limit: 20 
+		};
+		
+		this.chatPrvd.getUserPrivateLines(params).subscribe(res => {
+			if(res.messages.length > 0){
+				let messages = this.chatPrvd.organizeMessages(res.messages);
+				for (var i = 0; i < messages.length; i++) {		
+					messages[i].isMain = true;
+					this.chatPrvd.postMessages.push(messages[i]); 
+					if(messages[i].locked && messages[i].locked_by_user && this.user.id != messages[i].user_id){
+						markerIcon = {
+							 url: 'assets/icon/lock-marker.png',
+							 scaledSize: iconSize,
+							 origin: new google.maps.Point(0, 0),
+							 anchor: new google.maps.Point(0, 0)
+						};
+					}else{
+						markerIcon = {
+							 url: 'assets/icon/marker.png',
+							 scaledSize: iconSize,
+							 origin: new google.maps.Point(0, 0),
+							 anchor: new google.maps.Point(0, 0)
+						};
+					}
+					let marker_title = '';
+					if(messages[i].locked && messages[i].locked_by_user && this.user.id != messages[i].user_id){
+						marker_title = '';
+					}else{
+						marker_title = messages[i].text;
+					}
+					
+					let marker = {
+						map: this.map,
+						position: new google.maps.LatLng(messages[i].lat, messages[i].lng),
+						icon: markerIcon,								
+						id: i,
+						message: messages[i],
+						title: marker_title
+					}; 
+				
+					this.mapMarkers.push(marker);			
+					google.maps.event.addListener(marker, 'click', () => {	  
+						if(marker.message.undercover){
+							this.openLobbyForPinned(marker.message);
+						}else{
+							this.openConversationLobbyForPinned(marker.message)
+						}  
+					});  			
+				}
+				
+				this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
+				this.contentPosition = 'absolute';
+				this.map.setCenter(new google.maps.LatLng(parseFloat(params.lat), parseFloat(params.lng)));
+				this.addMarker();	
+			}
+			this.chatPrvd.isMainBtnDisabled = false;
+			this.loaderState.setState('off');
+			resolve();
+		});		
+	});
+	
   }
 
 }

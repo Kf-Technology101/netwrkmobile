@@ -701,9 +701,7 @@
     You're in a new area
   </div>
 
-  <div class="tip tail-bottom" *ngIf="settings.isNewlineScope || chatPrvd.isLobbyChat" [ngStyle]="{'display': coachMarkText!=''?'inline':'inline'}" (press)="getVisibleNetwrks(chatPrvd.currentLobbyMessage)">
-    {{coachMarkText}} dfgdfgdfg
-  </div>
+  <div class="tip tail-bottom" *ngIf="settings.isNewlineScope || chatPrvd.isLobbyChat" [ngStyle]="{'display': coachMarkText!=''?'inline':'none'}" (press)="netwrkFeed?getLobbyMessages(chatPrvd.currentLobbyMessage):getVisibleNetwrks()">{{coachMarkText}}</div>
 
   <button ion-button class="back-nav-btn" (tap)="goBack();" clear *ngIf="settings.isNewlineScope == true">
         <span ion-text>No, I’ll move elsewhere</span>
@@ -713,7 +711,11 @@
     <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
   </button>
   
-  <button class="{{chatPrvd.mainBtn.state}}" isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="!settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (press)="normalizeMainBtn($event); goToHoldScreen()" (click)="normalizeMainBtn($event,'handleMainBtnClick');" [disabled]="chatPrvd.isMainBtnDisabled" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}"  >
+  <button class="{{chatPrvd.mainBtn.state}}" isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="!settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" 
+  (press)="normalizeMainBtn($event); goToHoldScreen()" 
+  (click)="netwrkFeed ? getLobbyMessages(chatPrvd.currentLobbyMessage): normalizeMainBtn($event,'handleMainBtnClick')"
+
+  [disabled]="chatPrvd.isMainBtnDisabled" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}"  >
    <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline" *ngIf="isReplyMode"></ion-icon>
   </button>
 

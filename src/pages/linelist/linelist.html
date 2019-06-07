@@ -1,7 +1,7 @@
 <!--Header -->
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
-    <ion-toolbar *ngIf="isUndercover">
-         <ion-input class="netwrk-input" text-center type="text" [(ngModel)]="lineTitle" autofocus (ionBlur)="setLineName()"></ion-input>
+    <ion-toolbar *ngIf="isUndercover" class="title-container">
+         <ion-input class="netwrk-input" text-center type="text" [(ngModel)]="lineTitle" autofocus (ionBlur)="setLineName()" placeholder="Add Title"></ion-input>
 		 <div class="error" *ngIf="!noErrors && !lineTitle"> 
 				Title is required.
 		 </div>		 
@@ -208,11 +208,11 @@
             <ion-icon ios="ios-add" md="ios-add"></ion-icon>
             </button> -->
 
-            <textarea #textInput [(ngModel)]="txtIn" id="textInput" 
+             <ion-textarea rows="6" #textInput [(ngModel)]="txtIn" id="textInput" 
             [placeholder]="placeholderText"
             (keyup)="getCaretPos(textInput); calculateInputChar(textInput)"
             (tap)="hideTopSlider(activeTopForm);"
-            (focus)="inputOnFocus()" class="input-textarea"></textarea>
+            (ionFocus)="inputOnFocus()" (ionBlur)="inputOnBlur()" class="input-textarea"></ion-textarea>
 
             <!-- <button ion-button item-right clear
             [ngClass]="{ 'post-button' : chatPrvd.postBtn.state,
@@ -236,10 +236,8 @@
 
     <button isScrolling="false" [hidden]="chatPrvd.mainLineBtn.hidden" color="bk" class="main-action-btn has-footer transparent chatMainBtn" (tap)="postMessage()"
         [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainLineBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainLineBtn.getState() != 'back-to-hold'}" >
-        <!-- <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline" class="small"></ion-icon> -->
+        <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
     </button>
-
-   
 	
 	<button class="go-back-btn" (tap)="goBackOnLanding($event)">
         <span ion-text>Go Back</span>

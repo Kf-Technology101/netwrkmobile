@@ -40,6 +40,8 @@ export class Chat {
   public areaLobby: boolean = false;
   public areaFilter : boolean=false;
   public holdFilter : boolean=false;
+  
+  public lobbyOpened : boolean=false;
 
   public appendContainer = new Toggleable('off', true);
   public appendLineContainer = new Toggleable('off', true);
@@ -170,6 +172,10 @@ export class Chat {
 
   public updateAvatarUrl(event: any):void {
     event.target.src = 'assets/icon/netwrk-chat.svg';
+  }  
+  
+  public defaultAvatarUrl() {
+    return 'assets/icon/netwrk-chat.svg';
   }
 
   public blockPost(messageID:number):any {
@@ -374,6 +380,7 @@ export class Chat {
     let channel:string = 'RoomChannel';
     console.log('starting lobby socket on', roomId);
     this.closeLobbySocket();
+	this.lobbyOpened = true;
 
     this.roomCable.subscribe(this.hostUrl + '/cable', channel, {
       room_id: roomId
@@ -505,15 +512,19 @@ export class Chat {
         }).catch(err => reject(err));
       } else {
         this.sendMessageWithoutImage(params).subscribe(res => {
-			if(data.line_avatar.length > 0){
-				this.updateAvatar(res.id, data.line_avatar, null, 'avatar').then(result => {
-					this.updatedLineAvatarData = result;
+			if(res.messageable_type == "Network"){
+				if(data.line_avatar.length > 0){
+					this.updateAvatar(res.id, data.line_avatar, null, 'avatar').then(result => {
+						this.updatedLineAvatarData = result;
+						resolve(res);
+					}, error => {
+						this.tools.hideLoader();
+						console.error('updateAvatar ERROR', error);
+						reject(error);
+					});
+				}else{
 					resolve(res);
-				}, error => {
-					this.tools.hideLoader();
-					console.error('updateAvatar ERROR', error);
-					reject(error);
-				});
+				}
 			}else{
 				resolve(res);
 			}
@@ -1051,6 +1062,27 @@ export class Chat {
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }
+  
+  /*Fetch all private networks nearby latLng with in 15miles of particular user*/
+  public getUserPrivateLines(params:any = null){	
+  /*http://18.188.223.201:3000/api/v1/messages/nearby_profile_messages?user_id=1&lat=19.9942144&lng=73.777152&is_distance_check=true */
+  
+    let offset = params && params.offset ? params.offset : 0;
+    let limit = params && params.limit ? params.limit : 100;
+	let data: any = {
+      is_distance_check:true,
+      lat: params.lat,
+      lng: params.lng, 
+	  user_id: params.user_id,
+	  offset: offset,
+	  limit: limit 
+    };
+	 
+	let seq = this.api.get('messages/nearby_profile_messages', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+  
   
   /*Fetch single record wth unique message_id */
   public getMessageIDDetails(message_id:any):any {

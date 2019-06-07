@@ -300,7 +300,8 @@ export class SignUpPage {
   private validateLogin(value: string): any {
     let valid = null;
     let type = null;
-    if (value.indexOf('@') !== -1) {
+	
+    /* if (value.indexOf('@') !== -1) {
       valid = this.tools.validateEmail(value);
       type = 'email';
       if (!valid) this.tools.showToast(this.textStrings.email);
@@ -308,7 +309,12 @@ export class SignUpPage {
       valid = this.tools.validatePhone(value);
       type = 'phone';
       if (!valid) this.tools.showToast(this.textStrings.phone);
-    }
+    } */ 
+	
+	valid = this.tools.validateEmail(value);
+	type = 'email';
+	if (!valid) this.tools.showToast(this.textStrings.email);
+	
     let result = {
       status: valid,
       type: type

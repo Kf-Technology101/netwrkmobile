@@ -9,6 +9,7 @@ import { Settings } from '../../providers/settings';
 // Pages
 import { ChatPage } from '../chat/chat';
 import { LinePage } from '../linelist/linelist';
+import { ProfilePage } from '../profile/profile';
 // Providers
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
@@ -61,9 +62,8 @@ export class UndercoverCharacterPage {
   }
 
   choosePerson(avatar) {
-	  console.log('Line avatar goes here::::: ',avatar);
-	  console.log(this.settings.isCreateLine);
-     this.activePerson.name=avatar.name;
+	 console.log('Line avatar goes here::::: ',avatar);
+	 this.activePerson.name=avatar.name;
      this.activePerson.imageUrl=avatar.imageUrl;
      this.activePerson.description=avatar.description;
 	 if(this.settings.isCreateLine){
@@ -84,7 +84,10 @@ export class UndercoverCharacterPage {
 			this.firstTimeHero = false;
 			this.storage.set('first_time_hero', this.firstTimeHero);
 		  }
+		  console.log('setPerson data',data);
+		  this.toolsPrvd.pushPage(ProfilePage, data);
 		}, err => {
+		  this.toolsPrvd.popPage();
 		  this.settings.isCreateLine=false;
 		});
 	 }
@@ -98,7 +101,6 @@ export class UndercoverCharacterPage {
 	}else{
 		this.toolsPrvd.popPage();
 	}
-	
 	// this.navCtrl.popToRoot();
   }
   

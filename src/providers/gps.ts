@@ -105,28 +105,32 @@ export class Gps {
         }
 
       if(this.watch) {
-        this.watch.unsubscribe();
 		this.coords.lat = null;
 		this.coords.lng = null;
+        this.watch.unsubscribe();
       }
 	   
       this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
 		console.log('geolocation.watchPosition::: ',resp);
-		if (resp.coords) {		  
-          if (!this.coords.lat && !this.coords.lng) {
+		if (resp.coords) {	
+          if (!this.coords.lat && !this.coords.lng) {			  
               if (this.loc.isCustomCoordAvaliable()) {
                   this.coords = this.loc.getCoordObject();
               } else {
                   this.coords.lat = resp.coords.latitude;
                   this.coords.lng = resp.coords.longitude;
               }
+			  this.localStorage.set('local_coordinates',this.coords);
               this.getZipCode().then(zip => {
                   resolve({zip_code: zip});
               }).catch(err => reject(err));
-              this.zipInterval = setInterval(() => {
-                  this.getZipCode();
-              }, 60000);
-          }
+          }else{
+			this.coords.lat = resp.coords.latitude;
+			this.coords.lng = resp.coords.longitude;  
+			this.getZipCode().then(zip => {
+				resolve({zip_code: zip});
+			}).catch(err => reject(err));
+		  }
         } else{
 			if(this.localStorage.get('local_coordinates')){
 				let strorageLocation = this.localStorage.get('local_coordinates');
@@ -142,8 +146,7 @@ export class Gps {
 			}
 		}
       }, err => { 
-		  console.log('geolocation.watchPosition::------',err);
-          this.getZipCode().then(zip => {
+		  this.getZipCode().then(zip => {
               resolve({ zip_code: zip });
           }).catch(err => reject(err));
         reject(err);
@@ -202,8 +205,7 @@ export class Gps {
     let seq = this.getAddressDetail(url, {
       latlng: coords,
       sensor: true,
-      // key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'
-      key: 'AIzaSyCUp-DKMDieimZiJYuTQCOUK96v1PvsViQ'
+      key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'
     }).share();
     return seq;
   }
@@ -212,7 +214,7 @@ export class Gps {
     return new Promise((resolve, reject) => {
 	  if (this.coords.lat && this.coords.lng) {
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
-          console.log('i m in getZipCode::::::: ',res);
+            console.log('i m in getZipCode::::::: ',res);
             let zipCode: any = this.parseGoogleAddress(res.results);
 
             this.loc.saveCurrentLocation({

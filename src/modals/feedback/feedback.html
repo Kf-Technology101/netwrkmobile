@@ -1,17 +1,21 @@
 <ion-content class="translucent" no-bounce>
-  <ion-toolbar class="translucent"
-  [ngClass]="{'display' : displayToolbar, 'liked' : postStatus.isLiked}">
-    <ng-container *ngIf="displayToolbar">
-      <span [ngClass]="{ 'right' : isUndercover }" class="heading" *ngIf="!isUndercover">Add to the area's story</span>
+  <ion-toolbar class="translucent display"
+  [ngClass]="{'liked' : postStatus.isLiked}"> 
+  <!-- 'display' : displayToolbar,  -->
+    <ng-container >
+	<!-- *ngIf="displayToolbar" -->
+      <span class="heading" >Add to the area's story</span>
+	  <!-- [ngClass]="{ 'right' : isUndercover }"  -->
     </ng-container>
-    <ion-buttons end [ngClass]="{'left' : isUndercover}">
+    <ion-buttons end>  
+	<!-- [ngClass]="{'left' : isUndercover}" -->
       <button class="legendary-btn" (click)="toggleLikes('legendary')"
               [ngClass]="{ 'active' : postStatus.isLegendary,
                            'reversed' : isUndercover }">
         <img *ngIf="!postStatus.isLegendary" src="assets/icon/legendary_dis.svg">
         <img *ngIf="postStatus.isLegendary" src="assets/icon/legendary_act.svg">
         <ion-badge>{{ postInf.totalLegendary }}</ion-badge>
-        <div class="tag" *ngIf="isUndercover && displayToolbar">Pin it</div>
+        <!-- <div class="tag" *ngIf="isUndercover && displayToolbar">Pin it</div> -->
       </button>
     </ion-buttons>
   </ion-toolbar>
@@ -22,10 +26,10 @@
       <div class="like-bg"></div>
       <ion-badge>{{ postInf.totalLikes }}</ion-badge>
     </button>
-    <button *ngIf="chatPrvd.getState() == 'undercover'" class="secondary share"
+   <!--  <button *ngIf="chatPrvd.getState() == 'undercover'" class="secondary share"
     (click)="goShare()">Share location</button>
     <button *ngIf="chatPrvd.getState() == 'area'" class="secondary share"
-    (click)="goShare()">Share</button>
+    (click)="goShare()">Share</button> -->
   </ion-list>
 </ion-content>
 

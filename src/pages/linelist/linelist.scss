@@ -44,15 +44,13 @@ page-linelist {
 	
 	.avatar-section {
       .avatar {
-		position: fixed;
-		text-align: center;
-		height: 25%;
-		width: 51%;
-		margin: 0;
-		top: 20%;
-		border-radius: 100%;
-		left: 28%;
-		right: 10%;
+		    position: fixed;
+			text-align: center;
+			height: 25%;
+			width: 51%;
+			margin: 0 23%;
+			top: 20%;
+			border-radius: 100%;
 		.blocked-ico {
           position: absolute;
           bottom: 5px;
@@ -195,6 +193,7 @@ page-linelist,page-netwrklist {
       font-size: 17px;
 	  border: 2px solid #fff;
 	  color: #fff;
+	  width: 70%;
     }
 
     .toolbar-content {
@@ -238,7 +237,7 @@ page-linelist,page-netwrklist {
 
   .content {
     background: #302f2f !important;
-    .no-legendary {
+    .no-legendary { 
       position: absolute;
       top: 0;
       bottom: 0;
@@ -1030,7 +1029,7 @@ page-linelist,page-netwrklist {
           width: 42px;
           height: 42px;
           margin: 0;
-          top: -7px;
+          top: 25%;
           margin-left: 12px;
           z-index: 4;
           position: absolute;
@@ -1041,7 +1040,7 @@ page-linelist,page-netwrklist {
           border-radius: 13px;
           background: color($colors, white);
           margin: 0;
-          margin-left: 32px;
+          margin-left: 59px;
           padding: 6px;
           padding-left: 32px;
           padding-right: 25px;
@@ -1179,19 +1178,7 @@ page-linelist,page-netwrklist {
             }
           }
         }
-        .recast-button {
-          width: 42px;
-          border-radius: 13px;
-          position: absolute;
-          right: 12px;
-          top: 47px;
-          z-index: 3;
-          background-color: #5b87aa;
-          color: #fff;
-          font-size: 9px;
-          padding:4px;
-          line-height: normal;
-        }
+        
       }
     }
   }

@@ -108,7 +108,7 @@ export class HoldScreenPage {
 
     ionViewWillLeave() {
         this.slideAvatarPrvd.changeCallback = null;
-    }
+	}
 
     ionViewDidEnter() {
         this.splash.hide();

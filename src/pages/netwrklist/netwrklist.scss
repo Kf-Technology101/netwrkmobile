@@ -1,18 +1,47 @@
-
-
 page-netwrklist {
   .content {
       .scroll-content {
-        margin-top: 90px !important;
+        margin-top: 65px !important;
         padding-top: 0 !important;
         padding-bottom: inherit;
         border-top: none;
+		
       }
 
-    .text-connected {
-      color: grey;
-      font-size: 12px;
-    }
+    
+	.message-container{
+		margin-right: 55px !important;
+		padding-left: 16px !important;
+		font-weight : 500;
+	 .username{
+		margin-bottom : 7px;
+		font-size : 17px !important;
+	 }
+	 .description {
+		font-size: 15px ;
+	 }
+	 .text-connected {
+		color: grey;
+		font-size: 12px;
+	 }
+	
+	}
+	
+	.recast-button {
+		width: 46px;
+		border-radius: 13px;
+		position: absolute;
+		right: 6px;
+		top: 53px;
+		z-index: 3;
+		background-color: #fff;
+		color: #5b87aa;
+		font-size: 11px;
+		padding: 0;
+		line-height: normal;
+		bottom: 2px;
+		height: 13px;
+	}
   }
   .header-ios {
     padding-top: 0 !important;
@@ -33,29 +62,68 @@ page-netwrklist {
     h1 {
       font-size: 20px;
       margin: 6px 0 !important;
-      font-weight: lighter;
+      // font-weight: lighter;
     }
   }
 
   .feedback-button {
-    width: 37px !important;
-    height: 37px !important;
+	width: 43px !important;
+    height: 48px !important;
     border-radius: 8px !important;
     position: absolute;
-    right: 12px;
-    padding: 8px 5px !important;
-    font-size: 22px !important;
+    right: 6px !important;
+    font-size: 33px !important;
     top: 0;
     margin-top: 0 !important;
     z-index: 3;
-    background: color($colors, bk);
-    ion-icon {
-      color:#fff;
-      font-size: 22px;
-    }
+    background: #fff !important;
+    color: color($colors, bk);
+	padding: 10px 3px !important;
+	   
+	ion-icon {
+      color:color($colors, bk) !important;
+	  background: #fff !important;
+      font-size: 55px;
+	  font-weight: 900;
+      line-height: 30px;
+    } 
+	&.ncl-btn{
+		top: 70px !important;
+		height: 27px !important;
+		padding: 0px !important;
+		ion-icon {
+			font-size: 35px !important;
+		}
+	}
+	&.down-btn{
+		.arrow-down{
+			display: block !important;
+		}
+		.arrow-up{
+			display: none !important;
+		}
+	}
+	&.up-btn{
+		.arrow-down{
+			display: none !important;
+		}
+		.arrow-up{
+			display: block !important;
+		}
+	}
   }
+  .active-cl:after {
+	content: "";
+	background-color: #fff !important;
+	position: absolute;
+	width: 4px;
+	height: 118%; 
+	top: 50%;
+    left: 30px;
+	display: block;
+  }	
   .location {
-    font-size: 14px;
+    font-size: 15px;
     color:#5b87aa;
     display: block;
   }
@@ -63,7 +131,6 @@ page-netwrklist {
     padding: 0px 8px !important;
     height: 30px !important;
   }
-
   .area-subhead-tip {
     font-size: 10px;
     text-align: center;
@@ -77,6 +144,9 @@ page-netwrklist {
       top: 7px;
       height: 7px;
     }
+	.netwrk-chat-icon{
+		width: 12px;
+	}
     .subhead-container {
       display: flex;
       width: 170px;
@@ -115,13 +185,13 @@ page-netwrklist {
           height: 35px;
           position: absolute;
           border: 1px solid #5b87aa;
-          top: -9px;
-          left: 70px;
+          top: -8px;
+          left: 65px;
           background: #fff;
-          padding: 2px 5px 2px 5px;
+          padding: 0px;
           .netwrk-img {
-            width: 35px;
-            height: 35px;
+            width: 100%;
+            height: 100%;
           }
         }
       }

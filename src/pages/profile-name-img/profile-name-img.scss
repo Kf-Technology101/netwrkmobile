@@ -6,7 +6,11 @@ page-profile-name-img {
 			height: 45px;
 			font-size: 18px;
 			border-radius: 100px;
+			.text-input-ios{
+				margin-left: 0
+			}
 		}
+		
 		
 		.avatar-section {
 		  .avatar {
@@ -15,9 +19,12 @@ page-profile-name-img {
 			height: 178px;
 			width: 178px;
 			margin: auto;
-			top: 63%;
 			border-radius: 100%;
 			background-color: #fff;
+			top: 63%;
+			@media screen and (max-height:602px ) {
+				top: 40% ;
+			}
 			.blocked-ico {
 			  position: absolute;
 			  bottom: 5px;

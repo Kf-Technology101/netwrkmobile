@@ -3,7 +3,8 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Push } from '@ionic-native/push';
-
+import { ImagePicker } from '@ionic-native/image-picker';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
 
 import { SplashScreen } from "@ionic-native/splash-screen";
@@ -217,8 +218,8 @@ export function providers() {
     VideoService,
     FeedbackService,
     AppAvailability,
-	
-	
+	ImagePicker,
+	WebView,
     Places
     // Keep this to enable Ionic's runtime error handling during development
   ];

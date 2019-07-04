@@ -13,7 +13,6 @@ page-log-in {
 
   .login-caption {
     margin: 0;
-    font-weight: 500;
     font-size: 1.1em;
   }
   .login-subcaption {
@@ -103,7 +102,9 @@ page-log-in {
         width: 86px;
         border-radius: 17px;
         box-shadow: none;
-        font-size: 13px;
+        font-size: 17px;
+		color: #5b87aa;
+		background-color: transparent;
         &.debug-btn{
           width: 120px;
           position: absolute;
@@ -119,12 +120,16 @@ page-log-in {
     position: absolute;
     left: 0;
     right: 0;
-    top: calc(50% + 60px);
-    font-size: 16px;
+    top: calc(34%);
+    font-size: 23px;
     padding: 4px;
-    width: 166px;
+    width: 100%;
     cursor: pointer;
+	color: #5b87aa;
+	background: none; 
+	font-weight: 600;
     &:before {
+	  display:none;
       width: 35px;
       height: 15px;
       top: -6px;
@@ -134,5 +139,6 @@ page-log-in {
   .transparent {
     background: transparent;
     background-color: transparent;
+	
   }
 }

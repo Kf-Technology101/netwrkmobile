@@ -102,7 +102,7 @@ export class FeedbackService {
   public initNativeShare(message:any):void {
     // console.log('[initNativeShare] message:', arguments);
     let subject = message.text_with_links ? message.text_with_links : '';
-    let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
+    let file = message.image_urls && message.image_urls.length > 1 ? message.image_urls[0] : null;
 
       if (this.plt.is('ios')){
           this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {

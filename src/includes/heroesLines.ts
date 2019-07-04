@@ -1,20 +1,20 @@
 
 export const heroesLines: any = {
     default: {
-        name: 'Stargazer',
-        description: 'The sense of wonder that accompanies an elevated mind.',
-        imageUrl: 'assets/images/undercover/stars.png'
+        name: 'Superhero',
+        description: 'Be the best version of yourself',
+        imageUrl: 'assets/images/undercover/netwrk.png'
     },
     13: [
         {
-            name: 'Artist',
-            description: 'Anyone that makes anything',
-            imageUrl: 'assets/images/undercover/artist_male.png'
+            name: 'Your network',
+            description: 'Take the identity of the network you create.',
+            imageUrl: 'assets/images/undercover/netwrk.png'
         },
         {
-            name: 'Wise one',
-            description: 'A pretty chill fellow',
-            imageUrl: 'assets/images/undercover/wise_one.jpg'
+            name: 'Constructive Honesty',
+            description: 'Showing another needed perspective in a constructive way',
+            imageUrl: 'assets/images/undercover/netwrk.png'
         },
         {
             name: 'Hot dog',
@@ -24,14 +24,14 @@ export const heroesLines: any = {
     ],
     20: [
         {
-            name: 'Wise one',
-            description: 'A pretty chill fellow',
-            imageUrl: 'assets/images/undercover/wise_one.jpg'
+            name: 'Constructive Honesty',
+            description: 'Showing another needed perspective in a constructive way',
+            imageUrl: 'assets/images/undercover/netwrk.png'
         },
         {
-            name: 'Artist',
-            description: 'Anyone that makes anything',
-            imageUrl: 'assets/images/undercover/artist_male.png'
+            name: 'Your network',
+            description: 'Take the identity of the network you create.',
+            imageUrl: 'assets/images/undercover/netwrk.png'
         },
         {
             name: 'Hot dog',
@@ -41,14 +41,14 @@ export const heroesLines: any = {
     ],
     40: [
         {
-            name: 'Wise one',
-            description: 'A pretty chill fellow',
-            imageUrl: 'assets/images/undercover/wise_one.jpg'
+            name: 'Constructive Honesty',
+            description: 'Showing another needed perspective in a constructive way',
+            imageUrl: 'assets/images/undercover/netwrk.png'
         },
         {
-            name: 'Oprah',
-            description: 'Yes, you can be me.',
-            imageUrl: 'assets/images/undercover/oprah.jpg'
+            name: 'Your network',
+            description: 'Take the identity of the network you create.',
+            imageUrl: 'assets/images/undercover/netwrk.png'
         },
         {
             name: 'Hot dog',

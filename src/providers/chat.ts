@@ -1,6 +1,10 @@
 import { Injectable } from '@angular/core';
-import { Platform, ModalController, Events } from 'ionic-angular';
-import { ImagePicker } from 'ionic-native';
+import { Platform, ModalController, Events, normalizeURL } from 'ionic-angular';
+// import { ImagePicker } from 'ionic-native';
+import { ImagePicker } from '@ionic-native/image-picker';
+import { WebView } from '@ionic-native/ionic-webview/ngx';
+import { DomSanitizer } from '@angular/platform-browser';
+
 
 import { LocalStorage } from './local-storage';
 import { Gps } from './gps';
@@ -38,7 +42,7 @@ export class Chat {
 
   public isLandingPage: boolean;
   public areaLobby: boolean = false;
-  public areaFilter : boolean=false;
+  public areaFilter : boolean=false; 
   public holdFilter : boolean=false;
   
   public lobbyOpened : boolean=false;
@@ -85,9 +89,11 @@ export class Chat {
   };
 
   public currentLobbyMessage:any;
+  public currentReplyLobbyMessage:any = null;
 
   public allowUndercoverUpdate:boolean = true;
   public request_type: any = null;
+  public custom_line_id: any = null;
   public updatedLineAvatarData: any = null;
 
   constructor(
@@ -107,7 +113,10 @@ export class Chat {
     private roomCable: Ng2Cable,
     private roomBroadcaster: Broadcaster,
     public socialPrvd: Social,
-    public events: Events
+    public events: Events,
+	private imagePicker: ImagePicker,
+	protected webView: WebView,
+	private sanitizer:DomSanitizer
   ) {
     this.hostUrl = this.api.hostUrl;
     this.user = this.authPrvd.getAuthData();
@@ -481,11 +490,11 @@ export class Chat {
     return new Promise((resolve, reject) => {
 		console.log("Send Message");
 		let params:any;
-	    if(this.currentLobbyMessage != undefined && this.currentLobbyMessage.messageable_type == 'Room'){
+	    if(data.messageable_type == 'Reply' && this.currentReplyLobbyMessage && this.currentReplyLobbyMessage.messageable_type == 'Room'){
 			params = {
 				message: data,
 				post_code: this.localStorage.get('chat_zip_code'),
-				reply_to_message_id: this.currentLobby.id
+				reply_to_message_id: this.currentReplyLobbyMessage.id
 			};  
 		}else{
 			params = {
@@ -503,10 +512,14 @@ export class Chat {
 	  if(this.request_type != '' || this.request_type != null){
 		params.message.message_type = this.request_type;
 	  }
+	  
+	  params.message.custom_line_id = this.custom_line_id;
+	  
 	  this.request_type = null;
-			 
+	  this.custom_line_id = null;
+
       if (data.images && data.images.length > 0) {
-        this.sendMessageWithImage(params, data.images).then(res => {
+		this.sendMessageWithImage(params, data.images).then(res => {
           console.log('[sendMessageWithImage] res:', res);
           resolve(res);
         }).catch(err => reject(err));
@@ -666,14 +679,26 @@ export class Chat {
     this.users = stUsers;
   }
 
-  public organizeMessages(data: any): any {
+  public organizeMessages(data: any,organizeNCL :boolean = false): any {
 	let messages: Array<any> = [];
     for (let i in data) {
       data[i].date = moment(data[i].created_at).fromNow();
         if(messages.indexOf(data[i])==-1){
             messages.push(data[i]);
+			
+			/* if(organizeNCL && data[i].lines_count > 0 && data[i].non_custom_lines.length > 0){
+				// push data[i].messages into postMessages
+				let myNCLLines = data[i].non_custom_lines;
+				
+				for(let j in myNCLLines){
+					// console.log(myNCLLines[j]);
+					messages.push(myNCLLines[j]);
+				}
+			} */	
+			
         }
     }
+	
 	return messages;
   }
 
@@ -773,7 +798,6 @@ export class Chat {
 
   private sendMessageWithoutImage(data: any) {
     data.message.images = [];
-    console.log('data', data);
     let seq = this.api.post('messages', data).share();
     let seqMap = seq.map(res => res.json());
 	return seqMap;
@@ -809,7 +833,7 @@ export class Chat {
   
   public updateAppendContainer() {
     let pictures = this.cameraPrvd.takenPictures;
-    if (pictures && pictures.length > 0) {
+	if (pictures && pictures.length > 0) {
       this.events.publish('image:pushed', {
         picturesLen: pictures.length
       });
@@ -833,7 +857,7 @@ export class Chat {
           this.events.publish('image:pushed', {
             picturesLen: pictures.length
           });
-
+		
           this.plusBtn.setState('default');
           this.bgState.setState('compressed');
           for (let i = 0; i < this.chatBtns.state.length; i++) {
@@ -848,24 +872,27 @@ export class Chat {
   }
 
   public openGallery() {
-      let pickerOptions = {
-        maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
+	  let pickerOptions = {
+		// outputType:1,
+        maximumImagesCount: 3 
       }
       if (pickerOptions.maximumImagesCount <= 0) {
         this.tools.showToast('You can\'t append more pictures');
       } else {
-        ImagePicker.getPictures(pickerOptions).then(file_uris => {
-          for (let fileUrl of file_uris) {
-            if (this.cameraPrvd.takenPictures.length < 3) {
-              if (this.plt.is('android')) {
-                if (fileUrl.indexOf('file:///') !== -1)
-                  this.cameraPrvd.pushPhoto(fileUrl);
-                  this.updateAppendContainer();
-              } else {
-                this.cameraPrvd.pushPhoto(fileUrl);
-                this.updateAppendContainer();
-              }
-            }
+        this.imagePicker.getPictures(pickerOptions).then(file_uris => {
+		  for (let fileUrl of file_uris) {
+			let filename = fileUrl.substring(fileUrl.lastIndexOf('/')+1);
+			let path =  fileUrl.substring(0,fileUrl.lastIndexOf('/')+1);
+			this.file.readAsDataURL("file://" + path, filename).then(
+				res => {
+					if (this.cameraPrvd.takenPictures.length < 3) {
+						this.cameraPrvd.pushPhoto(res);
+						this.updateAppendContainer();
+					}
+				}, err => {
+					this.tools.showToast(JSON.stringify(err));
+				}
+			);
           }
         }, err => {
           console.log('[imagePicker]', err);
@@ -873,32 +900,64 @@ export class Chat {
       }
   }
 
+  public openGallery_workingCopyOnIOS() {
+	  let pickerOptions = {
+		// outputType:1,
+        maximumImagesCount: 3 
+      }
+      if (pickerOptions.maximumImagesCount <= 0) {
+        this.tools.showToast('You can\'t append more pictures');
+      } else {
+        this.imagePicker.getPictures(pickerOptions).then(file_uris => {
+		  for (let fileUrl of file_uris) {
+			let filename = fileUrl.substring(fileUrl.lastIndexOf('/')+1);
+			let path =  fileUrl.substring(0,fileUrl.lastIndexOf('/')+1);
+			this.file.readAsDataURL("file://" + path, filename).then(
+				res => {
+					if (this.cameraPrvd.takenPictures.length < 3) {
+						this.cameraPrvd.pushPhoto(res);
+						this.updateAppendContainer();
+					}
+				}, err => {
+					this.tools.showToast(JSON.stringify(err));
+				}
+			);
+          }
+        }, err => {
+          console.log('[imagePicker]', err);
+        });
+      }
+  }
+
+  
 
   public openLineGallery() {
       let pickerOptions = {
-        maximumImagesCount: 3 - this.cameraPrvd.takenPictures.length
+        maximumImagesCount: 3 
       }
       if (pickerOptions.maximumImagesCount <= 0) {
         this.tools.showToast('You can\'t append more pictures');
       } else {
-        ImagePicker.getPictures(pickerOptions).then(file_uris => {
-          for (let fileUrl of file_uris) {
-            if (this.cameraPrvd.takenPictures.length < 3) {
-              if (this.plt.is('android')) {
-                if (fileUrl.indexOf('file:///') !== -1)
-                  this.cameraPrvd.pushPhoto(fileUrl);
-                  this.updateAppendLineContainer();
-              } else {
-                this.cameraPrvd.pushPhoto(fileUrl);
-                this.updateAppendLineContainer();
-              }
-            }
+        this.imagePicker.getPictures(pickerOptions).then(file_uris => {
+		  for (let fileUrl of file_uris) {
+			let filename = fileUrl.substring(fileUrl.lastIndexOf('/')+1);
+			let path =  fileUrl.substring(0,fileUrl.lastIndexOf('/')+1);
+			this.file.readAsDataURL("file://" + path, filename).then(
+				res => {
+					if (this.cameraPrvd.takenPictures.length < 3) {
+						this.cameraPrvd.pushPhoto(res);
+						this.updateAppendContainer();
+					}
+				}, err => {
+					this.tools.showToast(JSON.stringify(err));
+				}
+			);
           }
         }, err => {
           console.log('[imagePicker]', err);
         });
       }
-  }
+  } 
 
   public sendFeedback(messageData: any, mIndex: number) {
     return new Promise(res => {
@@ -1101,6 +1160,19 @@ export class Chat {
 		// offset :  offset
 	// }
 	let seq = this.api.get('messages/'+messageId+'/reply/messages').share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+  
+  public getNonCuctomLines(message){
+	let data: any = {
+      message_id: message.id,
+	  lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng,
+	  is_landing_page: this.isLandingPage ? this.isLandingPage : false
+	};
+	 
+	let seq = this.api.get('messages/non_custom_lines', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }

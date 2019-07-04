@@ -250,11 +250,18 @@ export class ProfilePage {
   }
 
   private goBack():void {
-      this.chatPrvd.postMessages=[];
+      this.chatPrvd.postMessages = [];
       this.chatPrvd.isCleared = true;
-	  this.settings.isNewlineScope=false;
-	  this.settings.isCreateLine=false;
-	  this.app.getRootNav().setRoot(ChatPage);
+	  this.settings.isNewlineScope = false;
+	  this.settings.isCreateLine = false;
+	  this.chatPrvd.isLobbyChat = false;
+	  this.chatPrvd.areaLobby = false;
+	  if(this.storage.get('lobby_message') && (this.storage.get('lobby_message') != null || this.storage.get('lobby_message') != '')){
+		let lobby_message = this.storage.get('lobby_message');
+		this.app.getRootNav().setRoot(ChatPage,{message:lobby_message});
+	  }else{
+		this.app.getRootNav().setRoot(ChatPage);
+	  }
   }
 
   private toggleProfilePageAnimation(state:boolean):void {

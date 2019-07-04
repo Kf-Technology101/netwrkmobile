@@ -43,7 +43,7 @@ export class ProfileNameImgPage {
 	  this.formValidator={
 		'all':'Profile name and image is required.',
 		'userName': 'Please add name for your profile.',
-		'tempFiles': 'Please upload image for your profile.',
+		'tempFiles': 'Please upload an image for your profile.',
 		'tempFilesType': 'Profile image is invalid.'
 	  }
 	  

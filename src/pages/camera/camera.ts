@@ -1,7 +1,7 @@
 import { Component, HostBinding } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 import { CameraPreviewOptions, CameraPreview } from '@ionic-native/camera-preview';
-
+import { File } from '@ionic-native/file';
 import { Tools } from '../../providers/tools';
 import { Camera } from '../../providers/camera';
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
@@ -61,7 +61,8 @@ export class CameraPage {
     public cameraPrvd: Camera,
     public tools: Tools,
     private base64ToGallery: Base64ToGallery,
-    private storage: LocalStorage
+    private storage: LocalStorage,
+	private file: File
   ) {}
 
   takePhoto() {
@@ -87,15 +88,15 @@ export class CameraPage {
       }, animSpeed.fadeIn/2);
 
       this.imgBg = `url(data:image/jpeg;base64,${imageData[0]})`;
-
-      this.base64ToGallery.base64ToGallery(imageData[0], { prefix: 'netwrk_' }).then(
+	  
+      this.base64ToGallery.base64ToGallery(imageData[0], { prefix: 'netwrk_',mediaScanner:true }).then(
         res => {
           this.tools.hideLoader();
-          console.log('Saved image to gallery ', res);
-          this.imgUrl = res;
+		  this.imgUrl = res;
         },
         err => {
           this.tools.hideLoader();
+		  this.tools.showToast('Error saving image');
           console.log('Error saving image to gallery ', err);
         }
       );
@@ -123,7 +124,19 @@ export class CameraPage {
 
   saveImage() {
     if (this.cameraPrvd.takenPictures.length < 3) {
-      this.cameraPrvd.pushPhoto(this.imgUrl);
+		let fileUrl = this.imgUrl;
+		let filename = fileUrl.substring(fileUrl.lastIndexOf('/')+1);
+		let path =  fileUrl.substring(0,fileUrl.lastIndexOf('/')+1);
+		this.file.readAsDataURL("file://" + path, filename).then(
+			res => {
+				if (this.cameraPrvd.takenPictures.length < 3) {
+					this.cameraPrvd.pushPhoto(res);
+				}
+			}, err => {
+				this.tools.showToast(JSON.stringify(err));
+			}
+		);
+		// this.cameraPrvd.pushPhoto(this.imgUrl);
       this.goBack();
     } else {
       this.tools.showToast('You can\'t append more pictures');

@@ -1182,6 +1182,11 @@ modal-sharelist {
         margin-left: 13px;
       }
     }
+	&.liked{
+		.heading {
+			color: color($colors, bk);
+		}
+	}
   }
   .bar-buttons {
     &.left[end] {

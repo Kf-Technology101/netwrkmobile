@@ -1500,6 +1500,7 @@ export class LinePage {
 	if(files.length > 0){
 		this.tempFiles = [];
 		for (let i = 0; i < files.length; i++) {
+			console.log(files.item(i));
 		  this.tempFiles.push(files.item(i));
 		  let reader = new FileReader();
 		  reader.onload = e => this.lineimg = reader.result;

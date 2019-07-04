@@ -233,6 +233,8 @@ export class ChatPage implements DoCheck {
   private contentMarginTop: string;
   private bottomMargin: string;
   private contentPosition: string;
+  
+  private textProfile: boolean = true;
 
   private canRefresh: boolean = true;
   private idList: any = [];
@@ -281,19 +283,20 @@ export class ChatPage implements DoCheck {
   public searchModel:any;
   
   public coachMarkText = "Start your network here?";
-  
+  public netwrkCoachMarkText:boolean = false;
   public scrollTop:number = 0;
   public hideTextContainer:boolean = false;
   
   public parameterData:any;
   public flgEditPost:boolean = false;
-  
+  public oldLobbyDetails: any= [];
   public isReplyMode: boolean = false;
   public netwrkFeed: boolean = false;
   public priNetwrkFeed: boolean = false;
-  public replyMessage: any;
-  
+  public replyMessage: any;   
   public repliesLength:number = 0;
+  public nclAddedCnt: number =0;
+  public currentCLLobbyIndex: number = null;
   
   public mapStyle = [
 	  {
@@ -382,20 +385,25 @@ export class ChatPage implements DoCheck {
 	public iab: InAppBrowser,
 	private permission: PermissionsService
   ) {
-	  console.log('Chat Page');
+	  if(this.storage.get('slider_position') == null || this.storage.get('slider_position') == ''){
+		  this.storage.set('slider_position','left');
+		  this.slideAvatarPrvd.setSliderPosition('left');
+		  this.slideAvatarPrvd.sliderPosition = "left";
+	  }
+	  this.storage.rm('lobby_message');
 	  if(this.storage.get('new_signUp')){
 		this.storage.rm('new_signUp');
 		this.toolsPrvd.pushPage(HoldScreenPage);
 	  }else{
-			  this.user = this.authPrvd.getAuthData();		
-			  this.chatPrvd.isLandingPage = true;
-			  this.undercoverPrvd.setUndercover(true);
-			  this.isUndercover=true;
-			  this.pageNav=true;
-			  this.pageNavLobby=true;
-			  plt.ready().then(() => {
-				  this.registerDevice();
-			  });		
+		  this.user = this.authPrvd.getAuthData();		
+		  this.chatPrvd.isLandingPage = true;
+		  this.undercoverPrvd.setUndercover(true);
+		  this.isUndercover=true;
+		  this.pageNav=true;
+		  this.pageNavLobby=true;
+		  plt.ready().then(() => {
+			  this.registerDevice();
+		  });		
 			  
 		  if (this.navParams.get('message')) {			  
 			this.messageParam = this.navParams.get('message');
@@ -487,6 +495,7 @@ export class ChatPage implements DoCheck {
   }
 
   public shareLineJoinFlow(message):void {
+	  console.log(this.chatPrvd.currentLobby);
     let alert = this.alertCtrl.create({
       subTitle: 'Share the line with your friends?',
       buttons: [{
@@ -495,7 +504,8 @@ export class ChatPage implements DoCheck {
           handler:()=>{
               alert.dismiss();
 			  this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
-				  this.coachMarkText = res.privateLineCount+" networks are now visible.";
+				  this.coachMarkText = res.privateLineCount+" networks are now visible. Hold to see them";
+				  this.netwrkCoachMarkText = true;
                   this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                       console.log('getLocationLobbyUsers:', res);
                       this.feedbackService.pointsOnJoinLine(message.id, this.user.id);
@@ -522,8 +532,8 @@ export class ChatPage implements DoCheck {
                 this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
                         this.toolsPrvd.showToast('line shared successfully ');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
-							this.coachMarkText = res.privateLineCount+" networks are now visible.";
-							
+							this.coachMarkText = res.privateLineCount+" networks are now visible. Hold to see them";
+							this.netwrkCoachMarkText = true;
                             this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                                 console.log('getLocationLobbyUsers:', res);
                                 this.feedbackService.pointsOnJoinLine(message.id, this.user.id);
@@ -546,7 +556,8 @@ export class ChatPage implements DoCheck {
 				this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
                         this.toolsPrvd.showToast('line shared successfully');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
-							this.coachMarkText = res.privateLineCount+" networks are now visible.";
+							this.coachMarkText = res.privateLineCount+" networks are now visible. Hold to see them";
+							this.netwrkCoachMarkText = true;
                             this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                                 console.log('getLocationLobbyUsers:', res);
                                 this.feedbackService.pointsOnJoinLine(message.id, this.user.id);
@@ -697,7 +708,7 @@ export class ChatPage implements DoCheck {
 							if(this.chatPrvd.postMessages[i].locked && this.chatPrvd.postMessages[i].locked_by_user && this.user.id != this.chatPrvd.postMessages[i].user_id){
 								marker.title = '';
 							}else{
-								marker.title = this.chatPrvd.postMessages[i].text_with_links;
+								marker.title = this.chatPrvd.postMessages[i].title;
 							}
 							
 							
@@ -846,7 +857,7 @@ export class ChatPage implements DoCheck {
                 map: this.map,
                 position: new google_maps.LatLng(parseFloat(message.lat), parseFloat(message.lng)),
                 icon: chatRoom,
-				title: message.text_with_links
+				title: message.title
             };
 			
             this.mapMarkers.push(marker);
@@ -1309,8 +1320,15 @@ export class ChatPage implements DoCheck {
     }
   }
 
-  public inputOnFocus():void {
+  public inputOnFocus():void { 
+	this.textProfile = false;
     if (!this.chatPrvd.isLobbyChat) this.setDefaultTimer();
+  }
+  
+  public inputOnBlur():void {
+	if(!this.isReplyMode){
+		this.textProfile = true;
+	}
   }
 
   private postMessage(emoji?: string, params?: any):void {
@@ -1353,10 +1371,18 @@ export class ChatPage implements DoCheck {
 	  let messageable_type: any = null;
 	  if(this.chatPrvd.isLobbyChat){ // Line message
 		  undercover = true;
-		  messageable_type = 'Room';
+		  if(this.isReplyMode){
+			messageable_type = 'Reply';
+		  }else{
+			messageable_type = 'Room';
+		  }
 	  }else if(this.chatPrvd.areaLobby){ // Conversasion message
 		  undercover = false;
-		  messageable_type = 'Room';
+		    if(this.isReplyMode){
+				messageable_type = 'Reply';
+		    }else{
+				messageable_type = 'Room';
+			}
 	  }else if(this.chatPrvd.getState() == 'area'){ // Conversasion
 		  undercover = false;
 		  messageable_type = 'Network';
@@ -1406,9 +1432,7 @@ export class ChatPage implements DoCheck {
           message.is_synced = false;
           if (this.chatPrvd.isLobbyChat) message.expire_date = null;
 
-		  if(this.isReplyMode){
-			message.messageable_type = 'Reply';
-		  }
+		  
 		  message.dateStr = 'just now';
 		
    		  if(this.chatPrvd.request_type != "ACCESS_REQUEST" && !this.isReplyMode){
@@ -1416,7 +1440,7 @@ export class ChatPage implements DoCheck {
 			// console.log(this.chatPrvd.postMessages);
 			this.chatPrvd.postMessages.unshift(message);
 		  }else if(this.isReplyMode){
-			let messageIndex = this.chatPrvd.postMessages.indexOf(this.replyMessage)+1;
+			let messageIndex = this.chatPrvd.postMessages.indexOf(this.replyMessage)+this.repliesLength+1;
 			this.chatPrvd.postMessages.splice(messageIndex,0, message);
 			messageIndex = messageIndex - 1;
 			this.chatPrvd.postMessages[messageIndex].reply_count = this.chatPrvd.postMessages[messageIndex].reply_count ? parseInt(this.chatPrvd.postMessages[messageIndex].reply_count) + 1 : 1;
@@ -1425,6 +1449,8 @@ export class ChatPage implements DoCheck {
 		  
         }
         // this.toolsPrvd.showLoader();
+		
+		  
         this.chatPrvd.sendMessage(messageParams).then(res => {
           this.hideTopSlider(this.activeTopForm);
           message.id=res.id;
@@ -1544,7 +1570,8 @@ export class ChatPage implements DoCheck {
   }
 
   private openFeedbackModal(messageData: any, mIndex: number):void {
-	if(messageData.messageable_type != "Network"){
+	// console.log(messageData);
+	// if(messageData.messageable_type != "Network"){
 		this.toolsPrvd.showLoader();
 		
 		this.chatPrvd.sendFeedback(messageData, mIndex).then(res => {
@@ -1587,7 +1614,7 @@ export class ChatPage implements DoCheck {
 			} else console.warn('[likeClose] Error, no data returned');
 		  });
 		})
-	}
+	// }
   }
 
   private goToLegendaryList():void {
@@ -1809,6 +1836,8 @@ export class ChatPage implements DoCheck {
 	  this.netwrkFeed = false;
 	  this.priNetwrkFeed = false;	  
       this.chatPrvd.postMessages=[];
+	  this.nclAddedCnt = 0;
+	  this.currentCLLobbyIndex = null;
       this.chatPrvd.isCleared = true;
       this.toolsPrvd.pushPage(NetwrklistPage);
   }
@@ -1833,7 +1862,7 @@ export class ChatPage implements DoCheck {
 
   private changeCallback(positionLeft?: boolean):void {
     this.zone.run(() => {
-      this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
+	  this.undercoverPrvd.profileType = positionLeft ? 'public' : 'undercover';
     });
   }
 
@@ -2108,7 +2137,7 @@ export class ChatPage implements DoCheck {
 				if(res[i].locked && res[i].locked_by_user && this.user.id != res[i].user_id){
 					marker.title = '';				
 				}else{
-					marker.title = res[i].text_with_links;
+					marker.title = res[i].title;
 				}
 			
 				this.mapMarkers.push(marker);
@@ -2659,14 +2688,18 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForPinned(message:any):void {
+	  console.log('openLobbyForPinned');
+	  console.log(message);
+	  
 	  let cont1 = this.getTopSlider('address');
       cont1.setState('slideUp');
       cont1.hide();
 	  this.normalizeMainBtn(null,null);
 	  
 	  this.contentMarginTop = null;
-      if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){
-		  
+	  
+	  
+      if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){		  
 		  if(this.chatPrvd.getState() == 'undercover'){
 			  this.pageNavLobby=true;
           }else  if(this.chatPrvd.getState() == 'area'){
@@ -2674,6 +2707,7 @@ export class ChatPage implements DoCheck {
           }
 		  
           if(this.user.id != message.user_id && message.locked_by_user){
+			  console.log('i m not to open lobby');
 			  this.netwrkFeed = false;
 			  this.priNetwrkFeed = false;
 			  this.showUnlockPostForm(message.id, message.hint);
@@ -3127,11 +3161,14 @@ export class ChatPage implements DoCheck {
 	  this.scrollTop = 0;
 	  this.coachMarkText = "Start your network here?";
       this.search = true;
+	  this.nclAddedCnt = 0;
+	  this.currentCLLobbyIndex = null;
       this.initializeMap();
       this.initAutocomplete();    
   }
 
   private initializeMap() {
+	console.log(this.gpsPrvd.coords);
     this.zone.run(() => { 
 		let loc = {
 			lat : parseFloat(this.gpsPrvd.coords.lat),
@@ -3154,8 +3191,6 @@ export class ChatPage implements DoCheck {
 					post_code : zip				
 				}
 				this.setNearbyOnMap(params);
-				
-		
 			});
 			
 		});
@@ -3345,6 +3380,8 @@ export class ChatPage implements DoCheck {
 				}
 				this.openLinePage();
 			}else if(callback == "handleMainBtnClick"){
+				this.nclAddedCnt = 0;
+				this.currentCLLobbyIndex = null;
 				if(this.isReplyMode){
 					this.closeReplyMode();
 				}else{
@@ -3427,7 +3464,7 @@ export class ChatPage implements DoCheck {
 		let loc = {
 		  lat: latitude,
 		  lng: longitude,
-		  place_name: message.place_name,
+		  place_name: message.title,
 		  zipcode: zipcode
 		}	
 		
@@ -3456,11 +3493,11 @@ export class ChatPage implements DoCheck {
 			this.hideTextContainer = false;
 			this.replyMessage = message;
 			this.isReplyMode = true;
+			this.textProfile = false;
 			this.placeholderText = 'Reply';
 			this.isUndercover = true; 
 			this.settings.isNewlineScope = false;
-			this.chatPrvd.currentLobbyMessage = message;
-			this.chatPrvd.currentLobby.id = message.id;		
+			this.chatPrvd.currentReplyLobbyMessage = message;
 			this.setMainBtnStateRelativeToEvents();
 			let postMessages = this.chatPrvd.postMessages;
 			this.refreshReplies();
@@ -3527,7 +3564,12 @@ export class ChatPage implements DoCheck {
   /*Perform particular action on request of close reply mode*/
   private closeReplyMode(){	 
 	this.isReplyMode = false;
+	this.textProfile = true;
 	let message = this.replyMessage;
+	
+	
+	this.chatPrvd.currentReplyLobbyMessage = null;
+			
 	this.placeholderText = 'What would you like to say?';
 	let messageIndex = this.chatPrvd.postMessages.indexOf(message)+1;
 	this.chatPrvd.postMessages.splice(messageIndex, this.repliesLength);
@@ -3637,61 +3679,63 @@ export class ChatPage implements DoCheck {
 	};
 	this.chatPrvd.getCustomAreaNetworks(params).subscribe(res => {
 		let messages = this.chatPrvd.organizeMessages(res.messages);
-		for (var i = 0; i < messages.length; i++) {
-		
-			if(messages[i].locked && messages[i].locked_by_user && this.user.id != messages[i].user_id){
-				markerIcon = {
-					 url: 'assets/icon/lock-marker.png',
-					 scaledSize: iconSize,
-					 origin: new google.maps.Point(0, 0),
-					 anchor: new google.maps.Point(0, 0)
-				};
-			}else{
-				markerIcon = {
-					 url: 'assets/icon/marker.png',
-					 scaledSize: iconSize,
-					 origin: new google.maps.Point(0, 0),
-					 anchor: new google.maps.Point(0, 0)
-				};
-			}
-			let marker_title = '';
-			if(messages[i].locked && messages[i].locked_by_user && this.user.id != messages[i].user_id){
-				marker_title = '';
-			}else{
-				marker_title = messages[i].text;
-			}
-			
-			let marker = {
-				map: this.map,
-				position: new google.maps.LatLng(messages[i].lat, messages[i].lng),
-				icon: markerIcon,								
-				id: i,
-				message: messages[i],
-				title: marker_title
-			}; 
-		
-			this.mapMarkers.push(marker);	
-			let self = this;
-			
-			google.maps.event.addListener(marker, 'click', () => {				
-				self.toggleTopSlider('address');	
-				self.search = false;	 		   
-				let loc:any = {
-					lat: parseFloat(marker.message.lat),
-					lng: parseFloat(marker.message.lng),
-					place_name: marker.message.place_name,
-					zipcode: parseInt(marker.message.post_code)
-				};	
-				if(!self.flgEditPost){					
-					self.chatPrvd.request_type = "NONCUSTOM_LOCATION";
+		if(messages.length > 0){
+			for (var i = 0; i < messages.length; i++) {
+				if(messages[i].locked && messages[i].locked_by_user && this.user.id != messages[i].user_id){
+					markerIcon = {
+						 url: 'assets/icon/lock-marker.png',
+						 scaledSize: iconSize,
+						 origin: new google.maps.Point(0, 0),
+						 anchor: new google.maps.Point(0, 0)
+					};
+				}else{
+					markerIcon = {
+						 url: 'assets/icon/marker.png',
+						 scaledSize: iconSize,
+						 origin: new google.maps.Point(0, 0),
+						 anchor: new google.maps.Point(0, 0)
+					};
 				}
-				self.setCustomAddressOnMap(loc); 
-			}); 
-		
+				let marker_title = '';
+				if(messages[i].locked && messages[i].locked_by_user && this.user.id != messages[i].user_id){
+					marker_title = '';
+				}else{
+					marker_title = messages[i].title;
+				}
+				
+				let marker = {
+					map: this.map,
+					position: new google.maps.LatLng(messages[i].lat, messages[i].lng),
+					icon: markerIcon,								
+					id: i,
+					message: messages[i],
+					title: marker_title
+				}; 
+			
+				this.mapMarkers.push(marker);	
+				let self = this;
+				
+				google.maps.event.addListener(marker, 'click', () => {				
+					self.toggleTopSlider('address');	
+					self.search = false;	 		   
+					let loc:any = {
+						lat: parseFloat(marker.message.lat),
+						lng: parseFloat(marker.message.lng),
+						place_name: marker.message.place_name,
+						zipcode: parseInt(marker.message.post_code)
+					};	
+					if(!self.flgEditPost){					
+						self.chatPrvd.request_type = "NONCUSTOM_LOCATION";
+						self.chatPrvd.custom_line_id = marker.message.id;
+					}
+					self.setCustomAddressOnMap(loc); 
+				}); 
+			
+			}
+			this.map.setCenter(new google.maps.LatLng(parseFloat(parameterData.lat), parseFloat(parameterData.lng)));
+			this.addMarker();	
+			this.fitMapToBound();
 		}
-		this.map.setCenter(new google.maps.LatLng(parseFloat(parameterData.lat), parseFloat(parameterData.lng)));
-		this.addMarker();	
-		this.fitMapToBound();
 	});
   }
   
@@ -3711,7 +3755,7 @@ export class ChatPage implements DoCheck {
 			this.hideTextContainer = true;
 			this.netwrkFeed = true;
 			this.chatPrvd.postMessages = [];
-			this.contentMarginTop = "65px";
+			this.contentMarginTop = "40px";
 			this.chatPrvd.isLobbyChat = false;
 			this.chatPrvd.areaLobby=false;
 		}
@@ -3788,8 +3832,8 @@ export class ChatPage implements DoCheck {
   public getLobbyMessages(message:any):void {	
 	if(this.chatPrvd.mainBtn.getState() == 'minimised'){
 		this.chatPrvd.mainBtn.setState('normal'); 
-		console.log('normalised');
-	}else{	
+	}else{
+		this.contentMarginTop = "";		
 		this.chatPrvd.isMainBtnDisabled = true;
 		this.clearMarkers();
 		this.chatPrvd.postMessages = [];
@@ -3869,6 +3913,7 @@ export class ChatPage implements DoCheck {
 		this.chatPrvd.isMainBtnDisabled = true;
 		let message = this.chatPrvd.currentLobbyMessage;
 		let offset = 0;
+		this.netwrkCoachMarkText = false;
 		if(this.netwrkFeed){
 			offset = this.chatPrvd.postMessages.length;
 		}else{
@@ -3880,7 +3925,7 @@ export class ChatPage implements DoCheck {
 			this.netwrkFeed = true;
 			this.priNetwrkFeed = true;
 			this.chatPrvd.postMessages = [];
-			this.contentMarginTop = "65px";
+			this.contentMarginTop = "40px";
 			this.chatPrvd.isLobbyChat = false;
 			this.chatPrvd.areaLobby=false;
 		}
@@ -3953,6 +3998,70 @@ export class ChatPage implements DoCheck {
 		});		
 	});
 	
+  }
+  
+  
+  private tapForProfileChange(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
+		this.toolsPrvd.showLoader();
+		if(userRoleName){
+			if(this.slideAvatarPrvd.sliderPosition == "right"){
+				this.storage.set('slider_position','left');
+				this.slideAvatarPrvd.setSliderPosition('left');
+				this.slideAvatarPrvd.sliderPosition = "left";
+			}else{
+				this.storage.set('slider_position','right');
+				this.slideAvatarPrvd.setSliderPosition('right');
+				this.slideAvatarPrvd.sliderPosition = "right";
+			}
+			this.toolsPrvd.hideLoader();
+		}else{
+			this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
+				console.log(this.chatPrvd.currentLobbyMessage);
+				this.storage.set('lobby_message',this.chatPrvd.currentLobbyMessage);
+				this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
+				this.toolsPrvd.hideLoader();
+			}, err => {
+				console.error('tapForProfileChange > goToProfile err:', err);
+				this.toolsPrvd.hideLoader();
+			});
+		}
+       
+  }
+    
+  public getNCL(message:any,event,index){
+	let clBtn = event.currentTarget;
+	let currState = clBtn.classList.contains('down-btn')?'down':'up';
+	let paElement = clBtn.parentElement;
+	if(currState == 'down'){ // perform down action && this.currentCLLobbyIndex == null
+		this.toolsPrvd.showLoader();
+		this.chatPrvd.getNonCuctomLines(message).subscribe(res => {
+			if(res.messages.length > 0){
+				res = this.chatPrvd.organizeMessages(res.messages);
+				for (let i in res){  
+					if(parseInt(i) > 0){
+						res[i].addClass = true; 
+					}
+					this.chatPrvd.postMessages.splice(index+1,0, res[i]);
+				}			
+				clBtn.classList.add('up-btn');
+				clBtn.classList.remove('down-btn');
+				paElement.classList.add('active-cl'); 
+				this.toolsPrvd.hideLoader();
+			}else{
+				this.toolsPrvd.hideLoader();
+			}
+		}, err => {
+			clBtn.classList.add('up-btn');
+			clBtn.classList.remove('down-btn');
+			paElement.classList.add('active-cl');
+			this.toolsPrvd.hideLoader();			
+		});	
+	}else if(currState == 'up'){ // perform up action
+		paElement.classList.remove('active-cl');
+		this.chatPrvd.postMessages.splice(index+1, message.lines_count);
+		clBtn.classList.add('down-btn');
+		clBtn.classList.remove('up-btn');
+	}	
   }
 
 }

@@ -11,7 +11,8 @@
 
         <div ion-text color="bk" class="area-subhead-tip">
             <span class="subhead-container" (click)="resetFilter()">
-                <div class="flex-ch netwrk-name">
+                
+				<div class="flex-ch netwrk-name">
                     <span *ngIf="chatPrvd.holdFilter" class="username" >
                         15 Miles
                     </span>
@@ -19,15 +20,18 @@
                         All
                     </span>
                 </div>
-
+				
                 <div class="flex-ch">
                     <button ion-button class="netwrk-icon">
-                        <img class="netwrk-img" src="assets/icon/netwrk-chat.svg">
-                    </button>
+                        <!-- <img class="netwrk-img" src="assets/icon/netwrk-chat.svg"> -->
+                        <img class="netwrk-img" src="assets/icon/blue.png">
+					</button>
                 </div>
+				
                 <div class="flex-ch">
-                    <span class="netwrk-users">{{netwrkLineList.length}} </span> <ion-icon class="lobby-icon" ios="ios-close-circle" md="md-close-circle"></ion-icon>
-                </div>
+					<span class="netwrk-users">{{netwrkLineList.length}} </span> 
+					<img src="assets/icon/netwrk-chat.png" class="netwrk-chat-icon">
+				</div>
             </span>
         </div>
     </ion-toolbar>
@@ -42,49 +46,54 @@
 
 
     <div class="chat-container visible">
-       <div class="visible item-line" *ngFor="let message of netwrkLineList; let i = index" >
-	   
-            <ng-container *ngIf="user.id != message.user_id && !locked_by_user">
-                <img *ngIf="message.user" [src]="message.avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
-				
-                <img *ngIf="!message.user" [src]="message.avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)"> 
-				<!-- [src]= toolsPrvd.defaultAvatar -->
-
-                <p class="message-container">
-                    <span class="" [ngClass]="{ 'isFollowed' : message.is_followed }">
-                        <ng-container class="total-line-point"><span>Point: {{message.points}}</span>, <span *ngIf="message.users_count">{{message.users_count}}</span> <span *ngIf="!message.users_count">0</span> Number of people in net </ng-container>
-                    </span>
-
-                    <span class="location" (click)="openLineLobby(message)">
-                        <ng-container>
-                            {{ message.place_name }}
-                        </ng-container>
-                    </span>
-
-                    <ng-container>
-                        <div (click)="openLineLobby(message)">{{ message.text }} <span class="text-connected" *ngIf="message.is_followed">(Connected..)</span></div>
-                    </ng-container>
-
-                    <ng-container class="username" *ngIf="message.user">
-                        <div (click)="openLineLobby(message)" *ngIf="message.public">
-                            {{ message.title }}
-                        </div >
-                        <div (click)="openLineLobby(message)" *ngIf="!message.public">
-                            {{ message.role_name }}
-                        </div>
-                    </ng-container>
-
-                    <span class="message-date">{{ message.dateStr }}</span>
+       <div class="visible item-line" *ngFor="let message of netwrkLineList; let i = index" >  
+		<div [ngClass]="{ 'active-cl' : message.addClass }"> 	
+            <ng-container ><!-- *ngIf="user.id != message.user_id && !locked_by_user" -->
+                <img [src]="message.avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
+			    <p class="message-container" [ngStyle]="{'min-height': message.message_type=='CUSTOM_LOCATION'?'80px':''}">
+				  <span class="location" (click)="openLineLobby(message)">
+					<ng-container>
+						{{ message.place_name }}
+					</ng-container>
+				  </span>
+				  <ng-container>  <!-- *ngIf="message.user" -->
+					<div class="username" (click)="openLineLobby(message)" *ngIf="message.public">
+						{{ message.title }}
+					</div >
+					<div class="username" (click)="openLineLobby(message)" *ngIf="!message.public">
+						{{ message.role_name }}
+					</div>
+				  </ng-container>
+				  <ng-container>
+					<div (click)="openLineLobby(message)" class="description">
+					{{ message.text }} 
+					<span class="text-connected" *ngIf="message.is_followed">(Connected..)</span>
+					</div>
+				  </ng-container>                    
+				  <span class="message-date">{{ message.dateStr }}</span>
                 </p>
 
-                <button ion-button class="feedback-button" color="bk" item-end (click)="followNearByNetwork(message)" [ngClass]="{ 'isFollowed' : message.is_followed }" *ngIf="user.id != message.user_id">
-                    <ion-icon ios="ios-add" md="md-add"></ion-icon>
+                <button ion-button class="feedback-button" color="bk" item-end (click)="followNearByNetwork(message)" *ngIf="user.id != message.user_id">
+				<!-- [ngClass]="{ 'isFollowed' : message.is_followed }"  -->
+                    <ion-icon ios="ios-add" md="md-add" *ngIf="!message.is_followed"></ion-icon>
+                    <ion-icon ios="ios-remove" md="md-remove" *ngIf="message.is_followed"></ion-icon>					
                 </button>
 
                 <button ion-button class="feedback-button" color="bk" item-end (click)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id">
                     <ion-icon ios="ios-settings" md="md-settings"></ion-icon>
                 </button>
+				
+				<button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)" *ngIf="message.messageable_type!='Reply'">
+					Share
+				</button>
+			
+				<button ion-button class="feedback-button down-btn ncl-btn" color="bk" item-end (click)="getNCL(message,$event,i)" *ngIf="message.message_type=='CUSTOM_LOCATION' && message.lines_count">
+                   <ion-icon ios="ios-arrow-down" md="ios-arrow-down" class="arrow-down" ></ion-icon>
+				   <ion-icon ios="ios-arrow-up" md="ios-arrow-up" class="arrow-up" ></ion-icon>
+                </button>
+
             </ng-container>
+			</div>
         </div>
     </div>
 

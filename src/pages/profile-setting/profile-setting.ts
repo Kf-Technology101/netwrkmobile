@@ -91,7 +91,7 @@ export class ProfileSettingPage {
 
   public logOut():void {
     this.auth.logout().then(res => {
-      console.log('logout res:', res);
+		this.storage.rm('slider_position');
         this.storage.rm('social_auth_data');
         this.app.getRootNav().setRoot(LogInPage);
         this.storage.rm('auth_data');

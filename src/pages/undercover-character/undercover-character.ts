@@ -84,7 +84,7 @@ export class UndercoverCharacterPage {
 			this.firstTimeHero = false;
 			this.storage.set('first_time_hero', this.firstTimeHero);
 		  }
-		  console.log('setPerson data',data);
+		
 		  this.toolsPrvd.pushPage(ProfilePage, data);
 		}, err => {
 		  this.toolsPrvd.popPage();
@@ -94,6 +94,7 @@ export class UndercoverCharacterPage {
   }
 
   private goBack() {
+	this.settings.isCreateLine = false;
 	if(this.storage.get('edit-post')){
 		this.storage.set('edit-post','');
 		this.navCtrl.popTo(this.navCtrl.getByIndex(this.navCtrl.length() - 3));

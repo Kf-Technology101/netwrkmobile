@@ -1,112 +1,130 @@
-
 <ion-header class="ios-head">
-    <ion-toolbar>
+    <ion-toolbar *ngIf="!showContactsStep" class="connect-header">
         <ng-container>
             <ion-row class="loading bg-text" align-items-center>
                 <ion-col text-center>
-                    <h1 ion-text color="white">Hello, here are the networks near you.</h1>
+                    <h1 ion-text color="white">Hello, what are you wanting to do?</h1>
                 </ion-col>
             </ion-row>
         </ng-container>
-
-        <div ion-text color="bk" class="area-subhead-tip">
-            <span class="subhead-container" (click)="resetFilter()">
-                
-				<div class="flex-ch netwrk-name">
-                    <span *ngIf="chatPrvd.holdFilter" class="username" >
-                        15 Miles
-                    </span>
-                    <span *ngIf="!chatPrvd.holdFilter" class="username">
-                        All
-                    </span>
-                </div>
-				
-                <div class="flex-ch">
-                    <button ion-button class="netwrk-icon">
-                        <!-- <img class="netwrk-img" src="assets/icon/netwrk-chat.svg"> -->
-                        <img class="netwrk-img" src="assets/icon/blue.png">
-					</button>
-                </div>
-				
-                <div class="flex-ch">
-					<span class="netwrk-users">{{netwrkLineList.length}} </span> 
-					<img src="assets/icon/netwrk-chat.png" class="netwrk-chat-icon">
-				</div>
-            </span>
-        </div>
-    </ion-toolbar>
+	</ion-toolbar>
+	
+	<ion-toolbar *ngIf="showContactsStep"  class="contact-header">
+		<ng-container>
+            <ion-row class="loading bg-text" align-items-center>
+                <ion-col text-center>
+                    <h1 ion-text>Who should it be sent to?</h1>
+                </ion-col>
+            </ion-row>
+        </ng-container>
+	</ion-toolbar>
 </ion-header>
 
-<ion-content class="connect arealist content"  no-bounce>
+<ion-content class="content"  no-bounce [ngClass]="{'connect-content':!showContactsStep, 'contact-content':showContactsStep }">
 
-    <!--Loader on swap-->
-    <ion-refresher (ionRefresh)="refreshChat($event)">
-        <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
-    </ion-refresher>
+<div *ngIf="!showContactsStep">
+	<div class="chat-container visible">
+		<div>
+			<p>I want to <button (tap)="show_activity()" class="location-btn">{{activitySelected}}</button></p>		
+			<p>At <button class="location-btn" (tap)="select_loaction()">{{locationSelected}}</button></p> 
+		</div>
+	</div>
+</div>
 
+<div *ngIf="showContactsStep" class="contacts-div">
+	<div class="chat-container visible">
+	
+		<div class="error" *ngIf="error_txt != ''">{{error_txt}}</div> 
+		<div class="container-title">
+			Communities 
+		</div>
+		<ng-container *ngFor="let post of posts">
+		  <ion-row class="post" [ngClass]="{'new-community':newlyAdded != null && newlyAdded.id == post.id}">
+			<div class="post-cont">
+			  <img [src]="post.avatar_url" class="chat-avatar conversation"
+				  (error)="chatPrvd.updateAvatarUrl($event)">
 
-    <div class="chat-container visible">
-       <div class="visible item-line" *ngFor="let message of netwrkLineList; let i = index" >  
-		<div [ngClass]="{ 'active-cl' : message.addClass }"> 	
-            <ng-container ><!-- *ngIf="user.id != message.user_id && !locked_by_user" -->
-                <img [src]="message.avatar_url" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
-			    <p class="message-container" [ngStyle]="{'min-height': message.message_type=='CUSTOM_LOCATION'?'80px':''}">
-				  <span class="location" (click)="openLineLobby(message)">
-					<ng-container>
-						{{ message.place_name }}
-					</ng-container>
-				  </span>
-				  <ng-container>  <!-- *ngIf="message.user" -->
-					<div class="username" (click)="openLineLobby(message)" *ngIf="message.public">
-						{{ message.title }}
-					</div >
-					<div class="username" (click)="openLineLobby(message)" *ngIf="!message.public">
-						{{ message.role_name }}
-					</div>
-				  </ng-container>
-				  <ng-container>
-					<div (click)="openLineLobby(message)" class="description">
-					{{ message.text }} 
-					<span class="text-connected" *ngIf="message.is_followed">(Connected..)</span>
-					</div>
-				  </ng-container>                    
-				  <span class="message-date">{{ message.dateStr }}</span>
-                </p>
-
-                <button ion-button class="feedback-button" color="bk" item-end (click)="followNearByNetwork(message)" *ngIf="user.id != message.user_id">
-				<!-- [ngClass]="{ 'isFollowed' : message.is_followed }"  -->
-                    <ion-icon ios="ios-add" md="md-add" *ngIf="!message.is_followed"></ion-icon>
-                    <ion-icon ios="ios-remove" md="md-remove" *ngIf="message.is_followed"></ion-icon>					
-                </button>
-
-                <button ion-button class="feedback-button" color="bk" item-end (click)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id">
-                    <ion-icon ios="ios-settings" md="md-settings"></ion-icon>
-                </button>
-				
-				<button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)" *ngIf="message.messageable_type!='Reply'">
-					Share
-				</button>
-			
-				<button ion-button class="feedback-button down-btn ncl-btn" color="bk" item-end (click)="getNCL(message,$event,i)" *ngIf="message.message_type=='CUSTOM_LOCATION' && message.lines_count">
-                   <ion-icon ios="ios-arrow-down" md="ios-arrow-down" class="arrow-down" ></ion-icon>
-				   <ion-icon ios="ios-arrow-up" md="ios-arrow-up" class="arrow-up" ></ion-icon>
-                </button>
-
-            </ng-container>
+			  <div class="username">
+				<ng-container>
+				  {{ post.title}}
+				</ng-container>
+				<ion-checkbox [disabled]="isDisabled && selectedCommunity[0].id != post.id" (ionChange)="selectMe(post,$event)" [checked]="newlyAdded && newlyAdded.id == post.id"  color="dark"></ion-checkbox>
+			  </div> 
 			</div>
-        </div>
-    </div>
+		  </ion-row>		
+		</ng-container>
+		
+		<ion-row class="post" >
+			<div class="post-cont">
+			  <img src="assets/icon/netwrk-chat.svg" class="chat-avatar conversation"
+				  (error)="chatPrvd.updateAvatarUrl($event)">
+			  <div class="username">
+				<ng-container>
+				  Create a new community
+				</ng-container>
+				<ion-checkbox color="dark" [disabled]="isDisabled" (ionChange)="createNewCommunity($event)" [checked]="isCreateCheck"> </ion-checkbox> 
+			  </div> 
+			</div>
+		</ion-row>		
+		
+		<div class="container-title top-margin-20">
+			Friends
+		</div>
+		
+		<ng-container *ngFor="let person of contacts">
+		  <ion-row class="post" >
+			<div class="post-cont">
+			  <div class="username">
+				<ng-container>
+				  #{{ person.name.formatted}}
+				</ng-container>
+				<ion-checkbox color="dark" (ionChange)="selectPerson(person,$event)" ></ion-checkbox>
+			  </div>
+			  <div>
+				{{person.phoneNumbers[0].value}}
+			  </div>			  
+			</div>
+		  </ion-row>		
+		</ng-container>
+	</div>
+</div>
 
-    <!--Infinite Loader on bottom scroll-->
-    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
-        <ion-infinite-scroll-content></ion-infinite-scroll-content>
-    </ion-infinite-scroll>
+		
+<div class="virtual-custom-scroll-wrapper" [ngStyle]="{'opacity': showActivitiesContainer && !showContactsStep?'1':'0'}">
+	<div class="virtual-custom-scroll-container">  
+		<ion-scroll [virtualScroll]="activity" approxItemHeight="3px" class="activity-list"> 
+		  <ion-item *virtualItem="let activity_item">
+			<button class="activity-btn" (tap)="select_activity(activity_item)">{{activity_item.itemName}}</button>
+		  </ion-item>
+		</ion-scroll>
+	</div>
+</div>
+
+
 
 </ion-content>
 
+ 
 
-<ion-footer>
-  <button ion-button color="bk" class="main-action-btn medium transparent" outline (tap)="goToLanding()">
-       <!--<ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>-->
-  </button>
+<ion-footer *ngIf="!showActivitiesContainer">
+	<button class="save-btn" (tap)="showContacts()" *ngIf="!showContactsStep">
+       <img  src="assets/icon/netwrk-chat.png" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+	</button>
+  
+	<button ion-button color="bk" class="main-action-btn medium transparent" outline (tap)="goToLanding()" [ngClass]="{'bottom-margin':showContactsStep}" *ngIf="!showContactsStep">
+	  <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
+	</button>
+	
+	<button ion-button class="main-action-btn medium forward" outline (tap)="sendMessage()" [ngClass]="{'bottom-margin':showContactsStep}" *ngIf="showContactsStep">
+	   <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
+	</button>
+	
+	<ion-input #textInput id="textInput" type="text" class="message-input" [placeholder]="placeholderText" *ngIf="showContactsStep">
+	</ion-input>
+	
+	<button ion-button color="bk" class="back-btn" outline (tap)="goToLanding()" *ngIf="showContactsStep">
+	   Back
+	</button>
+	
+	
 </ion-footer>

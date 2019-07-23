@@ -4,6 +4,7 @@ import { CameraPreviewOptions, CameraPreview } from '@ionic-native/camera-previe
 import { File } from '@ionic-native/file';
 import { Tools } from '../../providers/tools';
 import { Camera } from '../../providers/camera';
+import { Chat } from '../../providers/chat';
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
 import { LocalStorage } from '../../providers/local-storage';
 // Animations
@@ -59,6 +60,7 @@ export class CameraPage {
     public navParams: NavParams,
     private cameraPreview: CameraPreview,
     public cameraPrvd: Camera,
+    public chatPrvd: Chat,
     public tools: Tools,
     private base64ToGallery: Base64ToGallery,
     private storage: LocalStorage,
@@ -131,6 +133,9 @@ export class CameraPage {
 			res => {
 				if (this.cameraPrvd.takenPictures.length < 3) {
 					this.cameraPrvd.pushPhoto(res);
+					this.chatPrvd.appendContainer.show();
+					this.chatPrvd.appendContainer.setState('on_append');
+					this.chatPrvd.updateAppendContainer();
 				}
 			}, err => {
 				this.tools.showToast(JSON.stringify(err));

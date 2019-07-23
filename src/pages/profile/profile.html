@@ -232,7 +232,7 @@
                      [innerHTML]="post.text_with_links">
 					</p>
 
-                    <button ion-button class="remove-message-btn" (tap)="choosePerson(post)">
+                    <button ion-button class="remove-message-btn" (tap)="editSetting(post.id)"  *ngIf="ownProfile && post.undercover">
                       <img src="assets/icon/1.png" style="width:18px;">
                     </button>
 

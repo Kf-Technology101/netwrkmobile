@@ -1,29 +1,21 @@
-
-
 <ion-content no-bounce>
     <ion-row class="hold-text">
         <ion-col text-center>
-              <img class="netwrk-icon" src="assets/images/wifi.png">
               <p ion-text class="text-bk1">
-                  Hold down below to see networks nearby
-              </p>
-              <!--<p ion-text class="text-bk2">-->
-                  <!--Follow then connect to join. Your points (accumulated from being awesome) add to the network total!-->
-              <!--</p>-->
-              <!--<p ion-text class="text-bk3">-->
-                 <!--The most popular networks are shown more often!-->
-              <!--</p>-->
+                  Hold down to send a local message
+              </p>              
         </ion-col>
     </ion-row>
 </ion-content>
 
 
 <ion-footer>
-    <!--<div class="tip tail-bottom">-->
-        <!--Hold for net to look for networks nearby-->
-    <!--</div>-->
-
     <button ion-button color="bk" class="main-action-btn medium transparent" outline (press)="showNetwrklist()" (tap)="showNetwrklist()">
-        <!--<ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>-->
+        <!-- <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon> -->
     </button>
+	
+	<div class="tail-bottom">
+        We will need your contacts so you can send a quick and easy invite to anyone. We do not save them nor is it possible for us to share them.
+    </div>
+	
 </ion-footer>

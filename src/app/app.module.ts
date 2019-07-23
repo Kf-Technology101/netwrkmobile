@@ -24,6 +24,8 @@ import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
 import { SignUpFacebookPage } from '../pages/sign-up-facebook/sign-up-facebook';
 import { HoldScreenPage } from '../pages/hold-screen/hold-screen';
 
+import { HoldMapPage } from '../pages/hold-map/hold-map';
+
 import { ProfilePage } from '../pages/profile/profile';
 import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
 
@@ -44,6 +46,7 @@ import { FeedbackModal } from '../modals/feedback/feedback';
 import { BlacklistModal } from '../modals/blacklist/blacklist';
 import { ArealistModal } from '../modals/arealist/arealist';
 import { MapsModal } from '../modals/maps/maps';
+import { CustomModal } from '../modals/custom/custom';
 
 // Services
 import { Api } from '../providers/api';
@@ -108,6 +111,7 @@ let declarations_pages = [
   HoldScreenPage,
 
   ProfilePage,
+  HoldMapPage,
   ProfileSettingPage,
   
   LinePage,
@@ -117,6 +121,7 @@ let declarations_pages = [
   FeedbackShareModal,
   FeedbackModal,
   MapsModal,
+  CustomModal,
   BlacklistModal,
   ArealistModal,
 
@@ -143,6 +148,7 @@ let pages = [
   HoldScreenPage,
 
   ProfilePage,
+  HoldMapPage,
   ProfileSettingPage,
   
   LinePage,
@@ -152,6 +158,7 @@ let pages = [
   FeedbackShareModal,
   FeedbackModal,
   MapsModal,
+  CustomModal,
   BlacklistModal,
   ArealistModal,
 

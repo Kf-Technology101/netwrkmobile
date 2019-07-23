@@ -1,0 +1,9 @@
+<button (tap)="closeModal()" class="close-map">
+  <ion-icon ios="ios-arrow-back" md="md-arrow-back"></ion-icon>
+</button>
+
+<ion-input [(ngModel)]="inputElement" id="textInput" type="text" class="custom-input" [placeholder]="placeholderText"></ion-input>
+<div class="error" *ngIf="isError">Add custom activity</div>
+<button (tap)="saveModal()" class="okay-btn">
+  Okay
+</button>

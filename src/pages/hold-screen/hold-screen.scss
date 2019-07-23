@@ -8,9 +8,10 @@ page-hold {
     }
     .text-bk1 {
       color: #5b87aa;
-      font-size: 20px;
+      font-size: 30px;
       font-weight: bold;
-      margin-top: 10px;
+      margin-top: 90px;
+	  padding: 0 20px;
     }
     .text-bk2 {
       color: #5b87aa;
@@ -24,34 +25,41 @@ page-hold {
     }
   }
 
-  .footer .tip {
-    color: #fff;
-    font-size: 15px;
-    padding: 3px 10px;
-    bottom: 190px;
-    width: auto;
-    z-index: 2;
-    display: inline;
+  .footer{
+	.tip {
+		color: #fff;
+		font-size: 15px;
+		padding: 3px 10px;
+		bottom: 190px;
+		width: auto;
+		z-index: 2;
+		display: inline;
+	}	
+	.tip::before {
+		content: '';
+		position: absolute;
+		display: block;
+		width: 40px;
+		background: #5b87aa;
+		top: -4px;
+		height: 15px;
+		left: 0;
+		right: 0;
+		margin: auto;
+		border-radius: 50%;
+		z-index: -1;
+	}  
+	
+	.tail-bottom {
+		top: 13px;
+		color: #5b87aa;
+		padding: 0 30px;
+		text-align: justify;
+		font-size: 12px;
+		margin-bottom: 18px;
+	}
   }
-  .footer .tip.tail-bottom::before {
-    width: 60px;
-    top: 13px;
-  }
-  .footer .tip::before {
-    content: '';
-    position: absolute;
-    display: block;
-    width: 40px;
-    background: #5b87aa;
-    top: -4px;
-    height: 15px;
-    left: 0;
-    right: 0;
-    margin: auto;
-    border-radius: 50%;
-    z-index: -1;
-  }
-
+  
   .main-action-btn {
     .icon {
       &.glowing-icon {

@@ -4,14 +4,14 @@
         <div class="city-bg top"></div>
       </div>
   <ion-grid [@fadeState]="controls.state" [hidden]="controls.hidden" class="login-grid">
-    <ion-row>
+    <!-- <ion-row>
       <ion-col text-center>
         <p ion-text color="bk" class="login-caption">
-          Naturally, <!-- <b> -->to see the networks around you<!-- </b> -->, you must share your location.
+          Naturally, to see the networks around you, you must share your location.
           No one can see where you are or what is surrounding you.
         </p>
       </ion-col>
-    </ion-row>
+    </ion-row> -->
 
     <ion-row class="top-form-row">
       <ion-col>
@@ -40,16 +40,22 @@
     </ion-row>
   </ion-grid>
 
-  <button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()"
-    ion-button color="bk" class="main-action-btn medium has-label"
-    (tap)="goToSignUp()" outline id="main-btn">
-  </button>
 
-  <div *ngIf="chatPrvd.mainBtn.getState() == 'centered'" (tap)="goToSignUp()" class="tip">Tap to get started</div>
+  <div class="tip">Tap to get started</div>
+  
+  <button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()" ion-button color="bk" class="main-action-btn medium has-label"(tap)="goToSignUp()" outline id="main-btn"> </button>
 
+  <div class="tip text-note">No one can see your location.</div>
+  
+  
 </ion-content>
 
 <ion-footer>
+  <div  class="login-text-note">
+	<p ion-text color="bk">
+		However we do need location to show you nearby communities and notifications for updates from friends. Please accept notifications and location sharing while using the app.
+	</p>
+  </div>
   <ion-item class="transparent login-btns-container">
     <button ion-button default (tap)="toggleLoginForm()"
             round item-left color="bk" [@fadeState]="controls.state"

@@ -20,6 +20,7 @@ page-log-in {
     font-size: 0.75em;
   }
   .main-action-btn {
+	top:-4% !important;
     z-index: 3;
   }
   .row.top-form-row {
@@ -87,13 +88,12 @@ page-log-in {
 
   .footer {
     .login-btns-container {
-      padding: 0 20px;
+      padding: 0px;
       height: 80px;
       [item-left], [item-right] {
         margin: 0;
       }
       .item-inner {
-        padding-right: 0;
         border: none;
       }
       button {
@@ -114,14 +114,21 @@ page-log-in {
         }
       }
     }
+	.login-text-note{
+		text-align: justify;
+		padding: 0 21px;
+		p{
+			margin: 0;
+		}
+	}
   }
   .tip {
     z-index: 99;
     position: absolute;
     left: 0;
     right: 0;
-    top: calc(34%);
-    font-size: 23px;
+    top: calc(33%);
+    font-size: 25px;
     padding: 4px;
     width: 100%;
     cursor: pointer;
@@ -134,6 +141,11 @@ page-log-in {
       height: 15px;
       top: -6px;
     }
+	&.text-note{
+	  top: 56%;
+	  font-size: 20px;
+	  font-weight: 500;
+	}
   }
 
   .transparent {

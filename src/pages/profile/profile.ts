@@ -9,6 +9,7 @@ import { ProfileSettingPage } from '../profile-setting/profile-setting';
 import { HoldScreenPage } from '../hold-screen/hold-screen';
 import { NetwrklistPage } from '../netwrklist/netwrklist';
 import { ChatPage } from '../chat/chat';
+import { LinePage } from '../linelist/linelist';
 
 // Providers
 import { Profile } from '../../providers/profile';
@@ -153,6 +154,7 @@ export class ProfilePage {
   public editMessage(messageId:number):void{
 	this.toolsPrvd.showLoader();
 	this.storage.set("edit-post", messageId);
+	this.storage.set("edited-page", 'profile');
 	this.toolsPrvd.pushPage(ChatPage);
 	this.toolsPrvd.hideLoader(); 
   }
@@ -430,4 +432,26 @@ export class ProfilePage {
     this.profile.user.role_name = null;
   }
 
+  public editSetting(messageId:number):void{
+	console.log(messageId);
+	this.toolsPrvd.showLoader();
+	this.chatPrvd.getMessageIDDetails(messageId).subscribe(res => {	
+		let message = res.message;
+		this.chatPrvd.postMessages=[];
+		let data:any = {
+			lat: parseFloat(message.lat),
+			lng: parseFloat(message.lng) 
+		};
+		this.chatPrvd.gps.coords = data;	
+		this.chatPrvd.gps.place_name = message.place_name;
+		this.storage.set("edit-post", messageId);	
+		this.storage.set("edited-page", 'profile');
+		this.storage.set("chat_zip_code", message.post_code);	
+		this.settings.isNewlineScope = false;
+		this.settings.isCreateLine = true;	
+		this.toolsPrvd.pushPage(LinePage);	
+		this.toolsPrvd.hideLoader(); 
+	});	
+  }
+  
 }

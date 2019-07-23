@@ -1,0 +1,48 @@
+page-hold-map {
+	.content{
+		background:transparent;
+		position:absolute;
+		padding:0px;
+		height: 100px;
+		top: 15px;	
+		
+		.scroll-content{
+			padding:0px !important;
+			margin-bottom: 0px !important;
+			.item{
+				background-color: transparent;
+			}
+			.item-inner{
+				border-bottom:0px;
+			}
+		}
+		.searchbar-ios {
+		  background: transparent;
+		  .searchbar-input{
+			padding: 0 28px;
+			border-radius: 5px;
+			height: 40px;
+			font-size: 1.4rem;
+			font-weight: 400;
+			color: #000;
+			background-color: #fff;
+			color: #5b87aa;
+		  }
+		  
+		  .searchbar-search-icon{
+			top: 13px;
+		  }
+		}
+	}
+	
+	.back-btn{
+		color: #5b87aa;
+		background-color: transparent;
+		float:right;
+		margin-bottom:15px;
+		margin-left: 10px;
+	}
+	
+	
+	
+}

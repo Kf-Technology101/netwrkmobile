@@ -1,0 +1,21 @@
+<div id="mapElement" #mapElement style="height:100%"></div>
+
+<ion-header style="background:transparent">
+</ion-header>
+
+
+<ion-content padding >
+	<ion-item> 
+        <ion-searchbar #searchbar placeholder="Enter address of a space near you" [(ngModel)] = "searchModel" name="searchModelName"></ion-searchbar>	
+	</ion-item>
+</ion-content>
+
+<ion-footer>
+  <button ion-button color="bk" class="main-action-btn medium transparent" outline (tap)="goToHoldPage(true)">
+       <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"> </ion-icon>
+  </button>
+  
+  <button class="back-btn" (tap)="goToHoldPage(false)">
+       No, I'll move elsewhere
+  </button>
+</ion-footer>

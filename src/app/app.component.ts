@@ -73,7 +73,7 @@ export class MyApp {
 			}, (nomatch) => { 
 				this.init();
 				// this.toolsPrvd.showSplashScreen(); 
-				// this.initCheckLogin(137);  
+				// this.initCheckLogin(255);  
 				// this.toolsPrvd.showToast('no match subscribeRoutes');
 			});
 		});
@@ -144,8 +144,8 @@ export class MyApp {
         let authData = this.authPrvd.getAuthData();
 		this.getSimInfo();
         if (authType && authData) {
-		  this.chatPrvd.getMessageIDDetails(messageParamsId).subscribe(res => {	 
-			this.app.getRootNav().setRoot(ChatPage, {message:res.message});			
+		  this.chatPrvd.getMessageIDDetails(messageParamsId,true).subscribe(res => {	
+			this.app.getRootNav().setRoot(ChatPage, {message:res.message});	
 		  });
 		}else{
 			this.toolsPrvd.hideSplashScreen();

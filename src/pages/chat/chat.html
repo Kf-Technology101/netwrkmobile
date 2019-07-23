@@ -1,23 +1,54 @@
 <div id="mapElement" #mapElement ></div>
 
 <ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat && !chatPrvd.areaLobby }">  
-  <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover' && !chatPrvd.areaLobby && !netwrkFeed">
+  <ion-toolbar *ngIf="isUndercover && chatPrvd.getState() == 'undercover' && !chatPrvd.areaLobby && !netwrkFeed && !settings.isNewlineScope">
   <!--<ion-toolbar>-->
+	
+	<!-- <span class="info">
+	  <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username" >
+		{{ user.name }}
+	  </span>
+	  <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
+		{{ user.role_name }}
+	  </span> 
+	</span>  -->
+	
     <div class="drag-container profile-dragger" [@sliderState]="topSlider.getState()">
-      <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)">
+      <div class="dragline" (click)="goToProfile(user.id, user.profileTypePublic, user.role_name)" [ngClass]="{'landing-lobby': isUndercover && chatPrvd.getState() == 'undercover','area-lobby': !isUndercover && chatPrvd.getState() == 'area'}">
         <span class="info">
-          <span *ngIf="slideAvatarPrvd.sliderPosition == 'left'" class="username" >
-            {{ user.name }}
-          </span>
-          <span *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="username">
-            {{ user.role_name }}
-          </span>
-        </span>
+        </span>  
         <img src="assets/icon/slider_arrow.svg" class="arrow-ico icon">
         <img class="draggable-element" [src]="slideAvatarPrvd.sliderPosition == 'right' ? user.hero_avatar_url : user.avatar_url"
           (error)="chatPrvd.updateAvatarUrl($event)">
       </div>
     </div>
+	
+	<div ion-text color="bk" class="area-subhead-tip">
+		<span class="subhead-container" (click)="resetTopNetwrkFilter()">
+			
+			<div class="flex-ch netwrk-name">
+				<span *ngIf="chatPrvd.holdFilter" class="username" >
+					15 Miles
+				</span>
+				<span *ngIf="!chatPrvd.holdFilter" class="username">
+					All
+				</span>
+			</div>
+			
+			<div class="flex-ch">
+				<button ion-button class="netwrk-icon">
+					<!-- <img class="netwrk-img" src="assets/icon/netwrk-chat.svg"> -->
+					<img class="netwrk-img" src="assets/icon/blue.png">
+				</button>
+			</div>
+			
+			<div class="flex-ch">
+				<span class="netwrk-users">{{chatPrvd.postMessages.length}} </span> 
+				<img src="assets/icon/netwrk-chat.png" class="netwrk-chat-icon">
+			</div>
+		</span>
+	</div>
+		
 
     <button *ngIf="chatPrvd.postMessages.length == 0 && !chatPrvd.postBtn.state && !settings.isNewlineScope"
             class="side refresh-btn top-icon" (tap)="refreshChat();initLpMap()"
@@ -353,22 +384,20 @@
     </div>
 	
     <div class="message 789" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-	  <div *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' && (message.is_followed || message.user_id == user.id || message.user_id != user.id) && message.message_type !='ACCESS_REQUEST' && !chatPrvd.isLobbyChat|| chatPrvd.isLobbyChat && !message.has_expired && isUndercover && (message.message_type !='ACCESS_REQUEST' && message.messageable_type !='Network' || message.isMain) || !chatPrvd.isLobbyChat && chatPrvd.areaLobby && message.message_type !='ACCESS_REQUEST' && !message.line_locked_by_user && chatPrvd.getState() == 'area' || chatPrvd.getState() == 'area' && message.undercover && !message.has_expired && message.message_type !='ACCESS_REQUEST' && !message.line_locked_by_user && !chatPrvd.isLobbyChat" class="{{message.messageable_type == 'Reply'?'message-reply':'message-text'}}" [ngClass]="{ 'active-cl' : message.addClass }">
+	  <div *ngIf="!message.has_expired && message.undercover && chatPrvd.getState() == 'undercover' && (message.is_followed || message.user_id == user.id || message.user_id != user.id) && message.message_type !='ACCESS_REQUEST' && !chatPrvd.isLobbyChat|| chatPrvd.isLobbyChat && !message.has_expired && isUndercover && (message.message_type !='ACCESS_REQUEST' && message.messageable_type !='Network' || message.isMain) || !chatPrvd.isLobbyChat && chatPrvd.areaLobby && message.message_type !='ACCESS_REQUEST' && !message.line_locked_by_user && chatPrvd.getState() == 'area' || chatPrvd.getState() == 'area' && message.undercover && !message.has_expired && message.message_type !='ACCESS_REQUEST' && !message.line_locked_by_user && !chatPrvd.isLobbyChat" 
+	  [ngClass]="{'active-cl' : message.addClass, 'message-network' : message.messageable_type == 'Network', 'message-msg' : message.messageable_type == 'Room','message-reply':message.messageable_type == 'Reply', 'message-text':message.messageable_type == 'Room' || message.messageable_type == 'Network' }">
 	  
-		<img (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
-         src="{{loadImage(message)}}" class="chat-avatar"
-        (error)="chatPrvd.updateAvatarUrl($event)">
-		
-		
+		<img (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)" src="{{loadImage(message)}}" class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
+				
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span> 
 
         <p class="message-item message-container" (click)="openReplyLobby(message)" >
 
-            <span class="location" *ngIf="message.place_name && message.messageable_type=='Network' && !chatPrvd.areaLobby && (!chatPrvd.isLobbyChat || netwrkFeed) " (click)="normalizeMainBtn($event); viewLineLocation(message)">
+             <span class="location" *ngIf="message.place_name && message.messageable_type=='Network' && !chatPrvd.areaLobby && (!chatPrvd.isLobbyChat || netwrkFeed) " (click)="normalizeMainBtn($event); viewLineLocation(message)">
                 <ng-container >
                     {{ message.place_name }}
                 </ng-container>
-            </span>
+             </span>
 
              <span class="username" *ngIf="message.user && message.messageable_type=='Network'" (click)="normalizeMainBtn($event); openLobbyForPinned(message)">
                 <ng-container *ngIf="message.public || !message.public && !message.locked_by_user">
@@ -480,7 +509,7 @@
                 <ion-icon ios="ios-remove" md="md-remove" *ngIf="message.is_followed"></ion-icon>
             </button>
 			
-            <button ion-button class="feedback-setting-button" color="bk" item-end (tap)="goToProfile(message.user_id, message.public, message.user.role_name)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && (!chatPrvd.isLobbyChat || netwrkFeed) && message.messageable_type=='Network'">
+            <button ion-button class="feedback-setting-button" color="bk" item-end (tap)="editSetting(message.id)" [ngClass]="{ 'isFollowed' : message.is_followed }"  *ngIf="user.id == message.user_id && !chatPrvd.areaLobby && (!chatPrvd.isLobbyChat || netwrkFeed) && message.messageable_type=='Network'">
                 <ion-icon ios="ios-settings" md="md-settings"></ion-icon>
             </button>
 

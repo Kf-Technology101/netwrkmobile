@@ -62,7 +62,6 @@ export class UndercoverCharacterPage {
   }
 
   choosePerson(avatar) {
-	 console.log('Line avatar goes here::::: ',avatar);
 	 this.activePerson.name=avatar.name;
      this.activePerson.imageUrl=avatar.imageUrl;
      this.activePerson.description=avatar.description;
@@ -72,11 +71,12 @@ export class UndercoverCharacterPage {
 		if(avatar.name == "Public network"){
 			console.log('pub');
 			this.slideAvatarPrvd.setSliderPosition('left');
+			this.slideAvatarPrvd.sliderPosition = 'left';
 		}else{
 			console.log('pri');
 			this.slideAvatarPrvd.setSliderPosition('right');
+			this.slideAvatarPrvd.sliderPosition = 'right';
 		}
-		console.log(this.slideAvatarPrvd.sliderPosition);
 		this.toolsPrvd.pushPage(LinePage);
 	 }else{
 		this.undercoverPrvd.setPerson(this.activePerson).then(data => {
@@ -95,11 +95,14 @@ export class UndercoverCharacterPage {
 
   private goBack() {
 	this.settings.isCreateLine = false;
-	if(this.storage.get('edit-post')){
-		this.storage.set('edit-post','');
+	if(this.storage.get('edited-page') == "profile"){
+		this.storage.rm('edit-post');
+		this.storage.rm("edited-page");
 		this.navCtrl.popTo(this.navCtrl.getByIndex(this.navCtrl.length() - 3));
 		// this.toolsPrvd.popPage();
 	}else{
+		this.storage.rm('edit-post');
+		this.storage.rm("edited-page");
 		this.toolsPrvd.popPage();
 	}
 	// this.navCtrl.popToRoot();

@@ -1,0 +1,58 @@
+custom {
+  .close-map {
+    width: 36px;
+    height: 36px;
+    background: #5b87aa;
+    border: 1px solid #5b87aa;
+    border-radius: 2px;
+    color: #fff;
+    text-align: center;
+    line-height: 25px;
+    position: absolute;
+    z-index: 99;
+    top: 30px;
+    right: 14px;
+    font-size: 15px;
+  }
+  
+  .okay-btn{
+	width: 60px;
+    height: 36px;
+    background: #5b87aa;
+    border: 1px solid #5b87aa;
+    border-radius: 2px;
+    color: #fff;
+    text-align: center;
+    line-height: 25px;
+    z-index: 99;
+    font-size: 15px;
+    margin-left: 43%;
+    margin-right: auto;
+    margin-top: 10px;
+  }
+ 
+  .error{
+	color: #f95e64;
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 3px;
+    padding-left: 22px;
+  }
+  
+  .custom-input {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 25px;
+    border: 1px solid #5b87aa;
+    color: #5b87aa;
+    height: 50px;
+    margin-top: 20%;
+    margin-bottom: auto;
+	padding: 0 15px;
+	.text-input{
+		margin: 16px 8px 11px 0px;
+	}
+  }
+}

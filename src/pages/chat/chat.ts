@@ -297,6 +297,7 @@ export class ChatPage implements DoCheck {
   public repliesLength:number = 0;
   public nclAddedCnt: number =0;
   public currentCLLobbyIndex: number = null;
+  public isProcessing:boolean = false;
   
   public mapStyle = [
 	  {
@@ -408,6 +409,7 @@ export class ChatPage implements DoCheck {
 		  if (this.navParams.get('message')) {			  
 			this.messageParam = this.navParams.get('message');
 			this.initMap();
+			this.coachMarkText='';
 			this.openLobbyForPinned(this.messageParam);
 		  }else{
 			  this.parameterData = this.storage.get('parameterData');
@@ -417,6 +419,7 @@ export class ChatPage implements DoCheck {
 				this.chatPrvd.socketsInit();
 				this.initResponseFromGPS();
 				this.setContentPadding(false);
+				this.coachMarkText='';
 				this.openLobbyForShareLink();
 			  }
 		  }
@@ -455,6 +458,18 @@ export class ChatPage implements DoCheck {
 			  this.refreshChat();
 		  }
 	  }
+  }
+  
+  public resetTopNetwrkFilter():void{
+	if(!this.isProcessing && this.loaderState.getState() == 'off'){
+		console.log('start');
+		this.isProcessing = true;
+		this.toolsPrvd.showLoader();
+		this.chatPrvd.holdFilter = !this.chatPrvd.holdFilter;
+		this.getAndUpdateUndercoverMessages();
+	}else{
+		console.log('wait');
+	}    
   }
 
   public shareMessageToFacebook(message):void {
@@ -495,8 +510,7 @@ export class ChatPage implements DoCheck {
   }
 
   public shareLineJoinFlow(message):void {
-	  console.log(this.chatPrvd.currentLobby);
-    let alert = this.alertCtrl.create({
+	let alert = this.alertCtrl.create({
       subTitle: 'Share the line with your friends?',
       buttons: [{
         text: 'No',
@@ -510,7 +524,6 @@ export class ChatPage implements DoCheck {
                       console.log('getLocationLobbyUsers:', res);
                       this.feedbackService.pointsOnJoinLine(message.id, this.user.id);
                       if (res && res.users && res.host_id) {
-                          console.log('lobby users:', res.users);
                           this.chatPrvd.currentLobby.users = res.users;
                           this.chatPrvd.currentLobby.hostId = res.host_id;
                           this.chatPrvd.currentLobby.isAddButtonAvailable = !this.chatPrvd.isCurrentUserBelongsToChat(this.chatPrvd.currentLobby.users);
@@ -526,7 +539,8 @@ export class ChatPage implements DoCheck {
         text: 'Yes',
         handler: () => {
             alert.dismiss();
-            let subject = message.text_with_links ? message.text_with_links : '';
+			
+            let subject = message.text_with_links ? message.user.name+': '+message.text_with_links : message.user.name;
             let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
             if (this.plt.is('ios')){
                 this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
@@ -1436,8 +1450,6 @@ export class ChatPage implements DoCheck {
 		  message.dateStr = 'just now';
 		
    		  if(this.chatPrvd.request_type != "ACCESS_REQUEST" && !this.isReplyMode){
-			// this.chatPrvd.postMessages.push(message);
-			// console.log(this.chatPrvd.postMessages);
 			this.chatPrvd.postMessages.unshift(message);
 		  }else if(this.isReplyMode){
 			let messageIndex = this.chatPrvd.postMessages.indexOf(this.replyMessage)+this.repliesLength+1;
@@ -1482,7 +1494,7 @@ export class ChatPage implements DoCheck {
                       text: 'Yes',
                       handler: () => {
                           alert.dismiss();
-                          let subject = message.text_with_links ? message.text_with_links : '';
+                          let subject = message.text_with_links ? this.user.name+': '+message.text_with_links : '';
                           let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
                           if (this.plt.is('ios')){
                               this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
@@ -1619,7 +1631,6 @@ export class ChatPage implements DoCheck {
 
   private goToLegendaryList():void {
     let netwrkId = this.networkPrvd.getNetworkId();
-    console.log('this.user:', this.user);
     let legModal = this.modalCtrl.create(LegendaryModal,
     {
       netwrk_id: netwrkId,
@@ -1662,6 +1673,7 @@ export class ChatPage implements DoCheck {
     }
 
     public openLinePage():void {
+		console.log(this.gpsPrvd.coords);
         let cont0 = this.getTopSlider('address');
         cont0.setState('slideUp');
         cont0.hide();
@@ -2205,10 +2217,14 @@ export class ChatPage implements DoCheck {
                       this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
                       this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(this.chatPrvd.postMessages);
                       this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
-                  }
+					  this.isProcessing = false;
+					  this.toolsPrvd.hideLoader();
+                  }else{
+					  this.toolsPrvd.hideLoader();
+				  }
                   this.initLpMap();
 				  this.chatPrvd.isMainBtnDisabled = false;
-				  this.toolsPrvd.hideLoader();
+				 
               }else{
 				  this.chatPrvd.isMainBtnDisabled = false;
 				  this.toolsPrvd.hideLoader();
@@ -3262,7 +3278,6 @@ export class ChatPage implements DoCheck {
 		this.gpsPrvd.coords = data;
 		this.gpsPrvd.place_name = addressDetails.place_name;
 		this.storage.set('custom_coordinates', data);
-		console.log(addressDetails.zipcode);
 		this.storage.set('chat_zip_code', addressDetails.zipcode);
 		this.storage.set('place_name', addressDetails.place_name);
 		this.nearbyPlace(addressDetails);	
@@ -4063,5 +4078,28 @@ export class ChatPage implements DoCheck {
 		clBtn.classList.remove('up-btn');
 	}	
   }
-
+  
+  public editSetting(messageId:number):void{
+	console.log(messageId);
+	this.toolsPrvd.showLoader();
+	this.chatPrvd.getMessageIDDetails(messageId).subscribe(res => {	
+		let message = res.message;
+		this.chatPrvd.postMessages=[];
+		let data:any = {
+			lat: parseFloat(message.lat),
+			lng: parseFloat(message.lng) 
+		};
+		this.gpsPrvd.coords = data;	
+		this.gpsPrvd.place_name = message.place_name;
+		this.storage.set("edit-post", messageId);	
+		this.storage.set("edited-page", 'chat');
+		this.storage.set("chat_zip_code", message.post_code);	
+		this.settings.isNewlineScope=false;
+		this.settings.isCreateLine=true;	
+		this.toolsPrvd.pushPage(LinePage);	
+		this.toolsPrvd.hideLoader(); 
+	});	
+  }
+  
+  
 }

@@ -109,7 +109,7 @@ export class Profile {
   }
 
   public changeCallback(positionLeft: boolean) {
-    this.zone.run(() => {
+	this.zone.run(() => {
       if (positionLeft) {
         this.undercoverPrvd.profileType = 'public';
         this.profileTypePublic = true;
@@ -168,7 +168,6 @@ export class Profile {
 
 
   public saveNetworkName(roleName?:string) {
-
     let params: any;
     if (this.userName){
         this.tools.showLoader();
@@ -193,7 +192,7 @@ export class Profile {
   }
 
   public saveChangesOnLeave() {
-    this.slideAvatarPrvd.changeCallback = null;
+	this.slideAvatarPrvd.changeCallback = null;
     this.saveChanges();
   }
 

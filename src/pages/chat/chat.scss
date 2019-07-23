@@ -840,21 +840,23 @@ page-network-no {
 	background: transparent !important;
     position: absolute;
     top: 0;
-  
-    &.lobby-content {
+	
+	&.lobby-content {
       margin-top: 90px;
-	  
-	  img.chat-avatar {
-		margin-left: 16px !important;
-		top: -12px !important;
-	  }
-	  p.message-item.message-container {
-		margin-left: 35px !important;
-		min-height: 60px !important;
-	  }
-		
-    }
-		 
+	}
+	
+	.message-msg{
+		img.chat-avatar {
+			margin-left: 16px !important;
+			top: -12px !important;
+		}
+		p.message-item.message-container {
+			margin-left: 45px !important;
+			min-height: 60px !important;
+			padding-left: 22px;
+		}
+	}
+	
     .refresher-pulling-icon,
     .refresher-refreshing-icon {
       padding: 5px;
@@ -1064,9 +1066,9 @@ page-network-no {
           border-radius: 13px;
           background: color($colors, white);
           margin: 0;
-          margin-left: 60px;
+          margin-left: 56px;
           padding: 6px;
-          padding-left: 32px;
+          padding-left: 9px;
           // padding-right: 25px;
           margin-right: 47px;
           position: relative;
@@ -1750,6 +1752,75 @@ modal-legendaryhistory {
 
 page-chat{
 	.incognito-header{
+	    margin-top: 10px;
+		.drag-container {
+			width: 50px;
+			margin: 0 20px;	
+		}
+		.area-subhead-tip {
+			font-size: 10px;
+			text-align: center;
+			position: relative;
+			top: -14px;
+			height: 7px;
+			z-index: 99;
+			width: 170px;
+			min-width: 170px;
+			margin: 0 auto;
+			.netwrk-chat-icon{
+				width: 12px;
+			}
+			.subhead-container {
+			  display: flex;
+			  width: 170px;
+			  min-width: 170px;
+			  border-radius: 20px;
+			  border: 1px solid color($colors, bk);
+			  margin: auto;
+			  padding: 5px;
+			  flex-direction: row;
+			  align-items: center;
+			  justify-content: space-between;
+			  background-color: #fff;
+			  .flex-ch {
+				width: 30%;
+				white-space: nowrap;
+				overflow:hidden;
+				font-weight: bold;
+				.md-person-icon {
+				  background: #5b87aa;
+				}
+				.lobby-icon{
+				  position: absolute;
+				  right: 4px;
+				  top: 3px;
+				  z-index: 3;
+				  float: right;
+				  font-size: 18px;
+				}
+				.netwrk-users {
+				  float: right;
+				  margin-right: 17px;
+				}
+				.netwrk-icon {
+				  border-radius: 50%;
+				  width: 35px;
+				  height: 35px;
+				  position: absolute;
+				  border: 1px solid #5b87aa;
+				  top: -8px;
+				  left: 65px;
+				  background: #fff;
+				  padding: 0px;
+				  .netwrk-img {
+					width: 100%;
+					height: 100%;
+				  }
+				}
+			  }
+			}
+		}
+		  
 		.post-lock{
 			padding-bottom: 11px;
 			.toolbar-content{

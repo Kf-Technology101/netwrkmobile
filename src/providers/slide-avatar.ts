@@ -21,7 +21,7 @@ export class SlideAvatar {
 
   // def: start: -31  end: 129  dragline: 160
   private dStart: number = -31;
-  private dEnd: number = 129;
+  private dEnd: number = 19;
 
   private firedOnce: boolean = true;
 
@@ -59,7 +59,7 @@ export class SlideAvatar {
       console.log('checkIfHeroAvalable res:', res);
       if (res.disabled) {
         this.heroDisabled = res.disabled;
-        this.stopSliderEvents();
+        this.stopSliderEvents(); 
       }
       //if (this.storage.get('chat_state') == 'area') {
       //  this.sliderPosition = 'left';
@@ -69,12 +69,16 @@ export class SlideAvatar {
         let currentView = document.querySelector(pageTag);
         if (currentView) {
           this.selectedItem = currentView.querySelectorAll('.draggable-element')['0'];
-          //if (this.heroDisabled) {
-          //  this.setSliderPosition('left');
-          //  this.sliderPosition = 'left';
-          //}
-
-          if (this.selectedItem) {
+        
+		  if(this.selectedItem.parentElement.classList.contains('landing-lobby')){
+			this.dEnd = 19;
+		  }else{
+			this.dEnd = 129;
+		  }
+		  
+		  
+		  
+		  if (this.selectedItem) {
             clearInterval(initInterval);
             intervalCleared = true;
             if (!this.heroDisabled) {
@@ -113,7 +117,7 @@ export class SlideAvatar {
       if (this.selectedItem) {
         clearInterval(interval);
         let dragLineW = this.selectedItem.parentElement.clientWidth;
-
+		console.log('dragLineW'+dragLineW);
         if (dragLineW > 0 && this.selectedItem.offsetWidth > 0) {
           console.log(dragLineW);
 
@@ -193,7 +197,7 @@ export class SlideAvatar {
       this.selectedItem = e.target;
       let xPosxElem = this.xPos - this.xElem;
       let dEndDivTwo = this.dEnd / 2 + 3;
-      console.log(this.xPos, this.xElem)
+      console.log(this.dEnd)
 
       this.arrowIcon.style.opacity = '1';
       this.selectedItem.classList.add('transition');

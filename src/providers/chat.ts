@@ -488,7 +488,6 @@ export class Chat {
 
   public sendMessage(data: any):any {
     return new Promise((resolve, reject) => {
-		console.log("Send Message");
 		let params:any;
 	    if(data.messageable_type == 'Reply' && this.currentReplyLobbyMessage && this.currentReplyLobbyMessage.messageable_type == 'Room'){
 			params = {
@@ -496,6 +495,12 @@ export class Chat {
 				post_code: this.localStorage.get('chat_zip_code'),
 				reply_to_message_id: this.currentReplyLobbyMessage.id
 			};  
+		}else if(data.message_ids){
+			params = {
+				message: data,
+				post_code: this.localStorage.get('chat_zip_code'),
+				message_ids: data.message_ids
+			};
 		}else{
 			params = {
 				message: data,
@@ -504,45 +509,51 @@ export class Chat {
 			}; 
 		}
 
-	  params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
-      params.message.lat = this.gps.coords.lat;
-      params.message.lng = this.gps.coords.lng; 
+		params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
+		params.message.lat = this.gps.coords.lat;
+		params.message.lng = this.gps.coords.lng; 
 
-	  if (params.room_id) params.message.network_id = null;
-	  if(this.request_type != '' || this.request_type != null){
-		params.message.message_type = this.request_type;
-	  }
+		if (params.room_id) params.message.network_id = null;
+		if(this.request_type != '' || this.request_type != null){
+			params.message.message_type = this.request_type;
+		}
 	  
-	  params.message.custom_line_id = this.custom_line_id;
+		params.message.custom_line_id = this.custom_line_id;
 	  
-	  this.request_type = null;
-	  this.custom_line_id = null;
+		this.request_type = null;
+		this.custom_line_id = null;
 
-      if (data.images && data.images.length > 0) {
-		this.sendMessageWithImage(params, data.images).then(res => {
-          console.log('[sendMessageWithImage] res:', res);
-          resolve(res);
-        }).catch(err => reject(err));
-      } else {
-        this.sendMessageWithoutImage(params).subscribe(res => {
-			if(res.messageable_type == "Network"){
-				if(data.line_avatar.length > 0){
-					this.updateAvatar(res.id, data.line_avatar, null, 'avatar').then(result => {
-						this.updatedLineAvatarData = result;
-						resolve(res);
-					}, error => {
-						this.tools.hideLoader();
-						console.error('updateAvatar ERROR', error);
-						reject(error);
-					});
-				}else{
-					resolve(res);
-				}
-			}else{
+		if (data.images && data.images.length > 0) {
+			this.sendMessageWithImage(params, data.images).then(res => {
 				resolve(res);
+			}).catch(err => reject(err));			
+		} else {
+			if(params.message_ids){
+				this.shareMessages(params).subscribe(res => {
+					resolve(res);
+				}, err => reject(err));
+			}else{
+				this.sendMessageWithoutImage(params).subscribe(res => {
+					if(res.messageable_type == "Network"){
+						if(data.line_avatar.length > 0){
+							this.updateAvatar(res.id, data.line_avatar, null, 'avatar').then(result => {
+								this.updatedLineAvatarData = result;
+								resolve(res);
+							}, error => {
+								this.tools.hideLoader();
+								console.error('updateAvatar ERROR', error);
+								reject(error);
+							});
+						}else{
+							resolve(res);
+						}
+					}else{
+						resolve(res);
+					}
+				}, err => reject(err));
 			}
-		}, err => reject(err));
-      }
+          
+		}
     });
   }
 
@@ -663,6 +674,19 @@ export class Chat {
     if (params) Object.assign(data, params);
 
     let seq = this.api.get('messages/profile_messages', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+  
+  public getFollowedAndOwnLine(params: any):any {
+	//http://18.188.223.201:3000/api/v1/messages/profile_communities?limit=20&offset=0
+    let data: any = {
+      limit: 100
+	};
+	
+    if (params) Object.assign(data, params);
+
+    let seq = this.api.get('messages/profile_communities', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
   }
@@ -802,6 +826,14 @@ export class Chat {
     let seqMap = seq.map(res => res.json());
 	return seqMap;
   }
+  
+  private shareMessages(data: any) {
+    data.message.images = [];
+    let seq = this.api.post('messages/share', data).share();
+    let seqMap = seq.map(res => res.json());
+	return seqMap;
+  }
+  
 
 
   public updateAvatar(id:any, files: any, data?: any, fieldName?: string) {
@@ -1144,9 +1176,15 @@ export class Chat {
   
   
   /*Fetch single record wth unique message_id */
-  public getMessageIDDetails(message_id:any):any {
-	  // http://18.188.223.201:3000/api/v1/messages/584
-      let mess = this.api.get('messages/' + message_id ).share();
+  public getMessageIDDetails(message_id:any,isShareLink:boolean=false):any {
+	  // http://18.188.223.201:3000/api/v1/messages/7
+	  let uri:any;
+	  if(isShareLink){
+		uri = 'messages/' + message_id + '?grant_access=true';
+	  }else{
+		uri = 'messages/' + message_id;
+	  }
+	  let mess = this.api.get(uri).share();
       let messMap = mess.map(res => res.json());
       return messMap;
   }

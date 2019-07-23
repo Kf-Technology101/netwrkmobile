@@ -82,13 +82,11 @@ export class Auth {
     }
 
     info.user[accountInfo.type] = accountInfo.login;
-
     let time = new Date().getTime();
     switch (accountInfo.type) {
       case 'email': info.user['phone'] = time; break;
       case 'phone': info.user['email'] = time + '@mail.com'; break;
     }
-
     let seq = this.api.post('registrations', info).share();
     seq.map(res => res.json()).subscribe(
       res => this.saveAuthData(res, 'email'),

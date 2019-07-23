@@ -260,7 +260,6 @@ export class LinePage {
         public videoservice: VideoService,
         public feedbackService: FeedbackService
         ) {
-			console.log('[Line Page]');
 			this.chatPrvd.isLandingPage = false;
 			this.user = this.authPrvd.getAuthData();
 			this.bottomMargin="27%";
@@ -547,7 +546,7 @@ export class LinePage {
 				return false;
 			}
 			 
-			// this.saveNetworkName();
+		
 			let lineRole = '';
             if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
                 publicUser=true; 
@@ -556,7 +555,6 @@ export class LinePage {
 			}
 			
 			this.user = this.authPrvd.getAuthData();
-			console.log(this.user);
 
             if (this.cameraPrvd.takenPictures) images = this.cameraPrvd.takenPictures;
 
@@ -566,26 +564,28 @@ export class LinePage {
 			let lineAvtr = this.setting.lineAvatar;
 			// alert('editMessage : '+this.editPostId)
 			this.storage.set('edit-post','');
-            messageParams = {
-				messageId:this.editPostId ? this.editPostId : null,
-                text: emoji ?  emoji : this.txtIn,
-                text_with_links: emoji ?  emoji : this.txtIn,
-                user_id: this.user ? this.user.id : 0,
-                role_name: lineAvtr.name,
-                title: this.lineTitle,
-                place_name: this.gpsPrvd.place_name,
-                images: emoji ? [] : images,
-                video_urls: params && params.video_urls ? params.video_urls : [],
-                undercover: (this.chatPrvd.getState() == 'area') ? false : this.isUndercover,
-                public: publicUser,
-                is_emoji: emoji ? true : false,
-                locked: (this.postLockData.hint && this.postLockData.password) ? true : false,
-                password: this.postLockData.password ? this.postLockData.password : null,
-                hint: this.postLockData.hint ? this.postLockData.hint : null,
-                expire_date: this.postTimerObj.expireDate ? this.postTimerObj.expireDate : null,
-                timestamp: Math.floor(new Date().getTime()/1000),
+            
+			messageParams = {
+				messageId: null,
+				text: emoji ?  emoji : this.txtIn,
+				text_with_links: emoji ?  emoji : this.txtIn,
+				user_id: this.user ? this.user.id : 0,
+				role_name: lineAvtr.name,
+				title: this.lineTitle,
+				place_name: this.gpsPrvd.place_name,
+				images: emoji ? [] : images,
+				video_urls: params && params.video_urls ? params.video_urls : [],
+				undercover: (this.chatPrvd.getState() == 'area') ? false : this.isUndercover,
+				public: publicUser,
+				is_emoji: emoji ? true : false,
+				locked: (this.postLockData.hint && this.postLockData.password) ? true : false,
+				password: this.postLockData.password ? this.postLockData.password : null,
+				hint: this.postLockData.hint ? this.postLockData.hint : null,
+				expire_date: this.postTimerObj.expireDate ? this.postTimerObj.expireDate : null,
+				timestamp: Math.floor(new Date().getTime()/1000),
 				line_avatar : this.tempFiles
-            };
+			};
+			
 			
             if (params) Object.assign(messageParams, params);
 
@@ -596,94 +596,100 @@ export class LinePage {
             message.temporaryFor = 0;
 			this.toolsPrvd.showLoader();
 			
-			console.log(messageParams);
-			
 			this.chatPrvd.sendMessage(messageParams).then(res => {
 				message.id=res.id;
 				message.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
 				// res.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
-				if ((message.title && message.title.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
-					let alert = this.alertCtrl.create({
-						subTitle: 'Share the line with your friends?',
-						buttons: [{
-							text: 'No',
-							role: 'cancel',
-							handler: () => {
-
-								if (!message.social) {
-									console.log('this user:', this.user);
-									message.user_id = this.user.id;
-									message.user = this.user;
-									message.image_urls = message.images;
-									message.is_synced = false;
-									if (this.chatPrvd.isLobbyChat) message.expire_date = null;
-								}
-								this.goToLobby(res);
-							}
-						}, {
-							cssClass: 'active',
-							text: 'Yes',
-							handler: () => {
-								alert.dismiss();
-								let subject = message.text_with_links ? message.text_with_links : '';
-								let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
-								if (this.plt.is('ios')){
-									this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
-											this.toolsPrvd.showToast('Message successfully shared');
-											if (!message.social) {
-												console.log('this user:', this.user);
-												message.user_id = this.user.id;
-												message.user = this.user;
-												message.image_urls = message.images;
-												message.is_synced = false;
-												if (this.chatPrvd.isLobbyChat) message.expire_date = null;
-
-											}
-
-											this.goToLobby(res);
-										}, err =>{
-											this.toolsPrvd.showToast('Unable to share message');
-											this.goToLobby(res);
-										}
-									);
-								}else{
-									this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
-											this.toolsPrvd.showToast('Message successfully shared');
-											if (!message.social) {
-												console.log('this user:', this.user);
-												message.user_id = this.user.id;
-												message.user = this.user;
-												message.image_urls = message.images;
-												message.is_synced = false;
-												if (this.chatPrvd.isLobbyChat) message.expire_date = null;
-												
-											}
-
-											this.goToLobby(res);
-										}, err =>{
-											this.toolsPrvd.showToast('Unable to share message');
-											this.goToLobby(res);
-										}
-									);
-								}
-
-								return false;
-							}
-						}]
+				if(this.storage.get('edited-page')=="holdpage"){
+					message.user_id = this.user.id;
+					message.user = this.user;
+					message.image_urls = message.images;
+					message.is_synced = false;
+					this.navCtrl.push(NetwrklistPage, {
+					  message: res
 					});
+					// this.toolsPrvd.pushPage(NetwrklistPage,{message:message});
+					this.toolsPrvd.hideLoader();
+				}else{
+					if ((message.title && message.title.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
+						let alert = this.alertCtrl.create({
+							subTitle: 'Share the line with your friends?',
+							buttons: [{
+								text: 'No',
+								role: 'cancel',
+								handler: () => {
 
-					alert.present();
-					if (!emoji) {
-						this.chatPrvd.appendLineContainer.setState('off');
-						this.chatPrvd.mainLineBtn.setState('hidden');
-						setTimeout(() => {
-							this.chatPrvd.appendLineContainer.hide();
-						}, chatAnim/2);
-						this.cameraPrvd.takenPictures = [];
+									if (!message.social) {
+										message.user_id = this.user.id;
+										message.user = this.user;
+										message.image_urls = message.images;
+										message.is_synced = false;
+										if (this.chatPrvd.isLobbyChat) message.expire_date = null;
+									}
+									this.goToLobby(res);
+								}
+							}, {
+								cssClass: 'active',
+								text: 'Yes',
+								handler: () => {
+									alert.dismiss();
+									let subject = message.text_with_links ? message.text_with_links : '';
+									let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
+									if (this.plt.is('ios')){
+										this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
+												this.toolsPrvd.showToast('Message successfully shared');
+												if (!message.social) {
+													message.user_id = this.user.id;
+													message.user = this.user;
+													message.image_urls = message.images;
+													message.is_synced = false;
+													if (this.chatPrvd.isLobbyChat) message.expire_date = null;
+
+												}
+
+												this.goToLobby(res);
+											}, err =>{
+												this.toolsPrvd.showToast('Unable to share message');
+												this.goToLobby(res);
+											}
+										);
+									}else{
+										this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
+												this.toolsPrvd.showToast('Message successfully shared');
+												if (!message.social) {
+													message.user_id = this.user.id;
+													message.user = this.user;
+													message.image_urls = message.images;
+													message.is_synced = false;
+													if (this.chatPrvd.isLobbyChat) message.expire_date = null;
+												}
+
+												this.goToLobby(res);
+											}, err =>{
+												this.toolsPrvd.showToast('Unable to share message');
+												this.goToLobby(res);
+											}
+										);
+									}
+
+									return false;
+								}
+							}]
+						});
+
+						alert.present();
+						if (!emoji) {
+							this.chatPrvd.appendLineContainer.setState('off');
+							this.chatPrvd.mainLineBtn.setState('hidden');
+							setTimeout(() => {
+								this.chatPrvd.appendLineContainer.hide();
+							}, chatAnim/2);
+							this.cameraPrvd.takenPictures = [];
+						}
 					}
 				}
+				
 			}).catch(err => {
-				console.log('err: '+JSON.stringify(err));
 				this.toolsPrvd.hideLoader();
 			});
 		
@@ -1102,22 +1108,7 @@ export class LinePage {
         }
     }
 
-    private goToProfile(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
-        this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
-            this.chatPrvd.isLobbyChat = false;
-            if(this.user.id==profileId){
-                if(userRoleName){
-                    this.toolsPrvd.pushPage(ProfilePage, res);
-                }else{
-                    this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
-                }
-            }else{
-                this.toolsPrvd.pushPage(ProfilePage, res);
-            }
-        }, err => {
-            console.error('goToProfile err:', err);
-        });
-    }
+    
 
     private updateIconBgRelativeToCamera():boolean {
         let camOpt = this.chatPrvd.localStorage.get('enable_uc_camera');
@@ -1316,12 +1307,40 @@ export class LinePage {
             }
         });
     }
-
+	
+	public goToProfile(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
+        this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
+            this.chatPrvd.isLobbyChat = false;
+            if(this.user.id==profileId){
+                if(userRoleName){
+                    this.toolsPrvd.pushPage(ProfilePage, res);
+                }else{
+                    this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
+                }
+            }else{
+                this.toolsPrvd.pushPage(ProfilePage, res);
+            }
+        }, err => {
+            console.error('goToProfile err:', err);
+        });
+    }
+	
     public goBackOnLanding(event:any):void {
-		if(this.editPostId > 0){
-			this.storage.set('edit-post','');
-			this.navCtrl.popTo(this.navCtrl.getByIndex(this.navCtrl.length() - 4));
+		if(this.storage.get('edited-page') == 'profile'){
+			this.storage.rm('edit-post');
+			this.storage.rm("edited-page");
+			this.user = this.authPrvd.getAuthData();
+			this.chatPrvd.goToProfile(this.user.id, this.user.profileTypePublic).then(res => {
+				this.chatPrvd.isLobbyChat = false;
+				this.toolsPrvd.pushPage(ProfilePage, res);
+			}, err => {
+				console.error('goToProfile err:', err);
+			});
+		}else if(this.storage.get('edited-page') == 'holdpage'){
+			this.navCtrl.popTo(this.navCtrl.getByIndex(this.navCtrl.length() - 3));
 		}else{
+			this.storage.rm("edited-page");
+			this.storage.rm('edit-post');
 			this.cameraPrvd.takenPictures=[];
 			this.chatPrvd.isLandingPage = true;
 			this.chatPrvd.postMessages = [];
@@ -1380,6 +1399,7 @@ export class LinePage {
 
         this.user = this.authPrvd.getAuthData();
 
+		console.log(this.slideAvatarPrvd.sliderPosition );
         if(this.slideAvatarPrvd.sliderPosition == 'right'){
 			this.toggleTopSlider('lock');			
         }
@@ -1397,21 +1417,62 @@ export class LinePage {
 		if(this.editPostId > 0){
 			this.chatPrvd.getMessageIDDetails(this.editPostId).subscribe(res => {
 				this.editMessage = res.message;
-				this.lineTitle = this.editMessage.text_with_links; 				
+				this.lineTitle = this.editMessage.text_with_links; 	
+				this.lineimg = this.editMessage.avatar_url;
+				this.txtIn = this.editMessage.text;
+				if(this.editMessage.public){
+					this.storage.set('slider_position', 'left');
+					this.slideAvatarPrvd.setSliderPosition('left'); 
+				}else{
+					this.storage.set('slider_position', 'right');
+					this.slideAvatarPrvd.setSliderPosition('right'); 
+				}
 				this.setProfileData();
-			}); 				
+			}); 
+		
+			this.onEnter();
+			if (this.chatPrvd.bgState.getState() == 'stretched') {
+				this.toggleChatOptions();
+			}
+			this.toolsPrvd.hideLoader();
+		
+		}if(this.storage.get('edited-page')=="holdpage"){
+			/* if(this.storage.get('slider_position')=="right"){
+				//private
+				let params: any = {
+					text: '',
+					text_with_links:'',
+					social_urls: [],
+					social: post.social,
+					post_url: post.post_url,
+					video_urls: post.video_urls ? post.video_urls : [],
+					social_post: true
+				}
+				if (this.chatPrvd.bgState.getState() == 'stretched') {
+					this.toggleChatOptions();
+				}
+				this.postMessage(null, params);
+				
+						
+				
+			}else{ */
+				//public
+				this.setProfileData();
+				this.onEnter();
+				if (this.chatPrvd.bgState.getState() == 'stretched') {
+					this.toggleChatOptions();
+				}
+				this.toolsPrvd.hideLoader();
+			/* } */
 		}else{
 			this.setProfileData();
+			this.onEnter();
+			if (this.chatPrvd.bgState.getState() == 'stretched') {
+				this.toggleChatOptions();
+			}
+			this.toolsPrvd.hideLoader();
 		}
 		
-		/* this.storage.set('slider_position', 'right');
-		this.slideAvatarPrvd.setSliderPosition('right'); */
-				
-        this.onEnter();
-        if (this.chatPrvd.bgState.getState() == 'stretched') {
-            this.toggleChatOptions();
-        }
-        this.toolsPrvd.hideLoader();
     }
 
     public listenForScrollEnd(event):void {
@@ -1424,7 +1485,6 @@ export class LinePage {
 
     ionViewDidLoad() {
         this.setProfileData();
-        console.log('%c linelist ionViewDidLoad ', 'background: #1287a8;color: #ffffff');
         if (this.chatPrvd.localStorage.get('enable_uc_camera') === null) {
             this.chatPrvd.localStorage.set('enable_uc_camera', true);
         }
@@ -1515,7 +1575,7 @@ export class LinePage {
 
 
     ionViewWillLeave() {
-        this.profile.saveChangesOnLeave();
+        // this.profile.saveChangesOnLeave();
         this.setProfileData();
         // this.profile.user.role_name = this.profile.userName;
 
@@ -1524,7 +1584,7 @@ export class LinePage {
         this.componentLoaded = false;
         this.chatPrvd.closeSockets();                                               // unsubscribe from sockets events
         if (this.global) this.global();                                             // stop click event listener
-        this.toggleLineContainer(this.emojiLineContainer, 'hide');                          // hide
+        this.toggleLineContainer(this.emojiLineContainer, 'hide');  // hide
         this.toggleLineContainer(this.shareLineContainer, 'hide');
         this.chatPrvd.messageDateTimer.stop();                                      // stop date timer for messages
         clearInterval(this.chatPrvd.scrollTimer.interval);                          // stop scroll to bottom interval

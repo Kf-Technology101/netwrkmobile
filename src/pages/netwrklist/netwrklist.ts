@@ -23,7 +23,7 @@ import { ContactsProvider } from '../../providers/contacts';
 
 // Modals
 import { CustomModal } from '../../modals/custom/custom';
-
+import * as moment from 'moment';
 
 // Animations
 import {
@@ -107,24 +107,16 @@ export class NetwrklistPage {
 	public contactsPrvd: ContactsProvider,
     elRef: ElementRef
   ) {
-	   /*  Contacts.find(['displayName', 'phoneNumbers'], {filter: "", multiple: true})
-		.then(data => {
-		  this.contactsfound = data;
-		});
-		 */
 	  if(this.navParams.get('message')){
 		this.newlyAdded = this.navParams.get('message');
 		this.selectedCommunity.push(this.newlyAdded);
-		this.isDisabled = true;
-	  }
+		// this.isDisabled = true;
+	  } 
       this.listType = 'phones'; 
 	  this.contactsPrvd.getContacts(this.listType).then(data => {
 		  this.contacts = data;
-		  if (this.contacts.length > 0 ||
-			 (this.contacts[this.listType] &&
-			  this.contacts[this.listType].length > 0)) {
-			// this.setErrorMessages(this.contacts);
-			// this.doSelectAll();
+		  if (this.contacts.length > 0) {
+			console.log(this.contacts);
 		  } else {
 			this.toolsPrvd.showToast('Contacts not available');
 		  }
@@ -162,7 +154,6 @@ export class NetwrklistPage {
 		this.activity.push({itemName: "Game",itemId:'5'});
 		this.activity.push({itemName: "Jam",itemId:'6'});  
 		this.activity.push({itemName: "Custom",itemId:'7'});
-		
 		resolve(true);        
 	});           
 	
@@ -175,6 +166,7 @@ export class NetwrklistPage {
   
   public select_activity(item){
 	if(item.itemId == 7){
+		this.storage.set('last-activity', item);
 		// popup text box for custom input
 		this.showActivitiesContainer = false;
 		let customModal = this.modalCtrl.create(CustomModal,{}, {
@@ -254,6 +246,8 @@ export class NetwrklistPage {
   public goToLanding() {
 	if(!this.showContactsStep){
 		this.chatPrvd.isCleared = true;
+		this.storage.rm('edited-page');
+		this.chatPrvd.request_type = '';
 		this.app.getRootNav().setRoot(ChatPage);
 	}else if(this.showContactsStep){
 		this.loadActivity();
@@ -263,23 +257,24 @@ export class NetwrklistPage {
 
   public selectMe(data:any, event){
 	if(event.checked){
-		if(this.selectedCommunity.length <= 0){
+		// if(this.selectedCommunity.length <= 0){
 			this.selectedCommunity.push(data);
-			this.isDisabled = true;			
-		}if(this.selectedCommunity.length > 1){
-			this.toolsPrvd.showToast('You could just select one community to share');
-		}
+			// this.isDisabled = true;			
+		// }
+		// else if(this.selectedCommunity.length > 1){
+			// this.toolsPrvd.showToast('You could just select one community to share');
+		// }
 	}else if(!event.checked){
 		let index = this.selectedCommunity.indexOf(data);
-		this.isDisabled = false;
+		// this.isDisabled = false;
 		if(index != -1){
 			this.selectedCommunity.splice(index, 1);
-		}else{
+		}
+		/* else{
 			this.selectedCommunity = [];
 			this.newlyAdded = null;	
-		}
-	}
-		
+		} */
+	}		
   }
   
   public selectPerson(data:any, event){
@@ -294,43 +289,42 @@ export class NetwrklistPage {
   public sendMessage(){
 	if(this.selectedCommunity.length <= 0){
 		this.toolsPrvd.showToast('Select community to share');
-	}else if(this.selectedContacts.length <= 0 ){
-		this.toolsPrvd.showToast('Select contacts to share with');
 	}else{
 		this.error_txt = '';
 		this.checkCommunityFlag = true;
-		// this.checkContactFlag = true; 
-		this.checkContactFlag = false;
-		this.sendContactsMessage();
-		
-		/* if(this.selectedCommunity.length > 0){
+		this.checkContactFlag = true; 
+		if(this.selectedContacts.length > 0){
+			this.checkContactFlag = false;
+		}
+		if(this.selectedCommunity.length > 0){
 			this.checkCommunityFlag = false;
-			this.postMessage();	
-		} */
+		}
+		this.postMessage();	
 	}
   }
   
   public createNewCommunity(event){
 	if(event.checked){
 		this.storage.set('edited-page','holdpage')	  
-		this.settings.isNewlineScope=false;
-		this.settings.isCreateLine=true;
+		this.settings.isNewlineScope = false;
+		this.settings.isCreateLine = true;
 		this.toolsPrvd.pushPage(UndercoverCharacterPage);
 	}
   }
   
-  public sendContactsMessage(){	
+  public sendContactsMessage(message:any){	
 	let shareLink = '';
-	for(let i=0; i<this.selectedCommunity.length; i++){
-		let message = this.selectedCommunity[i];
-		if (this.platform.is('ios')){
-			shareLink = 'netwrkapp://netwrkapp.com/landing/'+message.id;
-		}else{
-			shareLink = 'https://netwrkapp.com/landing/'+message.id;
-		}
+/* console.log(this.selectedCommunity);
+return false;	 */
+	// for(let i=0; i<this.selectedCommunity.length; i++){		
+	if (this.platform.is('ios')){
+		shareLink = 'netwrkapp://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
+	}else{
+		shareLink = 'https://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
 	}
+	// }
 	
-	let shareMessage =  this.activitySelected+' at '+this.locationSelected+'? '+this.txtIn.value.trim()+' '+shareLink;
+	let shareMessage =  this.activitySelected+' at '+this.locationSelected+'? '+this.txtIn.value.trim()+' 1 tap reply via '+shareLink;
 	
 	let contacts = [];
 	for(let i = 0;i<this.selectedContacts.length;i++){
@@ -343,23 +337,24 @@ export class NetwrklistPage {
 	
 	this.contactsPrvd.sendSMS(contacts,shareMessage).subscribe(res => {
 	  this.checkContactFlag = true; 
-	  this.goBackSuccess();
+	  this.goBackSuccess(message);
 	  this.toolsPrvd.hideLoader();
 	}, err => this.toolsPrvd.hideLoader());;
   }
   
   private postMessage(emoji?: string, params?: any) {
 	try {
-		let publicUser: boolean;
+		let publicUser: boolean = true;
 		let images = [];
 		let messageParams: any = {};
+		let netwrkParams: any = {};
 		let message: any = {};
 		
-		if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
+		/* if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
 			publicUser=true; 
 		}else{
 			publicUser=false;
-		}
+		} */
 		
 		this.user = this.authPrvd.getAuthData();
 		let shareMessage =  this.activitySelected+' at '+this.locationSelected+'? '+this.txtIn.value.trim();
@@ -367,6 +362,38 @@ export class NetwrklistPage {
 		for(let i=0; i < this.selectedCommunity.length; i++){
 			selectedCommunityIdsArr.push(this.selectedCommunity[i].id);
 		} 
+		let currentDate = moment(new Date());
+		let locDetails = this.storage.get('last_hold_location_details');
+		let place_name = locDetails.place_name;
+		this.chatPrvd.request_type = "LOCAL_MESSAGE";	
+		
+		this.gpsPrvd.coords.lat = parseFloat(locDetails.loc.lat);
+		this.gpsPrvd.coords.lng = parseFloat(locDetails.loc.lng);
+		
+		
+		let title = this.activitySelected+' at '+this.locationSelected;
+		
+		netwrkParams = {
+			messageId		 : null,
+			undercover		 : false,
+			text			 : this.txtIn.value.trim(),
+			text_with_links	 : this.txtIn.value.trim(),
+			title			 : title,
+			user_id			 : this.user ? this.user.id : 0,
+			role_name		 : this.user.role_name,			
+			images			 : [],	
+			video_urls		 : [],
+			public			 : publicUser,
+			place_name		 : place_name,
+			is_emoji		 : false,
+			locked			 : false,
+			password		 : null,
+			hint			 : null,
+			expire_date		 : currentDate.add(48, 'hours'),
+			timestamp		 : Math.floor(new Date().getTime()/1000),
+			line_avatar		 : []
+		};
+		
 		messageParams = {
 			messageable_type : 'Room',
 			message_ids 	 : selectedCommunityIdsArr,
@@ -383,35 +410,62 @@ export class NetwrklistPage {
 			locked			 : false,
 			password		 : null,
 			hint			 : null,
-			expire_date		 : null,
-			timestamp		 : Math.floor(new Date().getTime()/1000)
-		};
-		
-		if (params) Object.assign(messageParams, params);
+			expire_date		 : currentDate.add(48, 'hours'),
+			timestamp		 : Math.floor(new Date().getTime()/1000),
+			line_avatar		 : []			
+		};	
 
-		message = Object.assign(message, messageParams);
+
+		if (params) Object.assign(netwrkParams, params);
+		message = Object.assign(message, netwrkParams);
 		message.image_urls =[];
 		message.isTemporary = false;
-		message.temporaryFor = 0;
-		this.toolsPrvd.showLoader();
-		
-		this.chatPrvd.sendMessage(messageParams).then(res => {
+		message.temporaryFor = 0; 
+		this.toolsPrvd.showLoader();		
+		this.chatPrvd.sendMessage(netwrkParams).then(result => {
+			let res 			= result;
 			message.id 			= res.id;
 			message.user_id		= this.user.id;
 			message.user 		= this.user;
-			this.checkCommunityFlag = true;
-			this.goBackSuccess();
-			this.toolsPrvd.hideLoader();
+			let shareLink 		= '';
+			if (this.platform.is('ios')){
+				// shareLink = ' netwrkapp://netwrkapp.com/landing/'+message.id;
+			}else{
+				// shareLink = ' https://netwrkapp.com/landing/'+message.id;
+			}
+			
+			shareMessage = shareMessage; // + shareLink
+			messageParams.text = shareMessage;
+			messageParams.text_with_links = shareMessage;
+			messageParams.conversation_line_id = message.id;
+			if (params) Object.assign(messageParams, params);
+			this.chatPrvd.request_type = "CONV_REQUEST";
+			
+			this.chatPrvd.sendMessage(messageParams).then(msg_result => {
+				let res = msg_result.send_messages[0];
+				res.notification_type = "new_message"; 
+				this.chatPrvd.sendNotification(res).subscribe(notificationRes => {
+					this.checkCommunityFlag = true;
+					if(this.selectedContacts.length > 0){
+						this.sendContactsMessage(message);
+					}else{
+						this.goBackSuccess(message);
+						this.toolsPrvd.hideLoader();
+					}
+				}, err => console.error(err));				
+			}).catch(err => {
+				this.toolsPrvd.hideLoader();
+			}); 
 		}).catch(err => {
 			this.toolsPrvd.hideLoader();
-		});
+		});	
 	
 	} catch (e) {
 		console.error('Error in postMessage:', e);
 	}
   }
 	
-  public goBackSuccess(){
+  public goBackSuccess(message:any = {}){
 	let successCase;
 	if(this.selectedCommunity.length > 0 && this.selectedContacts.length > 0){
 		successCase = 1;
@@ -420,20 +474,32 @@ export class NetwrklistPage {
 	}else if(this.selectedContacts.length > 0){
 		successCase = 3;
 	}
+	let messageParamsId = this.selectedCommunity[0].id;// message.id;  
 	switch(successCase){
-		case 1:
+		case 1:		
 			if(this.checkCommunityFlag && this.checkContactFlag){
-				this.toolsPrvd.pushPage(NetwrklistPage);		
+				this.chatPrvd.getMessageIDDetails(messageParamsId).subscribe(res => {	
+					this.toolsPrvd.pushPage(ChatPage,{message:res.message});
+					this.toolsPrvd.showToast('Message shared successfully');		
+				});
+				// this.toolsPrvd.pushPage(ChatPage,{message:message});	
+				// this.toolsPrvd.pushPage(NetwrklistPage);	
 			}
 		break;
 		case 2:
 			if(this.checkCommunityFlag){
-				this.toolsPrvd.pushPage(NetwrklistPage);
+				this.chatPrvd.getMessageIDDetails(messageParamsId).subscribe(res => {	
+					this.toolsPrvd.pushPage(ChatPage,{message:res.message});
+					this.toolsPrvd.showToast('Message shared successfully');		
+				});	
 			}
 		break;
 		case 3:
 			if(this.checkContactFlag){
-				this.toolsPrvd.pushPage(NetwrklistPage);
+				this.chatPrvd.getMessageIDDetails(messageParamsId).subscribe(res => {	
+					this.toolsPrvd.pushPage(ChatPage,{message:res.message});
+					this.toolsPrvd.showToast('Message shared successfully');		
+				});	
 			}
 		break;
 	}
@@ -443,7 +509,7 @@ export class NetwrklistPage {
 	setTimeout(function(){ this.isCreateCheck = false; });
 	this.activity = [];
 	this.loadActivity();
-	if(this.storage.get('last_hold_location_details')){
+	if(this.storage.get('last_hold_location_details') && this.storage.get('last_hold_location_details')!='' && this.storage.get('last_hold_location_details')!='undefined'){
 		let locDetails = this.storage.get('last_hold_location_details');
 		let place_name = locDetails.place_name;
 		let input_string = place_name.indexOf(",")>-1?place_name.substring(0, place_name.indexOf(",")):place_name;
@@ -452,17 +518,15 @@ export class NetwrklistPage {
 		  lat : parseFloat(locDetails.loc.lat),
 		  lng : parseFloat(locDetails.loc.lng)
 		};
+		
 		this.storage.set('custom_coordinates', latlng);
 		this.storage.set('chat_zip_code', locDetails.zipcode);
 		this.storage.set('place_name', locDetails.place_name);
-		
-		
 	}else{
 		this.locationSelected = "Location";
 	} 
 	
-
-	if(this.storage.get('last-activity')){
+	if(this.storage.get('last-activity') && this.storage.get('last-activity')!='' && this.storage.get('last-activity')!='undefined'){
 		let item = this.storage.get('last-activity');
 		this.activitySelected = item.itemName;
 	}else{

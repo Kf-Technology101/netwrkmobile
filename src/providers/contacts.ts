@@ -126,8 +126,13 @@ export class ContactsProvider {
       for (let i in data) {
         if (data[i].emails)
           this.contacts.emails.push(data[i]);
-        if (data[i].phoneNumbers)
-          this.contacts.phones.push(data[i]);
+        if (data[i].phoneNumbers){
+          var contactData={
+			"name":data[i].name.formatted,
+			"phoneNumbers":data[i].phoneNumbers,
+		  }
+          this.contacts.phones.push(contactData);
+		}
       }
       this.tools.hideLoader();
       console.log('[contacts provider] contacts:', this.contacts);

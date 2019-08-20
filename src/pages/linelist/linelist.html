@@ -7,7 +7,7 @@
 		 </div>		 
 		 <!-- (ionBlur)="saveNetworkName()" -->
        
-        <button ion-button *ngIf="slideAvatarPrvd.sliderPosition == 'right'" class="side lock-btn top-icon white" (click)="toggleTopSlider('lock');">
+        <button ion-button *ngIf="slideAvatarPrvd.sliderPosition == 'right' && setting.lineAvatar.name.toLowerCase() == 'private network'" class="side lock-btn top-icon white" (click)="toggleTopSlider('lock');">
             <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
         </button>
 

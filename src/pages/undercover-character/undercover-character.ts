@@ -10,12 +10,14 @@ import { Settings } from '../../providers/settings';
 import { ChatPage } from '../chat/chat';
 import { LinePage } from '../linelist/linelist';
 import { ProfilePage } from '../profile/profile';
+import { NetwrklistPage } from '../netwrklist/netwrklist';
+
 // Providers
 import { UndercoverProvider } from '../../providers/undercover';
 import { Tools } from '../../providers/tools';
 import { SlideAvatar } from '../../providers/slide-avatar';
 import { Auth } from '../../providers/auth';
-
+import { Chat } from '../../providers/chat';
 
 import { heroes } from '../../includes/heroes';
 import { heroesLines } from '../../includes/heroesLines';
@@ -51,7 +53,8 @@ export class UndercoverCharacterPage {
     public authPrvd: Auth,
     elRef: ElementRef,
     private storage: LocalStorage,
-    public splash: SplashScreen
+    public splash: SplashScreen,
+	private chatPrvd: Chat,
   ) {
     this.pageTag = elRef.nativeElement.tagName.toLowerCase();
     this.changeError = 'You can\'t leave this page right now';
@@ -68,29 +71,97 @@ export class UndercoverCharacterPage {
 	 if(this.settings.isCreateLine){
 		this.settings.isCreateLine = false;
 		this.settings.lineAvatar = this.activePerson;
-		if(avatar.name == "Public network"){
+		if(avatar.name.toLowerCase() == "private group"){
+			console.log('pri');			
+			this.slideAvatarPrvd.setSliderPosition('right');
+			this.slideAvatarPrvd.sliderPosition = 'right';
+			this.storage.set('slider_position','right');
+			if(this.storage.get('edited-page')=="holdpage"){
+				let lineAvtr = this.settings.lineAvatar;
+				console.log('private',lineAvtr);
+				
+				let item = this.storage.get('last-activity');
+				let locDetails = this.storage.get('last_hold_location_details');
+				let place_name = locDetails.place_name;
+				let input_string = place_name.indexOf(",")>-1?place_name.substring(0, place_name.indexOf(",")):place_name;
+				let title =  item.itemName+' at '+input_string;
+				
+				let params: any = {
+					text: item.itemName,
+					title:title,
+					text_with_links:item.itemName,
+					role_name: lineAvtr.name,
+					place_name: place_name
+				}
+				this.postMessage(params);
+			}else{
+				this.toolsPrvd.pushPage(LinePage);
+			}
+		}else if(avatar.name.toLowerCase() == "public network"){
 			console.log('pub');
 			this.slideAvatarPrvd.setSliderPosition('left');
 			this.slideAvatarPrvd.sliderPosition = 'left';
+			this.storage.set('slider_position','left');
+			this.toolsPrvd.pushPage(LinePage);
 		}else{
 			console.log('pri');
 			this.slideAvatarPrvd.setSliderPosition('right');
 			this.slideAvatarPrvd.sliderPosition = 'right';
+			this.storage.set('slider_position','right');
+			this.toolsPrvd.pushPage(LinePage);
 		}
-		this.toolsPrvd.pushPage(LinePage);
+		
 	 }else{
 		this.undercoverPrvd.setPerson(this.activePerson).then(data => {
 		  if (this.storage.get('first_time_hero') === null) {
 			this.firstTimeHero = false;
 			this.storage.set('first_time_hero', this.firstTimeHero);
-		  }
-		
+		  }		
 		  this.toolsPrvd.pushPage(ProfilePage, data);
 		}, err => {
 		  this.toolsPrvd.popPage();
 		  this.settings.isCreateLine=false;
 		});
 	 }
+  }
+  
+  private postMessage(params?: any){
+	let messageParams: any = {};
+	let message: any = {};
+	messageParams = {
+				messageId: null,
+				text: params.text,
+				text_with_links: params.text,
+				user_id: this.user ? this.user.id : 0,
+				role_name: params.role_name,
+				title: params.title,
+				place_name: params.place_name,
+				images: [],
+				video_urls: [],
+				undercover: true,
+				public: false,
+				is_emoji: false,
+				locked: false,
+				password: null,
+				hint: null,
+				expire_date: null,
+				timestamp: Math.floor(new Date().getTime()/1000),
+				line_avatar:[]
+	};
+	message = Object.assign(message, messageParams);
+	/* console.log(messageParams);
+	return false; */
+	
+	this.chatPrvd.sendMessage(messageParams).then(res => {
+		message.user_id = this.user.id;
+		message.user = this.user;
+		message.image_urls = message.images;
+		message.is_synced = false;
+		this.navCtrl.push(NetwrklistPage, {
+		  message: res
+		});
+	});
+			
   }
 
   private goBack() {

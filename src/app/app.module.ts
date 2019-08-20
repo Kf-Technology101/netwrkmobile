@@ -75,6 +75,7 @@ import { FeedbackService } from '../providers/feedback.service';
 //Pipes
 import { ContactListPipe } from '../pipes/contact-list';
 import { EmojiFilter } from '../pipes/emoji-filter.pipe';
+import { SortPipe } from '../pipes/sort/sort';
 
 // Native services
 import { Geolocation } from '@ionic-native/geolocation';
@@ -133,6 +134,7 @@ let declarations_pages = [
   
 	ContactListPipe,
 	EmojiFilter,
+	SortPipe
 ];
 
 let pages = [

@@ -334,14 +334,15 @@ export class Chat {
                     this.postLineMessages.unshift(message);
                 }
             }
-			console.log('this.postMessages:::',this.postMessages);
+			console.log('netwrk this.postMessages:::',this.postMessages);
 			if(!getMessagesOnly){
-				
+			console.log('get all messages with line');
 				this.currentLobby.id = res.room_id;
 				this.currentLobbyMessage = message;
 				this.startLobbySocket(res.room_id);
 				
 				this.getLocationLobbyUsers(message.id).subscribe(res => {
+				console.log('getLocationLobbyUsers:::',res);
 				  if (res && res.users && res.host_id) {
 					this.currentLobby.users = res.users;
 					this.currentLobby.hostId = res.host_id;
@@ -371,14 +372,16 @@ export class Chat {
   }
 
   public toggleLobbyChatMode():void {
+	console.log('toggleLobbyChatMode')  ;
     this.isLobbyChat = !this.isLobbyChat;
-    if (!this.isLobbyChat) {
-      this.currentLobby.id = null;
+	if (!this.isLobbyChat) {
+	  this.currentLobby.id = null;
       this.closeLobbySocket();
+	  this.currentLobbyMessage = null;
       this.socketsInit();
     }
   }
-
+  
   public closeLobbySocket():void {
     if (this.roomCable.subscription) {
       this.roomCable.unsubscribe();
@@ -489,7 +492,18 @@ export class Chat {
   public sendMessage(data: any):any {
     return new Promise((resolve, reject) => {
 		let params:any;
-	    if(data.messageable_type == 'Reply' && this.currentReplyLobbyMessage && this.currentReplyLobbyMessage.messageable_type == 'Room'){
+		
+		if(this.request_type && (this.request_type == 'CONV_REJECTED' || this.request_type == 'CONV_ACCEPTED')){
+			//conversation room id
+			data.conversation_line_id = this.localStorage.get('response_conversation_id');
+			params = {
+				message: data,
+				post_code: this.localStorage.get('chat_zip_code'),
+				room_id: this.localStorage.get('response_room_conversation_id')
+			}; 			
+			this.localStorage.rm('response_room_conversation_id');
+			this.localStorage.rm('response_conversation_id');
+		}else if(data.messageable_type == 'Reply' && this.currentReplyLobbyMessage && this.currentReplyLobbyMessage.messageable_type == 'Room'){
 			params = {
 				message: data,
 				post_code: this.localStorage.get('chat_zip_code'),
@@ -501,12 +515,20 @@ export class Chat {
 				post_code: this.localStorage.get('chat_zip_code'),
 				message_ids: data.message_ids
 			};
-		}else{
-			params = {
-				message: data,
-				post_code: this.localStorage.get('chat_zip_code'),
-				room_id: this.currentLobby.id
-			}; 
+		}else{			 	
+			if(this.request_type == 'LOCAL_MESSAGE'){
+				params = {
+					message: data,
+					post_code: this.localStorage.get('chat_zip_code'),
+					room_id: null
+				};
+			}else{
+				params = {
+					message: data,
+					post_code: this.localStorage.get('chat_zip_code'),
+					room_id: this.currentLobby.id
+				};
+			}
 		}
 
 		params.message.network_id = this.getNetwork() ? this.getNetwork().id : null;
@@ -523,6 +545,9 @@ export class Chat {
 		this.request_type = null;
 		this.custom_line_id = null;
 
+// console.log('send data::: ',params);
+// return false;
+
 		if (data.images && data.images.length > 0) {
 			this.sendMessageWithImage(params, data.images).then(res => {
 				resolve(res);
@@ -533,10 +558,12 @@ export class Chat {
 					resolve(res);
 				}, err => reject(err));
 			}else{
+				console.log('sendMessageWithoutImage',params);
 				this.sendMessageWithoutImage(params).subscribe(res => {
 					if(res.messageable_type == "Network"){
 						if(data.line_avatar.length > 0){
 							this.updateAvatar(res.id, data.line_avatar, null, 'avatar').then(result => {
+								console.log(result);
 								this.updatedLineAvatarData = result;
 								resolve(res);
 							}, error => {
@@ -613,10 +640,8 @@ export class Chat {
 
     if (data.undercover && !doRefresh) {
       data.offset = 0;
-      //data.limit = offset == 0 ? 20 : offset;
       data.limit = 20;
       data.current_ids = [];
-      //data.current_ids = messagesIds;
     }
 
     if (params) Object.assign(data, params);
@@ -626,7 +651,7 @@ export class Chat {
     return seqMap;
   }
 
-    public getNearByMessages(
+  public getNearByMessages(
     messagesNearArray?: Array<any>,
     params?: any,
     doRefresh?: any
@@ -819,8 +844,14 @@ export class Chat {
       r(i);
     })
   }
+  
+  public updateConversationExpiry(data: any) {
+    let seq = this.api.post('messages/conversation_update', data).share();
+    let seqMap = seq.map(res => res.json());
+	return seqMap;
+  }
 
-  private sendMessageWithoutImage(data: any) {
+  public sendMessageWithoutImage(data: any) {
     data.message.images = [];
     let seq = this.api.post('messages', data).share();
     let seqMap = seq.map(res => res.json());

@@ -3,12 +3,12 @@ import { Http, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/map';
 
 import { App, AlertController, Platform, Events } from 'ionic-angular';
-import { Geolocation, GeolocationOptions } from '@ionic-native/geolocation';
+import { Geolocation, GeolocationOptions, PositionError, Geoposition} from '@ionic-native/geolocation';
 
 import { Api } from './api';
 import { LocalStorage } from './local-storage';
 import { LocationChange } from './locationchange';
-
+import { Diagnostic } from '@ionic-native/diagnostic';
 import { ChatPage } from '../pages/chat/chat';
 
 @Injectable()
@@ -27,7 +27,7 @@ export class Gps {
   public zipInterval: any;
   public positionTruck: any;
   public map: any;
-
+  public locationAccessPermission:boolean = true;
   constructor(
     public app: App,
     private http: Http,
@@ -37,7 +37,8 @@ export class Gps {
     private platform: Platform,
     private alertCtrl: AlertController,
     public events: Events,
-    private loc: LocationChange
+    private loc: LocationChange,
+	 private _DIAGNOSTIC: Diagnostic
   ) {
     // console.log('GPS Provider');
   }
@@ -109,48 +110,58 @@ export class Gps {
 		this.coords.lng = null;
         this.watch.unsubscribe();
       }
-	   
-      this.watch = this.geolocation.watchPosition(options).subscribe(resp => {
-		console.log('geolocation.watchPosition::: ',resp);
+	  
+	  if(this.platform.is('ios') || this.platform.is('android')){	
+		this._DIAGNOSTIC.isLocationEnabled().then((isEnabled) => {
+			this.locationAccessPermission = isEnabled;
+		});
+	  }
+	  
+      this.watch = this.geolocation.watchPosition(options)
+	  .subscribe(resp => {
 		if (resp.coords) {	
-          if (!this.coords.lat && !this.coords.lng) {			  
-              if (this.loc.isCustomCoordAvaliable()) {
-                  this.coords = this.loc.getCoordObject();
-              } else {
-                  this.coords.lat = resp.coords.latitude;
-                  this.coords.lng = resp.coords.longitude;
-              }
+		  if (!this.coords.lat && !this.coords.lng) {			  
+			  if (this.loc.isCustomCoordAvaliable()) {
+				  this.coords = this.loc.getCoordObject();
+			  } else {
+				  this.coords.lat = resp.coords.latitude;
+				  this.coords.lng = resp.coords.longitude;
+			  }
 			  this.localStorage.set('local_coordinates',this.coords);
-              this.getZipCode().then(zip => {
-                  resolve({zip_code: zip});
-              }).catch(err => reject(err));
-          }else{
+			  this.getZipCode().then(zip => {
+				  resolve({zip_code: zip});
+			  }).catch(err => reject(err));
+		  }else{
 			this.coords.lat = resp.coords.latitude;
 			this.coords.lng = resp.coords.longitude;  
 			this.getZipCode().then(zip => {
 				resolve({zip_code: zip});
 			}).catch(err => reject(err));
 		  }
-        } else{
+		}else if(!this.locationAccessPermission){ 
+			reject(resp); 
+		}else{
 			if(this.localStorage.get('local_coordinates')){
 				let strorageLocation = this.localStorage.get('local_coordinates');
 				this.coords.lat = parseFloat(strorageLocation.lat);
-                this.coords.lng = parseFloat(strorageLocation.lng);
+				this.coords.lng = parseFloat(strorageLocation.lng);
 				this.getZipCode().then(zip => {
-                  resolve({zip_code: zip});
+				  resolve({zip_code: zip});
 				}).catch(err => reject(err));
 			}else{
-			 this.getZipCode().then(zip => {
-				resolve({ zip_code: zip });
-			 }).catch(err => reject(err));
+				this.getZipCode().then(zip => {
+					resolve({ zip_code: zip });
+				}).catch(err => reject(err));
 			}
-		}
-      }, err => { 
-		  this.getZipCode().then(zip => {
-              resolve({ zip_code: zip });
-          }).catch(err => reject(err));
-        reject(err);
-      });
+		} 
+      }, 
+	  err => { 
+		this.getZipCode().then(zip => {
+		  resolve({ zip_code: zip });
+		}).catch(err => reject(err));
+		reject(err);
+      }
+	  );
 
     });
   }

@@ -112,11 +112,11 @@ export class HoldScreenPage {
 
     ionViewDidEnter() {
         this.splash.hide();
-        this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
+        /* this.gpsPrvd.getNetwrk(this.chatPrvd.localStorage.get('chat_zip_code')).subscribe(res => {
             console.log('Nearby network List:', res);
             this.nearByNetworks.push(res.network);
             this.toolsPrvd.hideLoader();
-        }, err => this.toolsPrvd.errorHandler(err));
+        }, err => this.toolsPrvd.errorHandler(err)); */
 
         this.toolsPrvd.hideLoader();
     }

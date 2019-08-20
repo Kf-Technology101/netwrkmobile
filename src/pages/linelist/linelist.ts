@@ -429,9 +429,7 @@ export class LinePage {
             this.toolsPrvd.showToast(this.textStrings.require);
         } else {
             this.postUnlockData.password = form.value.password;
-            console.log('postUnlockData:', this.postUnlockData);
             this.chatPrvd.unlockPost(this.postUnlockData).subscribe(res => {
-                console.log('unlock post:', res);
                 for (let m in this.chatPrvd.postMessages) {
                     if (this.chatPrvd.postMessages[m].id == this.postUnlockData.id) {
                         this.chatPrvd.postMessages[m].locked_by_user = false;
@@ -529,14 +527,20 @@ export class LinePage {
 		}); 
 	}
 
-    private postMessage(emoji?: string, params?: any) {
+    private postMessage(emoji?: string, params?: any, usePassedParams:boolean = false) {
         try {
 			let publicUser: boolean;
             let images = [];
             let messageParams: any = {};
             let message: any = {};
+			let lineAvtr = this.setting.lineAvatar;
 			
-			if(this.slideAvatarPrvd.sliderPosition == 'right' && (!this.postLockData.password || !this.postLockData.hint)){
+			if(usePassedParams){
+				this.txtIn = params.text;
+				this.lineTitle = params.title;
+			}
+			
+			if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network" && (!this.postLockData.password || !this.postLockData.hint)){
 				this.noErrors = false;
 				return false;
 			}
@@ -561,12 +565,18 @@ export class LinePage {
             if (params && params.social && !this.chatPrvd.isLobbyChat)
                 this.setDefaultTimer();
 			
-			let lineAvtr = this.setting.lineAvatar;
-			// alert('editMessage : '+this.editPostId)
-			this.storage.set('edit-post','');
-            
+			
+			
+            /*
+				Note:
+				*Private Group: public-false, locked-false
+				*Private Netwrk: public-false, locked-true
+				*Public Netwrk: public-true, locked-false
+			*/
+			
+			
 			messageParams = {
-				messageId: null,
+				messageId:this.editPostId ? this.editPostId : null,
 				text: emoji ?  emoji : this.txtIn,
 				text_with_links: emoji ?  emoji : this.txtIn,
 				user_id: this.user ? this.user.id : 0,
@@ -585,19 +595,19 @@ export class LinePage {
 				timestamp: Math.floor(new Date().getTime()/1000),
 				line_avatar : this.tempFiles
 			};
-			
-			
+						
+			this.storage.set('edit-post','');
             if (params) Object.assign(messageParams, params);
-
             message = Object.assign(message, messageParams);
+			
 			let imageUrls = emoji ? [] : images;
 			message.image_urls = messageParams.social_urls ? messageParams.social_urls : imageUrls;
             message.isTemporary = false;
             message.temporaryFor = 0;
 			this.toolsPrvd.showLoader();
-			
+
 			this.chatPrvd.sendMessage(messageParams).then(res => {
-				message.id=res.id;
+				message.id = res.id;
 				message.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
 				// res.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
 				if(this.storage.get('edited-page')=="holdpage"){
@@ -618,7 +628,6 @@ export class LinePage {
 								text: 'No',
 								role: 'cancel',
 								handler: () => {
-
 									if (!message.social) {
 										message.user_id = this.user.id;
 										message.user = this.user;
@@ -848,7 +857,10 @@ export class LinePage {
     private hideTopSlider(container:string) {
         let cont = this.getTopSlider(container);
 		if(container == 'lock'){
-			if(this.slideAvatarPrvd.sliderPosition == 'right' && (!this.postLockData.password || !this.postLockData.hint )){
+			let lineAvtr = this.setting.lineAvatar;
+
+			if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network" && (!this.postLockData.password || !this.postLockData.hint )){
+				console.log('inlinr check errors');
 				this.noErrors = false;
 				return false;
 			}
@@ -881,7 +893,8 @@ export class LinePage {
 		
         let cont = this.getTopSlider(container);
         if (this.activeTopForm){
-			if(this.slideAvatarPrvd.sliderPosition == 'right' && (!this.postLockData.password || !this.postLockData.hint)){
+			let lineAvtr = this.setting.lineAvatar;
+			if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network" && (!this.postLockData.password || !this.postLockData.hint)){
 				this.noErrors = false;
 				return false;
 			}else{
@@ -1398,9 +1411,9 @@ export class LinePage {
         }, 1);
 
         this.user = this.authPrvd.getAuthData();
-
-		console.log(this.slideAvatarPrvd.sliderPosition );
-        if(this.slideAvatarPrvd.sliderPosition == 'right'){
+		let lineAvtr = this.setting.lineAvatar;
+		
+		if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network"){ 
 			this.toggleTopSlider('lock');			
         }
 		
@@ -1436,26 +1449,43 @@ export class LinePage {
 			}
 			this.toolsPrvd.hideLoader();
 		
-		}if(this.storage.get('edited-page')=="holdpage"){
-			/* if(this.storage.get('slider_position')=="right"){
+		}else if(this.storage.get('edited-page')=="holdpage"){
+			if(this.storage.get('slider_position')=="right"){
 				//private
-				let params: any = {
-					text: '',
-					text_with_links:'',
-					social_urls: [],
-					social: post.social,
-					post_url: post.post_url,
-					video_urls: post.video_urls ? post.video_urls : [],
-					social_post: true
+				let lineAvtr = this.setting.lineAvatar;
+				if(lineAvtr.name.toLowerCase() == "private group"){ 
+					/* let item = this.storage.get('last-activity');
+					let locDetails = this.storage.get('last_hold_location_details');
+					let place_name = locDetails.place_name;
+					let input_string = place_name.indexOf(",")>-1?place_name.substring(0, place_name.indexOf(",")):place_name;
+					let title =  item.itemName+' at '+input_string;
+					
+					let params: any = {
+						text: item.itemName,
+						title:title,
+						text_with_links:item.itemName,
+					}
+					if (this.chatPrvd.bgState.getState() == 'stretched') {
+						this.toggleChatOptions();
+					}
+					this.postMessage(null, params, true); */
+					
+					this.setProfileData();
+					this.onEnter();
+					if (this.chatPrvd.bgState.getState() == 'stretched') {
+						this.toggleChatOptions();
+					}
+					this.toolsPrvd.hideLoader();
+					
+				}else{
+					this.setProfileData();
+					this.onEnter();
+					if (this.chatPrvd.bgState.getState() == 'stretched') {
+						this.toggleChatOptions();
+					}
+					this.toolsPrvd.hideLoader();
 				}
-				if (this.chatPrvd.bgState.getState() == 'stretched') {
-					this.toggleChatOptions();
-				}
-				this.postMessage(null, params);
-				
-						
-				
-			}else{ */
+			}else{ 
 				//public
 				this.setProfileData();
 				this.onEnter();
@@ -1463,7 +1493,7 @@ export class LinePage {
 					this.toggleChatOptions();
 				}
 				this.toolsPrvd.hideLoader();
-			/* } */
+			} 
 		}else{
 			this.setProfileData();
 			this.onEnter();
@@ -1502,7 +1532,6 @@ export class LinePage {
     }
 
     public saveNetworkName() {
-
         let params: any;
         if (this.profile.userName){
             this.toolsPrvd.showLoader();
@@ -1515,20 +1544,18 @@ export class LinePage {
         }
 
         if (params)
-            this.userPrvd.update(this.user.id, params, this.authPrvd.getAuthType(), 'update')
-                .map(res => res.json()).subscribe(res => {
-                    console.log('[user provider] (Update) res:', res);
-                    this.authPrvd.saveAuthData(res);
-                    this.user = res;
-                    this.toolsPrvd.hideLoader();
-                }, err => {
-                    console.error(err);
-                    this.toolsPrvd.hideLoader();
-                });
+            this.userPrvd.update(this.user.id, params, this.authPrvd.getAuthType(), 'update').map(res => res.json()).subscribe(res => {
+				console.log('[user provider] (Update) res:', res);
+				this.authPrvd.saveAuthData(res);
+				this.user = res;
+				this.toolsPrvd.hideLoader();
+			}, err => {
+				console.error(err);
+				this.toolsPrvd.hideLoader();
+			});
     }
 	
 	public setLineName(){
-		console.log('setLineName');
 		if(!this.lineTitle){
 			this.noErrors = false;
 			return false;

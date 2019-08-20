@@ -38,7 +38,7 @@
 		<div class="container-title">
 			Communities 
 		</div>
-		<ng-container *ngFor="let post of posts">
+		<ng-container *ngFor="let post of posts | sort: {property: 'title', order: 1}">
 		  <ion-row class="post" [ngClass]="{'new-community':newlyAdded != null && newlyAdded.id == post.id}">
 			<div class="post-cont">
 			  <img [src]="post.avatar_url" class="chat-avatar conversation"
@@ -71,12 +71,12 @@
 			Friends
 		</div>
 		
-		<ng-container *ngFor="let person of contacts">
+		<ng-container *ngFor="let person of contacts | sort: {property: 'name', order: 1}">
 		  <ion-row class="post" >
 			<div class="post-cont">
 			  <div class="username">
 				<ng-container>
-				  #{{ person.name.formatted}}
+				  #{{person.name}} 	
 				</ng-container>
 				<ion-checkbox color="dark" (ionChange)="selectPerson(person,$event)" ></ion-checkbox>
 			  </div>
@@ -115,7 +115,7 @@
 	  <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
 	</button>
 	
-	<button ion-button class="main-action-btn medium forward" outline (tap)="sendMessage()" [ngClass]="{'bottom-margin':showContactsStep}" *ngIf="showContactsStep">
+	<button ion-button class="main-action-btn medium forward contacts-list-btn" outline (tap)="sendMessage()" [ngClass]="{'bottom-margin':showContactsStep}" *ngIf="showContactsStep">
 	   <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
 	</button>
 	

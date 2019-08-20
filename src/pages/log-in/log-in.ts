@@ -6,6 +6,7 @@ import { SignUpPage } from '../sign-up/sign-up';
 import { SignUpAfterFbPage } from '../sign-up-after-fb/sign-up-after-fb';
 import { SignUpFacebookPage } from '../sign-up-facebook/sign-up-facebook';
 import { HoldScreenPage } from '../hold-screen/hold-screen';
+import { ChatPage } from '../../pages/chat/chat';
 
 // Providers
 import { Auth } from '../../providers/auth';
@@ -114,9 +115,10 @@ export class LogInPage {
 
     this.tools.showLoader();
     this.authPrvd.login(this.account).map(res => res.json()).subscribe(resp => {
-      console.log('login resp:', resp);
+      console.log('login resp 123:', resp);
       if (resp.tou_accepted) {
-          this.tools.pushPage(HoldScreenPage);
+          // this.tools.pushPage(HoldScreenPage);
+          this.tools.pushPage(ChatPage);
       } else if (!resp.tou_accepted &&
         typeof resp.tou_accepted == 'boolean'){
         this.termsAlertShow('form', resp.id);
@@ -136,7 +138,8 @@ export class LogInPage {
               this.tools.hideLoader();
               this.authPrvd.setFbConnected();
               this.chatPrvd.detectNetwork();
-              this.tools.pushPage(HoldScreenPage)
+              // this.tools.pushPage(HoldScreenPage);
+              this.tools.pushPage(ChatPage);
           } else {
             this.authPrvd.setFbConnected();
             this.tools.hideLoader();

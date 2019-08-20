@@ -22,7 +22,6 @@ import {
 import {Observable} from 'rxjs/Observable';
 import { GoogleMapsService } from 'google-maps-angular2';
 import { Base64ToGallery } from '@ionic-native/base64-to-gallery';
-
 import { CameraPreview } from '@ionic-native/camera-preview';
 import { Geolocation } from '@ionic-native/geolocation';
 import { Keyboard } from '@ionic-native/keyboard';
@@ -64,16 +63,13 @@ import { Social } from '../../providers/social';
 import { Places } from '../../providers/places';
 import { User } from '../../providers/user';
 import { PermissionsService } from '../../providers/permissionservice';
-
 //import { GeocoderProvider } from '../../providers/geocoder';
-
 import { LocationChange } from '../../providers/locationchange';
-
 import { VideoService } from '../../providers/videoservice';
 import { FeedbackService } from '../../providers/feedback.service';
 import { LocalStorage } from '../../providers/local-storage';
-
 import * as moment from 'moment';
+
 // Sockets
 import 'rxjs';
 
@@ -148,14 +144,12 @@ export class ChatPage implements DoCheck {
   };
 
   //public map: any;
-
   @ViewChild(Content) content: Content;
   @ViewChild('galleryCont') gCont;
   @ViewChild('textInput') txtIn;
   @ViewChild('directions') directionCont;
   @ViewChild('mapElement') mapElement: ElementRef;
   @ViewChild('searchbar', { read: ElementRef }) searchbar: ElementRef;
-  
 
   shareContainer = new Toggleable('off', true);
   emojiContainer = new Toggleable('off', true);
@@ -172,22 +166,18 @@ export class ChatPage implements DoCheck {
   public postGeocodeData:any;
 
   flipHover: boolean;
-
   toggContainers: any = [
     this.emojiContainer,
     this.shareContainer
   ];
   private messagesInterval:boolean;
   private messIntObject:any;
-
   public isSocialPostsLoaded:boolean = false;
 
   emoticX = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C'];
   emoticY = ['1F60', '1F61', '1F62', '1F63', '1F64'];
   emojis = [];
-
   caretPos: number = 0;
-
   contentBlock: any = undefined;
 
   public chatUsers: any = [];
@@ -195,9 +185,7 @@ export class ChatPage implements DoCheck {
   public mapMarkers: any = [];
   public placedMarkersArr: any = [];
   public markerLatLng: any = [];
-
   public user: any;
-
   public shareCheckbox: any = {
     facebook: true,
     twitter: true,
@@ -207,86 +195,60 @@ export class ChatPage implements DoCheck {
 
   private postLoaded:boolean = false;
   private postLoading:boolean = false;
-
   public sendError: string;
   private networkParams: any = {};
   private textStrings: any = {};
-
   public hostUrl: string;
   public placeholderText: string;
-
   public geocoded : boolean;
-
   public results  : string;
-
   private debug: any = {
     postHangTime: 0
   };
-
   private postLockData: any = {
     password: null,
     hint: null
   };
-
   private contentPadding: string;
   private contentMargin: string;
   private contentMarginTop: string;
   private bottomMargin: string;
   private contentPosition: string;
-  
   private textProfile: boolean = true;
-
   private canRefresh: boolean = true;
   private idList: any = [];
   private messageRefreshInterval: any;
   private socialPosts: Array<any> = [];
   private pageTag: string;
-
   private authData: any;
   private isFeedbackClickable: boolean = true;
-
   private postTimerObj:any = {
     expireDate: null,
     time: null
   };
-
   private socialLoaderHidden:boolean = false;
-
   private postUnlockData:any = {
     id: null,
     password: null
   }
-
   public postCustAddressData:any = {
       custumAddress: null
   }
-
   private currentHint:any;
-
   private activeTopForm:any;
-
   private global:any = null;
-
   private nearestPlace:any = null;
-
   private dirVisible:boolean = true;
-
   public network:any = {};
-
   public uniqueUsers:number = 0;
- 
-
   public requestMessage: any;
-
   public search: boolean = true;
   public addressElement:any;
   public searchModel:any;
-  
   public coachMarkText = "Start your network here?";
   public netwrkCoachMarkText:boolean = false;
   public scrollTop:number = 0;
   public hideTextContainer:boolean = false;
-  
   public parameterData:any;
   public flgEditPost:boolean = false;
   public oldLobbyDetails: any= [];
@@ -298,7 +260,7 @@ export class ChatPage implements DoCheck {
   public nclAddedCnt: number =0;
   public currentCLLobbyIndex: number = null;
   public isProcessing:boolean = false;
-  
+  public accessDeniedTip:boolean = false; 
   public mapStyle = [
 	  {
 		  "featureType": "all",
@@ -347,6 +309,7 @@ export class ChatPage implements DoCheck {
 		  ]
 	  }
 	];
+
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -396,6 +359,7 @@ export class ChatPage implements DoCheck {
 		this.storage.rm('new_signUp');
 		this.toolsPrvd.pushPage(HoldScreenPage);
 	  }else{
+		  this.initMap();
 		  this.user = this.authPrvd.getAuthData();		
 		  this.chatPrvd.isLandingPage = true;
 		  this.undercoverPrvd.setUndercover(true);
@@ -405,15 +369,35 @@ export class ChatPage implements DoCheck {
 		  plt.ready().then(() => {
 			  this.registerDevice();
 		  });		
-			  
-		  if (this.navParams.get('message')) {			  
+
+		  if (this.navParams.get('message')) {
 			this.messageParam = this.navParams.get('message');
-			this.initMap();
+			// this.initMap();
 			this.coachMarkText='';
-			this.openLobbyForPinned(this.messageParam);
+			// this.openLobbyForPinned(this.messageParam);
+			
+			let message = this.messageParam;
+			if(message.messageable_type == "Network"){ 
+				if(message.undercover){ // Open line lobby
+					this.openLobbyForPinned(message);
+				}else if(!message.undercover){ // Open conversation lobby
+					this.openConversationLobbyForPinned(message);
+				}					
+			}else if(message.messageable_type == "Room"){
+				this.chatPrvd.getParentLobby(message).subscribe(parentRes => {
+					console.log('i m for message ');
+					let parentMessage = parentRes.messages;
+					if(parentMessage.undercover){ // Open line lobby
+						
+						this.openLobbyForPinned(parentMessage);
+					}else if(!parentMessage.undercover){ // Open conversation lobby 
+						this.openConversationLobbyForPinned(parentMessage);
+					}
+				});
+			}
 		  }else{
+			  // this.initMap();
 			  this.parameterData = this.storage.get('parameterData');
-			  this.initMap();
 			  if(this.parameterData){
 				this.toolsPrvd.showLoader();
 				this.chatPrvd.socketsInit();
@@ -443,30 +427,39 @@ export class ChatPage implements DoCheck {
   }
 
   public resetFilter():void {
-	  if(!this.chatPrvd.isMainBtnDisabled){
-		  this.chatPrvd.isMainBtnDisabled = true;
-		  this.chatPrvd.postMessages = [];
-		  this.clearMarkers();
-		  this.settings.isNewlineScope=false;
-		  this.settings.isCreateLine=false;
-		  this.chatPrvd.isCleared = true;		  
-		  if(this.chatPrvd.areaFilter){
-			  this.chatPrvd.areaFilter=false;
-			  this.refreshChat();
-		  }else{
-			  this.chatPrvd.areaFilter=true;
-			  this.refreshChat();
-		  }
+	if(!this.chatPrvd.isMainBtnDisabled && this.gpsPrvd.locationAccessPermission){
+	  this.chatPrvd.isMainBtnDisabled = true;
+	  this.chatPrvd.postMessages = [];
+	  this.clearMarkers();
+	  this.settings.isNewlineScope=false;
+	  this.settings.isCreateLine=false;
+	  this.chatPrvd.isCleared = true;		  
+	  if(this.chatPrvd.areaFilter){
+		  this.chatPrvd.areaFilter=false;
+		  this.refreshChat();
+	  }else{
+		  this.chatPrvd.areaFilter=true;
+		  this.refreshChat();
 	  }
+	}
   }
   
   public resetTopNetwrkFilter():void{
 	if(!this.isProcessing && this.loaderState.getState() == 'off'){
-		console.log('start');
 		this.isProcessing = true;
 		this.toolsPrvd.showLoader();
 		this.chatPrvd.holdFilter = !this.chatPrvd.holdFilter;
-		this.getAndUpdateUndercoverMessages();
+		this.chatPrvd.areaFilter = !this.chatPrvd.areaFilter;
+		if(this.chatPrvd.areaFilter && !this.gpsPrvd.locationAccessPermission){
+			this.accessDeniedTip = true;
+			this.isProcessing = false;
+			this.chatPrvd.isMainBtnDisabled = true;
+			this.loaderState.setState('off'); 
+			this.chatPrvd.postMessages = [];
+			this.toolsPrvd.hideLoader();
+		}else{
+			this.getAndUpdateUndercoverMessages();
+		}
 	}else{
 		console.log('wait');
 	}    
@@ -505,7 +498,6 @@ export class ChatPage implements DoCheck {
           closeButton: true,
           copyToReference: true
       };
-
       this.photoViewer.show(imgUrl, 'Netwrk', photoViewerOptions);
   }
 
@@ -632,11 +624,9 @@ export class ChatPage implements DoCheck {
         this.map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
 	});
 	setTimeout(function() { google.maps.event.trigger(this.map, 'resize') }, 600);	
-	
   }
 
   private initLpMap():void {
-	 console.log('initLpMap');
 	 this.contentPosition = '';	 
 	 this.clearMarkers();
      this.gapi.init.then((google_maps: any) => {
@@ -677,8 +667,7 @@ export class ChatPage implements DoCheck {
                     };
 
                     this.mapMarkers.push(marker);
-                }else {
-					
+                }else {					
                     if(this.chatPrvd.areaLobby){
 						let marker = {
                             map: this.map,
@@ -754,7 +743,6 @@ export class ChatPage implements DoCheck {
   }
 
   public clearMarkers():void {
-	  console.log('clearMarkers');
 	  for (var i = 0; i < this.placedMarkersArr.length; i++ ) {
           this.placedMarkersArr[i].setMap(null);
       }
@@ -890,26 +878,26 @@ export class ChatPage implements DoCheck {
   }
 
   public lineJoinRequest():void {
-        let alert = this.alertCtrl.create({
-            subTitle: 'Become a part of the local broadcast?',
-            buttons: [{
-                text: 'Not now',
-                role: 'cancel'
-            }, {
-                cssClass: 'active',
-                text: 'Sure',
-                handler: () => {
-                    console.log('joinNetwork handler');
-                    alert.dismiss();
-                    this.toolsPrvd.pushPage(NetworkContactListPage, {
-                        type: 'emails',
-                        show_share_dialog: true
-                    });
-                    return false;
-                }
-            }]
-        });
-        alert.present();
+	let alert = this.alertCtrl.create({
+		subTitle: 'Become a part of the local broadcast?',
+		buttons: [{
+			text: 'Not now',
+			role: 'cancel'
+		}, {
+			cssClass: 'active',
+			text: 'Sure',
+			handler: () => {
+				console.log('joinNetwork handler');
+				alert.dismiss();
+				this.toolsPrvd.pushPage(NetworkContactListPage, {
+					type: 'emails',
+					show_share_dialog: true
+				});
+				return false;
+			}
+		}]
+	});
+	alert.present();
   }
 
   private setCustomTransitions():void {
@@ -950,7 +938,7 @@ export class ChatPage implements DoCheck {
   }
 
   private changePlaceholderText():void {
-      this.placeholderText = 'What do you want to talk about?';
+    this.placeholderText = 'What do you want to talk about?';
   }
 
   private generateEmoticons():void {
@@ -981,8 +969,6 @@ export class ChatPage implements DoCheck {
 			this.toggleContainer(this.shareContainer, 'hide');
 		}
 	});
-	
-    
   }
 
   private setContentPadding(status):void {
@@ -1060,7 +1046,6 @@ export class ChatPage implements DoCheck {
 		});
 
 	  });
-	  
   }
   
   private updateContainer(container:any) {
@@ -1196,10 +1181,10 @@ export class ChatPage implements DoCheck {
                                            };
 
                                            let marker = new google_maps.Marker({
-                                               map: this.map,
-                                               animation: google_maps.Animation.DROP,
-                                               position: res.results[0].geometry.location,
-                                               icon: icon
+											   map: this.map,
+											   animation: google_maps.Animation.DROP,
+											   position: res.results[0].geometry.location,
+											   icon: icon
                                            });
                                        });
 
@@ -1248,17 +1233,17 @@ export class ChatPage implements DoCheck {
   }
 
   public customAddressReset(){
-      this.toolsPrvd.showToast('Check it again, something is wrong');
-      this.postCustAddressData = {
-          custumAddress: null
-      };
-      let cont0 = this.getTopSlider('address');
-      cont0.setState('slideDown');
-      cont0.show();
-      this.chatPrvd.postMessages = [];
-      this.settings.isNewlineScope=true;
-      this.storage.rm('custom_coordinates');
-	  this.gpsPrvd.getMyZipCode();
+	this.toolsPrvd.showToast('Check it again, something is wrong');
+	this.postCustAddressData = {
+	  custumAddress: null
+	};
+	let cont0 = this.getTopSlider('address');
+	cont0.setState('slideDown');
+	cont0.show();
+	this.chatPrvd.postMessages = [];
+	this.settings.isNewlineScope=true;
+	this.storage.rm('custom_coordinates');
+	this.gpsPrvd.getMyZipCode();
   }
 
   private unlockPost(event:any, form: any):void {
@@ -1312,8 +1297,12 @@ export class ChatPage implements DoCheck {
 
   private updatePost(data: any, message?:any, emoji?:any):void {
     // this.toolsPrvd.hideLoader();
-    if (!emoji) {
-      this.txtIn.value = '';
+	if (!emoji) {
+	  if(this.txtIn!=undefined){
+		this.txtIn.value = '';
+	  }else{
+		  this.requestMessage = '';
+	  }
       this.setMainBtnStateRelativeToEvents();
       this.chatPrvd.postBtn.setState(false);
 
@@ -1347,6 +1336,7 @@ export class ChatPage implements DoCheck {
 
   private postMessage(emoji?: string, params?: any):void {
 	try {
+		
 	  let publicUser: boolean;
       let images = [];
       let messageParams: any = {};
@@ -1371,16 +1361,19 @@ export class ChatPage implements DoCheck {
       if (params && params.social && !this.chatPrvd.isLobbyChat)
 	  this.setDefaultTimer();
 
+
+
 	  let msgrequest_type = '';
 	  let textInput = '';
-	  if(this.txtIn != undefined) {	
-		textInput = this.txtIn.value;
-	  }else if(this.chatPrvd.request_type){ 
+	  
+	  if(this.chatPrvd.request_type){ 
 		textInput = this.requestMessage;
 		msgrequest_type = this.chatPrvd.request_type;
-	  }
-	  let messageTxt = textInput;
+	  }else if(this.txtIn != undefined) {	
+		textInput = this.txtIn.value;
+	  } 
 	  
+	  let messageTxt = textInput;
 	  let undercover: boolean = null;
 	  let messageable_type: any = null;
 	  if(this.chatPrvd.isLobbyChat){ // Line message
@@ -1390,13 +1383,14 @@ export class ChatPage implements DoCheck {
 		  }else{
 			messageable_type = 'Room';
 		  }
-	  }else if(this.chatPrvd.areaLobby){ // Conversasion message
+	  }else if(this.chatPrvd.areaLobby || (this.storage.get('response_conversation_id') != undefined) && this.storage.get('response_conversation_id') != null ){ // Conversasion message 
+	  // conversasion lobby || response to conversation request 
 		  undercover = false;
-		    if(this.isReplyMode){
-				messageable_type = 'Reply';
-		    }else{
-				messageable_type = 'Room';
-			}
+		  if(this.isReplyMode){
+			messageable_type = 'Reply';
+		  }else{
+			messageable_type = 'Room';
+		  }
 	  }else if(this.chatPrvd.getState() == 'area'){ // Conversasion
 		  undercover = false;
 		  messageable_type = 'Network';
@@ -1420,7 +1414,8 @@ export class ChatPage implements DoCheck {
         locked: (this.postLockData.hint && this.postLockData.password) ? true : false,
         password: this.postLockData.password ? this.postLockData.password : null,
         hint: this.postLockData.hint ? this.postLockData.hint : null,
-        expire_date: (this.chatPrvd.areaLobby && this.postTimerObj.expireDate) ? this.postTimerObj.expireDate : null,
+        expire_date: null, 
+		//(this.chatPrvd.areaLobby && this.postTimerObj.expireDate) ? this.postTimerObj.expireDate : null
         timestamp: Math.floor(new Date().getTime()/1000),
 		message_type: msgrequest_type
       };
@@ -1435,9 +1430,11 @@ export class ChatPage implements DoCheck {
         ? messageParams.social_urls : imageUrls;
       message.isTemporary = false;
       message.temporaryFor = 0;
-      if ((message.text && message.text.trim() != '') ||
+	  
+	  if ((message.text && message.text.trim() != '') ||
           (message.images && message.images.length > 0) ||
           (message.social_urls && message.social_urls.length > 0)) {
+			  console.log('messageParams::: ',messageParams);
 			  
         if (!message.social) {
           message.user_id = this.user.id;
@@ -1460,13 +1457,13 @@ export class ChatPage implements DoCheck {
 		  }
 		  
         }
-        // this.toolsPrvd.showLoader();
 		
-		  
+        // this.toolsPrvd.showLoader();
         this.chatPrvd.sendMessage(messageParams).then(res => {
           this.hideTopSlider(this.activeTopForm);
           message.id=res.id;
           if(this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby){
+			  // this.updateMessageExpiry(this.chatPrvd.currentLobby.id);
               if(!this.isReplyMode){ 
 				res.notification_type="new_message"; 
 			  }else if(this.isReplyMode){ 
@@ -1480,7 +1477,7 @@ export class ChatPage implements DoCheck {
 	  
 		   // || !this.chatPrvd.areaLobby && this.chatPrvd.getState() == 'area' && this.chatPrvd.request_type != "ACCESS_REQUEST"
 		  
-          if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat && msgrequest_type != "ACCESS_REQUEST") {
+          if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat && msgrequest_type != "ACCESS_REQUEST" && msgrequest_type != "CONV_ACCEPTED"  && msgrequest_type != "CONV_REJECTED") {
 			  let alert = this.alertCtrl.create({
                   subTitle: 'Share the conversation with your friends?',
                   buttons: [{
@@ -1518,7 +1515,6 @@ export class ChatPage implements DoCheck {
                       }
                   }]
               });
-
               alert.present();
           }
           
@@ -1536,7 +1532,7 @@ export class ChatPage implements DoCheck {
           this.chatPrvd.scrollToTop();
           this.toolsPrvd.hideLoader();
         }).catch(err => {
-          this.toolsPrvd.hideLoader();
+		  this.toolsPrvd.hideLoader();
           this.updatePost(err, message);
         });
         if (!emoji) {
@@ -1650,46 +1646,46 @@ export class ChatPage implements DoCheck {
     legModal.present();
   }
 
-    public goBack():void {	
-		if(this.storage.get('edit-post')){
-			this.storage.set('edit-post','');
-			this.toolsPrvd.popPage();
-		}else{
-			this.normalizeMainBtn(null,null);
-			this.app.getRootNav().setRoot(ChatPage);
-			this.storage.rm('custom_coordinates');
-			this.gpsPrvd.getMyZipCode().then(res => {
-				this.initLpMap();
-				let cont0 = this.getTopSlider('address');
-				cont0.setState('slideUp');
-				cont0.hide();			
-			});
-			this.chatPrvd.postMessages = [];
-			this.settings.isNewlineScope=false;
-			this.settings.isCreateLine=false;
-			this.chatPrvd.isCleared = true;		
-			this.refreshChat();		
-		}
-    }
+  public goBack():void {	
+	if(this.storage.get('edit-post')){
+		this.storage.set('edit-post','');
+		this.toolsPrvd.popPage();
+	}else{
+		this.normalizeMainBtn(null,null);
+		this.app.getRootNav().setRoot(ChatPage);
+		this.storage.rm('custom_coordinates');
+		this.gpsPrvd.getMyZipCode().then(res => {
+			this.initLpMap();
+			let cont0 = this.getTopSlider('address');
+			cont0.setState('slideUp');
+			cont0.hide();			
+		});
+		this.chatPrvd.postMessages = [];
+		this.settings.isNewlineScope=false;
+		this.settings.isCreateLine=false;
+		this.chatPrvd.isCleared = true;		
+		this.refreshChat();		
+	}
+  }
 
-    public openLinePage():void {
-		console.log(this.gpsPrvd.coords);
-        let cont0 = this.getTopSlider('address');
-        cont0.setState('slideUp');
-        cont0.hide();
-		// console.log("openLinePage() ==> "+this.chatPrvd.request_type);
-        this.settings.isNewlineScope=false;
-        this.settings.isCreateLine=true;
-        this.toolsPrvd.pushPage(UndercoverCharacterPage);
-    }
+  public openLinePage():void {
+	console.log(this.gpsPrvd.coords);
+	let cont0 = this.getTopSlider('address');
+	cont0.setState('slideUp');
+	cont0.hide();
+	// console.log("openLinePage() ==> "+this.chatPrvd.request_type);
+	this.settings.isNewlineScope=false;
+	this.settings.isCreateLine=true;
+	this.toolsPrvd.pushPage(UndercoverCharacterPage);
+  }
 
-    public eventClickTrigger():void {
-        this.messagesInterval = false;
-        clearTimeout(this.messIntObject);
-        this.chatPrvd.postMessages = [];
-        //this.chatPrvd.isCleared = true;
-        this.settings.isNewlineScope=true;
-    }
+  public eventClickTrigger():void {
+	this.messagesInterval = false;
+	clearTimeout(this.messIntObject);
+	this.chatPrvd.postMessages = [];
+	//this.chatPrvd.isCleared = true;
+	this.settings.isNewlineScope=true;
+  }
 
   private goArea():void {
     this.messagesInterval = false;
@@ -1717,7 +1713,7 @@ export class ChatPage implements DoCheck {
     }, err => console.error(err));
   }
 
-   private goUndercover(event?:any):any {
+  private goUndercover(event?:any):any {
     this.messagesInterval = false;
     clearTimeout(this.messIntObject);
     this.chatPrvd.isMainBtnDisabled = true;
@@ -1837,7 +1833,6 @@ export class ChatPage implements DoCheck {
       console.log('========= end of goUndercover =========');
     }, 2);
   }
-
   
   private toggleShareSlider(social_network):void {
     this.shareCheckbox[social_network] = !this.shareCheckbox[social_network];
@@ -1845,13 +1840,13 @@ export class ChatPage implements DoCheck {
   }
 
   private goToHoldScreen():void {
-	  this.netwrkFeed = false;
-	  this.priNetwrkFeed = false;	  
-      this.chatPrvd.postMessages=[];
-	  this.nclAddedCnt = 0;
-	  this.currentCLLobbyIndex = null;
-      this.chatPrvd.isCleared = true;
-      this.toolsPrvd.pushPage(NetwrklistPage);
+	this.netwrkFeed = false;
+	this.priNetwrkFeed = false;	  
+	this.chatPrvd.postMessages=[];
+	this.nclAddedCnt = 0;
+	this.currentCLLobbyIndex = null;
+	this.chatPrvd.isCleared = true;
+	this.toolsPrvd.pushPage(NetwrklistPage);
   }
 
   private getSocialPosts():void {
@@ -1942,15 +1937,15 @@ export class ChatPage implements DoCheck {
     }
   }
 
-    private getMiddleSlider(container:string,id:number):any {
-        const a = {
-            timer: this.postTimer,
-            lock: this.postLock,
-            address: this.postCustAddress,
-            unlock: this.postUnlock
-        }
-        return a[container];
-    }
+  private getMiddleSlider(container:string,id:number):any {
+	const a = {
+		timer: this.postTimer,
+		lock: this.postLock,
+		address: this.postCustAddress,
+		unlock: this.postUnlock
+	}
+	return a[container];
+  }
 
   private toggleBarSlider(container:string,id:number):void {
     if (this.plt.is('ios'))
@@ -2022,38 +2017,38 @@ export class ChatPage implements DoCheck {
   }
 
 
-    public joinNetwork():void {
-        let alert = this.alertCtrl.create({
-            subTitle: 'Become a part of the local broadcast?',
-            buttons: [{
-                text: 'Not now',
-                role: 'cancel'
-            }, {
-                cssClass: 'active',
-                text: 'Sure',
-                handler: () => {
-                    console.log('joinNetwork handler');
-                    alert.dismiss();
-                    this.toolsPrvd.pushPage(NetworkContactListPage, {
-                        type: 'emails',
-                        show_share_dialog: true
-                    });
+  public joinNetwork():void {
+	let alert = this.alertCtrl.create({
+		subTitle: 'Become a part of the local broadcast?',
+		buttons: [{
+			text: 'Not now',
+			role: 'cancel'
+		}, {
+			cssClass: 'active',
+			text: 'Sure',
+			handler: () => {
+				console.log('joinNetwork handler');
+				alert.dismiss();
+				this.toolsPrvd.pushPage(NetworkContactListPage, {
+					type: 'emails',
+					show_share_dialog: true
+				});
 
-                    this.networkParams = {
-                        post_code: this.chatPrvd.localStorage.get('chat_zip_code')
-                    };
-                    this.networkPrvd.join(this.networkParams).subscribe(res => {
+				this.networkParams = {
+					post_code: this.chatPrvd.localStorage.get('chat_zip_code')
+				};
+				this.networkPrvd.join(this.networkParams).subscribe(res => {
 
-                    }, err => {
-                        console.log(err);
-                    });
+				}, err => {
+					console.log(err);
+				});
 
-                    return false;
-                }
-            }]
-        });
-        alert.present();
-    }
+				return false;
+			}
+		}]
+	});
+	alert.present();
+  }
 
   private getUsers():Promise<any> {
     return new Promise((resolve, reject) => {
@@ -2086,9 +2081,7 @@ export class ChatPage implements DoCheck {
   }
 
   private doInfinite(ev):void {  
-	console.log('doInfinite');
 	this.loaderState.setState('on');
-	
 	if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
 	  // setTimeout(() => {	
 	  if(!this.netwrkFeed){
@@ -2121,16 +2114,31 @@ export class ChatPage implements DoCheck {
 		this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
         .subscribe(res => {
 		  res = this.chatPrvd.organizeMessages(res.messages);
-          let iconSize=new google.maps.Size(35, 40);
+		  let iconSize=new google.maps.Size(35, 40);
 		  let markerIcon = {
 			url: '',
 			scaledSize: iconSize,
 			origin: new google.maps.Point(0, 0),
 			anchor: new google.maps.Point(0, 0)
 		  };
+		 let postmessages = this.chatPrvd.postMessages;
 		 
-		  for (let i in res) {
-			this.chatPrvd.postMessages.push(res[i]);
+		  for (let i in res) {				
+			if(postmessages.length > 1){
+			  let pushData:boolean = true;
+			  for (let j in postmessages) {
+				if(postmessages[j].id == res[i].id){
+				  pushData = false;
+				  break;
+				}
+			  }			  
+			  if(pushData){
+				this.chatPrvd.postMessages.push(res[i]);			  
+			  }
+			}else{
+			  this.chatPrvd.postMessages.push(res[i]);
+			}
+					  
 			if(res[i].messageable_type == 'Network'){
 				if(res[i].locked && res[i].locked_by_user && this.user.id != res[i].user_id){
 					markerIcon.url = 'assets/icon/lock-marker.png';
@@ -2155,7 +2163,6 @@ export class ChatPage implements DoCheck {
 				this.mapMarkers.push(marker);
 			
 				new google.maps.event.addListener(marker, 'click', () => {
-					console.log(marker.message.text_with_links);
 					if(marker.message.undercover){
 						this.openLobbyForPinned(marker.message);
 					}else{
@@ -2187,6 +2194,7 @@ export class ChatPage implements DoCheck {
   private sortById_asc(messageA, messageB):any {
     return messageA.id - messageB.id;
   }
+  
   private sortById_desc(messageA, messageB):any {
     return messageB.id - messageA.id;
   }
@@ -2199,10 +2207,11 @@ export class ChatPage implements DoCheck {
       }, 10000);
     }
   }
-
-  private getAndUpdateUndercoverMessages() {	  
+  
+  private getAndUpdateUndercoverMessages() {
+	  console.log(this.isUndercover);
       if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
-          this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
+		  this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
 			  if (res) {
 				  if (res.messages && res.messages.length > 0) {
 					  if(this.chatPrvd.postMessages.length > 1){
@@ -2236,8 +2245,8 @@ export class ChatPage implements DoCheck {
       }	  
   }
 
-  private startMessageUpdateTimer() {
-    if (this.chatPrvd.getState() == 'undercover' &&  !this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
+  private startMessageUpdateTimer() { //this.chatPrvd.getState() == 'undercover' &&  
+    if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {
       this.getAndUpdateUndercoverMessages();
     }
   }
@@ -2530,39 +2539,37 @@ export class ChatPage implements DoCheck {
   }
 
   ngOnInit() {
+	this.chatPrvd.getBlacklist().subscribe(res => {
+	  if (res && res.length > 0)
+		this.chatPrvd.localStorage.set('blacklist', res);
+	}, err => console.error(err));
+
+	this.authPrvd.getSocialStatus().subscribe(res => {
+	  let socialArray = [ 'fb', 'twitter', 'instagram' ];
+	  for (let i = 0; i < socialArray.length; i++) {
+		if (res[socialArray[i]]) {
+		  this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
+		}
+	  }
+	}, err => console.error(err));
+
+
+	if (this.chatPrvd.localStorage.get('last_zip_code') === null) {
+	  this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
+	} else if (this.chatPrvd.localStorage.get('last_zip_code') != this.chatPrvd.localStorage.get('chat_zip_code')) {
+	  this.chatPrvd.localStorage.set('first_time_undercover', null);
+	  this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
+	}
 	
-		console.log('ngOnInit');
-		this.chatPrvd.getBlacklist().subscribe(res => {
-		  if (res && res.length > 0)
-			this.chatPrvd.localStorage.set('blacklist', res);
-		}, err => console.error(err));
-
-		this.authPrvd.getSocialStatus().subscribe(res => {
-		  let socialArray = [ 'fb', 'twitter', 'instagram' ];
-		  for (let i = 0; i < socialArray.length; i++) {
-			if (res[socialArray[i]]) {
-			  this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
-			}
-		  }
-		}, err => console.error(err));
-
-
-		if (this.chatPrvd.localStorage.get('last_zip_code') === null) {
-		  this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
-		} else if (this.chatPrvd.localStorage.get('last_zip_code') != this.chatPrvd.localStorage.get('chat_zip_code')) {
-		  this.chatPrvd.localStorage.set('first_time_undercover', null);
-		  this.chatPrvd.localStorage.set('last_zip_code', this.chatPrvd.localStorage.get('chat_zip_code'));
-		}
-		
-		if (this.chatPrvd.localStorage.get('first_time_undercover') === null)
-		  this.chatPrvd.localStorage.set('first_time_undercover', true);
-		else if (this.chatPrvd.localStorage.get('first_time_undercover')) {
-		  this.chatPrvd.localStorage.set('first_time_undercover', false);
-		}
-		
-		this.constructorLoad().then(res => {
-		  this.componentLoaded = true;
-		});
+	if (this.chatPrvd.localStorage.get('first_time_undercover') === null)
+	  this.chatPrvd.localStorage.set('first_time_undercover', true);
+	else if (this.chatPrvd.localStorage.get('first_time_undercover')) {
+	  this.chatPrvd.localStorage.set('first_time_undercover', false);
+	}
+	
+	this.constructorLoad().then(res => {
+	  this.componentLoaded = true;
+	});
 	
   }
 
@@ -2650,367 +2657,400 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForLockedChecked(message:any):void {
+console.log('openLobbyForLockedChecked::',message);
+	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
+	  if (this.chatPrvd.bgState.getState() == 'stretched') {
+		  this.toggleChatOptions();
+	  }
+	  if(!this.netwrkFeed){
+		this.toolsPrvd.showLoader();
+	  }
+	  this.chatPrvd.isMainBtnDisabled = true;
+	  this.isUndercover=true;
+	  this.chatPrvd.postMessages = [];
 
-	  if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
-		  if (this.chatPrvd.bgState.getState() == 'stretched') {
-              this.toggleChatOptions();
-          }
-		  if(!this.netwrkFeed){
-			this.toolsPrvd.showLoader();
+	  this.netwrkFeed = false;
+	  this.priNetwrkFeed = false;
+	  this.settings.isNewlineScope=false;
+	  this.chatPrvd.currentLobbyMessage=message;
+	  this.chatPrvd.lobbyOpened = true;
+	  this.chatPrvd.appendContainer.hidden = true;
+	  this.cameraPrvd.takenPictures = [];
+	  this.setMainBtnStateRelativeToEvents();
+	  this.placeholderText = 'What would you like to say?';
+
+	  this.chatPrvd.openLobbyForPinned(message).then(() => {
+		  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
+			  this.placeholderText = 'What do you want to talk about?';
+		  }else{
+			  this.placeholderText = 'What would you like to say?';
 		  }
-          this.chatPrvd.isMainBtnDisabled = true;
-          this.isUndercover=true;
-          this.chatPrvd.postMessages = [];
 
-		  this.netwrkFeed = false;
-		  this.priNetwrkFeed = false;
-          this.settings.isNewlineScope=false;
-          this.chatPrvd.currentLobbyMessage=message;
-		  this.chatPrvd.lobbyOpened = true;
-          this.chatPrvd.appendContainer.hidden = true;
-          this.cameraPrvd.takenPictures = [];
-          this.setMainBtnStateRelativeToEvents();
-          this.placeholderText = 'What would you like to say?';
- 
-          this.chatPrvd.openLobbyForPinned(message).then(() => {
-			  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-                  this.placeholderText = 'What do you want to talk about?';
-              }else{
-                  this.placeholderText = 'What would you like to say?';
-              }
+		  this.chatPrvd.allowUndercoverUpdate = false;
+		  clearTimeout(this.messIntObject);
+		  this.coachMarkText = '';
+		  this.chatPrvd.toggleLobbyChatMode();
+		  this.chatPrvd.areaLobby = false;
+		  this.chatPrvd.isMainBtnDisabled = false;
+		  this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
+		  this.hideTextContainer = false;
+		  this.initLpMap();
+		  this.toolsPrvd.hideSplashScreen();
+		  this.toolsPrvd.hideLoader();
 
-              this.chatPrvd.allowUndercoverUpdate = false;
-              clearTimeout(this.messIntObject);
-			  this.coachMarkText = '';
-              this.chatPrvd.toggleLobbyChatMode();
-              this.chatPrvd.isMainBtnDisabled = false;
-			  this.hideTextContainer = false;
-              this.initLpMap();
-			  
-			  this.toolsPrvd.hideSplashScreen();
-              this.toolsPrvd.hideLoader();
-
-          }, err => {
-              console.error(err);
-              this.placeholderText = 'What do you want to talk about?';
-              this.chatPrvd.isMainBtnDisabled = false;
-              this.startMessageUpdateTimer();
-              this.chatPrvd.allowUndercoverUpdate = true;
-			  
-			  this.toolsPrvd.hideSplashScreen();
-              this.toolsPrvd.hideLoader();
-          });
-     }
+	  }, err => {
+		  console.error(err);
+		  this.placeholderText = 'What do you want to talk about?';
+		  this.chatPrvd.isMainBtnDisabled = false;
+		  this.startMessageUpdateTimer();
+		  this.chatPrvd.allowUndercoverUpdate = true;
+		  
+		  this.toolsPrvd.hideSplashScreen();
+		  this.toolsPrvd.hideLoader();
+	  });
+	}
   }
 
   public openLobbyForPinned(message:any):void {
-	  console.log('openLobbyForPinned');
-	  console.log(message);
+	let cont1 = this.getTopSlider('address');
+	cont1.setState('slideUp');
+	cont1.hide();
+	this.normalizeMainBtn(null,null);	  
+	this.contentMarginTop = null;	  
+
+	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){		  
+	  if(this.chatPrvd.getState() == 'undercover'){
+		  this.pageNavLobby=true;
+	  }else  if(this.chatPrvd.getState() == 'area'){
+		  this.pageNavLobby=false;
+	  }
 	  
-	  let cont1 = this.getTopSlider('address');
-      cont1.setState('slideUp');
-      cont1.hide();
-	  this.normalizeMainBtn(null,null);
-	  
-	  this.contentMarginTop = null;
-	  
-	  
-      if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){		  
-		  if(this.chatPrvd.getState() == 'undercover'){
-			  this.pageNavLobby=true;
-          }else  if(this.chatPrvd.getState() == 'area'){
-              this.pageNavLobby=false;
-          }
-		  
-          if(this.user.id != message.user_id && message.locked_by_user){
-			  console.log('i m not to open lobby');
-			  this.netwrkFeed = false;
-			  this.priNetwrkFeed = false;
-			  this.showUnlockPostForm(message.id, message.hint);
-			  this.toolsPrvd.hideSplashScreen();
-          }else{
-			  console.log('i m to open lobby');
-			  this.openLobbyForLockedChecked(message);
-          }
-      }
+	  if(this.user.id != message.user_id && message.locked_by_user){
+		  console.log('i m not to open lobby');
+		  this.netwrkFeed = false;
+		  this.priNetwrkFeed = false;
+		  this.showUnlockPostForm(message.id, message.hint);
+		  this.toolsPrvd.hideSplashScreen();
+	  }else{
+		  console.log('i m to open lobby');
+		  this.openLobbyForLockedChecked(message);
+	  }
+	}
 	 
   }
 
   public openLobbyForLineMessage(message:any):void {
-      let cont3 = this.getTopSlider('address');
-      cont3.setState('slideUp');
-      cont3.hide();
+	let cont3 = this.getTopSlider('address');
+	cont3.setState('slideUp');
+	cont3.hide();
 
-      if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){
-          if (this.chatPrvd.bgState.getState() == 'stretched') {
-              this.toggleChatOptions();
-          }
-          this.chatPrvd.getParentLobby(message).subscribe(res => {
-              this.toolsPrvd.showLoader();
-              this.isUndercover=true;
+	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){
+	  if (this.chatPrvd.bgState.getState() == 'stretched') {
+		  this.toggleChatOptions();
+	  }
+	  this.chatPrvd.getParentLobby(message).subscribe(res => {
+		  this.toolsPrvd.showLoader();
+		  this.isUndercover=true;
 
-              this.settings.isNewlineScope=false;
-              this.chatPrvd.currentLobbyMessage=res.messages;
-              this.chatPrvd.appendContainer.hidden = true;
-              this.cameraPrvd.takenPictures = [];
-              this.setMainBtnStateRelativeToEvents();
-              this.placeholderText = 'What would you like to say?';
+		  this.settings.isNewlineScope=false;
+		  this.chatPrvd.currentLobbyMessage=res.messages;
+		  this.chatPrvd.appendContainer.hidden = true;
+		  this.cameraPrvd.takenPictures = [];
+		  this.setMainBtnStateRelativeToEvents();
+		  this.placeholderText = 'What would you like to say?';
 
-              this.chatPrvd.openLobbyForPinned(res.messages).then(() => {
-                  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-                      this.placeholderText = 'What do you want to talk about?';
-                  }else{
-                      this.placeholderText = 'What would you like to say?';
-                  }
-				  this.coachMarkText = '';
-                  this.chatPrvd.toggleLobbyChatMode();
-                  this.chatPrvd.isMainBtnDisabled = false;
-                  this.chatPrvd.isLobbyChat=true;
-                  this.chatPrvd.areaLobby=false;
-				  this.hideTextContainer = false;
-                  this.initLpMap();
-                  this.chatPrvd.setState('undercover');
-                  this.undercoverPrvd.setUndercover(true);
-                  this.toolsPrvd.hideLoader();
-              }, err => {
-                  console.error(err);
-                  this.placeholderText = 'What do you want to talk about?';
-                  this.chatPrvd.isMainBtnDisabled = false;
-                  this.startMessageUpdateTimer();
-                  this.chatPrvd.allowUndercoverUpdate = true;
-                  this.toolsPrvd.hideLoader();
-              });
-          }, err => {
-              console.error(err);
-              this.toolsPrvd.hideLoader();
-          });
-      }
+		  this.chatPrvd.openLobbyForPinned(res.messages).then(() => {
+			  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
+				  this.placeholderText = 'What do you want to talk about?';
+			  }else{
+				  this.placeholderText = 'What would you like to say?';
+			  }
+			  this.coachMarkText = '';
+			  this.chatPrvd.toggleLobbyChatMode();
+			  this.chatPrvd.isMainBtnDisabled = false;
+			  this.chatPrvd.isLobbyChat=true;
+			  this.chatPrvd.areaLobby=false;
+			  this.hideTextContainer = false;
+			  this.initLpMap();
+			  this.chatPrvd.setState('undercover');
+			  this.undercoverPrvd.setUndercover(true);
+			  this.toolsPrvd.hideLoader();
+		  }, err => {
+			  console.error(err);
+			  this.placeholderText = 'What do you want to talk about?';
+			  this.chatPrvd.isMainBtnDisabled = false;
+			  this.startMessageUpdateTimer();
+			  this.chatPrvd.allowUndercoverUpdate = true;
+			  this.toolsPrvd.hideLoader();
+		  });
+	  }, err => {
+		  console.error(err);
+		  this.toolsPrvd.hideLoader();
+	  });
+	}
   }
 
-    public openConversationMessage(message:any):void {
-        if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off') {
-            this.chatPrvd.getParentLobby(message).subscribe(res => {
-                this.openConversationLobbyForPinned(res.messages);
-            });
-        }
-    }
-
-    public openConversationLobbyForPinned(message:any):void {
-		let cont2 = this.getTopSlider('address');
-        cont2.setState('slideUp');
-        cont2.hide();
-
-        if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){
-			  this.toolsPrvd.showLoader();
-              if(this.chatPrvd.getState() == 'undercover'){
-                 this.pageNav=true;
-              }else  if(this.chatPrvd.getState() == 'area'){
-                 this.pageNav=false;
-              }
-
-              if(this.chatPrvd.bgState.getState() == 'stretched') {
-                 this.toggleChatOptions();
-              }
-
-              this.chatPrvd.postMessages = [];
-
-              this.chatPrvd.isMainBtnDisabled = true;
-              this.chatPrvd.setState('area');
-              this.isUndercover=true;
-              this.chatPrvd.areaLobby=true;
-              this.settings.isNewlineScope=false;
-              this.chatPrvd.currentLobbyMessage=message;
-              this.chatPrvd.appendContainer.hidden = true;
-              this.cameraPrvd.takenPictures = [];
-              this.setMainBtnStateRelativeToEvents();
-              this.placeholderText = 'What would you like to say?';
-
-              this.chatPrvd.openLobbyForPinned(message).then(() => {
-                  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-                      this.placeholderText = 'What do you want to talk about?';
-                  }else{
-                      this.placeholderText = 'What would you like to say?';
-                  }
-
-                  this.chatPrvd.toggleLobbyChatMode();
-                  this.initLpMap();
-                  this.chatPrvd.isMainBtnDisabled = false;
-                  this.chatPrvd.areaLobby=true;
-				  this.hideTextContainer = false;
-                  this.toolsPrvd.hideLoader();
-				  this.socialLoaderHidden = true;
-              }, err => {
-                  this.chatPrvd.areaLobby=true;
-                  this.placeholderText = 'What do you want to talk about?';
-                  this.chatPrvd.isMainBtnDisabled = false;
-                  this.startMessageUpdateTimer();
-                  this.chatPrvd.allowUndercoverUpdate = true;
-                  this.toolsPrvd.hideLoader();
-				  this.socialLoaderHidden = true;
-              });
-        }
+  public openConversationMessage(message:any):void {
+	if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off') {
+		this.chatPrvd.getParentLobby(message).subscribe(res => {
+			this.openConversationLobbyForPinned(res.messages);
+		});
+	}
   }
 
-    public openConversationLobbyForPinnedFormMessage(message:any):void {
-        if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){ 
-              if(this.chatPrvd.getState() == 'undercover'){
-                 this.pageNav=true;
-              }else  if(this.chatPrvd.getState() == 'area'){
-                 this.pageNav=false;
-              }
+  public openConversationLobbyForPinned(message:any):void {
+	console.log('openConversationLobbyForPinned',message);
+	let cont2 = this.getTopSlider('address');
+	cont2.setState('slideUp');
+	cont2.hide();
+	console.log(this.loaderState.getState());
+	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off' && (!message.conversation_status || message.conversation_status == 'ACCEPTED')){
+	  console.log('inside openConversationLobbyForPinned if');
+	  this.toolsPrvd.showLoader();
+	  if(this.chatPrvd.getState() == 'undercover'){
+		 this.pageNav=true;
+	  }else  if(this.chatPrvd.getState() == 'area'){
+		 this.pageNav=false;
+	  }
 
-              if(this.chatPrvd.bgState.getState() == 'stretched') {
-                 this.toggleChatOptions();
-              }
+	  if(this.chatPrvd.bgState.getState() == 'stretched') {
+		 this.toggleChatOptions();
+	  }
 
-              this.chatPrvd.postMessages = [];
+	  this.chatPrvd.postMessages = [];
+	  this.chatPrvd.isMainBtnDisabled = true;              
+	  this.isUndercover=true;
+	  this.chatPrvd.areaLobby=true;			  
+	  this.chatPrvd.currentLobbyMessage=message;
+	  this.chatPrvd.appendContainer.hidden = true;
+	  this.cameraPrvd.takenPictures = [];
+	  this.setMainBtnStateRelativeToEvents();
+	  this.placeholderText = 'What would you like to say?';
 
-              this.chatPrvd.isMainBtnDisabled = true;
-              this.chatPrvd.setState('area');
-              this.isUndercover=true;
-              this.chatPrvd.areaLobby=true;
-              this.settings.isNewlineScope=false;
-              this.chatPrvd.currentLobbyMessage=message;
-              this.chatPrvd.appendContainer.hidden = true;
-              this.cameraPrvd.takenPictures = [];
-              this.setMainBtnStateRelativeToEvents();
-              this.placeholderText = 'What would you like to say?';
+	  this.chatPrvd.openLobbyForPinned(message).then(() => {
+		  this.hideTextContainer = false;
+		  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
+			this.placeholderText = 'What do you want to talk about?';
+			this.chatPrvd.postMessages = []; 
+			this.hideTextContainer = true;			
+		  }else{
+			  this.placeholderText = 'What would you like to say?';
+		  }
 
-              this.chatPrvd.openLobbyForPinned(message).then(() => {
-                  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
-                      this.placeholderText = 'What do you want to talk about?'; 
-                  }else{
-                      this.placeholderText = 'What would you like to say?';
-                  }
-                  this.chatPrvd.toggleLobbyChatMode();
-                  this.initLpMap();
-                  this.chatPrvd.isMainBtnDisabled = false;
-                  this.chatPrvd.areaLobby=true;
-				  this.hideTextContainer = false;
-                  this.toolsPrvd.hideLoader();
-              }, err => {
-                  this.chatPrvd.areaLobby=true;
-                  this.placeholderText = 'What do you want to talk about?';
-                  this.chatPrvd.isMainBtnDisabled = false;
-                  this.startMessageUpdateTimer();
-                  this.chatPrvd.allowUndercoverUpdate = true;
-                  this.toolsPrvd.hideLoader();
-              });
-        }
+		  this.chatPrvd.toggleLobbyChatMode();
+		  this.initLpMap();
+		  this.chatPrvd.isMainBtnDisabled = false;
+		  this.chatPrvd.areaLobby=true;
+		  this.chatPrvd.isLobbyChat=false;
+		  this.settings.isNewlineScope=false;
+		  this.chatPrvd.setState('area');		  
+		  this.toolsPrvd.hideLoader();
+		  this.socialLoaderHidden = true;
+	  }, err => {
+		  this.chatPrvd.areaLobby=true;
+		  this.placeholderText = 'What do you want to talk about?';
+		  this.chatPrvd.isMainBtnDisabled = false;
+		  this.startMessageUpdateTimer();
+		  this.chatPrvd.allowUndercoverUpdate = true;
+		  this.toolsPrvd.hideLoader();
+		  this.socialLoaderHidden = true;
+	  });
+	}
+  }
+
+  public openConversationLobbyForPinnedFormMessage(message:any):void {
+	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){ 
+	  if(this.chatPrvd.getState() == 'undercover'){
+		 this.pageNav=true;
+	  }else  if(this.chatPrvd.getState() == 'area'){
+		 this.pageNav=false;
+	  }
+
+	  if(this.chatPrvd.bgState.getState() == 'stretched') {
+		 this.toggleChatOptions();
+	  }
+
+	  this.chatPrvd.postMessages = [];
+
+	  this.chatPrvd.isMainBtnDisabled = true;
+	  this.chatPrvd.setState('area');
+	  this.isUndercover=true;
+	  this.chatPrvd.areaLobby=true;
+	  this.settings.isNewlineScope=false;
+	  this.chatPrvd.currentLobbyMessage=message;
+	  this.chatPrvd.appendContainer.hidden = true;
+	  this.cameraPrvd.takenPictures = [];
+	  this.setMainBtnStateRelativeToEvents();
+	  this.placeholderText = 'What would you like to say?';
+
+	  this.chatPrvd.openLobbyForPinned(message).then(() => {
+		  this.hideTextContainer = false;
+		  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
+			  this.placeholderText = 'What do you want to talk about?'; 
+			  this.hideTextContainer = true;
+		  }else{
+			  this.placeholderText = 'What would you like to say?';
+		  }
+		  this.chatPrvd.toggleLobbyChatMode();
+		  this.initLpMap();
+		  this.chatPrvd.isMainBtnDisabled = false;
+		  this.chatPrvd.areaLobby=true;
+		  this.toolsPrvd.hideLoader();
+	  }, err => {
+		  this.chatPrvd.areaLobby=true;
+		  this.placeholderText = 'What do you want to talk about?';
+		  this.chatPrvd.isMainBtnDisabled = false;
+		  this.startMessageUpdateTimer();
+		  this.chatPrvd.allowUndercoverUpdate = true;
+		  this.toolsPrvd.hideLoader();
+	  });
+	}
   }
 
   public handleMainBtnClick(event:any):void {
-	  this.chatPrvd.isMainBtnDisabled = true;
-	    if(this.messageParam){
-		  this.messageParam = null;	
-		  this.app.getRootNav().setRoot(ChatPage);			
-		}
-		
-		this.chatPrvd.lobbyOpened = false;
+	this.chatPrvd.isMainBtnDisabled = true;
+	if(this.messageParam){
+	  console.log('messageParam');
+	  this.messageParam = null;	
+	}
 
-	  // else{
-		  if (this.chatPrvd.bgState.getState() == 'stretched') {
-			  this.toggleChatOptions();
-		  }
-		  let cont = this.getTopSlider('unlock');
-		  cont.setState('slideUp');
-		  cont.hide();
+	this.chatPrvd.lobbyOpened = false;
+	if (this.chatPrvd.bgState.getState() == 'stretched') {
+	  this.toggleChatOptions();
+	}
+	let cont = this.getTopSlider('unlock');
+	cont.setState('slideUp');
+	cont.hide();
 
-		  let cont0 = this.getTopSlider('address');
-		  cont0.setState('slideUp');
-		  cont0.hide();
+	let cont0 = this.getTopSlider('address');
+	cont0.setState('slideUp');
+	cont0.hide();
+
+	this.toolsPrvd.showLoader();
+	this.storage.rm('custom_coordinates');
+	
+	
+	this.gpsPrvd.getMyZipCode().then(zip => {
+		this.storage.rm('chat_zip_code');
+		this.storage.set('chat_zip_code', zip.zip_code);
+		this.storage.rm('custom_coordinates');
+
+		if (this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
+		  this.chatPrvd.areaLobby=false;
+		  this.chatPrvd.isCleared = true;
+		  this.canRefresh = true;
 		  
-		  this.toolsPrvd.showLoader();
-		  this.storage.rm('custom_coordinates');
-		  this.gpsPrvd.getMyZipCode().then(zip => {
-			this.storage.rm('chat_zip_code');
-			this.storage.set('chat_zip_code', zip.zip_code);
-			this.storage.rm('custom_coordinates');
-			this.initLpMap();
-			if (this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby) {
-			  this.chatPrvd.areaLobby=false;
-			  this.chatPrvd.isCleared = true;
-			  this.canRefresh = true;
-			  
-			  if(this.txtIn != undefined){ 
-				this.txtIn.value = '';
-			  }
-			  this.chatPrvd.appendContainer.hidden = true;
-			  this.cameraPrvd.takenPictures = [];
-			  this.chatPrvd.postMessages = [];
-			  this.placeholderText = 'What do you want to talk about?';
-			  this.setMainBtnStateRelativeToEvents();
+		  if(this.txtIn != undefined){ 
+			this.txtIn.value = '';
+		  }
+		  this.chatPrvd.appendContainer.hidden = true;
+		  this.cameraPrvd.takenPictures = [];
+		  this.chatPrvd.postMessages = [];
+		  this.placeholderText = 'What do you want to talk about?';
+		  this.setMainBtnStateRelativeToEvents();
 
-			  if(this.pageNavLobby){
+		  if(this.pageNavLobby){
+			  this.chatPrvd.isLandingPage = true;
+			  this.chatPrvd.setState('undercover');
+			  this.undercoverPrvd.setUndercover(true);
+			  this.isUndercover=true;
+		  }else{
+			  this.chatPrvd.isLandingPage = false;
+			  this.chatPrvd.setState('area');
+			  this.undercoverPrvd.setUndercover(false);
+			  this.isUndercover=false;
+		  }
+		  
+		  this.refreshChat(false, true).then(res => {
+			  this.chatPrvd.allowUndercoverUpdate = true;
+			  this.startMessageUpdateTimer();
+			  this.chatPrvd.toggleLobbyChatMode();
+			  this.chatPrvd.isMainBtnDisabled = false;
+			  this.initLpMap();
+			  this.toolsPrvd.hideLoader();
+		  }, err => {
+			  this.initLpMap();
+			  this.chatPrvd.isMainBtnDisabled = false;
+			  this.toolsPrvd.hideLoader();
+			  console.error(err);
+		  });
+		} else {
+		  if(this.chatPrvd.areaLobby){		  
+			  this.chatPrvd.toggleLobbyChatMode();
+			  if(this.pageNav){
+				  this.setPostTimer(0);
+				  this.chatPrvd.postAreaMessages=[];
+				  this.chatPrvd.postMessages = [];
+				  this.chatPrvd.areaLobby = false;
+				  this.chatPrvd.isLobbyChat = false;
+				  this.chatPrvd.isLandingPage = true;
 				  this.chatPrvd.setState('undercover');
 				  this.undercoverPrvd.setUndercover(true);
-				  this.isUndercover=true;
-			  }else{
+				  this.isUndercover = true;
+				  this.chatPrvd.alreadyScolledToBottom = false;
+				  this.runUndecoverSlider(this.pageTag);
+				  this.startMessageUpdateTimer();
+				  this.flipInput();
+				  this.changePlaceholderText();
+				  this.messagesInterval = true;
+				  setTimeout(() => {
+					  this.content.resize();
+				  }, 1);
+				  setTimeout(() => {
+					//  this.toolsPrvd.hideLoader();
+				  }, 1000);
+			  }else{  
+				  this.chatPrvd.areaLobby=false;
+				  this.chatPrvd.isLobbyChat=false;
+				  this.chatPrvd.isLandingPage = false;
 				  this.chatPrvd.setState('area');
 				  this.undercoverPrvd.setUndercover(false);
-				  this.isUndercover=false;
-			  }
-			  
-			  this.refreshChat(false, true).then(res => {
-				  this.chatPrvd.allowUndercoverUpdate = true;
-				  this.startMessageUpdateTimer();
-				  this.chatPrvd.toggleLobbyChatMode();
-				  this.chatPrvd.isMainBtnDisabled = false;
-				  // this.initLpMap();
-				  this.toolsPrvd.hideLoader();
-			  }, err => {
-				  this.chatPrvd.isMainBtnDisabled = false;
-				  this.toolsPrvd.hideLoader();
-				  console.error(err);
-			  });
-			} else {
-			  if(this.chatPrvd.areaLobby){
-				  this.chatPrvd.areaLobby=false;
-				  this.chatPrvd.toggleLobbyChatMode();
-				  if(this.pageNav){
-					  this.setPostTimer(0);
-					  this.chatPrvd.postMessages=[];
-					  this.chatPrvd.setState('undercover');
-					  this.undercoverPrvd.setUndercover(true);
-					  this.isUndercover=true;
-					  this.chatPrvd.alreadyScolledToBottom = false;
-					  this.runUndecoverSlider(this.pageTag);
-					  this.startMessageUpdateTimer();
-					  this.flipInput();
-					  this.changePlaceholderText();
-
-					  this.messagesInterval = true;
-					  setTimeout(() => {
-						  this.content.resize();
-					  }, 1);
-					  setTimeout(() => {
-						  this.toolsPrvd.hideLoader();
-					  }, 1000);
-				  }else{
-					  this.chatPrvd.setState('area');
-					  this.undercoverPrvd.setUndercover(false);
-					  this.isUndercover=false;
-					  this.setPostTimer(3);
-					  this.placeholderText = 'Start a local conversation...';
-					  this.chatPrvd.postMessages=[];
-					  this.getAndUpdateUndercoverMessages();
-					  this.getUsers().then(res => {});
-					  this.toolsPrvd.hideLoader();
-				  }
-			  }else{
-				  this.chatPrvd.areaLobby=false;
-				  this.goUndercover(event);
+				  this.isUndercover = false;
+				  this.setPostTimer(3);
+				  this.placeholderText = 'Start a local conversation...';
+				  this.chatPrvd.postMessages = [];
+				  this.getAndUpdateUndercoverMessages();
+				  this.getUsers().then(res => {});
 				  this.toolsPrvd.hideLoader();
 			  }
-			}
-		  
-		  },err=>{
+		  }else{					  
+			  this.chatPrvd.areaLobby=false;
+			  this.goUndercover(event);
 			  this.toolsPrvd.hideLoader();
-			  console.log('error');
-		  });
-		  
-	  // }
-	  
+		  }
+		}		  
+	  },err=>{
+	  if(err.PERMISSION_DENIED == 1){
+		  this.toolsPrvd.hideLoader();
+		  if(this.chatPrvd.getState() == 'undercover'){
+			this.chatPrvd.toggleLobbyChatMode();
+			this.chatPrvd.isLandingPage = false;		
+			this.chatPrvd.setState('area');
+			this.undercoverPrvd.setUndercover(false);
+			this.isUndercover = false;
+			this.chatPrvd.postMessages = [];	
+			this.accessDeniedTip = true;
+			this.chatPrvd.isMainBtnDisabled = false;
+		  }else if(this.chatPrvd.getState() == 'area'){
+			this.chatPrvd.toggleLobbyChatMode();
+			this.toolsPrvd.hideLoader();
+			this.chatPrvd.isLandingPage = true;		
+			this.chatPrvd.setState('undercover');
+			this.undercoverPrvd.setUndercover(true);
+			this.isUndercover = true; 
+			this.chatPrvd.postMessages = [];
+			// this.setPostTimer(0);
+			this.resetFilter();
+			this.getAndUpdateUndercoverMessages();				
+			this.accessDeniedTip = true;
+			this.chatPrvd.isMainBtnDisabled = false;
+		  }	
+		  console.log('error getmyzipcode');
+	  }else{
+		  this.toolsPrvd.hideLoader();
+		  console.log('error::: ',err);
+	  }
+	});	  
   }
 
   private onEnter():void {
@@ -3086,32 +3126,29 @@ export class ChatPage implements DoCheck {
 		}, 1);
 		
 	}
-			
-    
+	
     this.user = this.authPrvd.getAuthData();
   }
 
   public followNearByNetwork(message,index) {
-	  message.is_followed=!message.is_followed;
-	  this.chatPrvd.followUserToLine(message.id).subscribe(res => {}, err => {});
-	  // this.chatPrvd.updateSyncMessage(message);
+	message.is_followed=!message.is_followed;
+	this.chatPrvd.followUserToLine(message.id).subscribe(res => {}, err => {});
   }
 
   ionViewDidEnter() {
-		console.log('ionViewDidEnter');
-		this.onEnter();
-		if (this.chatPrvd.bgState.getState() == 'stretched') {
-		   this.toggleChatOptions();
-		}	
-		this.toolsPrvd.hideLoader();
-	
+	console.log('ionViewDidEnter');
+	this.onEnter();
+	if (this.chatPrvd.bgState.getState() == 'stretched') {
+	   this.toggleChatOptions();
+	}	
+	this.toolsPrvd.hideLoader();	
   }
 
   public viewLocation(params?:any):void {
-      this.toolsPrvd.pushPage(MapsModal, {
-        place: this.nearestPlace,
-        display_routes: (params && params.routes) ? params.routes : false
-      });
+	this.toolsPrvd.pushPage(MapsModal, {
+	  place: this.nearestPlace,
+	  display_routes: (params && params.routes) ? params.routes : false
+	});
   }
 
 
@@ -3133,59 +3170,53 @@ export class ChatPage implements DoCheck {
     }
   }
 
-  ionViewDidLoad() {
-	
-		console.log('ionViewDidLoad');
-		if (this.chatPrvd.localStorage.get('enable_uc_camera') === null) {
-		  this.chatPrvd.localStorage.set('enable_uc_camera', true);
+  ionViewDidLoad() {	
+	console.log('ionViewDidLoad');
+	if (this.chatPrvd.localStorage.get('enable_uc_camera') === null) {
+	  this.chatPrvd.localStorage.set('enable_uc_camera', true);
+	}
+	this.chatPrvd.messageDateTimer.enableLogMessages = true;
+	this.generateEmoticons();
+	let socialArray = ['fb', 'twitter', 'instagram'];
+	this.authPrvd.getSocialStatus().subscribe(res => {
+	  console.log('get social status:',res);
+	  // Go through all social networks and toggle their switch if active
+	  for (let i = 0; i < socialArray.length; i++) {
+		if (res[socialArray[i]]) {
+		  this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
 		}
-		this.chatPrvd.messageDateTimer.enableLogMessages = true;
-		this.generateEmoticons();
-		let socialArray = ['fb', 'twitter', 'instagram'];
-		this.authPrvd.getSocialStatus().subscribe(res => {
-		  console.log('get social status:',res);
-		  // Go through all social networks and toggle their switch if active
-		  for (let i = 0; i < socialArray.length; i++) {
-			if (res[socialArray[i]]) {
-			  this.socialPrvd.connect[socialArray[i]] = res[socialArray[i]];
-			}
-		  }
-		}, err => console.error(err));
-	
-	
+	  }
+	}, err => console.error(err));	
   }
  
-  ionViewWillLeave() {
-	
-		console.log('ionViewWillLeave');
-		this.navParams.data = {};
-		this.componentLoaded = false;
-		this.chatPrvd.closeSockets();                                               // unsubscribe from sockets events
-		if (this.global) this.global();                                             // stop click event listener
-		this.toggleContainer(this.emojiContainer, 'hide');                          // hide emojiContainer
-		this.toggleContainer(this.shareContainer, 'hide');                          // hide shareContainer
-		this.chatPrvd.messageDateTimer.stop();                                      // stop date timer for messages
-		clearInterval(this.chatPrvd.scrollTimer.interval);                          // stop scroll to bottom interval
-		this.messagesInterval = false;                                              // clear message update bool
-		clearTimeout(this.messIntObject);                                           // clear message update interval
-		this.slideAvatarPrvd.changeCallback = null;                                 // stop slider func.
-		setTimeout(function() { google.maps.event.trigger(this.map, 'resize') }, 600);	
-	
+  ionViewWillLeave() {	
+	console.log('ionViewWillLeave');
+	this.navParams.data = {};
+	this.componentLoaded = false;
+	this.chatPrvd.closeSockets();                                               // unsubscribe from sockets events
+	if (this.global) this.global();                                             // stop click event listener
+	this.toggleContainer(this.emojiContainer, 'hide');                          // hide emojiContainer
+	this.toggleContainer(this.shareContainer, 'hide');                          // hide shareContainer
+	this.chatPrvd.messageDateTimer.stop();                                      // stop date timer for messages
+	clearInterval(this.chatPrvd.scrollTimer.interval);                          // stop scroll to bottom interval
+	this.messagesInterval = false;                                              // clear message update bool
+	clearTimeout(this.messIntObject);                                           // clear message update interval
+	this.slideAvatarPrvd.changeCallback = null;                                 // stop slider func.
+	setTimeout(function() { google.maps.event.trigger(this.map, 'resize') }, 600);	
   }
   
   public loadMaps() {
-	  this.scrollTop = 0;
-	  this.coachMarkText = "Start your network here?";
-      this.search = true;
-	  this.nclAddedCnt = 0;
-	  this.currentCLLobbyIndex = null;
-      this.initializeMap();
-      this.initAutocomplete();    
+	this.scrollTop = 0;
+	this.coachMarkText = "Start your network here?";
+	this.search = true;
+	this.nclAddedCnt = 0;
+	this.currentCLLobbyIndex = null;
+	this.initializeMap();
+	this.initAutocomplete();    
   }
 
   private initializeMap() {
-	console.log(this.gpsPrvd.coords);
-    this.zone.run(() => { 
+	this.zone.run(() => { 
 		let loc = {
 			lat : parseFloat(this.gpsPrvd.coords.lat),
 			lng : parseFloat(this.gpsPrvd.coords.lng)
@@ -3214,7 +3245,7 @@ export class ChatPage implements DoCheck {
     });
   }
   
-  private initAutocomplete(): void {	 
+  private initAutocomplete(): void {
 	this.addressElement = this.searchbar.nativeElement.querySelector('.searchbar-input');
 	this.searchModel = "";
     
@@ -3291,79 +3322,79 @@ export class ChatPage implements DoCheck {
   }
   
   public updateGoodStuff(flag:string){
-	  switch(flag){
-		case 'goodStuff':
-			this.storage.set('show-good-stuff', false);
-			break;		
-		case 'pinnedStuff':
-			this.storage.set('show-pinned-stuff', false);
-			break;		
-	  }
+	switch(flag){
+	  case 'goodStuff':
+		this.storage.set('show-good-stuff', false);
+		break;		
+	  case 'pinnedStuff':
+		this.storage.set('show-pinned-stuff', false);
+		break;		
+	}
   }
   
   private getGoodStuff(flag:string){	
-	  let popupDetails: any = [];
-	  switch(flag){
-		case 'goodStuff':
-			let goodStuffFlag = this.storage.get('show-good-stuff');
-			if(goodStuffFlag == true || goodStuffFlag == null){
-				popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content">'+
-					'<div class="label-18"><strong>Good stuff adds to your day.</strong></div>'+
-					'<div class="label-16">It\'s what localnet is all about!</div>'+
-					'<div class="label-18 normal-text">Tap <img class="ic popup-icon" src="assets/icon/lobby-icon.svg" > to try it</div>'+
-					'</div>';
-				popupDetails.cssClass = 'good-stuff';
-				popupDetails.buttonText = 'Try it!';
-				popupDetails.buttonCssClass = 'try-span';	
-				popupDetails.buttonHandler = () => this.updateGoodStuff('goodStuff');
-				this.showStuffPopup(popupDetails);				
-			}
-			break;		 
-		case 'pinnedStuff':
-			let pinnedStuffFlag = this.storage.get('show-pinned-stuff');
-			if(pinnedStuffFlag == true || pinnedStuffFlag == null){
-				popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content">'+					
-					'<div class="label-18"><strong>The local media get to pin the best stuff.</strong></div>'+
-					'<div class="label-18 normal-text">Hold <img class="ic popup-icon" src="assets/icon/lobby-icon.svg" > and select <img class="ic popup-icon" src="assets/images/sun_icon.png" > to try it</div>'+
-					'</div>';
-				popupDetails.cssClass = 'good-stuff';
-				popupDetails.buttonText = 'Skip';
-				popupDetails.buttonCssClass = 'try-span';	
-				popupDetails.buttonHandler = () => {};
-				this.updateGoodStuff('pinnedStuff');
-				this.showStuffPopup(popupDetails);				
-			}
-			break;		
-	  }
+	let popupDetails: any = [];
+	switch(flag){
+	  case 'goodStuff':
+		let goodStuffFlag = this.storage.get('show-good-stuff');
+		if(goodStuffFlag == true || goodStuffFlag == null){
+			popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content">'+
+				'<div class="label-18"><strong>Good stuff adds to your day.</strong></div>'+
+				'<div class="label-16">It\'s what localnet is all about!</div>'+
+				'<div class="label-18 normal-text">Tap <img class="ic popup-icon" src="assets/icon/lobby-icon.svg" > to try it</div>'+
+				'</div>';
+			popupDetails.cssClass = 'good-stuff';
+			popupDetails.buttonText = 'Try it!';
+			popupDetails.buttonCssClass = 'try-span';	
+			popupDetails.buttonHandler = () => this.updateGoodStuff('goodStuff');
+			this.showStuffPopup(popupDetails);				
+		}
+		break;		 
+	  case 'pinnedStuff':
+		let pinnedStuffFlag = this.storage.get('show-pinned-stuff');
+		if(pinnedStuffFlag == true || pinnedStuffFlag == null){
+			popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content">'+					
+				'<div class="label-18"><strong>The local media get to pin the best stuff.</strong></div>'+
+				'<div class="label-18 normal-text">Hold <img class="ic popup-icon" src="assets/icon/lobby-icon.svg" > and select <img class="ic popup-icon" src="assets/images/sun_icon.png" > to try it</div>'+
+				'</div>';
+			popupDetails.cssClass = 'good-stuff';
+			popupDetails.buttonText = 'Skip';
+			popupDetails.buttonCssClass = 'try-span';	
+			popupDetails.buttonHandler = () => {};
+			this.updateGoodStuff('pinnedStuff');
+			this.showStuffPopup(popupDetails);				
+		}
+		break;		
+	}
 	  
 	  
   }
   
   public showStuffPopup(popupDetails:any){	  
-	  let alert = this.alertCtrl.create({
-            subTitle: popupDetails.goodStuffPopupHtml,
-			cssClass: popupDetails.cssClass,
-            buttons: [ {
-                cssClass: popupDetails.buttonCssClass ,
-                text: popupDetails.buttonText,
-                handler:() => {
-                    alert.dismiss();
-					popupDetails.buttonHandler();
-                    return false; 
-                }
-            }]
-        });
-        alert.present();
+	let alert = this.alertCtrl.create({
+		subTitle: popupDetails.goodStuffPopupHtml,
+		cssClass: popupDetails.cssClass,
+		buttons: [ {
+			cssClass: popupDetails.buttonCssClass ,
+			text: popupDetails.buttonText,
+			handler:() => {
+				alert.dismiss();
+				popupDetails.buttonHandler();
+				return false; 
+			}
+		}]
+	});
+	alert.present();
   }
   
   
   public processOnScroll(event){	 
-		this.scrollTop = this.content.scrollTop;
-		if(this.scrollTop == 0){
-			this.normalizeMainBtn(event,null);
-		}else{
-			this.minimizeMainBtn(event);
-		}	
+	this.scrollTop = this.content.scrollTop;
+	if(this.scrollTop == 0){
+		this.normalizeMainBtn(event,null);
+	}else{
+		this.minimizeMainBtn(event);
+	}	
   }
 
   public normalizeMainBtn(event,callback:any){
@@ -3468,8 +3499,7 @@ export class ChatPage implements DoCheck {
 	this.coachMarkText = "Update your network here?";
 	this.eventClickTrigger();				
 	
-	this.chatPrvd.getMessageIDDetails(editPostId).subscribe(res => {	
-		
+	this.chatPrvd.getMessageIDDetails(editPostId).subscribe(res => {		
 		let message = res.message;
 		this.chatPrvd.postMessages=[];
 		let latitude = parseFloat(message.lat);
@@ -3581,10 +3611,7 @@ export class ChatPage implements DoCheck {
 	this.isReplyMode = false;
 	this.textProfile = true;
 	let message = this.replyMessage;
-	
-	
-	this.chatPrvd.currentReplyLobbyMessage = null;
-			
+	this.chatPrvd.currentReplyLobbyMessage = null;			
 	this.placeholderText = 'What would you like to say?';
 	let messageIndex = this.chatPrvd.postMessages.indexOf(message)+1;
 	this.chatPrvd.postMessages.splice(messageIndex, this.repliesLength);
@@ -4015,32 +4042,30 @@ export class ChatPage implements DoCheck {
 	
   }
   
-  
   private tapForProfileChange(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
-		this.toolsPrvd.showLoader();
-		if(userRoleName){
-			if(this.slideAvatarPrvd.sliderPosition == "right"){
-				this.storage.set('slider_position','left');
-				this.slideAvatarPrvd.setSliderPosition('left');
-				this.slideAvatarPrvd.sliderPosition = "left";
-			}else{
-				this.storage.set('slider_position','right');
-				this.slideAvatarPrvd.setSliderPosition('right');
-				this.slideAvatarPrvd.sliderPosition = "right";
-			}
-			this.toolsPrvd.hideLoader();
+	this.toolsPrvd.showLoader();
+	if(userRoleName){
+		if(this.slideAvatarPrvd.sliderPosition == "right"){
+			this.storage.set('slider_position','left');
+			this.slideAvatarPrvd.setSliderPosition('left');
+			this.slideAvatarPrvd.sliderPosition = "left";
 		}else{
-			this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
-				console.log(this.chatPrvd.currentLobbyMessage);
-				this.storage.set('lobby_message',this.chatPrvd.currentLobbyMessage);
-				this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
-				this.toolsPrvd.hideLoader();
-			}, err => {
-				console.error('tapForProfileChange > goToProfile err:', err);
-				this.toolsPrvd.hideLoader();
-			});
+			this.storage.set('slider_position','right');
+			this.slideAvatarPrvd.setSliderPosition('right');
+			this.slideAvatarPrvd.sliderPosition = "right";
 		}
-       
+		this.toolsPrvd.hideLoader();
+	}else{
+		this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
+			console.log(this.chatPrvd.currentLobbyMessage);
+			this.storage.set('lobby_message',this.chatPrvd.currentLobbyMessage);
+			this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
+			this.toolsPrvd.hideLoader();
+		}, err => {
+			console.error('tapForProfileChange > goToProfile err:', err);
+			this.toolsPrvd.hideLoader();
+		});
+	}       
   }
     
   public getNCL(message:any,event,index){
@@ -4101,5 +4126,98 @@ export class ChatPage implements DoCheck {
 	});	
   }
   
+  public grantAccess(accessType,curr_message){
+	let message_id = '';
+	if(curr_message.messageable_type=='Network' && curr_message.message_type == 'LOCAL_MESSAGE'){
+		message_id = curr_message.id;
+	}else{
+		message_id = curr_message.conversation_line_id;
+	}
+	switch(accessType){
+		case 'ACCEPT':
+		  if(curr_message.conversation_status == 'ACCEPTED'){
+			this.chatPrvd.isLobbyChat = false;
+			this.chatPrvd.areaLobby = false;
+			this.chatPrvd.getMessageIDDetails(message_id).subscribe(res => {
+				this.openConversationLobbyForPinned(res.message);
+			});
+		  }else{
+			this.storage.set('slider_position','left');
+			this.slideAvatarPrvd.setSliderPosition('left');
+			this.slideAvatarPrvd.sliderPosition = "left";
+			// alert('accept');
+			this.chatPrvd.getMessageIDDetails(message_id).subscribe(room_message => {
+			  this.chatPrvd.connectUserToChat(room_message.room_id).subscribe(res => {
+				this.requestMessage = "I'm in";
+				this.chatPrvd.request_type = 'CONV_ACCEPTED';
+				this.storage.set('response_conversation_id',room_message.message.id);
+				this.storage.set('response_room_conversation_id',room_message.room_id);
+				if(curr_message.isAddButtonAvailable != undefined){
+					curr_message.isAddButtonAvailable = false;
+				}
+				this.postMessage(null);
+				if(curr_message.expire_date != null){
+					this.updateConversationExpiry(message_id);
+				}
+				// this.hideTextContainer = false;
+				this.openConversationLobbyForPinned(room_message.message);
+			  });
+			}, err => {}); 			  
+		  }
+		break;
+		case 'REJECT':
+			// alert('reject');
+		  this.chatPrvd.getMessageIDDetails(message_id).subscribe(room_message => {
+			this.storage.set('response_conversation_id',room_message.message.id);
+			this.storage.set('response_room_conversation_id',room_message.room_id);
+			this.requestMessage = this.user.name+" can't make it";
+			this.chatPrvd.request_type = 'CONV_REJECTED';
+			// this.hideTextContainer = true;
+			this.postMessage(null);	
+			this.handleMainBtnClick(null);
+		  });
+		break;
+	}
+
+	/* switch(accessType){
+		case 'ACCEPT':
+			// alert('accept');
+			this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
+				this.requestMessage = "I'm in";
+				this.chatPrvd.request_type = 'CONV_ACCEPTED';	
+				this.chatPrvd.currentLobby.isAddButtonAvailable = false;
+				this.postMessage(null);
+				if(this.chatPrvd.currentLobbyMessage.expire_date != null){
+					this.updateConversationExpiry(this.chatPrvd.currentLobbyMessage.id);
+				}
+				this.hideTextContainer = false;
+				this.openConversationLobbyForPinned(this.chatPrvd.currentLobbyMessage)
+			}, err => {}); 			  
+		break;
+		case 'REJECT':
+			// alert('reject');
+			this.requestMessage = this.user.name+" can't make it";
+			this.chatPrvd.request_type = 'CONV_REJECTED';
+			this.hideTextContainer = true;
+			this.postMessage(null);	
+			this.handleMainBtnClick(null);
+		break;
+	}  */ 
+  }
+  
+  public updateConversationExpiry(messageId){
+	let messagedata = {
+		conversation_line_id: messageId, 
+		expire_date	: null
+	}; 
+	
+	let params={
+				message: messagedata
+			}; 
+	
+	this.chatPrvd.updateConversationExpiry(params).subscribe(res => {
+		console.log('result::: ',res);		
+	}, err => console.log('error',err));
+  }
   
 }

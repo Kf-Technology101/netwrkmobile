@@ -93,6 +93,8 @@ export class ProfileSettingPage {
     this.auth.logout().then(res => {
 		this.storage.rm('slider_position');
         this.storage.rm('social_auth_data');
+		this.storage.rm('last-activity')
+		this.storage.rm('last_hold_location_details')
         this.app.getRootNav().setRoot(LogInPage);
         this.storage.rm('auth_data');
         this.storage.rm('auth_type');

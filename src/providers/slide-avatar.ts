@@ -129,11 +129,10 @@ export class SlideAvatar {
   }
 
   public setSliderPosition(state?: string) {
-    // if (!state) state = true;
-	
-	if (this.selectedItem) {
+    if (this.selectedItem) {
       this.arrowIcon = this.selectedItem.parentElement.children['1'];
 	  this.arrowIcon.style.opacity = '1';
+	  
       if (state == 'left') {
           if (this.storage.get('slider_position')==null) {
               this.selectedItem.style.left = this.dStart + 'px';
@@ -143,8 +142,7 @@ export class SlideAvatar {
 			  this.selectedItem.style.left = this.dStart + 'px';
               this.arrowIcon.classList.add('left');
               this.arrowIcon.classList.remove('right');
-          }
-		 
+          }		 
       } else {
           if(this.storage.get('slider_position')=='right'){
               this.selectedItem.style.left = this.dEnd + 'px';
@@ -152,6 +150,7 @@ export class SlideAvatar {
               this.arrowIcon.classList.remove('left');
           }
       } 	
+	  
 	  this.sliderPosition = state;
       this.storage.set('slider_position', state);
     }

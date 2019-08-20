@@ -7,7 +7,7 @@ export const heroesLines: any = {
     },
     13: [
         {
-            name: 'Your network',
+            name: 'Community Moderator',
             description: 'Take the identity of the network you create.',
             imageUrl: 'assets/images/undercover/netwrk.png'
         },
@@ -29,7 +29,7 @@ export const heroesLines: any = {
             imageUrl: 'assets/images/undercover/netwrk.png'
         },
         {
-            name: 'Your network',
+            name: 'Community Moderator',
             description: 'Take the identity of the network you create.',
             imageUrl: 'assets/images/undercover/netwrk.png'
         },
@@ -46,7 +46,7 @@ export const heroesLines: any = {
             imageUrl: 'assets/images/undercover/netwrk.png'
         },
         {
-            name: 'Your network',
+            name: 'Community Moderator',
             description: 'Take the identity of the network you create.',
             imageUrl: 'assets/images/undercover/netwrk.png'
         },

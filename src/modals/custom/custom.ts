@@ -29,9 +29,15 @@ export class CustomModal {
   
   private saveModal(){
 	if(this.inputElement.trim() != ''){
-		let item = this.storage.get('last-activity');
-		item.itemName = this.inputElement.trim();
-		this.storage.set('last-activity', item);
+		if(this.storage.get('last-activity') && this.storage.get('last-activity')!=''){
+			let item = this.storage.get('last-activity');
+			item.itemName = this.inputElement.trim();
+			this.storage.set('last-activity', item);
+		}else{
+			let item = {itemName: "Custom",itemId:'7'};
+			item.itemName = this.inputElement.trim();
+			this.storage.set('last-activity', item);
+		}
 		this.isError = false;
 		this.toolsPrvd.showLoader();
 		this.viewCtrl.dismiss();

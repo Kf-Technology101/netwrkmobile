@@ -242,15 +242,14 @@ export class HoldMapPage {
   private initAutocomplete(): void {	 
 	this.addressElement = this.searchbar.nativeElement.querySelector('.searchbar-input');
 	this.searchModel = "";
-    
-	this.createAutocomplete(this.addressElement).subscribe((place) => {
-	  // this.toggleTopSlider('address');	
+    this.createAutocomplete(this.addressElement).subscribe((place) => {
 	  this.search = false;
 	  let data = {
 		  lat: place.geometry.location.lat(),
 		  lng: place.geometry.location.lng()
 	  }
 	  this.storage.set('custom_coordinates', data);
+	  
 	  this.gpsPrvd.getZipCode().then(zip => {
 		let zipcode = zip;
 		let loc = {
@@ -259,6 +258,7 @@ export class HoldMapPage {
 		  place_name: place.name,
 		  zipcode: zipcode
 		}
+		
 		this.gapi.init.then((google_maps: any) => {
 			this.map = new google.maps.Map(this.mapElement.nativeElement, {
 			   zoom : 15,
@@ -269,11 +269,10 @@ export class HoldMapPage {
 			});		
 		});
 
-		if(!this.flgEditPost){
-			this.chatPrvd.request_type = "CUSTOM_LOCATION";
-		}
-		this.setCustomAddressOnMap(loc);	
-		
+		this.chatPrvd.request_type = "LOCAL_MESSAGE";	
+		this.setCustomAddressOnMap(loc);			
+	  },err => {
+		console.log('err::: ',err);  
 	  });
 			
     });
@@ -291,6 +290,7 @@ export class HoldMapPage {
   }
    
   private setCustomAddressOnMap(addressDetails:any){ 
+  console.log('addressDetails:::',addressDetails);
     let addressLat = addressDetails.lat;
 	let addressLng = addressDetails.lng;
 	let data:any = {

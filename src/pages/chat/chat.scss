@@ -35,6 +35,40 @@ modal-legendaryhistory {
     cursor: pointer;
   }
   
+  
+  .accessDiv{
+	width: 10%;
+	float:right;
+	margin-right:-15px;
+	.accessBtn{
+		width: 60px;
+		height: 20px;
+		float: right;
+		border-radius: 20px;
+		font-size: 13px;
+		&.accept-access{
+			background-color: #6AA4D9;
+		}
+		&.reject-access{
+			background-color: #f95e65;
+		}
+	}
+	&.accessBtnDiv{
+		margin-top:-65px;
+		margin-right:0px;
+	}
+  }
+  .areaLobby{
+	.accessDiv{
+		margin-right:-35px;
+	}
+  }
+  
+  .messageDiv{
+	float:left;
+	width:90% 
+  }
+  
   .content {
     &.netwrk-content.content-md {
       .scroll-content {
@@ -315,7 +349,12 @@ page-network-no {
   .content {
     background: transparent;
     .message-container .message-item {
+	  float: left;
       margin: 0 0px 9px 0 !important;
+	  width:90%;
+	  /* white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis; */
     }
     .message-count {
       position: absolute;
@@ -329,10 +368,16 @@ page-network-no {
       border-radius: 50%;
       color: #fff;
     }
+	
+	.conversasion-cnt{
+	    top: 0px;
+		left: 26px;
+	}
+	
     .message-box {
       position: absolute;
       top: 42px;
-      left: 14px;
+      left: 9px;
       z-index: 5;
       color: grey;
       font-size: 27px;
@@ -898,7 +943,7 @@ page-network-no {
         padding-top: 0px;		
       }
       &.areaMessageLobby {
-        padding-top: 40px !important;
+        padding-top: 50px !important;
       }
       .message.conversation-post{
         border-radius: 13px;
@@ -918,6 +963,21 @@ page-network-no {
       }
 	  .message-text{
 		margin-top: 15px;
+	  }
+	  
+	  .message-conversasion{
+		background-color: #fff;
+		width: 70%;
+		margin-left: auto;
+		margin-right: auto;
+		border-radius: 20px;
+		text-align: center;
+		margin-top: 22px;
+		color: grey;
+		p{
+		    padding: 3px 0;
+			font-size: 12px;
+		}
 	  }
 	
 	  /*.message-reply{
@@ -949,6 +1009,7 @@ page-network-no {
         position: relative;
         // margin-top: 15px;
         opacity: 0;
+		clear:both;
         .slides {
           .swiper-pagination {
             top: 5px;
@@ -1016,6 +1077,7 @@ page-network-no {
             margin-left: 0;
             .text {
               margin-left:0 !important;
+			  
             }
           }
           .feedback-button {
@@ -1029,12 +1091,13 @@ page-network-no {
           width: 42px;
           height: 42px;
           margin: 0;
-          top: 25%;
+          top: 20%;
           margin-left: 12px;
           z-index: 4;
           position: absolute;
           background: #fff;
           object-fit: cover;
+		  left: 0;
         }
         .chat-avatar.conversation {
           top: 6px !important;
@@ -1046,9 +1109,20 @@ page-network-no {
           padding-left: 60px !important;
           padding-right: 15px !important;
           margin-right: 12px !important;
+		  top: 7px;
+		  // margin-bottom: 7px;
           .text {
             margin-left:0 !important;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: block;
           }
+		  .chat-avatar{
+			top: 5%;
+			margin-left: 0px; 
+			left: 0px;
+		  }
         }
 
 		.active-cl:after {
@@ -1104,12 +1178,16 @@ page-network-no {
           }
           .username {
             font-size: 16px;
-            display: inline-block;
-            margin-bottom: 12px;
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: block;
+            /* margin-bottom: 12px; */
           }
           .message-date {
             font-size: 12px;
             color: #7a7a7a;
+			display: block;
           }
           .shared-status {
             display: block;
@@ -1129,13 +1207,16 @@ page-network-no {
             font-size: 12px;
           }
           .text {
-            display: block;
+            display: inline-block;
             font-size: 12px;
             &.emoji {
               font-size: 35px;
               margin-top: 0;
             }
           }
+		  &.p-message{
+			margin-right: 65px;
+		  }
         }
         .mar-10 {
           margin-bottom:10px;
@@ -1206,8 +1287,6 @@ page-network-no {
 					display: block !important;
 				}
 			}
-			
-			
         }
 
         .feedback-follow {
@@ -1371,6 +1450,7 @@ page-network-no {
 		}
       }
     }
+	
   }
   ion-header {
     &.header {
@@ -1752,12 +1832,15 @@ modal-legendaryhistory {
 
 page-chat{
 	.incognito-header{
-	    margin-top: 10px;
+		margin-top: 10px;
+		ion-toolbar{
+		    min-height: 50px;
+		}
 		.drag-container {
 			width: 50px;
 			margin: 0 20px;	
 		}
-		.area-subhead-tip {
+		.area-subhead-tip.landing-lobby-area-tip {
 			font-size: 10px;
 			text-align: center;
 			position: relative;
@@ -1804,11 +1887,11 @@ page-chat{
 				}
 				.netwrk-icon {
 				  border-radius: 50%;
-				  width: 35px;
-				  height: 35px;
+				  width: 40px;
+				  height: 40px;
 				  position: absolute;
 				  border: 1px solid #5b87aa;
-				  top: -8px;
+				  top: -11px;
 				  left: 65px;
 				  background: #fff;
 				  padding: 0px;

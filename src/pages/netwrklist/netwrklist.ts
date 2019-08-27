@@ -6,6 +6,7 @@ import { UndercoverCharacterPage } from '../../pages/undercover-character/underc
 import { ChatPage } from '../../pages/chat/chat';
 import { ProfilePage } from '../../pages/profile/profile';
 import { HoldMapPage } from '../../pages/hold-map/hold-map';
+import { Keyboard } from '@ionic-native/keyboard';
 
 // Providers
 import { Gps } from '../../providers/gps';
@@ -105,6 +106,7 @@ export class NetwrklistPage {
 	public feedbackService: FeedbackService,
 	public settings: Settings,
 	public contactsPrvd: ContactsProvider,
+	private keyboard: Keyboard,
     elRef: ElementRef
   ) {
 	  if(this.navParams.get('message')){
@@ -414,8 +416,7 @@ return false;	 */
 			timestamp		 : Math.floor(new Date().getTime()/1000),
 			line_avatar		 : []			
 		};	
-
-
+// console.log(netwrkParams);return false;
 		if (params) Object.assign(netwrkParams, params);
 		message = Object.assign(message, netwrkParams);
 		message.image_urls =[];
@@ -534,6 +535,41 @@ return false;	 */
 	}
 	
   }
+  
+  public inputOnFocus():void {
+	// this.textareaFocused = true;
+	this.keyboard.onKeyboardShow().subscribe(res => {
+		try {
+			let scrollEl = <HTMLElement>document.querySelector('.message-input');
+			if (scrollEl)
+				scrollEl.style.bottom = res.keyboardHeight + 'px';
+		} catch (e) {
+			// this.toolsPrvd.showToast('on-keyboard-show error');
+			console.error('on-keyboard-show error:', e);
+		}
+		this.chatPrvd.mainLineBtn.setState('minimised');              
+	}, err =>{
+		console.error(err);
+		// this.toolsPrvd.showToast('on-keyboard-show error 2');
+	}); 
+	
+	this.keyboard.onKeyboardHide().subscribe(res => {
+		try {
+			let scrollEl = <HTMLElement>document.querySelector('.message-input');
+			if (scrollEl)
+				scrollEl.style.bottom = '27%';
+		} catch (e) {
+			console.error('on-keyboard-hide error:', e);
+			// this.toolsPrvd.showToast('on-keyboard-hide error');
+		}
+		this.chatPrvd.mainLineBtn.setState('normal');              
+		
+	}, err =>{
+		console.error(err);
+		// this.toolsPrvd.showToast('on-keyboard-hide error 2');
+	}); 
+  }
+
  
     /* private getAndUpdateUndercoverMessages() {		
 		console.log('[netwrkLineList]'+this.netwrkLineList);

@@ -287,6 +287,8 @@
 	
     <div class="message 456" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
       
+	 
+	  
 	  <div class="message-container false" 
 	  *ngIf="!message.social && !chatPrvd.areaLobby && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.messageable_type == 'Network' && message.conversation_status != 'REJECTED'">
 
@@ -635,10 +637,9 @@
 	  {{ message.conversation_status!='REJECTED' }}
 	   -->
 	  
-	  
-	  
+
 	  <div class="message-container false area-conversastions 654" 
-	  *ngIf="(chatPrvd.getState() == 'area' || chatPrvd.isLobbyChat) && (message.message_type == 'CONV_REQUEST') && message.conversation_status!='REJECTED'">
+	  *ngIf="(chatPrvd.getState() == 'area' || chatPrvd.isLobbyChat) && (message.message_type == 'CONV_REQUEST' || message.messageable_type == 'Network' && !message.undercover) && message.conversation_status!='REJECTED'">
 
 		<img (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)"
          src="{{loadImage(message)}}" class="chat-avatar"

@@ -73,10 +73,10 @@ export class MyApp {
 			}, (nomatch) => { 
 				this.init();
 				// this.toolsPrvd.showSplashScreen(); 
-				// this.initCheckLogin(255);  
+				// this.initCheckLogin(466);  
 				// this.toolsPrvd.showToast('no match subscribeRoutes');
 			});
-		});
+		}); 
        
 
         platform.ready().then(() => {

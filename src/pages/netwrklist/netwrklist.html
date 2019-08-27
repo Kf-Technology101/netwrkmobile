@@ -119,7 +119,7 @@
 	   <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
 	</button>
 	
-	<ion-input #textInput id="textInput" type="text" class="message-input" [placeholder]="placeholderText" *ngIf="showContactsStep">
+	<ion-input #textInput id="textInput" type="text" class="message-input" [placeholder]="placeholderText" *ngIf="showContactsStep" (ionFocus)="inputOnFocus()">
 	</ion-input>
 	
 	<button ion-button color="bk" class="back-btn" outline (tap)="goToLanding()" *ngIf="showContactsStep">

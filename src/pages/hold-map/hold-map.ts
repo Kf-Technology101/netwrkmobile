@@ -269,7 +269,6 @@ export class HoldMapPage {
 			});		
 		});
 
-		this.chatPrvd.request_type = "LOCAL_MESSAGE";	
 		this.setCustomAddressOnMap(loc);			
 	  },err => {
 		console.log('err::: ',err);  

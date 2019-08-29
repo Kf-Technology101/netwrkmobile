@@ -348,7 +348,10 @@ export class ChatPage implements DoCheck {
     public feedbackService: FeedbackService,
 	public iab: InAppBrowser,
 	private permission: PermissionsService
-  ) {
+  ) {	
+	
+// this.toolsPrvd.pushPage(CameraPage);
+	
 	  if(this.storage.get('slider_position') == null || this.storage.get('slider_position') == ''){
 		  this.storage.set('slider_position','left');
 		  this.slideAvatarPrvd.setSliderPosition('left');
@@ -418,11 +421,10 @@ export class ChatPage implements DoCheck {
     };
 
     if (params)
-        this.userPrvd.update(this.user.id, params, this.authPrvd.getAuthType(), 'update')
-            .map(res => res.json()).subscribe(res => {
-            }, err => {
-                console.error(err);
-            });
+      this.userPrvd.update(this.user.id, params, this.authPrvd.getAuthType(), 'update').map(res => res.json()).subscribe(res => {
+      }, err => {
+        console.error(err);
+      });
   }
 
   public resetFilter():void {
@@ -655,9 +657,7 @@ export class ChatPage implements DoCheck {
 		 
          this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
             .map(res => res.json()).subscribe(res => {		
-                if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
-					
-                    // let marker = new google_maps.Marker({});
+                if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){	   // let marker = new google_maps.Marker({});
 					let marker ={
                         map: this.map,
                         position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
@@ -1383,8 +1383,8 @@ export class ChatPage implements DoCheck {
 		}else{
 			messageable_type = 'Room';
 		}
-	  }else if(this.chatPrvd.areaLobby || (this.storage.get('response_conversation_id') != undefined) && this.storage.get('response_conversation_id') != null ){ // Conversasion message 
-	  // conversasion lobby || response to conversation request 
+	  }else if(this.chatPrvd.areaLobby){ 
+	  /* || (this.storage.get('response_conversation_id') != undefined) && this.storage.get('response_conversation_id') != null //Conversasion message // conversasion lobby || response to conversation request  */
 		  undercover = false;
 		  if(this.isReplyMode){
 			messageable_type = 'Reply';
@@ -1398,7 +1398,6 @@ export class ChatPage implements DoCheck {
 		  undercover = true;
 		  messageable_type = 'Network';
 	  }
-	  
 	  
 	  
       messageParams = {
@@ -1444,7 +1443,6 @@ export class ChatPage implements DoCheck {
           message.image_urls = message.images;
           message.is_synced = false;
           if (this.chatPrvd.isLobbyChat) message.expire_date = null;
-
 		  
 		  message.dateStr = 'just now';
 		
@@ -2846,14 +2844,17 @@ console.log('openLobbyForLockedChecked::',message);
 		  this.initLpMap();
 		  this.chatPrvd.isMainBtnDisabled = false;
 		  
-		  if(message.message_type=="LOCAL_MESSAGE"){// Open normal lobby for local message conversation 
+		  /* if(message.message_type=="LOCAL_MESSAGE"){// Open normal lobby for local message conversation 
 			this.chatPrvd.areaLobby = false;
 			this.chatPrvd.isLobbyChat = true;			  
 		  }else{// Open normal lobby
 			this.chatPrvd.areaLobby = true;
 			this.chatPrvd.isLobbyChat = false;  
-		  }
+		  } */
 		
+		  this.chatPrvd.areaLobby = true;
+		  this.chatPrvd.isLobbyChat = false; 
+			
 		  this.settings.isNewlineScope = false;
 		  this.chatPrvd.setState('area');		  
 		  this.toolsPrvd.hideLoader();

@@ -268,11 +268,14 @@
           </div>
     </ion-toolbar>
 </ion-header>
- 
+
 <ion-content has-main-btn has-main-btn-label no-bounce scroll="true" (ionScroll)="processOnScroll($event)" (ionScrollEnd)="listenForScrollEnd($event)" 
-  [ngClass] = "{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': chatPrvd.getState() == 'area', 'lobby-content': chatPrvd.isLobbyChat && !chatPrvd.areaLobby, 'white-undercover': isUndercover &&
-  (chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': chatPrvd.getState() == 'undercover'}"
-  [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin, 'position':contentPosition,'margin-top':contentMarginTop}" class="my-content" *ngIf="!settings.isNewlineScope" >
+  
+  [ngClass] = "{'no-height': chatPrvd.postMessages.length<1, 'netwrk-content': chatPrvd.getState() == 'area', 'lobby-content': chatPrvd.isLobbyChat && !chatPrvd.areaLobby, 'white-undercover': isUndercover && (chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': chatPrvd.getState() == 'undercover'}"
+  
+  [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin, 'position':contentPosition,'margin-top':contentMarginTop}" 
+  
+  class="my-content" *ngIf="!settings.isNewlineScope" >
 
   <ion-refresher (ionRefresh)="refreshChat($event)" *ngIf="!netwrkFeed">
     <ion-refresher-content pullingIcon="arrow-dropdown" refreshingSpinner="ios"></ion-refresher-content>
@@ -346,14 +349,13 @@
           <img src="assets/icon/slider_arrow.svg" class="conversation_right_ico" *ngIf="chatPrvd.getState() != 'undercover' && message.message_type != 'LOCAL_MESSAGE'"  (tap)="openFeedbackModal(message, i)"  (press)="openFeedbackModal(message, i)">
         </p>
 
-		<div class="accessDiv" *ngIf = "message.conversation_status && user.id != message.user_id"> <!-- *ngIf = "message.conversation_status" -->
-			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)" 
-			*ngIf = "message.conversation_status!='REJECTED'">
+		<div class="accessDiv" 
+		*ngIf = "message.conversation_status && user.id != message.user_id && message.conversation_status=='REQUESTED'"> <!-- *ngIf = "message.conversation_status" -->
+			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)" >
 				I'm in
 			</button>
 
-			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)"
-			*ngIf = "message.conversation_status=='REQUESTED'||message.conversation_status=='REJECTED'">
+			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)" >
 				I can't
 			</button>
 		</div> 
@@ -413,7 +415,7 @@
         <span class="message-count" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover'">1</span> 
 
         <p class="message-item message-container" (click)="openReplyLobby(message)" 
-		[ngClass]="{'p-message':message.conversation_status && user.id != message.user_id}"> 
+		[ngClass]="{'p-message':message.conversation_status && user.id != message.user_id && message.conversation_status=='REQUESTED'}"> 
 
              <span class="location" *ngIf="message.place_name && message.messageable_type=='Network' && !chatPrvd.areaLobby && (!chatPrvd.isLobbyChat || netwrkFeed) && (message.public || !message.public && message.locked) " (click)="normalizeMainBtn($event); viewLineLocation(message)">
                 <ng-container >
@@ -521,22 +523,20 @@
 			
         </p>
 		
-		<div class="accessDiv accessBtnDiv" *ngIf = "message.conversation_status && user.id != message.user_id">
-			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)"
-			*ngIf = "message.conversation_status!='REJECTED'">
+		<div class="accessDiv accessBtnDiv" *ngIf = "message.conversation_status && user.id != message.user_id && message.conversation_status=='REQUESTED'">
+			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)">
 				I'm in
 			</button>
 
-			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)"
-			*ngIf = "message.conversation_status=='REQUESTED' || message.conversation_status=='REJECTED'">
+			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)">
 				I can't
 			</button>
 		</div> 
 			
 
-        <ng-container *ngIf = "!message.conversation_status">
+        <ng-container *ngIf = "!message.conversation_status || message.conversation_status=='ACCEPTED'">
             <button class="feedback-button" (tap)="feedbackService.toggleLikes(message, user.id, $event);getGoodStuff('pinnedStuff'); " [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="chatPrvd.areaLobby && !message.locked_by_user || (chatPrvd.isLobbyChat && !netwrkFeed) && !message.locked_by_user || chatPrvd.getState() == 'area' && !message.locked_by_user"  (press)="openFeedbackModal(message, i)">
-                <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
+              <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
             </button>
 
             <button ion-button class="feedback-follow" color="bk" item-end (click)="followNearByNetwork(message,i)"   *ngIf="user.id != message.user_id && !chatPrvd.areaLobby && (!chatPrvd.isLobbyChat || netwrkFeed) && chatPrvd.getState() != 'area'">
@@ -703,14 +703,13 @@
           <img src="assets/icon/slider_arrow.svg" class="conversation_right_ico" *ngIf="chatPrvd.getState() != 'undercover' && message.message_type != 'LOCAL_MESSAGE' && message.message_type != 'CONV_REQUEST'"  (tap)="openFeedbackModal(message, i)"  (press)="openFeedbackModal(message, i)">
 		  
         </p>
-		<div class="accessDiv" *ngIf = "message.conversation_status && user.id != message.user_id"> <!-- *ngIf = "message.conversation_status" -->
-			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)"
-			*ngIf = "message.conversation_status!='REJECTED'">
+		<div class="accessDiv"
+		*ngIf = "message.conversation_status && user.id != message.user_id && message.conversation_status=='REQUESTED'"> <!-- *ngIf = "message.conversation_status" -->
+			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)">
 				I'm in
 			</button>
 
-			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)"
-			*ngIf = "message.conversation_status=='REQUESTED'||message.conversation_status=='REJECTED'">
+			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)">
 				I can't
 			</button>
 		</div> 

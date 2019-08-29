@@ -100,11 +100,14 @@ export class FeedbackModal {
   }
 
   public toggleLikes(type:string) {
-    if (type == 'likes')
+
+    if (type == 'like')
       this.likebtn.nativeElement.classList.add('no-events');
+   
     let sendObj:any;
     let sendUrl:string;
-    switch (type) {
+    
+	switch (type) {
       case 'legendary':
         sendObj = { legendary: this.likeData };
         sendUrl = 'legendary_likes';
@@ -114,22 +117,21 @@ export class FeedbackModal {
         sendUrl = 'user_likes';
       break;
     }
+
     this.chatPrvd.sendFeedbackData(sendUrl, sendObj).subscribe(res => {
       console.log('[' + type + '] res:', res);
+	  
       if (type === 'legendary') { // 15 points
         this.toolsPrvd.sendPointData({
           points: this.postStatus.isLegendary ? -15 : 15,
           user_id: this.likeData.user_id
-        }).subscribe(res => {
-			// console.log(this.postStatus.isLegendary);
+        }).subscribe(results => {
             if(this.postStatus.isLegendary){
                 this.messageData.notification_type="legendary";
                 this.chatPrvd.sendNotification(this.messageData).subscribe(notificationRes => {
                     console.log('Notification Res', notificationRes);
                 }, err => console.error(err));
             }
-
-          console.log('sendPointData res:', res);
         });
         this.postInf.totalLegendary = res.legendary_count;
         this.postStatus.isLegendary = !this.postStatus.isLegendary;
@@ -142,15 +144,14 @@ export class FeedbackModal {
         this.toolsPrvd.sendPointData({
           points: this.postStatus.isLiked ? -5 : 5,
           user_id: this.likeData.user_id
-        }).subscribe(res => {
+        }).subscribe(results => {
             if(this.postStatus.isLiked){
                 this.messageData.notification_type="like";
                 this.chatPrvd.sendNotification(this.messageData).subscribe(notificationRes => {
                     console.log('Notification Res', notificationRes);
                 }, err => console.error(err));
             }
-          console.log('sendPointData res:', res);
-          this.likebtn.nativeElement.classList.remove('no-events');
+            this.likebtn.nativeElement.classList.remove('no-events');
         }, err => this.likebtn.nativeElement.classList.remove('no-events'));
         this.postInf.totalLikes = res.likes_count;
         this.postStatus.isLiked = !this.postStatus.isLiked;
@@ -160,6 +161,8 @@ export class FeedbackModal {
           isActive: <boolean> res.like_by_user
         };
       }
+	  
+	  
     }, err => {
       console.log('[' + type + '] err:', err);
       let errorMessage = JSON.parse(err['_body']).error;
@@ -173,6 +176,7 @@ export class FeedbackModal {
       });
       alert.present();
     });
+  
   }
 
   blockMessage() {

@@ -222,9 +222,13 @@ page-netwrklist {
 	} 
 	
 	.main-action-btn{
-		width: 25px;
-		height: 50px;
-		border: 4px solid #5b87aa;
+		width: 26px;
+		height: 42px;
+		border: 3px solid #5b87aa;
+		border-radius: 4px;
+		.ion-ios-arrow-forward-outline{
+			font-size:25px;
+		}
 	}
 	
 	.contacts-list-btn{

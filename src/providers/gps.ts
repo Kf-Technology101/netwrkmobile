@@ -200,7 +200,7 @@ export class Gps {
     return this.zipCode;
   }
 
-  public getGoogleAdress(lat?:number, lng?:number) {
+  public getGoogleAdress(lat?:number, lng?:number){
     let coords;
     if (lat && lng) {
       coords = lat + ',' + lng;

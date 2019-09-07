@@ -11,7 +11,7 @@ import { LocationChange } from './locationchange';
 import { Diagnostic } from '@ionic-native/diagnostic';
 import { ChatPage } from '../pages/chat/chat';
 
-@Injectable()
+@Injectable() 
 export class Gps {
   public coords: any = {
     lat: <number> null,
@@ -28,6 +28,8 @@ export class Gps {
   public positionTruck: any;
   public map: any;
   public locationAccessPermission:boolean = true;
+  public googleAddress:any;
+  public customAddress:boolean = false;
   constructor(
     public app: App,
     private http: Http,
@@ -40,7 +42,7 @@ export class Gps {
     private loc: LocationChange,
 	 private _DIAGNOSTIC: Diagnostic
   ) {
-    // console.log('GPS Provider');
+    console.log('GPS Provider');
   }
 
   public addUserToNetwork(zipCode: number):any{
@@ -96,73 +98,91 @@ export class Gps {
 
     return result;
   }
-
-  public getMyZipCode(): Promise<any> {
+  
+  public getMyZipCode(checkOnlineFresh:boolean = false): Promise<any> {
     return new Promise((resolve, reject) => {
+	  if(!checkOnlineFresh && this.coords.lat != null && this.coords.lng != null){// && this.zipCode != null
+		if(this.locationAccessPermission){
+			resolve({zip_code: this.zipCode});
+		}else{
+			let error = {
+				PERMISSION_DENIED:1
+			};
+			reject(error);
+		}
+	  }else{
 		let options: GeolocationOptions = {
-            timeout: 10000,
-            enableHighAccuracy: true,
-            maximumAge: 3000
-        }
+			timeout: 60000,
+			enableHighAccuracy: true,
+			maximumAge: 1080000 
+		}
 
-      if(this.watch) {
-		this.coords.lat = null;
-		this.coords.lng = null;
-        this.watch.unsubscribe();
-      }
-	  
-	  if(this.platform.is('ios') || this.platform.is('android')){	
-		this._DIAGNOSTIC.isLocationEnabled().then((isEnabled) => {
-			this.locationAccessPermission = isEnabled;
+		if(this.watch) {
+			this.coords.lat = null;
+			this.coords.lng = null;
+			this.watch.unsubscribe();
+		}
+
+		this.watch = this.geolocation.watchPosition(options)
+		.subscribe(resp => {
+			console.log('inside watch',resp);
+			if (resp.coords) {	
+			  if (!this.coords.lat && !this.coords.lng) {
+				  this.locationAccessPermission = true;				  
+				  if (this.loc.isCustomCoordAvaliable()) {
+					  this.coords = this.loc.getCoordObject();
+				  } else {
+					  this.coords.lat = resp.coords.latitude;
+					  this.coords.lng = resp.coords.longitude;
+				  }
+				  this.localStorage.set('local_coordinates',this.coords);
+				  this.getZipCode().then(zip => {
+					  this.zipCode = zip;
+					  resolve({zip_code: zip});
+				  }).catch(err => reject(err));
+			  }else{
+				this.coords.lat = resp.coords.latitude;
+				this.coords.lng = resp.coords.longitude;  
+				this.getZipCode().then(zip => {
+					this.zipCode = zip;
+					resolve({zip_code: zip});
+				}).catch(err => reject(err));
+			  }
+			}else if(!this.locationAccessPermission){
+				reject(resp); 
+			}else{
+				if(this.localStorage.get('local_coordinates')){
+					let strorageLocation = this.localStorage.get('local_coordinates');
+					this.coords.lat = parseFloat(strorageLocation.lat);
+					this.coords.lng = parseFloat(strorageLocation.lng);
+					console.log(strorageLocation.lat);
+					console.log(strorageLocation.lng);
+					
+					if(strorageLocation.lat != null && strorageLocation.lng != null){
+						this.getZipCode().then(zip => {
+						  this.zipCode = zip;
+						  resolve({zip_code: zip});
+						}).catch(err => reject(err));
+					}else{
+						reject(resp)
+					}
+				}else{
+					this.getZipCode().then(zip => {
+						this.zipCode = zip;
+						resolve({ zip_code: zip });
+					}).catch(err => reject(err));
+				}
+			} 
+		}, 
+		err => { 
+		console.log('inside err watch');
+			this.getZipCode().then(zip => {
+			  this.zipCode = zip;
+			  resolve({ zip_code: zip });
+			}).catch(err => reject(err));
+			reject(err);
 		});
 	  }
-	  
-      this.watch = this.geolocation.watchPosition(options)
-	  .subscribe(resp => {
-		if (resp.coords) {	
-		  if (!this.coords.lat && !this.coords.lng) {			  
-			  if (this.loc.isCustomCoordAvaliable()) {
-				  this.coords = this.loc.getCoordObject();
-			  } else {
-				  this.coords.lat = resp.coords.latitude;
-				  this.coords.lng = resp.coords.longitude;
-			  }
-			  this.localStorage.set('local_coordinates',this.coords);
-			  this.getZipCode().then(zip => {
-				  resolve({zip_code: zip});
-			  }).catch(err => reject(err));
-		  }else{
-			this.coords.lat = resp.coords.latitude;
-			this.coords.lng = resp.coords.longitude;  
-			this.getZipCode().then(zip => {
-				resolve({zip_code: zip});
-			}).catch(err => reject(err));
-		  }
-		}else if(!this.locationAccessPermission){ 
-			reject(resp); 
-		}else{
-			if(this.localStorage.get('local_coordinates')){
-				let strorageLocation = this.localStorage.get('local_coordinates');
-				this.coords.lat = parseFloat(strorageLocation.lat);
-				this.coords.lng = parseFloat(strorageLocation.lng);
-				this.getZipCode().then(zip => {
-				  resolve({zip_code: zip});
-				}).catch(err => reject(err));
-			}else{
-				this.getZipCode().then(zip => {
-					resolve({ zip_code: zip });
-				}).catch(err => reject(err));
-			}
-		} 
-      }, 
-	  err => { 
-		this.getZipCode().then(zip => {
-		  resolve({ zip_code: zip });
-		}).catch(err => reject(err));
-		reject(err);
-      }
-	  );
-
     });
   }
 
@@ -201,24 +221,27 @@ export class Gps {
   }
 
   public getGoogleAdress(lat?:number, lng?:number){
-    let coords;
-    if (lat && lng) {
-      coords = lat + ',' + lng;
-    } else {
-      coords = this.coords.lat + ',' + this.coords.lng;
-    }
-
-    if (this.loc.isCustomCoordAvaliable()) {
-      coords = this.loc.getCoordString();
-    }
-
-    let url = 'https://maps.googleapis.com/maps/api/geocode/json';
-    let seq = this.getAddressDetail(url, {
-      latlng: coords,
-      sensor: true,
-      key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'
-    }).share();
-    return seq;
+	if(this.googleAddress != null && !this.customAddress)  {
+		return this.googleAddress; // return already set address
+	}else{
+		let coords;
+		if (lat && lng) {
+		  coords = lat + ',' + lng;
+		} else {
+		  coords = this.coords.lat + ',' + this.coords.lng;
+		}
+		if (this.loc.isCustomCoordAvaliable()) {
+		  coords = this.loc.getCoordString();
+		}
+		let url = 'https://maps.googleapis.com/maps/api/geocode/json';
+		let seq = this.getAddressDetail(url, {
+		  latlng: coords,
+		  sensor: true,
+		  key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'
+		}).share();
+		this.googleAddress = seq;
+		return seq;
+	}
   }
 
   public getZipCode(): Promise<any> {
@@ -263,6 +286,8 @@ export class Gps {
   public getCustomZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
       if (this.coords.lat && this.coords.lng) {
+		this.customAddress = true;
+		console.log('Custom zipcode');
         console.log('my lat:', this.coords.lat, 'my lng:', this.coords.lng);
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
             if(res.status==='OK'){

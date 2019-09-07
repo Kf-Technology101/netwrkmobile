@@ -1,6 +1,8 @@
 import { Component, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { ViewController,NavController, NavParams, Platform, ModalController, App } from 'ionic-angular';
 // import { Contacts, ContactFieldType, ContactFindOptions } from 'ionic-native';
+import { SMS } from '@ionic-native/sms/ngx';
+
 //pages
 import { UndercoverCharacterPage } from '../../pages/undercover-character/undercover-character';
 import { ChatPage } from '../../pages/chat/chat';
@@ -107,7 +109,8 @@ export class NetwrklistPage {
 	public settings: Settings,
 	public contactsPrvd: ContactsProvider,
 	private keyboard: Keyboard,
-    elRef: ElementRef
+    elRef: ElementRef,
+	public sms: SMS
   ) {
 	  if(this.navParams.get('message')){
 		this.newlyAdded = this.navParams.get('message');
@@ -134,8 +137,8 @@ export class NetwrklistPage {
 	  }else{
 		this.loadActivity();
 		this.user = this.authPrvd.getAuthData();
-		this.gpsPrvd.getMyZipCode();
 
+		this.gpsPrvd.getMyZipCode();
 		this.storage.rm('local_coordinates');
 		let loc = {
 		  lat : parseFloat(this.gpsPrvd.coords.lat),
@@ -316,34 +319,73 @@ export class NetwrklistPage {
   
   public sendContactsMessage(message:any){	
 	let shareLink = '';
-/* console.log(this.selectedCommunity);
-return false;	 */
-	// for(let i=0; i<this.selectedCommunity.length; i++){		
 	if (this.platform.is('ios')){
 		shareLink = 'netwrkapp://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
 	}else{
 		shareLink = 'https://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
 	}
-	// }
 	
 	let shareMessage =  this.activitySelected+' at '+this.locationSelected+'? '+this.txtIn.value.trim()+' 1 tap reply via '+shareLink;
-	
-	let contacts = [];
-	for(let i = 0;i<this.selectedContacts.length;i++){
-		let checkedObj = {
+	// this.toolsPrvd.showToast('123');
+	let contacts = ''; //[]
+	for(let i = 0;i<this.selectedContacts.length;i++){		
+		/* let checkedObj = {
 		  name: this.selectedContacts[i].name.formatted,
 		  phone: this.selectedContacts[i].phoneNumbers[0].value
 		}
-		contacts.push(checkedObj);		
+		contacts.push(checkedObj); */
+		
+		if(contacts != ''){
+			contacts = contacts + ',' + this.selectedContacts[i].phoneNumbers[0].value;
+		}else{
+			contacts = this.selectedContacts[i].phoneNumbers[0].value;
+		}		
 	}
 	
+	// this.toolsPrvd.showToast('456');
+	this.checkContactFlag = true; 
+	var options = {
+	  replaceLineBreaks: false,
+	  android: {
+		intent: 'INTENT'  // send SMS with the native android SMS messaging
+		//intent: '' // send SMS without opening any other app
+	  }
+	};
+	// this.toolsPrvd.showToast('789');
+	
+	/*this.platform.ready().then(() => {
+		setTimeout(function() {
+			this.sms.send('9762860473,', 'Hello world', options).then(succ=>{
+				this.toolsPrvd.showToast('success');
+			},err=>{
+				this.toolsPrvd.showToast('err');
+			});
+			this.toolsPrvd.showToast('000');
+			this.goBackSuccess(message);
+			this.toolsPrvd.hideLoader();
+		}, 50);
+	});*/
+	
+	
+	// this.sms.send(contacts, shareMessage).then(()=>{
+	/* this.sms.send('9762860473', 'Message test').then(()=>{
+		this.toolsPrvd.showToast('SMS sent successfully');
+		this.checkContactFlag = true; 
+		this.goBackSuccess(message);
+		this.toolsPrvd.hideLoader();
+	},()=>{
+		this.toolsPrvd.showToast('SMS sent failed');
+		this.toolsPrvd.hideLoader();
+	}); */
+    
 	this.contactsPrvd.sendSMS(contacts,shareMessage).subscribe(res => {
 	  this.checkContactFlag = true; 
 	  this.goBackSuccess(message);
 	  this.toolsPrvd.hideLoader();
-	}, err => this.toolsPrvd.hideLoader());;
+	}, err => this.toolsPrvd.hideLoader());
+	
   }
-  
+    
   private postMessage(emoji?: string, params?: any) {
 	try {
 		let publicUser: boolean = true;
@@ -467,6 +509,7 @@ return false;	 */
   }
 	
   public goBackSuccess(message:any = {}){
+	// this.toolsPrvd.showToast('goBackSuccess return');
 	let successCase;
 	if(this.selectedCommunity.length > 0 && this.selectedContacts.length > 0){
 		successCase = 1;

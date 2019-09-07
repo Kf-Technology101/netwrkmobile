@@ -41,21 +41,22 @@
   </ion-grid>
 
 
-  <div class="tip">Tap to get started</div>
   
-  <button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()" ion-button color="bk" class="main-action-btn medium has-label"(tap)="goToSignUp()" outline id="main-btn"> </button>
-
-  <div class="tip text-note">No one can see your location.</div>
+  <!-- <div class="tip text-note">No one can see your location.</div> -->
   
   
 </ion-content>
 
 <ion-footer>
-  <div  class="login-text-note">
+  <div  class="start-signup">
+	<button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()" ion-button color="bk" class="main-action-btn medium has-label"(tap)="goToSignUp()" outline id="main-btn"> </button>
+	<div class="tip">Tap to get started</div>
+  </div>
+  <!-- <div  class="login-text-note">
 	<p ion-text color="bk">
 		However we do need location to show you nearby communities and notifications for updates from friends. Please accept notifications and location sharing while using the app.
 	</p>
-  </div>
+  </div> -->
   <ion-item class="transparent login-btns-container">
     <button ion-button default (tap)="toggleLoginForm()"
             round item-left color="bk" [@fadeState]="controls.state"

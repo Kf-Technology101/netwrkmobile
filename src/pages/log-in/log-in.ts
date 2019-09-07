@@ -76,7 +76,9 @@ export class LogInPage {
     this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
     this.textStrings.require = 'Please fill all fields';
-	this.gps.getMyZipCode();
+	/* this.gps.getMyZipCode(true).then(res => {
+		console.log('login coords',this.gps.coords);
+	});  */
   }
 
   private toggleLoginForm():void {
@@ -115,7 +117,7 @@ export class LogInPage {
 
     this.tools.showLoader();
     this.authPrvd.login(this.account).map(res => res.json()).subscribe(resp => {
-      console.log('login resp 123:', resp);
+     
       if (resp.tou_accepted) {
           // this.tools.pushPage(HoldScreenPage);
           this.tools.pushPage(ChatPage);

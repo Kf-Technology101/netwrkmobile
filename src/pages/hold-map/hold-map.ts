@@ -242,15 +242,16 @@ export class HoldMapPage {
   private initAutocomplete(): void {	 
 	this.addressElement = this.searchbar.nativeElement.querySelector('.searchbar-input');
 	this.searchModel = "";
-    this.createAutocomplete(this.addressElement).subscribe((place) => {
+    this.createAutocomplete(this.addressElement).subscribe((place) => {		
 	  this.search = false;
 	  let data = {
 		  lat: place.geometry.location.lat(),
 		  lng: place.geometry.location.lng()
 	  }
 	  this.storage.set('custom_coordinates', data);
-	  
+	  this.gpsPrvd.customAddress = true;
 	  this.gpsPrvd.getZipCode().then(zip => {
+		this.gpsPrvd.customAddress = false;
 		let zipcode = zip;
 		let loc = {
 		  lat: place.geometry.location.lat(),

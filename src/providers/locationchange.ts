@@ -87,7 +87,7 @@ export class LocationChange {
     customCoordsAlert.present();
   }
 
-  private showToast(message:string, duration?:number) {
+  public showToast(message:string, duration?:number) {
     let toast = this.toastCtrl.create({
       message: message,
       duration: duration ? duration : 3000,

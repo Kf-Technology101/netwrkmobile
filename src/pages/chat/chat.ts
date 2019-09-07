@@ -171,6 +171,7 @@ export class ChatPage implements DoCheck {
     this.shareContainer
   ];
   private messagesInterval:boolean;
+  private boundsMap:boolean = false;
   private messIntObject:any;
   public isSocialPostsLoaded:boolean = false;
 
@@ -403,7 +404,7 @@ export class ChatPage implements DoCheck {
 			  if(this.parameterData){
 				this.toolsPrvd.showLoader();
 				this.chatPrvd.socketsInit();
-				this.initResponseFromGPS();
+				// this.initResponseFromGPS();
 				this.setContentPadding(false);
 				this.coachMarkText='';
 				this.openLobbyForShareLink();
@@ -428,42 +429,65 @@ export class ChatPage implements DoCheck {
   }
 
   public resetFilter():void {
-	if(!this.chatPrvd.isMainBtnDisabled && this.gpsPrvd.locationAccessPermission){
-	  this.chatPrvd.isMainBtnDisabled = true;
-	  this.chatPrvd.postMessages = [];
-	  this.clearMarkers();
-	  this.settings.isNewlineScope=false;
-	  this.settings.isCreateLine=false;
-	  this.chatPrvd.isCleared = true;		  
-	  if(this.chatPrvd.areaFilter){
-		  this.chatPrvd.areaFilter=false;
-		  this.refreshChat();
-	  }else{
-		  this.chatPrvd.areaFilter=true;
-		  this.refreshChat();
-	  }
-	}
+	 
+	this.gpsPrvd.getMyZipCode().then(zip => {	
+		if(!this.chatPrvd.isMainBtnDisabled && this.gpsPrvd.locationAccessPermission){
+		  this.chatPrvd.isMainBtnDisabled = true;
+		  this.chatPrvd.postMessages = [];
+		  this.clearMarkers();
+		  this.settings.isNewlineScope=false;
+		  this.settings.isCreateLine=false;
+		  this.chatPrvd.isCleared = true;		  
+		  if(this.chatPrvd.areaFilter){
+			  this.chatPrvd.areaFilter=false;
+			  this.refreshChat();
+		  }else{
+			  this.chatPrvd.areaFilter=true;
+			  this.refreshChat();
+		  }
+		}
+	},err=>{
+		console.log(this.chatPrvd.getState());
+		// if(this.chatPrvd.getState() != 'undercover')				
+	    if(err.PERMISSION_DENIED == 1 || err.PositionError.code == 1){
+			this.gpsPrvd.locationAccessPermission = false;
+			this.toolsPrvd.showToast('We require your current location. Please share your location.');
+		}else{
+			this.toolsPrvd.showToast('Something went wrong. Please try later.');
+		}
+	});   	
   }
   
   public resetTopNetwrkFilter():void{
-	if(!this.isProcessing && this.loaderState.getState() == 'off'){
-		this.isProcessing = true;
-		this.toolsPrvd.showLoader();
-		this.chatPrvd.holdFilter = !this.chatPrvd.holdFilter;
-		this.chatPrvd.areaFilter = !this.chatPrvd.areaFilter;
-		if(this.chatPrvd.areaFilter && !this.gpsPrvd.locationAccessPermission){
-			this.accessDeniedTip = true;
-			this.isProcessing = false;
-			this.chatPrvd.isMainBtnDisabled = true;
-			this.loaderState.setState('off'); 
-			this.chatPrvd.postMessages = [];
-			this.toolsPrvd.hideLoader();
+	
+	this.gpsPrvd.getMyZipCode().then(zip => {		
+		if(!this.isProcessing && this.loaderState.getState() == 'off'){
+			this.isProcessing = true;
+			this.toolsPrvd.showLoader();
+			this.chatPrvd.holdFilter = !this.chatPrvd.holdFilter;
+			this.chatPrvd.areaFilter = !this.chatPrvd.areaFilter;
+			if(this.chatPrvd.areaFilter && !this.gpsPrvd.locationAccessPermission){
+				this.accessDeniedTip = true;
+				this.isProcessing = false;
+				this.chatPrvd.isMainBtnDisabled = true;
+				this.loaderState.setState('off'); 
+				this.chatPrvd.postMessages = [];
+				this.toolsPrvd.hideLoader();
+			}else{
+				this.getAndUpdateUndercoverMessages();
+			}
 		}else{
-			this.getAndUpdateUndercoverMessages();
+			console.log('wait');
 		}
-	}else{
-		console.log('wait');
-	}    
+	},err=>{
+		console.log('err',err);
+	    if(err.PERMISSION_DENIED == 1 || err.PositionError.code == 1){
+			this.gpsPrvd.locationAccessPermission = false;
+			this.toolsPrvd.showToast('We require your current location. Please share your location.');
+		}else{
+			this.toolsPrvd.showToast('Something went wrong. Please try later.');
+		}
+	});    
   }
 
   public shareMessageToFacebook(message):void {
@@ -594,35 +618,46 @@ export class ChatPage implements DoCheck {
 
   private initMap():void {
 	this.gapi.init.then((google_maps: any) => {
-		let loc: any = {
-			lat: parseFloat(this.gpsPrvd.coords.lat),
-			lng: parseFloat(this.gpsPrvd.coords.lng)
-		};
-		this.coords = loc;
-		this.map = new google_maps.Map(this.mapElement.nativeElement, {
-			zoom: 15,
-			center: loc,
-			styles:this.mapStyle,
-			disableDefaultUI: true,
-			fullscreenControl: false
-		});
+		if(this.gpsPrvd.coords.lat!=null && this.gpsPrvd.coords.lng!=null){
+			this.boundsMap = false;
+			let loc: any = {
+				lat: parseFloat(this.gpsPrvd.coords.lat),
+				lng: parseFloat(this.gpsPrvd.coords.lng)
+			};
+			this.coords = loc;
+			this.map = new google_maps.Map(this.mapElement.nativeElement, {
+				zoom: 15,
+				center: loc,
+				styles:this.mapStyle,
+				disableDefaultUI: true,
+				fullscreenControl: false
+			}); 
 
-		this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
-        .map(res => res.json()).subscribe(res => {
-			let icon = {
-                url:'assets/icon/blue_dot.png'
-            };
+			this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng).map(res => res.json()).subscribe(res => {
+				let icon = {
+					url:'assets/icon/blue_dot.png'
+				};
 
-            let marker = new google_maps.Marker({
-                map: this.map,
-                position: res.results[0].geometry.location,
-                icon: icon
-            });
-        }, err => {
-            console.log('[google address] error:', err);
-        });
+				let marker = new google_maps.Marker({
+					map: this.map,
+					position: res.results[0].geometry.location,
+					icon: icon
+				});
+			}, err => {
+				console.log('[google address] error:', err);
+			});
 
-        this.map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
+			this.map.setCenter(new google.maps.LatLng(loc.lat, loc.lng)); 
+		}else{
+			this.boundsMap = true;
+			this.map = new google_maps.Map(this.mapElement.nativeElement, {
+				zoom: 15,
+				styles:this.mapStyle,
+				disableDefaultUI: true,
+				fullscreenControl: false
+			}); 
+		}
+		
 	});
 	setTimeout(function() { google.maps.event.trigger(this.map, 'resize') }, 600);	
   }
@@ -631,52 +666,136 @@ export class ChatPage implements DoCheck {
 	 this.contentPosition = '';	 
 	 this.clearMarkers();
      this.gapi.init.then((google_maps: any) => {
-         let zoomScale:number;
-         let loc: any = {
-             lat: parseFloat(this.gpsPrvd.coords.lat),
-             lng: parseFloat(this.gpsPrvd.coords.lng)
-         };
-	
-         let iconUrl='assets/icon/marker.png';
-         let iconSize=new google_maps.Size(35, 40);
+		let zoomScale:number;
+		let iconUrl='assets/icon/marker.png';
+		let iconSize=new google_maps.Size(35, 40);
 
-         let markerIcon = {
-             url: iconUrl,
-             scaledSize: iconSize,
-             origin: new google_maps.Point(0, 0),
-             anchor: new google_maps.Point(0, 0)
-         };
+		let markerIcon = {
+			 url: iconUrl,
+			 scaledSize: iconSize,
+			 origin: new google_maps.Point(0, 0),
+			 anchor: new google_maps.Point(0, 0)
+		};
 
-         if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
-             this.map.zoom=13;
-         }else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
-             this.map.zoom=14;
-         }else if(this.chatPrvd.isLobbyChat){
-             this.map.zoom=15;
-         }
-		 
-         this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
-            .map(res => res.json()).subscribe(res => {		
-                if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){	   // let marker = new google_maps.Marker({});
-					let marker ={
-                        map: this.map,
-                        position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
-                        icon: markerIcon,
+		if(this.chatPrvd.getState() == 'undercover' && !this.chatPrvd.isLobbyChat){
+			this.map.zoom=13;
+		}else if(this.chatPrvd.getState() == 'area' && !this.chatPrvd.isLobbyChat){
+			this.map.zoom=14;
+		}else if(this.chatPrvd.isLobbyChat){
+			this.map.zoom=15;
+		}
+		
+		if(this.isUndercover){ /// LP
+			if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){	   // let marker = new google_maps.Marker({});
+				let marker ={
+					map: this.map,
+					position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
+					icon: markerIcon,
+					title: ''
+				};
+
+				this.mapMarkers.push(marker);
+			}else {					
+				if(this.chatPrvd.areaLobby){
+					let marker = {
+						map: this.map,
+						position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
+						icon: markerIcon,
 						title: ''
-                    };
+					};
 
-                    this.mapMarkers.push(marker);
-                }else {					
-                    if(this.chatPrvd.areaLobby){
+					this.mapMarkers.push(marker);
+				}else {
+					for (var i = 0; i < this.chatPrvd.postMessages.length; i++) {
+						
+						if(this.chatPrvd.postMessages[i].locked && this.chatPrvd.postMessages[i].locked_by_user && this.user.id != this.chatPrvd.postMessages[i].user_id){
+							markerIcon = {
+								 url: 'assets/icon/lock-marker.png',
+								 scaledSize: iconSize,
+								 origin: new google_maps.Point(0, 0),
+								 anchor: new google_maps.Point(0, 0)
+							};
+							//markerIcon.url = 'assets/icon/lock-marker.png'; 	
+						}else{
+							markerIcon = {
+								 url: 'assets/icon/marker.png',
+								 scaledSize: iconSize,
+								 origin: new google_maps.Point(0, 0),
+								 anchor: new google_maps.Point(0, 0)
+							};
+							// markerIcon.url = 'assets/icon/marker.png'; 
+						}
+						
+						// let marker = new google_maps.Marker({});
 						let marker = {
-                            map: this.map,
-                            position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
-                            icon: markerIcon,
+							map: this.map,
+							position: new google_maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
+							icon: markerIcon,								
+							id: i,
+							message: this.chatPrvd.postMessages[i],
 							title: ''
-                        };
+						}; 
+					
+						if(this.chatPrvd.postMessages[i].locked && this.chatPrvd.postMessages[i].locked_by_user && this.user.id != this.chatPrvd.postMessages[i].user_id){
+							marker.title = '';
+						}else{
+							marker.title = this.chatPrvd.postMessages[i].title;
+						}
+						
+						
+						if(this.chatPrvd.postMessages[i].messageable_type == "Network"){
+							this.mapMarkers.push(marker);
+							
+							google_maps.event.addListener(marker, 'click', () => {	  
+								if(marker.message.undercover){
+									this.openLobbyForPinned(marker.message);
+								}else{
+									this.openConversationLobbyForPinned(marker.message)
+								} 
+							});  
+						}
+						
+					}
+				}
+			}
+		
+			if(this.gpsPrvd.coords.lat!=null && this.gpsPrvd.coords.lng!=null){
+				this.boundsMap = false;
+			}else{
+				this.boundsMap = true;
+			}
+			this.addMarker();
+			
+		}else{ // AP
+			let loc: any = {
+				lat: parseFloat(this.gpsPrvd.coords.lat),
+				lng: parseFloat(this.gpsPrvd.coords.lng)
+			};
+	 		
+			// this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng).map(res => res.json()).subscribe(res => {
+			
+			this.gpsPrvd.getMyZipCode().then(res => {	
+				this.boundsMap = false;				
+				if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){	   // let marker = new google_maps.Marker({});
+					let marker ={
+						map: this.map,
+						position: new google_maps.LatLng(this.chatPrvd.postLineMessages[0].lat, this.chatPrvd.postLineMessages[0].lng),
+						icon: markerIcon,
+						title: ''
+					};
 
-                        this.mapMarkers.push(marker);
-                    }else {
+					this.mapMarkers.push(marker);
+				}else {					
+					if(this.chatPrvd.areaLobby){
+						let marker = {
+							map: this.map,
+							position: new google_maps.LatLng(this.chatPrvd.postAreaMessages[0].lat, this.chatPrvd.postAreaMessages[0].lng),
+							icon: markerIcon,
+							title: ''
+						};
+
+						this.mapMarkers.push(marker);
+					}else {
 						for (var i = 0; i < this.chatPrvd.postMessages.length; i++) {
 							
 							if(this.chatPrvd.postMessages[i].locked && this.chatPrvd.postMessages[i].locked_by_user && this.user.id != this.chatPrvd.postMessages[i].user_id){
@@ -726,17 +845,15 @@ export class ChatPage implements DoCheck {
 								});  
 							}
 							
-                        }
-                    }
-                }
-                this.addMarker();
-				console.log('initLpMap Center Locations: ',loc);
+						}
+					}
+				}
+				this.addMarker();
 				this.map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
-				
 			}, err => {
 				this.map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
-                console.log('[google address] error:', err);
-         });
+			}); 
+		}
      });
 	 setTimeout(function() { google.maps.event.trigger(this.map, 'resize') }, 600);	
   }
@@ -785,7 +902,7 @@ export class ChatPage implements DoCheck {
 		}
 		
 	 } 
-	 // let bounds  = new google.maps.LatLngBounds();
+	 let bounds  = new google.maps.LatLngBounds();
 	 for(var j = 0; j < this.markerLatLng.length; j++) {
 		if(!this.mapMarkers[this.markerLatLng[j].id].placedMarker || this.mapMarkers[this.markerLatLng[j].id].placedMarker == undefined){
 			 let newMarker = new google.maps.Marker(this.mapMarkers[this.markerLatLng[j].id]);
@@ -801,8 +918,8 @@ export class ChatPage implements DoCheck {
 			 this.mapMarkers[this.markerLatLng[j].id].placedMarker = true;
 			 newMarker.setMap(this.map);
 		}		
-		// let position = this.mapMarkers[this.markerLatLng[j].id].position;
-		// bounds.extend(new google.maps.LatLng(position.lat(), position.lng()));
+		let position = this.mapMarkers[this.markerLatLng[j].id].position;
+		bounds.extend(new google.maps.LatLng(position.lat(), position.lng()));
 	 }
 	 
 	 let self = this;
@@ -817,9 +934,11 @@ export class ChatPage implements DoCheck {
 			} 
 		}				
 	 });
-		
-	// this.map.fitBounds(bounds);       // auto-zoom
-	// this.map.panToBounds(bounds);     // auto-center
+	 
+	 if(this.boundsMap)	{
+		this.map.fitBounds(bounds);       // auto-zoom
+		this.map.panToBounds(bounds);     // auto-center
+	 }
   }
 
   private viewLineLocation(message:any):void {
@@ -1654,7 +1773,9 @@ export class ChatPage implements DoCheck {
 		this.normalizeMainBtn(null,null);
 		this.app.getRootNav().setRoot(ChatPage);
 		this.storage.rm('custom_coordinates');
-		this.gpsPrvd.getMyZipCode().then(res => {
+		this.gpsPrvd.customAddress = true;
+		this.gpsPrvd.getMyZipCode(true).then(res => {
+			this.gpsPrvd.customAddress = false;
 			this.initLpMap();
 			let cont0 = this.getTopSlider('address');
 			cont0.setState('slideUp');
@@ -1715,6 +1836,7 @@ export class ChatPage implements DoCheck {
   }
 
   private goUndercover(event?:any):any {
+	  
     this.messagesInterval = false;
     clearTimeout(this.messIntObject);
     this.chatPrvd.isMainBtnDisabled = true;
@@ -2211,8 +2333,7 @@ export class ChatPage implements DoCheck {
   }
   
   private getAndUpdateUndercoverMessages() {
-	  console.log(this.isUndercover);
-      if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {		  
+	  if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {		  
 		  this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
 			if (res) {
 				if (res.messages && res.messages.length > 0) {
@@ -2485,7 +2606,6 @@ export class ChatPage implements DoCheck {
 	  let editPostId = this.storage.get('edit-post');
 	  
       if (this.chatPrvd.getState() == 'undercover' && !editPostId) {  
-	  
 	      this.chatPrvd.detectNetwork().then(res => {
 			  this.network = res;
 			  let firstTimeInChat:any = this.chatPrvd.localStorage.get('first_time_undercover');
@@ -2741,7 +2861,7 @@ console.log('openLobbyForLockedChecked::',message);
   }
 
   public openLobbyForLineMessage(message:any):void {
-	  console.log('openLobbyForLineMessage',message);
+	console.log('openLobbyForLineMessage',message);
 	let cont3 = this.getTopSlider('address');
 	cont3.setState('slideUp');
 	cont3.hide();
@@ -2789,6 +2909,15 @@ console.log('openLobbyForLockedChecked::',message);
 		  console.error(err);
 		  this.toolsPrvd.hideLoader();
 	  });
+	}else{
+		if(message.messageable_type == "Room" && message.conversation_line_id != null && message.message_type == "CONV_REQUEST"){
+			console.log('Open conversation',message);
+			this.chatPrvd.getMessageIDDetails(message.conversation_line_id).subscribe(res => {
+				this.chatPrvd.isLobbyChat = false;
+				this.chatPrvd.areaLobby = false;
+				this.openConversationLobbyForPinned(res.message);
+			});
+		}
 	}
   }
 
@@ -2941,10 +3070,9 @@ console.log('openLobbyForLockedChecked::',message);
 
 	this.toolsPrvd.showLoader();
 	this.storage.rm('custom_coordinates');
-	
-	
-	this.gpsPrvd.getMyZipCode().then(zip => {
-		
+
+	this.gpsPrvd.getMyZipCode().then(zip => {		
+	 
 		this.storage.rm('chat_zip_code');
 		this.storage.set('chat_zip_code', zip.zip_code);
 		this.storage.rm('custom_coordinates');
@@ -3034,10 +3162,16 @@ console.log('openLobbyForLockedChecked::',message);
 		  }
 		}		  
 	  },err=>{
-	  if(err.PERMISSION_DENIED == 1){
+		console.log('err',err);
+	    if(err.PERMISSION_DENIED == 1 || err.PositionError.code == 1){
+		  this.gpsPrvd.locationAccessPermission = false;
 		  this.toolsPrvd.hideLoader();
 		  if(this.chatPrvd.getState() == 'undercover'){
-			this.chatPrvd.toggleLobbyChatMode();
+			this.chatPrvd.isLobbyChat = false;
+			this.chatPrvd.currentLobby.id = null;
+			this.chatPrvd.closeLobbySocket();
+			this.chatPrvd.currentLobbyMessage = null;	  
+			
 			this.chatPrvd.isLandingPage = false;		
 			this.chatPrvd.setState('area');
 			this.undercoverPrvd.setUndercover(false);
@@ -3046,24 +3180,26 @@ console.log('openLobbyForLockedChecked::',message);
 			this.accessDeniedTip = true;
 			this.chatPrvd.isMainBtnDisabled = false;
 		  }else if(this.chatPrvd.getState() == 'area'){
-			this.chatPrvd.toggleLobbyChatMode();
+			this.chatPrvd.isLobbyChat = false;
+			this.chatPrvd.currentLobby.id = null;
+			this.chatPrvd.closeLobbySocket();
+			this.chatPrvd.currentLobbyMessage = null;
+			
 			this.toolsPrvd.hideLoader();
 			this.chatPrvd.isLandingPage = true;		
 			this.chatPrvd.setState('undercover');
 			this.undercoverPrvd.setUndercover(true);
 			this.isUndercover = true; 
 			this.chatPrvd.postMessages = [];
-			// this.setPostTimer(0);
 			this.resetFilter();
 			this.getAndUpdateUndercoverMessages();				
 			this.accessDeniedTip = true;
 			this.chatPrvd.isMainBtnDisabled = false;
 		  }	
-		  console.log('error getmyzipcode');
-	  }else{
+		}else{
 		  this.toolsPrvd.hideLoader();
 		  console.log('error::: ',err);
-	  }
+	    }
 	});	  
   }
 
@@ -3107,7 +3243,7 @@ console.log('openLobbyForLockedChecked::',message);
 		
 		// init sockets
 		this.chatPrvd.socketsInit();
-		this.initResponseFromGPS();
+		//this.initResponseFromGPS(); 
 		this.setContentPadding(false);
 
 		if (this.chatPrvd.getState() == 'area') {
@@ -3220,13 +3356,25 @@ console.log('openLobbyForLockedChecked::',message);
   }
   
   public loadMaps() {
-	this.scrollTop = 0;
-	this.coachMarkText = "Start your network here?";
-	this.search = true;
-	this.nclAddedCnt = 0;
-	this.currentCLLobbyIndex = null;
-	this.initializeMap();
-	this.initAutocomplete();    
+	this.gpsPrvd.getMyZipCode().then(zip => {
+		this.eventClickTrigger(); 
+		this.toggleTopSlider('address');		
+		this.scrollTop = 0;
+		this.coachMarkText = "Start your network here?";
+		this.search = true;
+		this.nclAddedCnt = 0;
+		this.currentCLLobbyIndex = null;
+		this.initializeMap();
+		this.initAutocomplete();    
+	},err=>{
+		console.log('err',err);
+	    if(err.PERMISSION_DENIED == 1 || err.PositionError.code == 1){
+			this.gpsPrvd.locationAccessPermission = false;
+			this.toolsPrvd.showToast('We require your current location. Please share your location.');
+		}else{
+			this.toolsPrvd.showToast('Something went wrong. Please try later.');
+		}
+	});
   }
 
   private initializeMap() {
@@ -3271,6 +3419,7 @@ console.log('openLobbyForLockedChecked::',message);
 		  lng: place.geometry.location.lng()
 	  }
 	  this.storage.set('custom_coordinates', data);
+	  this.gpsPrvd.customAddress = true;
 	  this.gpsPrvd.getZipCode().then(zip => {
 		let zipcode = zip;
 		let loc = {
@@ -3288,7 +3437,7 @@ console.log('openLobbyForLockedChecked::',message);
 			   fullscreenControl: false			   
 			});		
 		});
-
+		this.gpsPrvd.customAddress = false;
 		if(!this.flgEditPost){
 			this.chatPrvd.request_type = "CUSTOM_LOCATION";
 		}

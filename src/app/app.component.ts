@@ -82,6 +82,7 @@ export class MyApp {
         platform.ready().then(() => {
             this.authPrvd.removeDeviceRegistration();
             this.pushSetup();
+			// this.gps.getMyZipCode(true);
         });
 
         this.storage.rm('custom_coordinates');
@@ -153,11 +154,9 @@ export class MyApp {
 	}
 
     private goToPage():void {
-        this.gps.getMyZipCode().then(res => {
-			this.app.getRootNav().setRoot(ChatPage);
-		}, err => {
-			this.app.getRootNav().setRoot(ChatPage)
-		});
+		console.log('=======app goToPage======')
+		this.app.getRootNav().setRoot(ChatPage);
+        
         this.toolsPrvd.hideSplashScreen();
     }
 

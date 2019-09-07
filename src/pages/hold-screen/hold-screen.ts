@@ -75,7 +75,7 @@ export class HoldScreenPage {
     public splash: SplashScreen
   ) {
 		this.users = this.authPrvd.getAuthData();
-		this.gpsPrvd.getMyZipCode();
+		// this.gpsPrvd.getMyZipCode(true);
 		platform.ready().then(() => {
 		  this.registerDevice();
 		});

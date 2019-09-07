@@ -1,5 +1,10 @@
 page-log-in {
   .content {
+	background-image: url(../assets/images/login_background.png);
+    background-size: 120%;
+    background-repeat: no-repeat;
+    background-position-x: center;
+    background-position-y: top;
     .scroll-content {
       bottom: 0!important;
     }
@@ -22,6 +27,7 @@ page-log-in {
   .main-action-btn {
 	top:-4% !important;
     z-index: 3;
+	bottom: 40px !important;	
   }
   .row.top-form-row {
     position: absolute;
@@ -122,12 +128,15 @@ page-log-in {
 		}
 	}
   }
+  .start-signup {
+    margin-bottom: 160px;
+  }
   .tip {
     z-index: 99;
     position: absolute;
     left: 0;
     right: 0;
-    top: calc(33%);
+    // top: calc(33%);
     font-size: 25px;
     padding: 4px;
     width: 100%;

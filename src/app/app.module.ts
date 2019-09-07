@@ -14,6 +14,7 @@ import { Diagnostic } from '@ionic-native/diagnostic';
 import { AndroidPermissions } from '@ionic-native/android-permissions';
 // import { Autosize } from 'ng-autosize';
 import { Deeplinks } from '@ionic-native/deeplinks';
+
 // Pages
 import { MyApp } from './app.component';
 
@@ -23,20 +24,15 @@ import { SignUpConfirmPage } from '../pages/sign-up-confirm/sign-up-confirm';
 import { SignUpAfterFbPage } from '../pages/sign-up-after-fb/sign-up-after-fb';
 import { SignUpFacebookPage } from '../pages/sign-up-facebook/sign-up-facebook';
 import { HoldScreenPage } from '../pages/hold-screen/hold-screen';
-
 import { HoldMapPage } from '../pages/hold-map/hold-map';
-
 import { ProfilePage } from '../pages/profile/profile';
 import { ProfileSettingPage } from '../pages/profile-setting/profile-setting';
-
 import { LinePage } from '../pages/linelist/linelist';
 import { NetwrklistPage } from '../pages/netwrklist/netwrklist';
 import { NetworkContactListPage } from '../pages/network-contact-list/network-contact-list';
 import { ChatPage } from '../pages/chat/chat';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
-
 import { CameraPage } from '../pages/camera/camera';
-
 import { ProfileNameImgPage } from '../pages/profile-name-img/profile-name-img';
 
 // Modals
@@ -93,28 +89,26 @@ import { Crop } from '@ionic-native/crop';
 import { AppAvailability } from '@ionic-native/app-availability';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { NativeGeocoder } from '@ionic-native/native-geocoder';
-
+import { SMS } from '@ionic-native/sms/ngx';
+ 
 // sockets
 import { Ng2CableModule } from 'ng2-cable';
+
 // Google Maps
 import { GoogleMapsModule } from 'google-maps-angular2';
 
 let declarations_pages = [
   // Autosize,
   MyApp,
-
   LogInPage,
   SignUpPage,
   SignUpConfirmPage,
   SignUpAfterFbPage,
   SignUpFacebookPage,
-
   HoldScreenPage,
-
   ProfilePage,
   HoldMapPage,
-  ProfileSettingPage,
-  
+  ProfileSettingPage,  
   LinePage,
   NetwrklistPage,
   NetworkContactListPage,
@@ -125,34 +119,27 @@ let declarations_pages = [
   CustomModal,
   BlacklistModal,
   ArealistModal,
-
   ChatPage,
   UndercoverCharacterPage,
-
   CameraPage,
-  ProfileNameImgPage,
-  
-	ContactListPipe,
-	EmojiFilter,
-	SortPipe
+  ProfileNameImgPage,  
+  ContactListPipe,
+  EmojiFilter,
+  SortPipe
 ];
 
 let pages = [
   // Autosize,
   MyApp,
-
   LogInPage,
   SignUpPage,
   SignUpConfirmPage,
   SignUpAfterFbPage,
   SignUpFacebookPage,
-
   HoldScreenPage,
-
   ProfilePage,
   HoldMapPage,
-  ProfileSettingPage,
-  
+  ProfileSettingPage,  
   LinePage,
   NetwrklistPage,
   NetworkContactListPage,
@@ -163,10 +150,8 @@ let pages = [
   CustomModal,
   BlacklistModal,
   ArealistModal,
-
   ChatPage,
   UndercoverCharacterPage,
-
   CameraPage,
   ProfileNameImgPage
   
@@ -210,7 +195,6 @@ export function providers() {
     Network,
     TwitterConnect,
     NativeGeocoder,
-
     SplashScreen,
     Push,
     StatusBar,
@@ -229,7 +213,8 @@ export function providers() {
     AppAvailability,
 	ImagePicker,
 	WebView,
-    Places
+    Places,
+	SMS,
     // Keep this to enable Ionic's runtime error handling during development
   ];
 };

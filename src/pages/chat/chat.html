@@ -162,9 +162,9 @@
                 <div class="message-container false isLobby">
             		<img (click)="goToProfile(message.user_id, message.public, message.user.role_name)" (press)="goToProfile(message.user_id, message.public, message.user.role_name)" src="{{loadImage(message)}}" class="chat-avatar conversation" (error)="chatPrvd.updateAvatarUrl($event)">
 
-                    <span class="chat-bubbles-box" *ngIf="chatPrvd.areaLobby">
+                    <!-- <span class="chat-bubbles-box" *ngIf="chatPrvd.areaLobby">
                         <ion-icon ios="ios-chatbubbles-outline" md="ios-chatbubbles-outline"></ion-icon> : 8
-                    </span>
+                    </span> -->
 
                     <div class="message-item">
 					  <div class="messageDiv">
@@ -289,8 +289,6 @@
 	<p *ngIf="accessDeniedTip" class="no-data-message abs">Need location to show you what’s nearby!</p>
 	
     <div class="message 456" *ngFor="let message of chatPrvd.postMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      
-	 
 	  
 	  <div class="message-container false" 
 	  *ngIf="!message.social && !chatPrvd.areaLobby && !message.undercover && !chatPrvd.isLobbyChat && isUndercover && message.messageable_type == 'Network' && message.conversation_status != 'REJECTED'">
@@ -301,9 +299,9 @@
 				
         <span class="message-count conversasion-cnt" *ngIf="!chatPrvd.isLobbyChat && chatPrvd.getState() == 'undercover' && message.messageable_type=='Network'">1</span>
 
-        <span class="chat-bubbles-box" *ngIf="!chatPrvd.areaLobby">
+        <!-- <span class="chat-bubbles-box" *ngIf="!chatPrvd.areaLobby">
             <ion-icon ios="ios-chatbubbles-outline" md="ios-chatbubbles-outline"></ion-icon> : 8
-        </span>
+        </span> -->
 
         <p class="message-item">
 
@@ -324,8 +322,9 @@
             {{ message.user.role_name }}
             </ng-container>
           </span>
-
-          <span class="message-date">{{ message.dateStr }}</span>
+		
+		<!-- {{message.user.name}} -->
+          <span class="message-user"><data class="message-date">{{ message.dateStr }}</data> {{ message.place_name}}</span>
 
           <span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
             <a *ngIf="message.post_url" href="#" (click)="openLinkInBrowser(message)" class="open-post" >	
@@ -578,9 +577,9 @@
 		(error)="chatPrvd.updateAvatarUrl($event)">
 
 
-		<span class="chat-bubbles-box" *ngIf="chatPrvd.areaLobby">
+		<!-- <span class="chat-bubbles-box" *ngIf="chatPrvd.areaLobby">
 			<ion-icon ios="ios-chatbubbles-outline" md="ios-chatbubbles-outline"></ion-icon> : 8
-		</span>
+		</span> -->
 
 		<p class="message-item">
 			<span class="username" *ngIf="message.user" (click)="openConversationLobbyForPinned(message)" (tap)="openConversationLobbyForPinned(message)">
@@ -654,9 +653,9 @@
         </span> -->
 		
 		<!-- && chatPrvd.getState() == 'area' -->
-        <span class="chat-bubbles-box" *ngIf="!chatPrvd.areaLobby">
+        <!-- <span class="chat-bubbles-box" *ngIf="!chatPrvd.areaLobby">
             <ion-icon ios="ios-chatbubbles-outline" md="ios-chatbubbles-outline"></ion-icon> : 8
-        </span>
+        </span> -->
 
         <p class="message-item">
 
@@ -679,8 +678,9 @@
             {{ message.user.role_name }}
             </ng-container>
           </span>
-
-          <span class="message-date">{{ message.dateStr }}</span>
+		  <!-- {{ message.user.name}} -->
+		  <span class="message-user"><data class="message-date">{{ message.dateStr }}</data> {{ message.place_name}}</span>
+		  
 
           <span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
             <a *ngIf="message.post_url" href="#" (click)="openLinkInBrowser(message)" class="open-post" >	

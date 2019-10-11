@@ -20,9 +20,12 @@ page-hold {
     }
     .text-bk3 {
       color: #5b87aa;
-      font-size: 15px;
+      font-size: 17px;
       font-weight: bold;
     }
+	.col{
+	  padding: 110px 5px;
+	}
   }
 
   .footer{
@@ -54,9 +57,16 @@ page-hold {
 		top: 13px;
 		color: #5b87aa;
 		padding: 0 30px;
-		text-align: justify;
-		font-size: 12px;
-		margin-bottom: 18px;
+		text-align: center;
+		font-size: 20px;
+		margin-bottom: -15px;
+		font-weight: 700;
+	}
+	.skip-local{
+		color: #5b87aa;
+		background: transparent;
+		float:right;
+		font-weight: 500;
 	}
   }
   

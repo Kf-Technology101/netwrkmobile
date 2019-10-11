@@ -119,23 +119,15 @@
       </ion-slides>
     </ion-col>
   </ion-row>
-  <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left' && ownProfile">
+  <!-- <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left' && ownProfile">
     <p ion-text text-center color="white" class="broadcast-central-head">
       Broadcast central
     </p>
-  </ion-row>
-  <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left' && ownProfile"
+  </ion-row> -->
+  <!-- <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left' && ownProfile"
   class="connect" padding>
     <ion-col>
-      <!-- <button ion-button (click)="logoutFromTwitter()">Logout from twitter</button> -->
       <ion-row>
-        <!-- <ion-col class="fb" *ngIf="!socialPrvd.connect.facebook">
-          <button type="button" (click)="connectToFacebook()">
-            <ion-icon name="logo-facebook"></ion-icon>
-            Facebook
-          </button>
-        </ion-col> -->
-
         <div class="slide-container sl-facebook">
           <div [ngClass]="{'active': socialPrvd.connect.facebook}" class="toggle-el"
             (click)="socialPrvd.connectToFacebook()">
@@ -187,7 +179,7 @@
 
       </ion-row>
     </ion-col>
-  </ion-row>
+  </ion-row> -->
   <ng-container *ngIf="!posts || posts.length == 0">
     <p class="no-data-message">There are no posts yet</p>
   </ng-container>

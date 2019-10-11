@@ -3,7 +3,7 @@
         <ng-container>
             <ion-row class="loading bg-text" align-items-center>
                 <ion-col text-center>
-                    <h1 ion-text color="white">Hello, what are you wanting to do?</h1>
+                    <h1 ion-text color="white">What are you trying to do?</h1>
                 </ion-col>
             </ion-row>
         </ng-container>
@@ -13,7 +13,7 @@
 		<ng-container>
             <ion-row class="loading bg-text" align-items-center>
                 <ion-col text-center>
-                    <h1 ion-text>Who should it be sent to?</h1>
+                    <h1 ion-text>Fuego, I’ll delete it in 1 days if no one can kick it. Who should I send it to?</h1>
                 </ion-col>
             </ion-row>
         </ng-container>
@@ -26,14 +26,19 @@
 	<div class="chat-container visible">
 		<div>
 			<p>I want to <button (tap)="show_activity()" class="location-btn">{{activitySelected}}</button></p>		
-			<p>At <button class="location-btn" (tap)="select_loaction()">{{locationSelected}}</button></p> 
+			<p *ngIf="locationSelected != ''">At 
+				<button class="location-btn" (tap)="select_loaction()" >{{locationSelected}}</button> 
+				<button class="remove-location" (tap)="remove_loaction()">X</button>
+			</p> 
+			<p *ngIf="locationSelected == ''" class="flicker_me">At 
+				<button class="location-btn flicker_loc" (tap)="select_loaction()" >+</button> 
+			</p> 
 		</div>
 	</div>
 </div>
 
 <div *ngIf="showContactsStep" class="contacts-div">
-	<div class="chat-container visible">
-	
+	<div class="chat-container visible">	
 		<div class="error" *ngIf="error_txt != ''">{{error_txt}}</div> 
 		<div class="container-title">
 			Communities 
@@ -88,8 +93,7 @@
 		</ng-container>
 	</div>
 </div>
-
-		
+	
 <div class="virtual-custom-scroll-wrapper" [ngStyle]="{'opacity': showActivitiesContainer && !showContactsStep?'1':'0'}">
 	<div class="virtual-custom-scroll-container">  
 		<ion-scroll [virtualScroll]="activity" approxItemHeight="3px" class="activity-list"> 
@@ -100,11 +104,7 @@
 	</div>
 </div>
 
-
-
 </ion-content>
-
- 
 
 <ion-footer *ngIf="!showActivitiesContainer">
 	<button class="save-btn" (tap)="showContacts()" *ngIf="!showContactsStep">
@@ -125,6 +125,5 @@
 	<button ion-button color="bk" class="back-btn" outline (tap)="goToLanding()" *ngIf="showContactsStep">
 	   Back
 	</button>
-	
 	
 </ion-footer>

@@ -1,5 +1,6 @@
 import { Component,ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams,Events,AlertController } from 'ionic-angular';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 // Pages
 import { SignUpPage } from '../sign-up/sign-up';
@@ -70,10 +71,10 @@ export class LogInPage {
     public keyboard: Keyboard,
     private storage: LocalStorage,
     private alertCtrl: AlertController,
-    private gps: Gps
+    private gps: Gps,
+	private push: Push
   ) {
-	console.log('login page');
-    this.textStrings.login = 'Unable to login. Please check your account information and try again.';
+	this.textStrings.login = 'Unable to login. Please check your account information and try again.';
     this.textStrings.fb = 'Unable to login with Facebook.';
     this.textStrings.require = 'Please fill all fields';
 	/* this.gps.getMyZipCode(true).then(res => {
@@ -114,13 +115,18 @@ export class LogInPage {
 
   doLogin(form:any) {
     if (form.invalid) {this.tools.showToast(this.textStrings.require); return;}
-
     this.tools.showLoader();
     this.authPrvd.login(this.account).map(res => res.json()).subscribe(resp => {
-     
+	  this.push.hasPermission().then((res: any) => {
+		if (res.isEnabled) {
+		  // this.tools.showToast('We have permission to send push notifications');
+		} else {
+		  this.tools.showToast("Don't you want to get updates from friends? Please turn them on in settings to get alerts, don’t miss out!");
+		}
+	  });
       if (resp.tou_accepted) {
-          // this.tools.pushPage(HoldScreenPage);
-          this.tools.pushPage(ChatPage);
+        // this.tools.pushPage(HoldScreenPage);
+		this.tools.pushPage(ChatPage);
       } else if (!resp.tou_accepted &&
         typeof resp.tou_accepted == 'boolean'){
         this.termsAlertShow('form', resp.id);
@@ -217,6 +223,11 @@ export class LogInPage {
     }, err => console.error(err));
     // console.log('[log-in] did enter');
     let mainBtn:any;
+	let authType = this.authPrvd.getAuthType();
+	let authData = this.authPrvd.getAuthData();
+	if (authType && authData) {
+		this.tools.pushPage(ChatPage);
+	}
     setTimeout(() => {
       mainBtn = <HTMLElement>document.getElementById('main-btn');
       this.controls.hidden = true;
@@ -229,8 +240,6 @@ export class LogInPage {
     }, 1);
     setTimeout(() => {
       this.storage.rm('facebook_connected');
-      //this.storage.rm('auth_data');
-      //this.storage.rm('auth_type');
       this.storage.rm('social_auth_data');
       this.storage.rm('current_network');
       this.controls.hidden = false;

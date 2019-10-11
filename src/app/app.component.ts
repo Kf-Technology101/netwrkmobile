@@ -52,7 +52,7 @@ export class MyApp {
 		private chatPrvd: Chat,
         private gps: Gps
         ) {
-		platform.registerBackButtonAction(() => {
+		this.platform.registerBackButtonAction(() => {
             this.toolsPrvd.doBackButton();
             return true;
         });
@@ -79,7 +79,7 @@ export class MyApp {
 		}); 
        
 
-        platform.ready().then(() => {
+        this.platform.ready().then(() => {
             this.authPrvd.removeDeviceRegistration();
             this.pushSetup();
 			// this.gps.getMyZipCode(true);
@@ -102,6 +102,7 @@ export class MyApp {
         };
 
         const pushObject: PushObject = this.push.init(options);
+		
         pushObject.on('notification').subscribe((notification: any) => {
 			this.toolsPrvd.showSplashScreen();
 			
@@ -154,9 +155,7 @@ export class MyApp {
 	}
 
     private goToPage():void {
-		console.log('=======app goToPage======')
 		this.app.getRootNav().setRoot(ChatPage);
-        
         this.toolsPrvd.hideSplashScreen();
     }
 

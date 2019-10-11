@@ -1,5 +1,6 @@
 import { Component, NgZone, ViewChild, ElementRef } from '@angular/core';
 import { NavController, NavParams, Platform } from 'ionic-angular';
+import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
 import { Slides } from 'ionic-angular';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -72,12 +73,20 @@ export class HoldScreenPage {
     public authPrvd: Auth,
     elRef: ElementRef,
     private storage: LocalStorage,
+	private push: Push,
     public splash: SplashScreen
   ) {
 		this.users = this.authPrvd.getAuthData();
 		// this.gpsPrvd.getMyZipCode(true);
-		platform.ready().then(() => {
-		  this.registerDevice();
+		this.platform.ready().then(() => {
+		  this.registerDevice();		  
+		  this.push.hasPermission().then((res: any) => {
+			if (res.isEnabled) {
+			  // this.toolsPrvd.showToast('We have permission to send push notifications');
+			} else {
+			  this.toolsPrvd.showToast("Don't you want to get updates from friends? Please turn them on in settings to get alerts, don’t miss out!");
+			}
+		  });
 		});
 	}
 

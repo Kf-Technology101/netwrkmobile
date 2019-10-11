@@ -370,8 +370,8 @@ page-network-no {
     }
 	
 	.conversasion-cnt{
-	    top: 0px;
-		left: 26px;
+	    // top: 5px;
+		left: 30px;
 	}
 	
     .message-box {
@@ -1119,11 +1119,20 @@ page-network-no {
 			display: block;
           }
 		  .chat-avatar{
-			top: 5%;
+			// top: 5%;
 			margin-left: 0px; 
 			left: 0px;
 		  }
         }
+		
+		.message-container.false{
+		 // padding-left: 75px !important;
+		  /* .chat-avatar{
+			width: 68px;
+			height: 68px;
+			margin-left: 3px;
+		  } */
+		}
 
 		.active-cl:after {
 			content: "";
@@ -1184,11 +1193,22 @@ page-network-no {
 			display: block;
             /* margin-bottom: 12px; */
           }
-          .message-date {
+		  .message-date {
             font-size: 12px;
             color: #7a7a7a;
 			display: block;
           }
+		  
+		  .message-user{
+			display: inline-flex;
+			font-size: 13px;
+			.message-date {
+				/* margin-top: 2px;
+				margin-left: 4px; */
+				margin-right: 5px;
+			}
+		  }
+          
           .shared-status {
             display: block;
             width: 100%;

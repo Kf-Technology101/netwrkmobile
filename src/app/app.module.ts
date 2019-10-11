@@ -89,7 +89,7 @@ import { Crop } from '@ionic-native/crop';
 import { AppAvailability } from '@ionic-native/app-availability';
 import { PhotoViewer } from '@ionic-native/photo-viewer';
 import { NativeGeocoder } from '@ionic-native/native-geocoder';
-import { SMS } from '@ionic-native/sms/ngx';
+// import { SMS } from '@ionic-native/sms/ngx';
  
 // sockets
 import { Ng2CableModule } from 'ng2-cable';
@@ -214,7 +214,7 @@ export function providers() {
 	ImagePicker,
 	WebView,
     Places,
-	SMS,
+	//SMS,
     // Keep this to enable Ionic's runtime error handling during development
   ];
 };

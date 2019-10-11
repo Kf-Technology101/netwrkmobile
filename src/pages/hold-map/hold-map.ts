@@ -68,7 +68,6 @@ declare var google;
   templateUrl: 'hold-map.html',
 })
 
-
 export class HoldMapPage {
   @HostBinding('class') colorClass = 'transparent-background';
 
@@ -193,7 +192,22 @@ export class HoldMapPage {
 	private chatPrvd: Chat,
   ){
 	plt.ready().then(() => {
-		this.initMap();  
+		this.initMap(); 
+		this.initAutocomplete();
+			
+		/* this.gpsPrvd.getMyZipCode().then(zip => {
+			this.initMap();  
+		},err=>{
+			if(err.PERMISSION_DENIED == 1 || err.PositionError.code == 1){
+				// this.goToHoldPage(false);
+				this.gpsPrvd.locationAccessPermission = false;
+				// this.toolsPrvd.showToast('We require your current location. Please share your location.');
+			}else{
+				this.toolsPrvd.showToast('Something went wrong. Please try later.');
+			}
+			this.initMap(); 
+			this.initAutocomplete();			
+		}); */
 	});  
   }
 
@@ -216,33 +230,91 @@ export class HoldMapPage {
 			disableDefaultUI: true,
 			fullscreenControl: false
 		});
+		
+		if(this.storage.get('last_hold_location_details') && this.storage.get('last_hold_location_details') != '' && this.storage.get('last_hold_location_details') != 'undefined'){
+			let place_name = this.storage.get('last_hold_location_details');
+			let data = {
+				lat: parseFloat(place_name.loc.lat),
+				lng: parseFloat(place_name.loc.lng)
+			};
+			this.map.setCenter(new google.maps.LatLng(data.lat, data.lng));
+		}else{
+			if(this.gpsPrvd.coords.lat!=null && this.gpsPrvd.coords.lng!=null){
+				this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
+				.map(res => res.json()).subscribe(res => {
+					let icon = {
+						url:'assets/icon/blue_dot.png'
+					};
 
-		this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng)
-        .map(res => res.json()).subscribe(res => {
-			let icon = {
-                url:'assets/icon/blue_dot.png'
-            };
+					let marker = new google_maps.Marker({
+						map: this.map,
+						position: res.results[0].geometry.location,
+						icon: icon
+					});
+				}, err => {
+					console.log('[google address] error:', err);
+				});
 
-            let marker = new google_maps.Marker({
-                map: this.map,
-                position: res.results[0].geometry.location,
-                icon: icon
-            });
-        }, err => {
-            console.log('[google address] error:', err);
-        });
-
-        this.map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
+				this.map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
+			}else{
+				this.getAndUpdateUndercoverMessages();
+			}
+		}
 		this.initAutocomplete();
+		
 	});
 	setTimeout(function() { google.maps.event.trigger(this.map, 'resize') }, 600);	
   }
   
+  private getAndUpdateUndercoverMessages() {
+		this.chatPrvd.postMessages = [];
+	    this.chatPrvd.getMessages(false, this.chatPrvd.postMessages).subscribe(res => {
+			if (res) {
+				if (res.messages && res.messages.length > 0) {
+					if(this.chatPrvd.postMessages.length > 1){
+						for (let i in this.chatPrvd.postMessages) {
+							for (let j in res.messages) {
+							  if (this.chatPrvd.postMessages[i].id == res.messages[j].id) {
+								this.chatPrvd.postMessages.splice(i, 1);
+							  }
+							}
+						}
+					}
+					this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
+				}				
+				for (var i = 0; i < this.chatPrvd.postMessages.length; i++) {
+					let markerIcon = {
+						 url: '',
+						 scaledSize: new google.maps.Size(35, 40),
+						 origin: new google.maps.Point(0, 0),
+						 anchor: new google.maps.Point(0, 0)
+					};
+					let marker = {
+						map: this.map,
+						position: new google.maps.LatLng(this.chatPrvd.postMessages[i].lat, this.chatPrvd.postMessages[i].lng),
+						icon: markerIcon,								
+						id: i,
+						message: this.chatPrvd.postMessages[i],
+						title: ''
+					}; 
+					
+					if(this.chatPrvd.postMessages[i].messageable_type == "Network"){
+						this.mapMarkers.push(marker);
+					}
+					
+				}
+			this.addMarker();
+            }              
+		}, err => {
+			this.toolsPrvd.hideLoader();
+		});
+     
+  }
   
-  private initAutocomplete(): void {	 
+  private initAutocomplete(): void {
 	this.addressElement = this.searchbar.nativeElement.querySelector('.searchbar-input');
 	this.searchModel = "";
-    this.createAutocomplete(this.addressElement).subscribe((place) => {		
+    this.createAutocomplete(this.addressElement).subscribe((place) => {
 	  this.search = false;
 	  let data = {
 		  lat: place.geometry.location.lat(),
@@ -250,7 +322,33 @@ export class HoldMapPage {
 	  }
 	  this.storage.set('custom_coordinates', data);
 	  this.gpsPrvd.customAddress = true;
+
+	  this.gpsPrvd.coords = data;
 	  this.gpsPrvd.getZipCode().then(zip => {
+		this.gpsPrvd.customAddress = false;
+		let zipcode = zip;
+		let loc = {
+		  lat: place.geometry.location.lat(),
+		  lng: place.geometry.location.lng(),
+		  place_name: place.name,
+		  zipcode: zipcode
+		}
+		
+		this.gapi.init.then((google_maps: any) => {
+			this.map = new google.maps.Map(this.mapElement.nativeElement, {
+			   zoom : 15,
+			   center: data,
+			   styles:this.mapStyle,
+			   disableDefaultUI: true,
+			   fullscreenControl: false			   
+			});		
+		});
+
+		this.setCustomAddressOnMap(loc);
+	  });	
+		
+	  
+	  /*this.gpsPrvd.getZipCode().then(zip => {
 		this.gpsPrvd.customAddress = false;
 		let zipcode = zip;
 		let loc = {
@@ -274,7 +372,8 @@ export class HoldMapPage {
 	  },err => {
 		console.log('err::: ',err);  
 	  });
-			
+	  */
+	  
     });
   }  
   
@@ -321,8 +420,7 @@ export class HoldMapPage {
   
   
   public addMarker():void {
-	 this.markerLatLng = [];
-	
+	 this.markerLatLng = [];	
 	 for (var j = 0; j < this.mapMarkers.length; j++) {
 		let loc = this.mapMarkers[j].position;
 		let data = {
@@ -355,7 +453,7 @@ export class HoldMapPage {
 		}
 		
 	 } 
-	 // let bounds  = new google.maps.LatLngBounds();
+	 let bounds  = new google.maps.LatLngBounds();
 	 for(var j = 0; j < this.markerLatLng.length; j++) {
 		if(!this.mapMarkers[this.markerLatLng[j].id].placedMarker || this.mapMarkers[this.markerLatLng[j].id].placedMarker == undefined){
 			 let newMarker = new google.maps.Marker(this.mapMarkers[this.markerLatLng[j].id]);
@@ -371,8 +469,8 @@ export class HoldMapPage {
 			 this.mapMarkers[this.markerLatLng[j].id].placedMarker = true;
 			 newMarker.setMap(this.map);
 		}		
-		// let position = this.mapMarkers[this.markerLatLng[j].id].position;
-		// bounds.extend(new google.maps.LatLng(position.lat(), position.lng()));
+		let position = this.mapMarkers[this.markerLatLng[j].id].position;
+		bounds.extend(new google.maps.LatLng(position.lat(), position.lng()));
 	 }
 	 
 	 let self = this;
@@ -387,9 +485,8 @@ export class HoldMapPage {
 			} 
 		}				
 	 });
-		
-	// this.map.fitBounds(bounds);       // auto-zoom
-	// this.map.panToBounds(bounds);     // auto-center
+	this.map.fitBounds(bounds);       // auto-zoom
+	this.map.panToBounds(bounds);     // auto-center
   }
   
   public clearMarkers():void {
@@ -398,8 +495,8 @@ export class HoldMapPage {
           this.placedMarkersArr[i].setMap(null);
       }
       this.placedMarkersArr.length = 0;
-	  this.placedMarkersArr = []
-	  this.mapMarkers = []
+	  this.placedMarkersArr = [];
+	  this.mapMarkers = [];
   }
   
   public nearbyPlace(addressDetails:any){

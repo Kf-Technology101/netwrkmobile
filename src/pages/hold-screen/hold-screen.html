@@ -1,4 +1,4 @@
-<ion-content no-bounce>
+<!-- <ion-content no-bounce>
     <ion-row class="hold-text">
         <ion-col text-center>
               <p ion-text class="text-bk1">
@@ -11,11 +11,35 @@
 
 <ion-footer>
     <button ion-button color="bk" class="main-action-btn medium transparent" outline (press)="showNetwrklist()" (tap)="showNetwrklist()">
-        <!-- <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon> -->
     </button>
 	
 	<div class="tail-bottom">
         We will need your contacts so you can send a quick and easy invite to anyone. We do not save them nor is it possible for us to share them.
     </div>
 	
+</ion-footer>
+ -->
+ 
+<ion-content no-bounce>
+    <ion-row class="hold-text">
+        <ion-col text-center>
+		  <p ion-text class="text-bk3">
+			Tired of sending out awkward messages to see who can kick it? Let me send them for you.
+		  </p>              
+		  <p ion-text class="text-bk3">
+			I will just need your contacts for choosing who to send it to.
+		  </p>              
+        </ion-col>
+    </ion-row>
+</ion-content>
+
+<ion-footer>
+    <button ion-button color="bk" class="main-action-btn medium transparent" outline (press)="showNetwrklist()" (tap)="showNetwrklist()">
+    </button>
+	<p class="tail-bottom">
+		Hold down to send an alert
+	</p>
+	<button ion-button class="skip-local" (tap)="goToLanding()">
+		Skip
+	</button>    
 </ion-footer>

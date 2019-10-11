@@ -151,13 +151,12 @@ export class Gps {
 			}else if(!this.locationAccessPermission){
 				reject(resp); 
 			}else{
+				console.log('localStorage');
 				if(this.localStorage.get('local_coordinates')){
 					let strorageLocation = this.localStorage.get('local_coordinates');
 					this.coords.lat = parseFloat(strorageLocation.lat);
 					this.coords.lng = parseFloat(strorageLocation.lng);
-					console.log(strorageLocation.lat);
-					console.log(strorageLocation.lng);
-					
+										
 					if(strorageLocation.lat != null && strorageLocation.lng != null){
 						this.getZipCode().then(zip => {
 						  this.zipCode = zip;
@@ -167,19 +166,11 @@ export class Gps {
 						reject(resp)
 					}
 				}else{
-					this.getZipCode().then(zip => {
-						this.zipCode = zip;
-						resolve({ zip_code: zip });
-					}).catch(err => reject(err));
+					reject(resp); 
 				}
 			} 
 		}, 
 		err => { 
-		console.log('inside err watch');
-			this.getZipCode().then(zip => {
-			  this.zipCode = zip;
-			  resolve({ zip_code: zip });
-			}).catch(err => reject(err));
 			reject(err);
 		});
 	  }

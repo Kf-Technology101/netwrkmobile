@@ -1,8 +1,8 @@
 import { Component, NgZone, ViewChild, ElementRef } from '@angular/core';
-import { ViewController,NavController, NavParams, Platform, ModalController, App } from 'ionic-angular';
+import { ViewController,NavController, NavParams, Platform, ModalController, App,AlertController } from 'ionic-angular';
 // import { Contacts, ContactFieldType, ContactFindOptions } from 'ionic-native';
-import { SMS } from '@ionic-native/sms/ngx';
-
+// import { SMS } from '@ionic-native/sms/ngx';
+import { SocialSharing } from '@ionic-native/social-sharing';
 //pages
 import { UndercoverCharacterPage } from '../../pages/undercover-character/undercover-character';
 import { ChatPage } from '../../pages/chat/chat';
@@ -110,7 +110,8 @@ export class NetwrklistPage {
 	public contactsPrvd: ContactsProvider,
 	private keyboard: Keyboard,
     elRef: ElementRef,
-	public sms: SMS
+	public socialSharing: SocialSharing,
+	private alertCtrl: AlertController
   ) {
 	  if(this.navParams.get('message')){
 		this.newlyAdded = this.navParams.get('message');
@@ -138,7 +139,7 @@ export class NetwrklistPage {
 		this.loadActivity();
 		this.user = this.authPrvd.getAuthData();
 
-		this.gpsPrvd.getMyZipCode();
+		// this.gpsPrvd.getMyZipCode();
 		this.storage.rm('local_coordinates');
 		let loc = {
 		  lat : parseFloat(this.gpsPrvd.coords.lat),
@@ -152,13 +153,14 @@ export class NetwrklistPage {
   public loadActivity(){
 	return new Promise(resolve => {
 		this.activity = [];
-		this.activity.push({itemName: "Hang out",itemId:'1'});
-		this.activity.push({itemName: "Go out",itemId:'2'});
-		this.activity.push({itemName: "Grab food",itemId:'3'});
-		this.activity.push({itemName: "Ball",itemId:'4'});
-		this.activity.push({itemName: "Game",itemId:'5'});
-		this.activity.push({itemName: "Jam",itemId:'6'});  
-		this.activity.push({itemName: "Custom",itemId:'7'});
+		this.activity.push({itemName: "do something",itemId:'1'});
+		this.activity.push({itemName: "Hang out",itemId:'2'});
+		this.activity.push({itemName: "Go out",itemId:'3'});
+		this.activity.push({itemName: "Grab food",itemId:'4'});
+		this.activity.push({itemName: "Ball",itemId:'5'});
+		this.activity.push({itemName: "Game",itemId:'6'});
+		this.activity.push({itemName: "Jam",itemId:'7'});  
+		this.activity.push({itemName: "Surf",itemId:'8'});
 		resolve(true);        
 	});           
 	
@@ -170,7 +172,7 @@ export class NetwrklistPage {
   }
   
   public select_activity(item){
-	if(item.itemId == 7){
+	if(item.itemId == 8){
 		this.storage.set('last-activity', item);
 		// popup text box for custom input
 		this.showActivitiesContainer = false;
@@ -195,22 +197,45 @@ export class NetwrklistPage {
 		this.activitySelected = item.itemName;
 		this.showActivitiesContainer = false;	
 	}
-	
-	
   }
   
   public select_loaction(){
 	this.toolsPrvd.pushPage(HoldMapPage);
   }
   
+  public remove_loaction(){
+	this.storage.set('last_hold_location_details','');
+	this.locationSelected = '';
+  }
   
   public showContacts(){     
 	if(this.storage.get('last-activity') && this.storage.get('last-activity')!='' && this.storage.get('last_hold_location_details') && this.storage.get('last_hold_location_details')!=''){
 		this.showContactsStep = true; 
 		this.toolsPrvd.showLoader();
 		this.showMessages();
+	}else if(this.storage.get('last-activity') && this.storage.get('last-activity')!=''){
+		let alert = this.alertCtrl.create({
+			subTitle: 'Do you wants to create private group?',
+			buttons: [{
+			  text: 'No', 
+			  role: 'cancel',
+			  handler: () => {
+				alert.dismiss();
+			  }
+			}, {
+			  cssClass: 'active',
+			  text: 'Yes',
+			  handler: () => {
+				alert.dismiss();
+				this.toolsPrvd.showLoader();
+				this.createPrivateGroup(); 
+			  }
+			}]
+		});
+		alert.present();		  
+		
 	}else{
-		this.toolsPrvd.showToast('Select activity and location to share.');
+		this.toolsPrvd.showToast('Select activity to share.'); // and location  
 	}	
   }
   
@@ -317,7 +342,7 @@ export class NetwrklistPage {
 	}
   }
   
-  public sendContactsMessage(message:any){	
+  public sendContactsMessage(message:any){	 
 	let shareLink = '';
 	if (this.platform.is('ios')){
 		shareLink = 'netwrkapp://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
@@ -325,67 +350,90 @@ export class NetwrklistPage {
 		shareLink = 'https://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
 	}
 	
-	let shareMessage =  this.activitySelected+' at '+this.locationSelected+'? '+this.txtIn.value.trim()+' 1 tap reply via '+shareLink;
-	// this.toolsPrvd.showToast('123');
-	let contacts = ''; //[]
+	// let shareMessage =  "Yo, it's your local assistant net. "+this.activitySelected+' at '+this.locationSelected+' '+this.txtIn.value.trim()+' 1 tap reply via '+shareLink;
+	this.user = this.authPrvd.getAuthData();
+	let shareMessage =  "Yo, it's your local assistant net. "+this.user.name+' wants to '+this.activitySelected+' 1 tap reply via '+shareLink; 
+	
+	let contacts = ''; //[]   
 	for(let i = 0;i<this.selectedContacts.length;i++){		
 		/* let checkedObj = {
 		  name: this.selectedContacts[i].name.formatted,
 		  phone: this.selectedContacts[i].phoneNumbers[0].value
 		}
 		contacts.push(checkedObj); */
-		
-		if(contacts != ''){
-			contacts = contacts + ',' + this.selectedContacts[i].phoneNumbers[0].value;
-		}else{
+		if(contacts == ''){
 			contacts = this.selectedContacts[i].phoneNumbers[0].value;
-		}		
+		}else{
+			contacts = contacts + ',' + this.selectedContacts[i].phoneNumbers[0].value;
+		} 
 	}
-	
-	// this.toolsPrvd.showToast('456');
 	this.checkContactFlag = true; 
-	var options = {
-	  replaceLineBreaks: false,
-	  android: {
-		intent: 'INTENT'  // send SMS with the native android SMS messaging
-		//intent: '' // send SMS without opening any other app
-	  }
-	};
-	// this.toolsPrvd.showToast('789');
-	
-	/*this.platform.ready().then(() => {
-		setTimeout(function() {
-			this.sms.send('9762860473,', 'Hello world', options).then(succ=>{
-				this.toolsPrvd.showToast('success');
-			},err=>{
-				this.toolsPrvd.showToast('err');
-			});
-			this.toolsPrvd.showToast('000');
-			this.goBackSuccess(message);
-			this.toolsPrvd.hideLoader();
-		}, 50);
-	});*/
-	
-	
-	// this.sms.send(contacts, shareMessage).then(()=>{
-	/* this.sms.send('9762860473', 'Message test').then(()=>{
-		this.toolsPrvd.showToast('SMS sent successfully');
-		this.checkContactFlag = true; 
-		this.goBackSuccess(message);
-		this.toolsPrvd.hideLoader();
-	},()=>{
-		this.toolsPrvd.showToast('SMS sent failed');
-		this.toolsPrvd.hideLoader();
-	}); */
-    
-	this.contactsPrvd.sendSMS(contacts,shareMessage).subscribe(res => {
+	this.socialSharing.shareViaSMS(shareMessage,contacts);
+	this.goBackSuccess(message);
+	this.toolsPrvd.hideLoader();
+	/* this.contactsPrvd.sendSMS(contacts,shareMessage).subscribe(res => {
 	  this.checkContactFlag = true; 
 	  this.goBackSuccess(message);
 	  this.toolsPrvd.hideLoader();
-	}, err => this.toolsPrvd.hideLoader());
-	
+	}, err => this.toolsPrvd.hideLoader()); */
   }
-    
+  
+  private createPrivateGroup(){
+	  this.user = this.authPrvd.getAuthData();
+	  let publicUser: boolean;
+      let images = [];
+      let messageParams: any = {};
+      let message: any = {};
+	  let msgrequest_type = '';
+	  let textInput = '';
+	  	
+	  let messageable_type: any = null;
+	  let title_desc = this.user.name+' wants to '+this.activitySelected;
+      messageParams = {
+			messageId		 : null,
+			undercover		 : true,
+			text			 : title_desc,
+			text_with_links	 : title_desc,
+			title			 : this.activitySelected,
+			user_id			 : this.user ? this.user.id : 0,
+			role_name		 : 'Private Group',			
+			images			 : [],	
+			video_urls		 : [],
+			public			 : false,
+			place_name		 : '',
+			is_emoji		 : false,
+			locked			 : false,
+			password		 : null,
+			hint			 : null,
+			expire_date		 : '',
+			timestamp		 : Math.floor(new Date().getTime()/1000),
+			line_avatar		 : []
+      };
+	  this.gpsPrvd.coords.lat = null;
+	  this.gpsPrvd.coords.lng = null;
+      
+      message = Object.assign(message, messageParams);
+      message.image_urls = [];
+      message.isTemporary = false;
+      message.temporaryFor = 0;
+	  
+	  if ((message.text && message.text.trim() != '') ||
+          (message.images && message.images.length > 0) ||
+          (message.social_urls && message.social_urls.length > 0)) {
+			this.chatPrvd.sendMessage(messageParams).then(res => {
+			  message.id = res.id;
+			  message.user_id = this.user.id;
+			  message.user = this.user;
+			  this.chatPrvd.getMessageIDDetails(res.id).subscribe(result => {
+				this.toolsPrvd.pushPage(ChatPage,{message:result.message});
+			  });
+			  this.toolsPrvd.hideLoader();
+			}).catch(err => {
+			  this.toolsPrvd.hideLoader();
+			});     
+      }
+  }
+  
   private postMessage(emoji?: string, params?: any) {
 	try {
 		let publicUser: boolean = true;
@@ -401,21 +449,23 @@ export class NetwrklistPage {
 		} */
 		
 		this.user = this.authPrvd.getAuthData();
-		let shareMessage =  this.activitySelected+' at '+this.locationSelected+'? '+this.txtIn.value.trim();
+		
+		// let shareMessage =  this.activitySelected+' at '+this.locationSelected+'? '+this.txtIn.value.trim();
+		let shareMessage =  this.user.name+' wants to '+this.activitySelected;
+		
 		let selectedCommunityIdsArr:any = [];
 		for(let i=0; i < this.selectedCommunity.length; i++){
 			selectedCommunityIdsArr.push(this.selectedCommunity[i].id);
 		} 
 		let currentDate = moment(new Date());
 		let locDetails = this.storage.get('last_hold_location_details');
-		let place_name = locDetails.place_name;
+		let place_name = locDetails?locDetails.place_name:'';
 		this.chatPrvd.request_type = "LOCAL_MESSAGE";	
 		
-		this.gpsPrvd.coords.lat = parseFloat(locDetails.loc.lat);
-		this.gpsPrvd.coords.lng = parseFloat(locDetails.loc.lng);
+		this.gpsPrvd.coords.lat = locDetails?parseFloat(locDetails.loc.lat):null;
+		this.gpsPrvd.coords.lng = locDetails?parseFloat(locDetails.loc.lng):null;
 		
-		
-		let title = this.activitySelected+' at '+this.locationSelected;
+		let title = this.user.name+' wants to '+this.activitySelected;
 		
 		netwrkParams = {
 			messageId		 : null,
@@ -433,7 +483,7 @@ export class NetwrklistPage {
 			locked			 : false,
 			password		 : null,
 			hint			 : null,
-			expire_date		 : currentDate.add(48, 'hours'),
+			expire_date		 : currentDate.add(12, 'hours'),
 			timestamp		 : Math.floor(new Date().getTime()/1000),
 			line_avatar		 : []
 		};
@@ -443,6 +493,7 @@ export class NetwrklistPage {
 			message_ids 	 : selectedCommunityIdsArr,
 			text			 : shareMessage,
 			text_with_links	 : shareMessage,
+			title			 : title,
 			user_id			 : this.user ? this.user.id : 0,
 			role_name		 : this.user.role_name,
 			place_name		 : this.gpsPrvd.place_name,
@@ -454,7 +505,7 @@ export class NetwrklistPage {
 			locked			 : false,
 			password		 : null,
 			hint			 : null,
-			expire_date		 : currentDate.add(48, 'hours'),
+			expire_date		 : currentDate.add(24, 'hours'),
 			timestamp		 : Math.floor(new Date().getTime()/1000),
 			line_avatar		 : []			
 		};	
@@ -481,6 +532,7 @@ export class NetwrklistPage {
 			messageParams.text = shareMessage;
 			messageParams.text_with_links = shareMessage;
 			messageParams.conversation_line_id = message.id;
+			
 			if (params) Object.assign(messageParams, params);
 			this.chatPrvd.request_type = "CONV_REQUEST";
 			
@@ -509,7 +561,6 @@ export class NetwrklistPage {
   }
 	
   public goBackSuccess(message:any = {}){
-	// this.toolsPrvd.showToast('goBackSuccess return');
 	let successCase;
 	if(this.selectedCommunity.length > 0 && this.selectedContacts.length > 0){
 		successCase = 1;
@@ -526,8 +577,6 @@ export class NetwrklistPage {
 					this.toolsPrvd.pushPage(ChatPage,{message:res.message});
 					this.toolsPrvd.showToast('Message shared successfully');		
 				});
-				// this.toolsPrvd.pushPage(ChatPage,{message:message});	
-				// this.toolsPrvd.pushPage(NetwrklistPage);	
 			}
 		break;
 		case 2:
@@ -555,21 +604,19 @@ export class NetwrklistPage {
 	this.loadActivity();
 	if(this.storage.get('last_hold_location_details') && this.storage.get('last_hold_location_details')!='' && this.storage.get('last_hold_location_details')!='undefined'){
 		let locDetails = this.storage.get('last_hold_location_details');
-		let place_name = locDetails.place_name;
+		let place_name = locDetails?locDetails.place_name:'';
 		let input_string = place_name.indexOf(",")>-1?place_name.substring(0, place_name.indexOf(",")):place_name;
 		this.locationSelected = input_string;
 		let latlng = {
-		  lat : parseFloat(locDetails.loc.lat),
-		  lng : parseFloat(locDetails.loc.lng)
-		};
-		
+		  lat : locDetails?parseFloat(locDetails.loc.lat):'',
+		  lng : locDetails?parseFloat(locDetails.loc.lng):''
+		};		
 		this.storage.set('custom_coordinates', latlng);
-		this.storage.set('chat_zip_code', locDetails.zipcode);
-		this.storage.set('place_name', locDetails.place_name);
+		this.storage.set('chat_zip_code', locDetails?locDetails.zipcode:'');
+		this.storage.set('place_name', locDetails?locDetails.place_name:'');
 	}else{
-		this.locationSelected = "Location";
-	} 
-	
+		this.locationSelected = "";
+	} 	
 	if(this.storage.get('last-activity') && this.storage.get('last-activity')!='' && this.storage.get('last-activity')!='undefined'){
 		let item = this.storage.get('last-activity');
 		this.activitySelected = item.itemName;

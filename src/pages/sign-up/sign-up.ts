@@ -144,6 +144,13 @@ export class SignUpPage {
         date_of_birthday: form.controls.date_of_birthday.value,
         type: ''
       }
+	  if(this.activeStateId == 1){
+		if(this.signUpForm.controls['password'].valid && this.signUpForm.controls['confirm_password'].valid){
+			this.setMainBtnState({state: 'minimised', disabled: false});
+		}else{
+			this.setMainBtnState({state: 'hidden', disabled: true});
+		}  
+	  }	  
       if (this.activeStateId == 2) {
         this.setMainBtnState({state: 'normal', disabled: false});
         this.openDatePicker();

@@ -50,7 +50,7 @@ page-netwrklist {
 		
 		.scroll-content{
 		    margin-top: 80px !important;
-			margin-bottom: 85px !important;
+			margin-bottom: 75px !important;
 		}
 		
 		.chat-avatar{
@@ -69,8 +69,7 @@ page-netwrklist {
 		}
 		
 		.error{
-			color: #f95e64;
-			
+			color: #f95e64;			
 		}
 	  }
 	  &.connect-content{
@@ -119,7 +118,8 @@ page-netwrklist {
 			border-radius: 100px;
 			font-size: 35px;
 			font-weight: 500;
-			margin-left: 5px;		
+			margin-left: 5px;	
+			position: relative;
 		  }
 	  }
 	  
@@ -137,12 +137,24 @@ page-netwrklist {
 		height: 160px;
 		overflow: scroll;
 	  } 
-	  button.remove-location {
-		background: transparent;
-		color: #f95e64;
+	  span.remove-location {
+		background: #f95e64;
+		color: #fff;
 		font-size: 20px;
-		position: fixed;
+		position: absolute;
+		right: 3%;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		text-align: center;
+		padding: 4px 0;
+		top: -20%;
 	  }
+	  
+	  .location-span{
+		/* float: left; */
+	  }
+	  
 	  .flicker_me{
 		animation:blinkingText 4s infinite;
 	  }
@@ -156,10 +168,10 @@ page-netwrklist {
 		99%{    color: transparent; }
 	  } 
 	  @keyframes blinkingBtn{
-		0%{     color: #5b87aa; }
-		49%{    color: #5b87aa; }
-		50%{    color: #5b87aa; }
-		99%{    color: transparent; }
+		0%{     color: #5b87aa; background-color: #fff ;}
+		49%{    color: #5b87aa; background-color: #fff ;}
+		50%{    color: #5b87aa; background-color: #fff ;}
+		99%{    color: transparent; background-color: transparent;}
 	  } 	  
   }
   
@@ -201,20 +213,32 @@ page-netwrklist {
       margin: 0px !important;
     }
   }
+  
   .top-margin-20{
-		margin-top: 20px;
+	margin-top: 20px;
   }
 	
   .footer{
 	.save-btn{
-		margin-bottom: 100px !important;
+		/* margin-bottom: 91px;
 		border-radius: 50%;
 		width: 98px;
-        height: 98px;
+		height: 97px;
 		background-color: #fff;
 		img {
 			width: 100%;
-		}
+		} */
+		border-radius: 50%;
+		width: 98px;
+		height: 98px;
+		padding: 0; 
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 90px;
+		margin: auto;
+		border: 6px solid #fff;
+		background: transparent;
 	}
 	.bottom-margin{
 		margin-bottom: 40px;
@@ -245,20 +269,33 @@ page-netwrklist {
 	.main-action-btn{
 		width: 26px;
 		height: 42px;
-		/*width: 54px;
-		height: 90px;*/
 		border: 3px solid #5b87aa;
 		border-radius: 4px;
+		bottom: 22px;
 		 .ion-ios-arrow-forward-outline{
+			 font-size:25px;
+		 }
+		 .ion-ios-arrow-back-outline{
 			 font-size:25px;
 		 }
 	}
 	
 	.contacts-list-btn{
-		width: 54px;
+		/* width: 54px;
 		height: 90px;
 		border: 5px solid #5b87aa;
+		bottom: 50px; */
+		border: 5px solid #5b87aa;
 		bottom: 50px;
+		width: 54px;
+		height: 90px;
+		border-radius: 11px;
+		.ion-ios-arrow-forward-outline{
+			font-size:40px;
+		}
+		.ion-ios-arrow-back-outline{
+			font-size:40px;
+		}
 	}
 	
 	.main-action-btn.forward{

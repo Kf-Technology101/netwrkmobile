@@ -114,7 +114,7 @@
         <framework src="AVFoundation.framework" />
 
         <config-file target="*-Info.plist" parent="NSCameraUsageDescription">
-            <string>This app requires camera access to function properly.</string>
+            <string>In order to take a picture, we need access to camera.</string>
         </config-file>
 
         <config-file target="*-Info.plist" parent="NSPhotoLibraryUsageDescription">
@@ -181,7 +181,7 @@
         <framework src="AddressBook.framework" />
 
         <config-file target="*-Info.plist" parent="NSContactsUsageDescription">
-            <string>This app requires contacts access to function properly.</string>
+            <string>Contacts so you can send a quick alert to anyone.</string>
         </config-file>
 
         <header-file src="src/ios/Diagnostic_Contacts.h" />

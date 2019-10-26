@@ -3,7 +3,7 @@ page-hold-map {
 		background:transparent;
 		position:absolute;
 		padding:0px;
-		height: 100px;
+		height: 130px;
 		top: 15px;	
 		
 		.scroll-content{
@@ -36,11 +36,13 @@ page-hold-map {
 	}
 	
 	.back-btn{
-		color: #5b87aa;
-		background-color: transparent;
-		float:right;
-		margin-bottom:15px;
-		margin-left: 10px;
+		color: #fff;
+		background-color: #f95e64;
+		font-size: 20px;
+		margin: 5px 15%;
+		width: 70%;
+		border-radius: 100px;
+		padding: 3px 0;		
 	}
 	
 	

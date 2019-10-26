@@ -224,7 +224,7 @@ export class HoldMapPage {
 		};
 		this.coords = loc;
 		this.map = new google_maps.Map(this.mapElement.nativeElement, {
-			zoom: 15,
+			zoom: 17,
 			center: loc,
 			styles:this.mapStyle,
 			disableDefaultUI: true,

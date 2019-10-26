@@ -353,7 +353,7 @@ export class ChatPage implements DoCheck {
 	private push: Push,
 	private permission: PermissionsService
   ) {	
-	  // this.toolsPrvd.pushPage(CameraPage);	
+	  // this.toolsPrvd.pushPage(CameraPage);	 
 	  // this.storage.set('new_signUp',true);
   	  /* this.plt.ready().then(() => {
 		this.push.hasPermission().then((res: any) => {
@@ -3726,7 +3726,7 @@ console.log('openLobbyForLockedChecked::',message);
   
   /*Opens up the reply lobby for message*/
   public openReplyLobby(message){
-	if(message.messageable_type == "Room" && !this.isReplyMode && this.chatPrvd.getState() != 'area'){ 
+	if(message.messageable_type == "Room" && !this.isReplyMode){  //&& this.chatPrvd.getState() != 'area' message.conversation_status!='REQUESTED'
 			this.hideTextContainer = false;
 			this.replyMessage = message;
 			this.isReplyMode = true;
@@ -4442,4 +4442,36 @@ console.log('openLobbyForLockedChecked::',message);
 	
   }
   
+  public toggleLikes(message:any) {
+    let sendObj:any;
+    let sendUrl:string;
+    sendObj = { 
+			legendary: {
+			  user_id: this.user.id,
+			  message_id: message.id
+			}
+		};
+	sendUrl = 'legendary_likes';
+    this.chatPrvd.sendFeedbackData(sendUrl, sendObj).subscribe(res => {
+	  message.legendary_by_user = !message.legendary_by_user;
+      
+        this.toolsPrvd.sendPointData({
+          points: message.legendary_by_user ? 15:-15,
+          user_id: this.user.id
+        }).subscribe(results => {
+            if(message.legendary_by_user){
+                message.notification_type="legendary";
+                this.chatPrvd.sendNotification(message).subscribe(notificationRes => {
+                    console.log('Notification Res', notificationRes);
+                }, err => console.error(err));
+            }
+        });
+        
+      
+    });
+  
+  }
+  
+  
 }
+

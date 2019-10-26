@@ -209,11 +209,14 @@ export class NetwrklistPage {
   }
   
   public showContacts(){     
-	if(this.storage.get('last-activity') && this.storage.get('last-activity')!='' && this.storage.get('last_hold_location_details') && this.storage.get('last_hold_location_details')!=''){
+	if(this.storage.get('last-activity') && this.storage.get('last-activity')!=''){
 		this.showContactsStep = true; 
 		this.toolsPrvd.showLoader();
 		this.showMessages();
-	}else if(this.storage.get('last-activity') && this.storage.get('last-activity')!=''){
+	}else{
+		this.toolsPrvd.showToast('Select activity to share.'); // and location  
+	}
+	/* else if(this.storage.get('last-activity') && this.storage.get('last-activity')!=''){
 		let alert = this.alertCtrl.create({
 			subTitle: 'Do you wants to create private group?',
 			buttons: [{
@@ -234,9 +237,7 @@ export class NetwrklistPage {
 		});
 		alert.present();		  
 		
-	}else{
-		this.toolsPrvd.showToast('Select activity to share.'); // and location  
-	}	
+	} */	
   }
   
   
@@ -251,7 +252,7 @@ export class NetwrklistPage {
         if (res) {
 		  if (params.offset == 0) this.posts = [];
           for (let m of res.messages) {
-            m.date = this.toolsPrvd.getTime(m.created_at)
+            // m.date = this.toolsPrvd.getTime(m.created_at)
             this.posts.push(m);
           }
           this.postLoading = false;
@@ -335,10 +336,16 @@ export class NetwrklistPage {
   
   public createNewCommunity(event){
 	if(event.checked){
-		this.storage.set('edited-page','holdpage')	  
-		this.settings.isNewlineScope = false;
-		this.settings.isCreateLine = true;
-		this.toolsPrvd.pushPage(UndercoverCharacterPage);
+		if(this.storage.get('last_hold_location_details') && this.storage.get('last_hold_location_details')!=''){
+			this.storage.set('edited-page','holdpage')	  
+			this.settings.isNewlineScope = false;
+			this.settings.isCreateLine = true;
+			this.toolsPrvd.pushPage(UndercoverCharacterPage);			
+		}else{
+			this.toolsPrvd.showLoader();
+			this.createPrivateGroup(); 
+		}
+		
 	}
   }
   
@@ -352,7 +359,9 @@ export class NetwrklistPage {
 	
 	// let shareMessage =  "Yo, it's your local assistant net. "+this.activitySelected+' at '+this.locationSelected+' '+this.txtIn.value.trim()+' 1 tap reply via '+shareLink;
 	this.user = this.authPrvd.getAuthData();
-	let shareMessage =  "Yo, it's your local assistant net. "+this.user.name+' wants to '+this.activitySelected+' 1 tap reply via '+shareLink; 
+	// let shareMessage =  "Yo, it's your local assistant net. "+this.user.name+' wants to '+this.activitySelected+' 1 tap reply via '+shareLink; 
+	
+	let shareMessage =  "Want to "+this.activitySelected+"? Download https://TestFlight.apple.com/join/cmTDxwuU"+" and reply via "+shareLink; 
 	
 	let contacts = ''; //[]   
 	for(let i = 0;i<this.selectedContacts.length;i++){		
@@ -379,59 +388,64 @@ export class NetwrklistPage {
   }
   
   private createPrivateGroup(){
-	  this.user = this.authPrvd.getAuthData();
-	  let publicUser: boolean;
-      let images = [];
-      let messageParams: any = {};
-      let message: any = {};
-	  let msgrequest_type = '';
-	  let textInput = '';
+	this.user = this.authPrvd.getAuthData();
+	let publicUser: boolean;
+	let images = [];
+	let messageParams: any = {};
+	let message: any = {};
+	let msgrequest_type = '';
+	let textInput = '';
 	  	
-	  let messageable_type: any = null;
-	  let title_desc = this.user.name+' wants to '+this.activitySelected;
-      messageParams = {
-			messageId		 : null,
-			undercover		 : true,
-			text			 : title_desc,
-			text_with_links	 : title_desc,
-			title			 : this.activitySelected,
-			user_id			 : this.user ? this.user.id : 0,
-			role_name		 : 'Private Group',			
-			images			 : [],	
-			video_urls		 : [],
-			public			 : false,
-			place_name		 : '',
-			is_emoji		 : false,
-			locked			 : false,
-			password		 : null,
-			hint			 : null,
-			expire_date		 : '',
-			timestamp		 : Math.floor(new Date().getTime()/1000),
-			line_avatar		 : []
-      };
-	  this.gpsPrvd.coords.lat = null;
-	  this.gpsPrvd.coords.lng = null;
+	let messageable_type: any = null;
+	let title_desc = this.user.name+' wants to '+this.activitySelected;
+	messageParams = {
+		messageId		 : null,
+		undercover		 : true,
+		text			 : title_desc,
+		text_with_links	 : title_desc,
+		title			 : this.activitySelected,
+		user_id			 : this.user ? this.user.id : 0,
+		role_name		 : 'Private Group',			
+		images			 : [],	
+		video_urls		 : [],
+		public			 : false,
+		place_name		 : '',
+		is_emoji		 : false,
+		locked			 : false,
+		password		 : null,
+		hint			 : null,
+		expire_date		 : '',
+		timestamp		 : Math.floor(new Date().getTime()/1000),
+		line_avatar		 : []
+	};
+	this.gpsPrvd.coords.lat = null;
+	this.gpsPrvd.coords.lng = null;
       
-      message = Object.assign(message, messageParams);
-      message.image_urls = [];
-      message.isTemporary = false;
-      message.temporaryFor = 0;
+	message = Object.assign(message, messageParams);
+	message.image_urls = [];
+	message.isTemporary = false;
+	message.temporaryFor = 0;
 	  
-	  if ((message.text && message.text.trim() != '') ||
-          (message.images && message.images.length > 0) ||
-          (message.social_urls && message.social_urls.length > 0)) {
-			this.chatPrvd.sendMessage(messageParams).then(res => {
-			  message.id = res.id;
-			  message.user_id = this.user.id;
-			  message.user = this.user;
-			  this.chatPrvd.getMessageIDDetails(res.id).subscribe(result => {
-				this.toolsPrvd.pushPage(ChatPage,{message:result.message});
-			  });
-			  this.toolsPrvd.hideLoader();
-			}).catch(err => {
-			  this.toolsPrvd.hideLoader();
-			});     
-      }
+	
+	this.chatPrvd.sendMessage(messageParams).then(res => {
+	  message.id = res.id;
+	  message.user_id = this.user.id;
+	  message.user = this.user;
+	  this.chatPrvd.getMessageIDDetails(res.id).subscribe(result => {
+		// this.toolsPrvd.pushPage(ChatPage,{message:result.message});
+		this.newlyAdded = result.message;
+		this.selectedCommunity.push(this.newlyAdded);
+		// this.newlyAdded.date = this.toolsPrvd.getTime(this.newlyAdded.created_at)
+		this.posts.push(this.newlyAdded);
+		setTimeout(()=>{
+			this.isCreateCheck = false;
+		})
+	  });
+	  this.toolsPrvd.hideLoader();
+	}).catch(err => {
+	  this.toolsPrvd.hideLoader();
+	});     
+		
   }
   
   private postMessage(emoji?: string, params?: any) {

@@ -7,6 +7,9 @@
 <ion-content padding >
 	<ion-item> 
         <ion-searchbar #searchbar placeholder="Enter address of a space near you" [(ngModel)] = "searchModel" name="searchModelName" class="searchbar-input" ></ion-searchbar>	
+		<button class="back-btn" (tap)="goToHoldPage(false)">
+			I dont need a location
+		</button>
 	</ion-item>
 </ion-content>
 
@@ -15,7 +18,5 @@
        <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"> </ion-icon>
   </button>
   
-  <button class="back-btn" (tap)="goToHoldPage(false)">
-       No, I'll move elsewhere
-  </button>
+  
 </ion-footer>

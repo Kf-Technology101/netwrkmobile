@@ -27,8 +27,11 @@
 		<div>
 			<p>I want to <button (tap)="show_activity()" class="location-btn">{{activitySelected}}</button></p>		
 			<p *ngIf="locationSelected != ''">At 
-				<button class="location-btn" (tap)="select_loaction()" >{{locationSelected}}</button> 
-				<button class="remove-location" (tap)="remove_loaction()">X</button>
+				<button class="location-btn" (tap)="select_loaction()" >
+					<span class="remove-location" (tap)="remove_loaction()">X</span>
+					<span class="location-span">{{locationSelected}}</span>
+				</button> 
+				
 			</p> 
 			<p *ngIf="locationSelected == ''" class="flicker_me">At 
 				<button class="location-btn flicker_loc" (tap)="select_loaction()" >+</button> 
@@ -108,11 +111,13 @@
 
 <ion-footer *ngIf="!showActivitiesContainer">
 	<button class="save-btn" (tap)="showContacts()" *ngIf="!showContactsStep">
-       <img  src="assets/images/netwrk_130_120.png" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+      <!-- <img  src="assets/images/netwrk_130_120.png" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"> -->
+	  
 	</button>
   
 	<button ion-button color="bk" class="main-action-btn medium transparent" outline (tap)="goToLanding()" [ngClass]="{'bottom-margin':showContactsStep}" *ngIf="!showContactsStep">
-	  <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
+	  <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
+	  <!-- style="padding-left:3px;" -->
 	</button>
 	
 	<button ion-button class="main-action-btn medium forward contacts-list-btn" outline (tap)="sendMessage()" [ngClass]="{'bottom-margin':showContactsStep}" *ngIf="showContactsStep">

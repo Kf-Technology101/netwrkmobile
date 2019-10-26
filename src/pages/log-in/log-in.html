@@ -57,12 +57,12 @@
 		However we do need location to show you nearby communities and notifications for updates from friends. Please accept notifications and location sharing while using the app.
 	</p>
   </div> -->
-  <ion-item class="transparent login-btns-container">
+  <div class="transparent login-btns-container">
+  <!-- Remove above div in case if used ion-item --> 
+  <!-- <ion-item class="transparent login-btns-container"> -->
     <button ion-button default (tap)="toggleLoginForm()"
             round item-left color="bk" [@fadeState]="controls.state"
             [hidden]="controls.hidden">Login</button>
-    <button type="submit" (tap)="doFbLogin()" ion-button default round item-right
-            color="bk" [@fadeState]="controls.state"
-            [hidden]="controls.hidden">Fb login</button>
-  </ion-item>
+   
+  </div>
 </ion-footer>

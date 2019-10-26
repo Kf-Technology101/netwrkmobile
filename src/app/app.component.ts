@@ -78,7 +78,6 @@ export class MyApp {
 			});
 		}); 
        
-
         this.platform.ready().then(() => {
             this.authPrvd.removeDeviceRegistration();
             this.pushSetup();
@@ -105,7 +104,6 @@ export class MyApp {
 		
         pushObject.on('notification').subscribe((notification: any) => {
 			this.toolsPrvd.showSplashScreen();
-			
 			let message  = JSON.parse(notification.additionalData.child_message);
 			pushObject.finish().then(e => {
 				let messageData:any;
@@ -118,7 +116,6 @@ export class MyApp {
 					// this.toolsPrvd.showLoader();
 					// this.storage.set('parameterData', messageData);
 					// this.goToPage();
-					
 					this.initCheckLogin(message.id); 
 					/* this.chatPrvd.getMessageIDDetails(message.id).subscribe(res => {		this.app.getRootNav().setRoot(ChatPage, {message:res.message});
 					});	
@@ -184,9 +181,9 @@ export class MyApp {
 
     private getSimInfo() {
         this.sim.getSimInfo().then(info => {
-				this.storage.set('country_code', info.countryCode);
-			},
-			err => console.error('Unable to get sim info: ', err));
+			this.storage.set('country_code', info.countryCode);
+		},
+		err => console.error('Unable to get sim info: ', err));
     }
 	 
 }

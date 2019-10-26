@@ -34,21 +34,23 @@ export class FeedbackService {
     this.chatService.sendFeedbackData('user_likes', {
       user_id: user_id,
       message_id: message.id
-    }).subscribe(res => {
+    }).subscribe(result => {
       this.toolsService.sendPointData({
-        points: el ? (el.classList.contains('active') ? 5 : -5) : null,
+        points: 5, // el ? (el.classList.contains('active') ? 5 : -5) : null,
         user_id: user_id
       }).subscribe(res => {
-          if (el.classList.contains('active')){
+		
+          // if (el.classList.contains('active')){
+			  message.like_by_user = true;
               message.notification_type="like";
               this.chatService.sendNotification(message).subscribe(notificationRes => {
                   console.log('Notification Res', notificationRes);
-              }, err => console.error(err));
-          }
-
-        console.log('[FeedbackService] sendPointData res:', res);
-      }, err => console.error('[FeedbackService] sendPointData err:', err));
-      console.log('[FeedbackService] toggleLikes res:', res);
+              }, err => console.log(err));
+          // }
+			console.log('[FeedbackService] sendPointData res:', res);
+      }, err => {
+		  console.error('[FeedbackService] sendPointData err:', err)
+	  });     
     }, err => {
       console.error('[FeedbackService] toggleLikes err:', err);
     });

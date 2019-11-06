@@ -79,7 +79,7 @@ export class MyApp {
 		}); 
        
         this.platform.ready().then(() => {
-            this.authPrvd.removeDeviceRegistration();
+            // this.authPrvd.removeDeviceRegistration();
             this.pushSetup();
 			// this.gps.getMyZipCode(true);
         });

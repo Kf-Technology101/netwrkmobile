@@ -539,7 +539,7 @@ export class LinePage {
 				this.txtIn = params.text;
 				this.lineTitle = params.title;
 			}
-			
+
 			if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network" && (!this.postLockData.password || !this.postLockData.hint)){
 				this.noErrors = false;
 				return false;
@@ -550,7 +550,6 @@ export class LinePage {
 				return false;
 			}
 			 
-		
 			let lineRole = '';
             if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
                 publicUser=true; 
@@ -565,8 +564,6 @@ export class LinePage {
             if (params && params.social && !this.chatPrvd.isLobbyChat)
                 this.setDefaultTimer();
 			
-			
-			
             /*
 				Note:
 				*Private Group: public-false, locked-false
@@ -574,13 +571,11 @@ export class LinePage {
 				*Public Netwrk: public-true, locked-false
 			*/
 			
-			
 			messageParams = {
 				messageId:this.editPostId ? this.editPostId : null,
 				text: emoji ?  emoji : this.txtIn,
 				text_with_links: emoji ?  emoji : this.txtIn,
 				user_id: this.user ? this.user.id : 0,
-				role_name: lineAvtr.name,
 				title: this.lineTitle,
 				place_name: this.gpsPrvd.place_name,
 				images: emoji ? [] : images,
@@ -595,7 +590,10 @@ export class LinePage {
 				timestamp: Math.floor(new Date().getTime()/1000),
 				line_avatar : this.tempFiles
 			};
-						
+			if(lineAvtr){
+				messageParams.role_name = lineAvtr.name;
+			}
+			
 			this.storage.set('edit-post','');
             if (params) Object.assign(messageParams, params);
             message = Object.assign(message, messageParams);

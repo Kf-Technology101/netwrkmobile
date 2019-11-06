@@ -76,11 +76,11 @@ page-netwrklist {
 		  .scroll-content {
 			padding-top: 0 !important;
 			padding-bottom: inherit;
-			border-top: none;
+			border-top: none; 
 			color: #fff;
 			text-align: center;
 			margin-bottom: 0px !important;
-		  }
+		 }
 		  .chat-container{
 			text-align: center;
 			font-size: 21px;
@@ -95,7 +95,7 @@ page-netwrklist {
 					color: #5b87aa;
 					background:transparent;
 					text-align:center;
-					font-size: 35px;
+					font-size: 25px;
 					font-weight: 500;
 					padding: 0;
 				}			
@@ -104,6 +104,9 @@ page-netwrklist {
 					background:transparent;
 					padding: 0px;
 					text-align: center;
+					.label-ios {
+						margin: 0px 0px 0px 0;
+					}
 				}
 			}
 			.scroll-content {
@@ -125,8 +128,8 @@ page-netwrklist {
 	  
 	  .virtual-custom-scroll-wrapper{
 		background-color: #fff;
-		height: 170px;
-		padding: 10px 16px;
+		height: 200px;
+		padding: 10px 16px 50; 
 		position: absolute;
 		bottom: 0;
 		right: 0%;
@@ -134,7 +137,7 @@ page-netwrklist {
 		
 	  }
 	  .virtual-custom-scroll-container{
-		height: 160px;
+		height: 200px;
 		overflow: scroll;
 	  } 
 	  span.remove-location {
@@ -156,22 +159,22 @@ page-netwrklist {
 	  }
 	  
 	  .flicker_me{
-		animation:blinkingText 4s infinite;
+		animation:blinkingText 7s infinite;
 	  }
 	  .flicker_loc{
-		animation:blinkingBtn 4s infinite;
+		animation:blinkingBtn 7s infinite;
 	  }
 	  @keyframes blinkingText{
-		0%{     color: #fff; }
-		49%{    color: #fff; }
-		50%{    color: #fff; }
-		99%{    color: transparent; }
+		0%{ color: #fff; }
+		49%{ color: #fff; }
+		50%{ color: #fff; }
+		99%{ color: transparent; }
 	  } 
 	  @keyframes blinkingBtn{
-		0%{     color: #5b87aa; background-color: #fff ;}
-		49%{    color: #5b87aa; background-color: #fff ;}
-		50%{    color: #5b87aa; background-color: #fff ;}
-		99%{    color: transparent; background-color: transparent;}
+		0%{ color: #5b87aa; background-color: #fff ;}
+		49%{ color: #5b87aa; background-color: #fff ;}
+		50%{ color: #5b87aa; background-color: #fff ;}
+		99%{ color: transparent; background-color: transparent;}
 	  } 	  
   }
   

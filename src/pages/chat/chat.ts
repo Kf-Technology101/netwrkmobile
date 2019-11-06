@@ -3081,7 +3081,6 @@ console.log('openLobbyForLockedChecked::',message);
   public handleMainBtnClick(event:any):void {
 	this.chatPrvd.isMainBtnDisabled = true;
 	if(this.messageParam){
-	  console.log('messageParam');
 	  this.messageParam = null;	
 	}
 
@@ -3101,7 +3100,6 @@ console.log('openLobbyForLockedChecked::',message);
 	this.storage.rm('custom_coordinates');
 
 	this.gpsPrvd.getMyZipCode().then(zip => {		
-	 console.log('handleMainBtnClick',zip);
 		this.storage.rm('chat_zip_code');
 		this.storage.set('chat_zip_code', zip.zip_code);
 		this.storage.rm('custom_coordinates');
@@ -3184,8 +3182,14 @@ console.log('openLobbyForLockedChecked::',message);
 				  this.getUsers().then(res => {});
 				  this.toolsPrvd.hideLoader();
 			  }
+			  this.chatPrvd.currentLobby.id = null;
+			  this.chatPrvd.closeLobbySocket();
+			  this.chatPrvd.currentLobbyMessage = null;	
 		  }else{					  
 			  this.chatPrvd.areaLobby=false;
+			  this.chatPrvd.currentLobby.id = null;
+			  this.chatPrvd.closeLobbySocket();
+			  this.chatPrvd.currentLobbyMessage = null;	
 			  this.goUndercover(event);
 			  this.toolsPrvd.hideLoader();
 		  }
@@ -3199,8 +3203,7 @@ console.log('openLobbyForLockedChecked::',message);
 			this.chatPrvd.isLobbyChat = false;
 			this.chatPrvd.currentLobby.id = null;
 			this.chatPrvd.closeLobbySocket();
-			this.chatPrvd.currentLobbyMessage = null;	  
-			
+			this.chatPrvd.currentLobbyMessage = null;	  			
 			this.chatPrvd.isLandingPage = false;		
 			this.chatPrvd.setState('area');
 			this.undercoverPrvd.setUndercover(false);
@@ -3212,8 +3215,7 @@ console.log('openLobbyForLockedChecked::',message);
 			this.chatPrvd.isLobbyChat = false;
 			this.chatPrvd.currentLobby.id = null;
 			this.chatPrvd.closeLobbySocket();
-			this.chatPrvd.currentLobbyMessage = null;
-			
+			this.chatPrvd.currentLobbyMessage = null;			
 			this.toolsPrvd.hideLoader();
 			this.chatPrvd.isLandingPage = true;		
 			this.chatPrvd.setState('undercover');
@@ -3230,6 +3232,7 @@ console.log('openLobbyForLockedChecked::',message);
 		  console.log('error::: ',err);
 	    }
 	});	  
+	
   }
 
   private onEnter():void {
@@ -3393,6 +3396,12 @@ console.log('openLobbyForLockedChecked::',message);
 		this.search = true;
 		this.nclAddedCnt = 0;
 		this.currentCLLobbyIndex = null;
+		if(this.chatPrvd.currentLobby.id){
+			this.chatPrvd.closeLobbySocket();
+			this.chatPrvd.currentLobby.id = null;
+			this.chatPrvd.currentLobbyMessage = null;
+		}
+			
 		this.initializeMap();
 		this.initAutocomplete();    
 	},err=>{
@@ -3532,7 +3541,7 @@ console.log('openLobbyForLockedChecked::',message);
 		if(goodStuffFlag == true || goodStuffFlag == null){
 			popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content">'+
 				'<div class="label-18"><strong>Good stuff adds to your day.</strong></div>'+
-				'<div class="label-16">It\'s what localnet is all about!</div>'+
+				'<div class="label-16">It\'s what comvo is all about!</div>'+
 				'<div class="label-18 normal-text">Tap <img class="ic popup-icon" src="assets/icon/lobby-icon.svg" > to try it</div>'+
 				'</div>';
 			popupDetails.cssClass = 'good-stuff';
@@ -4305,7 +4314,6 @@ console.log('openLobbyForLockedChecked::',message);
   }
   
   public editSetting(messageId:number):void{
-	console.log(messageId);
 	this.toolsPrvd.showLoader();
 	this.chatPrvd.getMessageIDDetails(messageId).subscribe(res => {	
 		let message = res.message;
@@ -4318,9 +4326,9 @@ console.log('openLobbyForLockedChecked::',message);
 		this.gpsPrvd.place_name = message.place_name;
 		this.storage.set("edit-post", messageId);	
 		this.storage.set("edited-page", 'chat');
-		this.storage.set("chat_zip_code", message.post_code);	
-		this.settings.isNewlineScope=false;
-		this.settings.isCreateLine=true;	
+		this.storage.set("chat_zip_code", message.post_code);
+		this.settings.isNewlineScope = false;
+		this.settings.isCreateLine = true;	
 		this.toolsPrvd.pushPage(LinePage);	
 		this.toolsPrvd.hideLoader(); 
 	});	

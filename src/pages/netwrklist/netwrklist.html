@@ -26,14 +26,14 @@
 	<div class="chat-container visible">
 		<div>
 			<p>I want to <button (tap)="show_activity()" class="location-btn">{{activitySelected}}</button></p>		
-			<p *ngIf="locationSelected != ''">At 
+			<p *ngIf="locationSelected != ''">Near 
 				<button class="location-btn" (tap)="select_loaction()" >
 					<span class="remove-location" (tap)="remove_loaction()">X</span>
 					<span class="location-span">{{locationSelected}}</span>
 				</button> 
 				
 			</p> 
-			<p *ngIf="locationSelected == ''" class="flicker_me">At 
+			<p *ngIf="locationSelected == ''" class="flicker_me">Near 
 				<button class="location-btn flicker_loc" (tap)="select_loaction()" >+</button> 
 			</p> 
 		</div>
@@ -99,11 +99,11 @@
 	
 <div class="virtual-custom-scroll-wrapper" [ngStyle]="{'opacity': showActivitiesContainer && !showContactsStep?'1':'0'}">
 	<div class="virtual-custom-scroll-container">  
-		<ion-scroll [virtualScroll]="activity" approxItemHeight="3px" class="activity-list"> 
+		<ion-list [virtualScroll]="activity" approxItemHeight="3px" class="activity-list"> 
 		  <ion-item *virtualItem="let activity_item">
 			<button class="activity-btn" (tap)="select_activity(activity_item)">{{activity_item.itemName}}</button>
 		  </ion-item>
-		</ion-scroll>
+		</ion-list>
 	</div>
 </div>
 

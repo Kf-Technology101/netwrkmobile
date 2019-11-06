@@ -39,8 +39,9 @@ modal-legendaryhistory {
   .accessDiv{
 	width: 10%;
 	float:right;
-	margin-right:-15px;
-	.accessBtn{
+	margin-right: -25px;
+	margin-bottom: 3px;
+   .accessBtn{
 		width: 60px;
 		height: 20px;
 		float: right;
@@ -48,9 +49,11 @@ modal-legendaryhistory {
 		font-size: 13px;
 		&.accept-access{
 			background-color: #6AA4D9;
+			top: -13px;
 		}
 		&.reject-access{
 			background-color: #f95e65;
+			bottom: 2px;
 		}
 	}
 	&.accessBtnDiv{
@@ -350,11 +353,11 @@ page-network-no {
     background: transparent;
     .message-container .message-item {
 	  float: left;
-      margin: 0 0px 9px 0 !important;
+      margin: 0 0px 0px 0 !important;
 	  width:90%;
-	  /* white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis; */
+	  .username{
+		font-size: 19px;
+	  }	  
     }
     .message-count {
       position: absolute;
@@ -893,7 +896,7 @@ page-network-no {
 	.message-msg{
 		img.chat-avatar {
 			margin-left: 16px !important;
-			top: -12px !important;
+			top: 0px !important;
 		}
 		p.message-item.message-container {
 			margin-left: 45px !important;
@@ -928,24 +931,9 @@ page-network-no {
 	  padding-top:13px;
       opacity: 0;
       transition: 0.5s;
-      &.undercover {
-        padding-top: 52px;
-      }
-      &.visible {
-        opacity: 1;
-		
-      }
-      &.white-bg {
-        opacity: 1;
-        background: #fff;
-      }
-      &.lobby {
-        padding-top: 0px;		
-      }
-      &.areaMessageLobby {
-        padding-top: 65px !important;
-      }
-      .message.conversation-post{
+      
+	  
+	  .message.conversation-post{
         border-radius: 13px;
         background: color($colors, white);
         margin: 0;
@@ -962,8 +950,30 @@ page-network-no {
           display:none !important;
       }
 	  .message-text{
-		margin-top: 15px;
+		/* margin-top: 15px; */
 	  }
+	  .message-msg.message-text {
+		/* margin-top: 15px; */
+	  }
+	  &.undercover {
+        padding-top: 52px;
+      }
+      &.visible {
+        opacity: 1;
+      }
+      &.white-bg {
+        opacity: 1;
+        background: #fff;
+      }
+      &.lobby {
+        padding-top: 0px;		
+      }
+      &.areaMessageLobby {
+        padding-top: 55px !important;
+		.message-msg.message-text {
+			margin-top: 0px;
+		}
+      }
 	  
 	  .message-conversasion{
 		background-color: #fff;
@@ -985,7 +995,7 @@ page-network-no {
 		margin-left: 25px;
 		img.chat-avatar {
 			margin-left: 16px !important;
-			top: -7px !important;
+			top: 0px !important; 
 		}
 		p.message-item.message-container {
 			margin-left: 35px !important;
@@ -1005,11 +1015,11 @@ page-network-no {
 	 
       .message {
         padding: 0;
-        margin: 0;
         position: relative;
-        // margin-top: 15px;
+		margin: 7px 0;
         opacity: 0;
 		clear:both;
+		top: 8px;
         .slides {
           .swiper-pagination {
             top: 5px;
@@ -1060,6 +1070,9 @@ page-network-no {
           .message-container {
             padding: 6px 12px;
             margin-left: 12px;
+			img.chat-avatar{
+				top: 0px;
+			}
             .username {
               font-size: 14px;
               font-weight: 500;
@@ -1075,7 +1088,7 @@ page-network-no {
           .message-container.false,.message-container.isLobby {
             padding: 6px;
             margin-left: 0;
-            .text {
+			.text {
               margin-left:0 !important;
 			  
             }
@@ -1091,7 +1104,7 @@ page-network-no {
           width: 42px;
           height: 42px;
           margin: 0;
-          top: 20%;
+          top: 1px;
           margin-left: 12px;
           z-index: 4;
           position: absolute;
@@ -1100,17 +1113,19 @@ page-network-no {
 		  left: 0;
         }
         .chat-avatar.conversation {
-          top: 6px !important;
+          /* top: 6px !important; */
           left: -6px;
         }
-        .message-container.false, .message-container.isLobby {
-          margin-left: 12px !important;
-          padding: 6px;
-          padding-left: 60px !important;
-          padding-right: 15px !important;
-          margin-right: 12px !important;
-		  top: 7px;
-		  // margin-bottom: 7px;
+		
+        .message-container.false,.message-container.isLobby{
+			margin-left: 17px !important;
+			padding: 0;
+			padding-left: 47px !important;
+			padding-right: 15px !important;
+			margin-right: 20px !important;
+			line-height: 42px;
+			border: 1px solid #5b87aa;
+			
           .text {
             margin-left:0 !important;
 			white-space: nowrap;
@@ -1120,18 +1135,27 @@ page-network-no {
           }
 		  .chat-avatar{
 			// top: 5%;
-			margin-left: 0px; 
+			margin-left: -5px; 
 			left: 0px;
 		  }
+		  .username{
+			font-size: 18px;
+		  }
         }
+		.message-container.isLobby {
+			min-height: 80px;
+			padding-top: 5px;
+			line-height: 18px;
+			border: 0px;
+			.username{
+				line-height: 19px;
+			}
+		}
 		
 		.message-container.false{
-		 // padding-left: 75px !important;
-		  /* .chat-avatar{
-			width: 68px;
-			height: 68px;
-			margin-left: 3px;
-		  } */
+		  .chat-avatar{
+			top: -1px;
+		  } 
 		}
 
 		.active-cl:after {
@@ -1157,7 +1181,8 @@ page-network-no {
           position: relative;
           z-index: 3;
           border: 1px solid #f9f9f9;
-		  min-height: 80px;
+		  min-height: 42px;
+		  /* line-height: 30px; */ 
           // box-shadow: 0px 2px 6px 0px rgba(0,0,0,.1);
           .info-icon {
             border-radius: 50%;
@@ -1272,11 +1297,11 @@ page-network-no {
           top: 0px;
         }
         .feedback-setting-button {
-          width: 37px;
-          height: 37px;
-          border-radius: 13px;
+          width: 30px;
+          height: 27px;
+          border-radius: 9px;
           position: absolute;
-          right: 5px;
+          right: 8px;
           padding: 0 5px;
           top: -4px;
           z-index: 3;
@@ -1310,11 +1335,11 @@ page-network-no {
         }
 
         .feedback-follow {
-          width: 37px;
-          height: 35px;
-          border-radius: 13px;
+          width: 30px;
+          height: 27px;
+          border-radius: 9px;
           position: absolute;
-          right: 5px;
+          right: 8px;
           padding: 0 5px;
           top: -2px;
           z-index: 3;
@@ -1343,12 +1368,12 @@ page-network-no {
         }
 
 		.feedback-button {
-            width: 37px;
-            height: 37px;
-            border-radius: 13px;
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
             position: absolute;
-            right: 7px;
-            padding: 0 5px;
+            right: 12px;
+            padding: 0 2px;
             top: 0;
             z-index: 3;
             background: #fff; 
@@ -1394,12 +1419,12 @@ page-network-no {
 		}
 		
 		.legendary-btn {
-            width: 37px;
-            height: 37px;
-            border-radius: 13px;
+            width: 28px;
+            height: 28px;
+            border-radius: 10px;
             position: absolute;
-            right: 7px;
-            padding: 0 5px;
+            right: 12px;
+            padding: 0 2px;
             top: 0;
             z-index: 3;
             background: #fff; 
@@ -1479,7 +1504,7 @@ page-network-no {
           border-radius: 13px;
           position: absolute;
           right: 8px;
-          top: 40px;
+          top: 30px;
           z-index: 3;
           background-color: #fff;
           color: #5b87aa;
@@ -1511,6 +1536,7 @@ page-network-no {
 		}
       }
     }
+	
 	
   }
   ion-header {
@@ -1732,10 +1758,17 @@ page-network-no {
           z-index: 3;
           float: right;
         }
-        .netwrk-users {
+        .netwrk-users{
            float: right;
-           margin-right: 10px;
-         }
+        }
+		.netwrk-place{
+			margin-left: 2px;
+			float: left;
+			max-width: 68px;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+		}
         .netwrk-icon {
           border-radius: 50%;
           width: 40px;
@@ -1893,7 +1926,7 @@ modal-legendaryhistory {
 
 page-chat{
 	.incognito-header{
-		margin-top: 10px;
+		margin-top: 5px;
 		ion-toolbar{
 		    min-height: 50px;
 		}

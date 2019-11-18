@@ -1,5 +1,5 @@
 <ion-header class="ios-head">
-    <ion-toolbar *ngIf="!showContactsStep" class="connect-header">
+    <ion-toolbar *ngIf="!showContactsStep && !holdSaveLM" class="connect-header">
         <ng-container>
             <ion-row class="loading bg-text" align-items-center>
                 <ion-col text-center>
@@ -9,7 +9,7 @@
         </ng-container>
 	</ion-toolbar>
 	
-	<ion-toolbar *ngIf="showContactsStep"  class="contact-header">
+	<!-- <ion-toolbar *ngIf="showContactsStep && !holdSaveLM"  class="contact-header">
 		<ng-container>
             <ion-row class="loading bg-text" align-items-center>
                 <ion-col text-center>
@@ -17,30 +17,30 @@
                 </ion-col>
             </ion-row>
         </ng-container>
-	</ion-toolbar>
+	</ion-toolbar> -->
 </ion-header>
 
-<ion-content class="content"  no-bounce [ngClass]="{'connect-content':!showContactsStep, 'contact-content':showContactsStep }">
+<ion-content class="content"  no-bounce [ngClass]="{'connect-content': (!showContactsStep || holdSaveLM), 'contact-content':showContactsStep }">
 
-<div *ngIf="!showContactsStep">
+<div *ngIf="!showContactsStep && !holdSaveLM">
 	<div class="chat-container visible">
 		<div>
 			<p>I want to <button (tap)="show_activity()" class="location-btn">{{activitySelected}}</button></p>		
 			<p *ngIf="locationSelected != ''">Near 
-				<button class="location-btn" (tap)="select_loaction()" >
+				<button class="location-btn" >
 					<span class="remove-location" (tap)="remove_loaction()">X</span>
-					<span class="location-span">{{locationSelected}}</span>
+					<span class="location-span"  (tap)="select_loaction()">{{locationSelected}}</span>
 				</button> 
 				
 			</p> 
 			<p *ngIf="locationSelected == ''" class="flicker_me">Near 
-				<button class="location-btn flicker_loc" (tap)="select_loaction()" >+</button> 
+				<button class="location-btn" (tap)="select_loaction()" >+</button> 
 			</p> 
 		</div>
 	</div>
 </div>
 
-<div *ngIf="showContactsStep" class="contacts-div">
+<div *ngIf="showContactsStep && !holdSaveLM" class="contacts-div">
 	<div class="chat-container visible">	
 		<div class="error" *ngIf="error_txt != ''">{{error_txt}}</div> 
 		<div class="container-title">
@@ -70,7 +70,7 @@
 				<ng-container>
 				  Create a new community
 				</ng-container>
-				<ion-checkbox color="dark" [disabled]="isDisabled" (ionChange)="createNewCommunity($event)" [checked]="isCreateCheck"> </ion-checkbox> 
+				<ion-checkbox color="dark" [disabled]="isDisabled" (ionChange)="createNewCommunityF($event)" [checked]="isCreateCheck"> </ion-checkbox> 
 			  </div> 
 			</div>
 		</ion-row>		
@@ -96,7 +96,11 @@
 		</ng-container>
 	</div>
 </div>
-	
+<div *ngIf="holdSaveLM" class="wait-note">
+	<span *ngIf="locationSelected != ''">Wait! We are sharing your activity '{{activitySelected}} near {{locationSelected}}'</span>
+	<span *ngIf="locationSelected == ''">Wait! We are sharing your activity '{{activitySelected}}'</span>
+</div>	
+
 <div class="virtual-custom-scroll-wrapper" [ngStyle]="{'opacity': showActivitiesContainer && !showContactsStep?'1':'0'}">
 	<div class="virtual-custom-scroll-container">  
 		<ion-list [virtualScroll]="activity" approxItemHeight="3px" class="activity-list"> 
@@ -110,12 +114,12 @@
 </ion-content>
 
 <ion-footer *ngIf="!showActivitiesContainer">
-	<button class="save-btn" (tap)="showContacts()" *ngIf="!showContactsStep">
+	<button class="save-btn" (tap)="showContacts()" *ngIf="!showContactsStep && !holdSaveLM">
       <!-- <img  src="assets/images/netwrk_130_120.png" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);"> -->
 	  
 	</button>
   
-	<button ion-button color="bk" class="main-action-btn medium transparent" outline (tap)="goToLanding()" [ngClass]="{'bottom-margin':showContactsStep}" *ngIf="!showContactsStep">
+	<button ion-button color="bk" class="main-action-btn medium transparent" outline (tap)="goToLanding()" [ngClass]="{'bottom-margin':showContactsStep}" *ngIf="!showContactsStep" [disabled]="holdSaveLM">
 	  <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
 	  <!-- style="padding-left:3px;" -->
 	</button>

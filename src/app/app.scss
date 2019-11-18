@@ -504,15 +504,15 @@ ion-app .ion-page .content {
   }
   &.big,
   &.medium {
-    width: 54px;
-    height: 90px;
+    width: 90px;
+    height: 54px;
     border-width: 5px;
     border-radius: 11px;
   }
 
   &.small {
-    width: 26px;
-    height: 42px;
+    width: 42px;
+    height: 26px;
     border-width: 3px!important;
     border-radius: 4px;
     &.small-icon {
@@ -1403,8 +1403,8 @@ modal-sharelist {
   }
   .footer {
     .main-action-btn.small {
-      width: 25px;
-      height: 40px;
+      /*width: 25px;
+      height: 40px;*/
       border-color: color($colors, bk);
       border-style: solid;
       bottom: 67px;

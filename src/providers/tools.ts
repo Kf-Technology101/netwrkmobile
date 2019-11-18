@@ -169,7 +169,7 @@ export class Tools {
 
   public getTime(date?: string): string {
     try {
-      return moment(date).fromNow();
+      return moment(date).fromNow(true);
     } catch (e) {
       return null;
     }

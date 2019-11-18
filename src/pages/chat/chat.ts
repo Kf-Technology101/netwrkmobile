@@ -248,7 +248,7 @@ export class ChatPage implements DoCheck {
   public search: boolean = true;
   public addressElement:any;
   public searchModel:any;
-  public coachMarkText = "";
+  public coachMarkText =  ''; 
   public netwrkCoachMarkText:boolean = false;
   public scrollTop:number = 0;
   public hideTextContainer:boolean = false;
@@ -353,7 +353,7 @@ export class ChatPage implements DoCheck {
 	private push: Push,
 	private permission: PermissionsService
   ) {	
-	  // this.toolsPrvd.pushPage(CameraPage);	 
+	  // this.toolsPrvd.pushPage(HoldScreenPage);
 	  // this.storage.set('new_signUp',true);
   	  /* this.plt.ready().then(() => {
 		this.push.hasPermission().then((res: any) => {
@@ -447,7 +447,8 @@ export class ChatPage implements DoCheck {
 		  this.clearMarkers();
 		  this.settings.isNewlineScope=false;
 		  this.settings.isCreateLine=false;
-		  this.chatPrvd.isCleared = true;		  
+		  this.chatPrvd.isCleared = true;	
+	  
 		  if(this.chatPrvd.areaFilter){
 			  this.chatPrvd.areaFilter=false;
 			  this.refreshChat();
@@ -468,15 +469,17 @@ export class ChatPage implements DoCheck {
 	});   	
   }
   
-  public resetTopNetwrkFilter():void{
-	
+  public resetTopNetwrkFilter():void{	
 	this.gpsPrvd.getMyZipCode().then(zip => {		
 		if(!this.isProcessing && this.loaderState.getState() == 'off'){
+			
 			this.isProcessing = true;
 			this.toolsPrvd.showLoader();
 			this.chatPrvd.holdFilter = !this.chatPrvd.holdFilter;
-			this.chatPrvd.areaFilter = !this.chatPrvd.areaFilter;
-			if(this.chatPrvd.areaFilter && !this.gpsPrvd.locationAccessPermission){
+			this.chatPrvd.postMessages = [];
+			this.clearMarkers();
+			// this.chatPrvd.areaFilter = !this.chatPrvd.areaFilter;
+			if(this.chatPrvd.holdFilter && !this.gpsPrvd.locationAccessPermission){
 				this.accessDeniedTip = true;
 				this.isProcessing = false;
 				this.chatPrvd.isMainBtnDisabled = true;
@@ -545,8 +548,11 @@ export class ChatPage implements DoCheck {
           handler:()=>{
               alert.dismiss();
 			  this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
-				  this.coachMarkText = res.privateLineCount+" networks are now visible. Hold to see them";
-				  this.netwrkCoachMarkText = true;
+				  if(res.privateLineCount > 0){
+					// this.coachMarkText = res.privateLineCount+" networks are now visible. Hold to see them";  
+					this.coachMarkText = '';  
+					this.netwrkCoachMarkText = true;
+				  }				  
                   this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                       console.log('getLocationLobbyUsers:', res);
                       this.feedbackService.pointsOnJoinLine(message.id, this.user.id);
@@ -573,8 +579,10 @@ export class ChatPage implements DoCheck {
                 this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
                         this.toolsPrvd.showToast('line shared successfully ');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
-							this.coachMarkText = res.privateLineCount+" networks are now visible. Hold to see them";
-							this.netwrkCoachMarkText = true;
+							if(res.privateLineCount > 0){
+								this.coachMarkText = '';  
+								this.netwrkCoachMarkText = true;
+							}		
                             this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                                 console.log('getLocationLobbyUsers:', res);
                                 this.feedbackService.pointsOnJoinLine(message.id, this.user.id);
@@ -597,8 +605,10 @@ export class ChatPage implements DoCheck {
 				this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
                         this.toolsPrvd.showToast('line shared successfully');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
-							this.coachMarkText = res.privateLineCount+" networks are now visible. Hold to see them";
-							this.netwrkCoachMarkText = true;
+							if(res.privateLineCount > 0){
+								this.coachMarkText = '';  
+								this.netwrkCoachMarkText = true;
+							}
                             this.chatPrvd.getLocationLobbyUsers(message.id).subscribe(res => {
                                 console.log('getLocationLobbyUsers:', res);
                                 this.feedbackService.pointsOnJoinLine(message.id, this.user.id);
@@ -1451,7 +1461,7 @@ export class ChatPage implements DoCheck {
 		  this.requestMessage = '';
 	  }
       this.setMainBtnStateRelativeToEvents();
-      this.chatPrvd.postBtn.setState(false);
+      // this.chatPrvd.postBtn.setState(false);
 
       if (this.postTimer.isVisible()) {
         setTimeout(() => {
@@ -1507,9 +1517,6 @@ export class ChatPage implements DoCheck {
 
       if (params && params.social && !this.chatPrvd.isLobbyChat)
 	  this.setDefaultTimer();
-
-
-
 	  let msgrequest_type = '';
 	  let textInput = '';
 	  
@@ -1610,7 +1617,7 @@ export class ChatPage implements DoCheck {
         this.chatPrvd.sendMessage(messageParams).then(res => {
           this.hideTopSlider(this.activeTopForm);
           message.id=res.id;
-          if(this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby){
+          if(this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby || msgrequest_type == 'CONV_ACCEPTED' || msgrequest_type == 'CONV_REJECTED'){
 			  // this.updateMessageExpiry(this.chatPrvd.currentLobby.id);
               if(!this.isReplyMode){ 
 				res.notification_type="new_message"; 
@@ -2381,6 +2388,11 @@ export class ChatPage implements DoCheck {
 					this.isProcessing = false;
 					this.toolsPrvd.hideLoader();
 				}else{
+				  if(!this.isUndercover && this.chatPrvd.areaFilter){
+					this.chatPrvd.areaFilter = false;
+					this.getAndUpdateUndercoverMessages();
+				  }	
+				  this.isProcessing = false;
 				  this.toolsPrvd.hideLoader();
 				}
 				this.initLpMap();
@@ -2455,8 +2467,7 @@ export class ChatPage implements DoCheck {
   }
 
   private goToProfile(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
-	  // alert('goToProfile: '+profileId);
-    this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
+	this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
       this.chatPrvd.isLobbyChat = false;
         if(this.user.id==profileId){
             if(userRoleName){
@@ -2922,7 +2933,11 @@ console.log('openLobbyForLockedChecked::',message);
 			  this.chatPrvd.isLobbyChat=true;
 			  this.chatPrvd.areaLobby=false;
 			  this.hideTextContainer = false;
-			  this.initLpMap();
+			  if(message.lat != null && message.lng!= null){
+				this.initLpMap();
+			  }else{
+				  this.clearMarkers();
+			  }
 			  this.chatPrvd.setState('undercover');
 			  this.undercoverPrvd.setUndercover(true);
 			  this.toolsPrvd.hideLoader();
@@ -2965,7 +2980,7 @@ console.log('openLobbyForLockedChecked::',message);
 	cont2.setState('slideUp');
 	cont2.hide();
 	
-	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off' && (!message.conversation_status || message.conversation_status == 'ACCEPTED' || message.conversation_status == 'REQUESTED')){
+	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off' && (!message.conversation_status || message.conversation_status == 'ACCEPTED')){ //|| message.conversation_status == 'REQUESTED'
 	  console.log('inside openConversationLobbyForPinned if');
 	  this.toolsPrvd.showLoader();
 	  if(this.chatPrvd.getState() == 'undercover'){
@@ -2999,7 +3014,11 @@ console.log('openLobbyForLockedChecked::',message);
 		  }
 
 		  this.chatPrvd.toggleLobbyChatMode();
-		  this.initLpMap();
+		  if(message.lat != null && message.lng!= null){
+			this.initLpMap();
+		  }else{
+			  this.clearMarkers();
+		  }
 		  this.chatPrvd.isMainBtnDisabled = false;
 		  
 		  /* if(message.message_type=="LOCAL_MESSAGE"){// Open normal lobby for local message conversation 
@@ -3185,7 +3204,7 @@ console.log('openLobbyForLockedChecked::',message);
 			  this.chatPrvd.currentLobby.id = null;
 			  this.chatPrvd.closeLobbySocket();
 			  this.chatPrvd.currentLobbyMessage = null;	
-		  }else{					  
+		  }else{		
 			  this.chatPrvd.areaLobby=false;
 			  this.chatPrvd.currentLobby.id = null;
 			  this.chatPrvd.closeLobbySocket();
@@ -3204,7 +3223,7 @@ console.log('openLobbyForLockedChecked::',message);
 			this.chatPrvd.currentLobby.id = null;
 			this.chatPrvd.closeLobbySocket();
 			this.chatPrvd.currentLobbyMessage = null;	  			
-			this.chatPrvd.isLandingPage = false;		
+			this.chatPrvd.isLandingPage = false;	
 			this.chatPrvd.setState('area');
 			this.undercoverPrvd.setUndercover(false);
 			this.isUndercover = false;
@@ -3232,7 +3251,6 @@ console.log('openLobbyForLockedChecked::',message);
 		  console.log('error::: ',err);
 	    }
 	});	  
-	
   }
 
   private onEnter():void {
@@ -3541,7 +3559,7 @@ console.log('openLobbyForLockedChecked::',message);
 		if(goodStuffFlag == true || goodStuffFlag == null){
 			popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content">'+
 				'<div class="label-18"><strong>Good stuff adds to your day.</strong></div>'+
-				'<div class="label-16">It\'s what comvo is all about!</div>'+
+				'<div class="label-16">It\'s what somvo is all about!</div>'+
 				'<div class="label-18 normal-text">Tap <img class="ic popup-icon" src="assets/icon/lobby-icon.svg" > to try it</div>'+
 				'</div>';
 			popupDetails.cssClass = 'good-stuff';
@@ -3555,8 +3573,8 @@ console.log('openLobbyForLockedChecked::',message);
 		let pinnedStuffFlag = this.storage.get('show-pinned-stuff');
 		if(pinnedStuffFlag == true || pinnedStuffFlag == null){
 			popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content">'+					
-				'<div class="label-18"><strong>The local media get to pin the best stuff.</strong></div>'+
-				'<div class="label-18 normal-text">Hold <img class="ic popup-icon" src="assets/icon/lobby-icon.svg" > and select <img class="ic popup-icon" src="assets/images/sun_icon.png" > to try it</div>'+
+				'<div class="label-18"><strong>Add an epic moment to the local news!</strong></div>'+
+				'<div class="label-18 normal-text">Tap <img class="ic popup-icon" src="assets/icon/lobby-icon.svg" > and select <img class="ic popup-icon" src="assets/images/sun_icon.png" > to try it</div>'+
 				'</div>';
 			popupDetails.cssClass = 'good-stuff';
 			popupDetails.buttonText = 'Skip';
@@ -3735,7 +3753,8 @@ console.log('openLobbyForLockedChecked::',message);
   
   /*Opens up the reply lobby for message*/
   public openReplyLobby(message){
-	if(message.messageable_type == "Room" && !this.isReplyMode){  //&& this.chatPrvd.getState() != 'area' message.conversation_status!='REQUESTED'
+	if(message.messageable_type == "Room" && !this.isReplyMode && (this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby)){  //&& this.chatPrvd.getState() != 'area' message.conversation_status!='REQUESTED'
+	console.log('Inside opening reply lobby');
 			this.hideTextContainer = false;
 			this.replyMessage = message;
 			this.isReplyMode = true;
@@ -4349,6 +4368,7 @@ console.log('openLobbyForLockedChecked::',message);
 			this.chatPrvd.getMessageIDDetails(message_id).subscribe(res => {
 				this.openConversationLobbyForPinned(res.message);
 			});
+			curr_message.conversation_status = 'ACCEPTED';
 		  }else{
 			this.storage.set('slider_position','left');
 			this.slideAvatarPrvd.setSliderPosition('left');
@@ -4367,7 +4387,17 @@ console.log('openLobbyForLockedChecked::',message);
 				if(curr_message.expire_date != null){
 					this.updateConversationExpiry(message_id);
 				}
-				// this.hideTextContainer = false;
+				curr_message.conversation_status = 'ACCEPTED';
+				
+				console.log(this.chatPrvd.currentLobbyMessage);
+				console.log(message_id);
+				
+				if(this.chatPrvd.currentLobbyMessage && this.chatPrvd.currentLobbyMessage.messageId == message_id){
+					console.log('asdasd accept'); 
+					this.chatPrvd.currentLobbyMessage.conversation_status =  'ACCEPTED';
+					this.chatPrvd.currentLobbyMessage.isAddButtonAvailable =  false;
+				}
+				this.hideTextContainer = false;
 				this.openConversationLobbyForPinned(room_message.message);
 			  });
 			}, err => {}); 			  

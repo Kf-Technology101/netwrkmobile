@@ -6,21 +6,12 @@
 				Title is required.
 		 </div>		 
 		 <!-- (ionBlur)="saveNetworkName()" -->
-       
-        <button ion-button *ngIf="slideAvatarPrvd.sliderPosition == 'right' && setting.lineAvatar.name.toLowerCase() == 'private network'" class="side lock-btn top-icon white" (click)="toggleTopSlider('lock');">
+		
+        <button ion-button *ngIf="slideAvatarPrvd.sliderPosition == 'right' && (!editMessage && setting.lineAvatar && setting.lineAvatar.name.toLowerCase() == 'private network' || editMessage && !editMessage.public && editMessage.locked && editMessage.password_hash !='' && editMessage.hint !='')" class="side lock-btn top-icon white" (click)="toggleTopSlider('lock');">
             <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
         </button>
 
         <div *ngIf="postLockData.password && postLockData.hint && chatPrvd.postBtn.state && isUndercover" class="lock-status"></div>     
-    </ion-toolbar>
-
-    <ion-toolbar [hidden]="postTimer.hidden" [@slideState]="postTimer.state" class="post-timer">
-        <button (tap)="setPostTimer(0)">Timeless</button>
-        <button (tap)="setPostTimer(1)">1 hour</button>
-        <button (tap)="setPostTimer(2)">1 day</button>
-        <button (tap)="setPostTimer(3)">1 week</button>
-        <button (tap)="setPostTimer(4)">1 month</button>
-        <button (tap)="setPostTimer(5)">1 year</button>
     </ion-toolbar>
 
     <ion-toolbar [hidden]="postUnlock.hidden" [@slideState]="postUnlock.state" class="post-lock">
@@ -61,10 +52,22 @@
 <ion-content has-main-btn has-main-btn-label no-bounce 
     [ngClass]="{'no-height': chatPrvd.postMessages.length < 1, 'netwrk-content': !isUndercover, 'white-undercover': isUndercover &&
     (chatPrvd.localStorage.get('enable_uc_camera') == false || chatPrvd.localStorage.get('enable_uc_camera') === null || chatPrvd.isLobbyChat), 'white-undercover': isUndercover}">
+	<ion-row>
+		<ion-col>
+		<div class="accesstype-div">
+			<span class="access-type" *ngIf="(!editMessage && setting.lineAvatar && setting.lineAvatar.name.toLowerCase() != 'public network') || (editMessage && !editMessage.public) "> Private </span>
+						
+			<span class="access-type" *ngIf="(!editMessage && setting.lineAvatar && setting.lineAvatar.name.toLowerCase() == 'public network') || (editMessage && editMessage.public) "> Public </span>	
+		</div>
+		</ion-col>
+	</ion-row>
+	
 	<ion-row class="avatar-section">
 	
 	  <ion-col>
 		<div class="avatar" >
+			
+
 			<img [src]="lineimg" (error)="chatPrvd.updateAvatarUrl($event)">
 			<div class="add-container">
 			  <button color="bk" ion-button>

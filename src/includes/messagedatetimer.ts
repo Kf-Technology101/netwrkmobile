@@ -39,7 +39,7 @@ export class MessageDateTimer {
   getMessagesDate() {
     if (this.messages.length > 0) {
       for (let i in this.messages) {
-        this.messages[i].dateStr = moment(this.messages[i].created_at).fromNow();
+        this.messages[i].dateStr = moment(this.messages[i].created_at).fromNow(true);
       }
     } else {
       this.logMessage('There are no messages to update', 'warn');

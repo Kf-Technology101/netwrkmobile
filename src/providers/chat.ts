@@ -42,7 +42,7 @@ export class Chat {
 
   public isLandingPage: boolean;
   public areaLobby: boolean = false;
-  public areaFilter : boolean=false; 
+  public areaFilter : boolean=true; 
   public holdFilter : boolean=false;
   
   public lobbyOpened : boolean=false;
@@ -309,8 +309,8 @@ export class Chat {
 
   public openLobbyForPinned(message:any,getMessagesOnly:boolean = false):Promise<any> {
     return new Promise ((resolve, reject) => {
-		this.gps.coords.lat = parseFloat(message.lat);
-		this.gps.coords.lng = parseFloat(message.lng);
+		/* this.gps.coords.lat = parseFloat(message.lat);
+		this.gps.coords.lng = parseFloat(message.lng); */
 		
       if (!this.isLobbyChat) { 
 	    this.getLocationLobby(message.id).subscribe(res => {
@@ -554,7 +554,9 @@ export class Chat {
 			}).catch(err => reject(err));			
 		} else {
 			if(params.message_ids){
+				console.log('sharemessage start');
 				this.shareMessages(params).subscribe(res => {
+					console.log('sharemessage end');
 					resolve(res);
 				}, err => reject(err));
 			}else{
@@ -624,7 +626,7 @@ export class Chat {
     let data: any = {
       post_code: this.localStorage.get('chat_zip_code'),
       undercover: undercover ? undercover : false,
-      is_distance_check: this.areaFilter,
+      is_distance_check: this.isLandingPage && undercover ?  this.holdFilter : this.areaFilter,
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       offset: offset,
@@ -731,7 +733,7 @@ export class Chat {
   public organizeMessages(data: any,organizeNCL :boolean = false): any {
 	let messages: Array<any> = [];
     for (let i in data) {
-      data[i].date = moment(data[i].created_at).fromNow();
+      data[i].date = moment(data[i].created_at).fromNow(true);
         if(messages.indexOf(data[i])==-1){
             messages.push(data[i]);
 			
@@ -909,8 +911,8 @@ export class Chat {
       this.postBtn.setState(true);
       this.appendContainer.show();
       this.appendContainer.setState('on_append');
-      if (this.mainBtn.getState() != 'moved-n-scaled')
-        this.mainBtn.setState('above_append');
+      /* if (this.mainBtn.getState() != 'moved-n-scaled')
+        this.mainBtn.setState('above_append'); */
     }
   }
 
@@ -929,8 +931,8 @@ export class Chat {
           this.postBtn.setState(true);
           this.appendLineContainer.show();
           this.appendLineContainer.setState('on_append');
-          if (this.mainLineBtn.getState() != 'moved-n-scaled')
-            this.mainLineBtn.setState('above_append');
+          /* if (this.mainLineBtn.getState() != 'moved-n-scaled')
+            this.mainLineBtn.setState('above_append'); */
         }
   }
 

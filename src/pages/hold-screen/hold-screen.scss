@@ -20,7 +20,7 @@ page-hold {
     }
     .text-bk3 {
       color: #5b87aa;
-      font-size: 17px;
+      font-size: 22px;
       font-weight: bold;
     }
 	.col{
@@ -54,12 +54,11 @@ page-hold {
 	}  
 	
 	.tail-bottom {
-		top: 13px;
 		color: #5b87aa;
 		padding: 0 30px;
 		text-align: center;
-		font-size: 20px;
-		margin-bottom: -15px;
+		font-size: 11px;
+		margin-bottom: -12px;
 		font-weight: 700;
 	}
 	.skip-local{
@@ -83,6 +82,13 @@ page-hold {
 
   .content {
     height: 100%;
+	.square-btn{
+		border: 3px solid #5b87aa;
+		width: 44px;
+		height: 28px;
+		background: transparent;
+		border-radius: 6px;
+	}
   }
 }
 

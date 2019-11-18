@@ -67,7 +67,7 @@ export const toggleChatOptionsBg: any = trigger('bgState', [
 export const scaleMainBtn: any = trigger('mainBtnState', [
   state('minimised', style({
     transform: 'scale(0.381)',
-    bottom: '37px'
+    bottom: '55px'
   })),
   state('normal', style({
     transform: 'scale(1)',

@@ -27,6 +27,10 @@ page-netwrklist {
 			width: 100%;
 			z-index: 1;
 		}
+		.wait-note{
+			margin-top: 3%;
+			font-size: 16px;
+		}
 		  
 		.container-title{
 			border-top: 1px solid #5b87aa;
@@ -49,7 +53,7 @@ page-netwrklist {
 		}
 		
 		.scroll-content{
-		    margin-top: 80px !important;
+		    margin-top: 0px !important;
 			margin-bottom: 75px !important;
 		}
 		
@@ -161,21 +165,19 @@ page-netwrklist {
 	  .flicker_me{
 		animation:blinkingText 7s infinite;
 	  }
-	  .flicker_loc{
+	  /* .flicker_loc{
 		animation:blinkingBtn 7s infinite;
-	  }
+	  } */
 	  @keyframes blinkingText{
-		0%{ color: #fff; }
-		49%{ color: #fff; }
-		50%{ color: #fff; }
-		99%{ color: transparent; }
+		0%   { opacity:1; }
+		50%  { opacity:0; }
+		100% { opacity:1; }
 	  } 
-	  @keyframes blinkingBtn{
-		0%{ color: #5b87aa; background-color: #fff ;}
-		49%{ color: #5b87aa; background-color: #fff ;}
-		50%{ color: #5b87aa; background-color: #fff ;}
-		99%{ color: transparent; background-color: transparent;}
-	  } 	  
+	  /* @keyframes blinkingBtn{
+		0%   { opacity:1; }
+		50%  { opacity:0; }
+		100% { opacity:1; }		
+	  } */ 	  
   }
   
   .header{ 
@@ -270,8 +272,8 @@ page-netwrklist {
 	} 
 	
 	.main-action-btn{
-		width: 26px;
-		height: 42px;
+		width: 42px;
+		height: 26px;
 		border: 3px solid #5b87aa;
 		border-radius: 4px;
 		bottom: 22px;
@@ -290,8 +292,8 @@ page-netwrklist {
 		bottom: 50px; */
 		border: 5px solid #5b87aa;
 		bottom: 50px;
-		width: 54px;
-		height: 90px;
+		width: 90px;
+		height: 54px;
 		border-radius: 11px;
 		.ion-ios-arrow-forward-outline{
 			font-size:40px;

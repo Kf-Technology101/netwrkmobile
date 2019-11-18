@@ -13,6 +13,7 @@ import { SlideAvatar } from '../../providers/slide-avatar';
 import { Settings } from '../../providers/settings';
 import { LocationChange } from '../../providers/locationchange';
 import { LocalStorage } from '../../providers/local-storage';
+import { Chat } from '../../providers/chat';
 
 
 
@@ -31,7 +32,9 @@ export class ProfileSettingPage {
     public settings: Settings,
     public locationchange: LocationChange,
     public storage: LocalStorage,
-    public alertCtrl: AlertController
+    public alertCtrl: AlertController,
+    public chatPrvd: Chat
+	
   ) { }
 
   public goBack():void {
@@ -98,6 +101,7 @@ export class ProfileSettingPage {
         this.app.getRootNav().setRoot(LogInPage);
         this.storage.rm('auth_data');
         this.storage.rm('auth_type');
+		this.chatPrvd.postMessages = [];
     }).catch(err => console.error('logout error: ', err));
   }
 }

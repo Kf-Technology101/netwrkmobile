@@ -88,7 +88,8 @@ export class NetwrklistPage {
   public isDisabled: boolean = false;
   public newlyAdded:any = null;
   public isCreateCheck:boolean = false;
-  
+  public createNewCommunity:boolean = false;
+  public holdSaveLM:boolean = false;
   constructor(
     private viewCtrl: ViewController,
     private api: Api,
@@ -113,12 +114,7 @@ export class NetwrklistPage {
 	public socialSharing: SocialSharing,
 	private alertCtrl: AlertController
   ) {
-	  if(this.navParams.get('message')){
-		this.newlyAdded = this.navParams.get('message');
-		this.selectedCommunity.push(this.newlyAdded);
-		// this.isDisabled = true;
-	  } 
-      this.listType = 'phones'; 
+	  this.listType = 'phones'; 
 	  this.contactsPrvd.getContacts(this.listType).then(data => {
 		  this.contacts = data;
 		  if (this.contacts.length > 0) {
@@ -133,29 +129,34 @@ export class NetwrklistPage {
       });
 	
 	  if(this.storage.get('edited-page')=='holdpage'){
-		this.showContactsStep = true; 
-		this.toolsPrvd.showLoader();
-		this.showMessages();
+		// this.showMessages();
+		this.holdSaveLM = true;
+		let localMessageDetails = this.storage.get('localMessageDetails');
+		this.selectedContacts = localMessageDetails.selectedContacts;
+		this.txtIn = { value: localMessageDetails.txtIn };
+		this.selectedCommunity = localMessageDetails.selectedCommunity;
+		if(this.navParams.get('message')){
+			this.newlyAdded = this.navParams.get('message');
+			this.selectedCommunity.push(this.newlyAdded);
+		} 
 		this.storage.rm('edited-page');
+		this.performPostMessage();
 	  }else{
 		this.loadActivity();
 		this.user = this.authPrvd.getAuthData();
-
-		// this.gpsPrvd.getMyZipCode();
 		this.storage.rm('local_coordinates');
 		let loc = {
 		  lat : parseFloat(this.gpsPrvd.coords.lat),
 		  lng : parseFloat(this.gpsPrvd.coords.lng)
 		}
 		this.storage.set('local_coordinates',loc);	  
-	  }
-	  
+	  }	  
   }
 	 
   public loadActivity(){
 	return new Promise(resolve => {
 		this.activity = [];
-		this.activity.push({itemName: "do something",itemId:'1'});
+		this.activity.push({itemName: "Do something",itemId:'1'});
 		this.activity.push({itemName: "Hang out",itemId:'2'});
 		this.activity.push({itemName: "Go out",itemId:'3'});
 		this.activity.push({itemName: "Grab food",itemId:'4'});
@@ -165,7 +166,9 @@ export class NetwrklistPage {
 		this.activity.push({itemName: "Surf",itemId:'8'});
 		this.activity.push({itemName: "Chill",itemId:'9'});
 		this.activity.push({itemName: "Hike",itemId:'10'});
-		this.activity.push({itemName: "Custom",itemId:'11'}); 
+		this.activity.push({itemName: "Yoga",itemId:'11'});
+		this.activity.push({itemName: "Chat",itemId:'12'});
+		this.activity.push({itemName: "Custom",itemId:'13'}); 
 		
 		resolve(true);        
 	});           
@@ -178,7 +181,7 @@ export class NetwrklistPage {
   }
   
   public select_activity(item){
-	if(item.itemId == 11){
+	if(item.itemId == this.activity.length){
 		this.storage.set('last-activity', item);
 		// popup text box for custom input
 		this.showActivitiesContainer = false;
@@ -313,34 +316,48 @@ export class NetwrklistPage {
   }
   
   public sendMessage(){
-	if(this.selectedCommunity.length <= 0){
-		this.toolsPrvd.showToast('Select community to share');
-	}else{
-		this.error_txt = '';
-		this.checkCommunityFlag = true;
-		this.checkContactFlag = true; 
-		if(this.selectedContacts.length > 0){
-			this.checkContactFlag = false;
-		}
-		if(this.selectedCommunity.length > 0){
-			this.checkCommunityFlag = false;
-		}
-		this.postMessage();	
-	}
-  }
-  
-  public createNewCommunity(event){
-	if(event.checked){
-		/* if(this.storage.get('last_hold_location_details') && this.storage.get('last_hold_location_details')!=''){ */
-			this.storage.set('edited-page','holdpage')	  
+	if(this.createNewCommunity){
+		if(this.storage.get('last_hold_location_details')){
+			let localMessageDetails = {
+				selectedContacts: this.selectedContacts,
+				txtIn: this.txtIn.value.trim(),
+				selectedCommunity: this.selectedCommunity
+			};
+			this.storage.set('localMessageDetails',localMessageDetails);
+			this.storage.set('edited-page','holdpage');	  
 			this.settings.isNewlineScope = false;
 			this.settings.isCreateLine = true;
-			this.toolsPrvd.pushPage(UndercoverCharacterPage);			
-		/* }else{
-			this.toolsPrvd.showLoader();
-			this.createPrivateGroup(); 
-		} */
-		
+			this.toolsPrvd.pushPage(UndercoverCharacterPage);				
+		}else{
+			this.createPrivateGroup();
+		}		
+	}else{
+		if(this.selectedCommunity.length <= 0){
+			this.toolsPrvd.showToast('Select community to share');
+		}else{
+			this.performPostMessage();
+		}
+	}	
+  }
+  
+  public performPostMessage(){
+	this.error_txt = '';
+	this.checkCommunityFlag = true;
+	this.checkContactFlag = true; 
+	if(this.selectedContacts.length > 0){
+		this.checkContactFlag = false;
+	}
+	if(this.selectedCommunity.length > 0){
+		this.checkCommunityFlag = false;
+	}
+	this.postMessage();	
+  }
+  
+  public createNewCommunityF(event){
+	if(event.checked){
+		this.createNewCommunity = true;		
+	}else{
+		this.createNewCommunity = false;
 	}
   }
   
@@ -352,19 +369,11 @@ export class NetwrklistPage {
 		shareLink = 'https://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
 	}
 	
-	// let shareMessage =  "Yo, it's your local assistant net. "+this.activitySelected+' at '+this.locationSelected+' '+this.txtIn.value.trim()+' 1 tap reply via '+shareLink;
 	this.user = this.authPrvd.getAuthData();
-	// let shareMessage =  "Yo, it's your local assistant net. "+this.user.name+' wants to '+this.activitySelected+' 1 tap reply via '+shareLink; 
-	
-	let shareMessage =  "Want to "+this.activitySelected+"? Download https://TestFlight.apple.com/join/cmTDxwuU"+" and reply via "+shareLink; 
+	let shareMessage =  "Want to "+this.activitySelected.toLowerCase()+"? Download https://TestFlight.apple.com/join/cmTDxwuU"+" and reply via "+shareLink; 
 	
 	let contacts = ''; //[]   
 	for(let i = 0;i<this.selectedContacts.length;i++){		
-		/* let checkedObj = {
-		  name: this.selectedContacts[i].name.formatted,
-		  phone: this.selectedContacts[i].phoneNumbers[0].value
-		}
-		contacts.push(checkedObj); */
 		if(contacts == ''){
 			contacts = this.selectedContacts[i].phoneNumbers[0].value;
 		}else{
@@ -374,12 +383,8 @@ export class NetwrklistPage {
 	this.checkContactFlag = true; 
 	this.socialSharing.shareViaSMS(shareMessage,contacts);
 	this.goBackSuccess(message);
-	this.toolsPrvd.hideLoader();
-	/* this.contactsPrvd.sendSMS(contacts,shareMessage).subscribe(res => {
-	  this.checkContactFlag = true; 
-	  this.goBackSuccess(message);
-	  this.toolsPrvd.hideLoader();
-	}, err => this.toolsPrvd.hideLoader()); */
+	// this.toolsPrvd.hideLoader();
+	
   }
   
   private createPrivateGroup(){
@@ -421,7 +426,6 @@ export class NetwrklistPage {
 	message.isTemporary = false;
 	message.temporaryFor = 0;
 	  
-	
 	this.chatPrvd.sendMessage(messageParams).then(res => {
 	  message.id = res.id;
 	  message.user_id = this.user.id;
@@ -431,14 +435,16 @@ export class NetwrklistPage {
 		this.newlyAdded = result.message;
 		this.selectedCommunity.push(this.newlyAdded);
 		// this.newlyAdded.date = this.toolsPrvd.getTime(this.newlyAdded.created_at)
-		this.posts.push(this.newlyAdded);
+		// this.posts.push(this.newlyAdded);
+		this.holdSaveLM = true;
+		this.performPostMessage();
 		setTimeout(()=>{
 			this.isCreateCheck = false;
-		})
+		});
 	  });
 	  this.toolsPrvd.hideLoader();
 	}).catch(err => {
-	  this.toolsPrvd.hideLoader();
+	 this.toolsPrvd.hideLoader();
 	});     
 		
   }
@@ -459,10 +465,18 @@ export class NetwrklistPage {
 		} 
 		let currentDate = moment(new Date());
 		let locDetails = this.storage.get('last_hold_location_details');
+		console.log('locDetails:::',locDetails);
 		let place_name = locDetails?locDetails.place_name:'';
 		this.chatPrvd.request_type = "LOCAL_MESSAGE";	
-		// let title = this.user.name+' wants to '+this.activitySelected;
-		let title = this.activitySelected +' near '+place_name;
+		let item = this.storage.get('last-activity');
+		this.activitySelected = item.itemName;
+		let title ='';
+		if(place_name !=''){
+			title = this.activitySelected +' near '+place_name;
+		}else{
+			title = this.activitySelected;
+		}
+		 
 		
 		this.gpsPrvd.coords.lat = locDetails?parseFloat(locDetails.loc.lat):null;
 		this.gpsPrvd.coords.lng = locDetails?parseFloat(locDetails.loc.lng):null;
@@ -493,7 +507,7 @@ export class NetwrklistPage {
 		message.image_urls =[];
 		message.isTemporary = false;
 		message.temporaryFor = 0; 
-		this.toolsPrvd.showLoader();		
+		// this.toolsPrvd.showLoader();		
 		this.chatPrvd.sendMessage(netwrkParams).then(result => {
 			let res 			= result;
 			message.id 			= res.id;
@@ -505,6 +519,7 @@ export class NetwrklistPage {
 			netwrkParams.undercover = true;
 			
 			this.chatPrvd.request_type = "CONV_REQUEST";
+			console.log('CONV_REQUEST');
 			this.chatPrvd.sendMessage(netwrkParams).then(msg_result => {
 				let res = msg_result.send_messages[0];
 				res.notification_type = "new_message"; 
@@ -514,7 +529,7 @@ export class NetwrklistPage {
 						this.sendContactsMessage(message);
 					}else{
 						this.goBackSuccess(message);
-						this.toolsPrvd.hideLoader();
+						// this.toolsPrvd.hideLoader();
 					}
 				}, err => console.error(err));				
 			}).catch(err => {
@@ -628,155 +643,5 @@ export class NetwrklistPage {
 	}); 
   }
 
- 
-    /* private getAndUpdateUndercoverMessages() {		
-		console.log('[netwrkLineList]'+this.netwrkLineList);
-        this.chatPrvd.getNearByMessages(this.netwrkLineList, null, false).subscribe(res => {
-            res = this.chatPrvd.organizeMessages(res.messages,true);
-			// console.log('netwklist',res);
-			this.netwrkLineList=res;
-			this.isProcessing = false;
-        }, err => {
-            this.toolsPrvd.hideLoader();
-        });
-    } */
 
-    /* private goToProfile(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
-        this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
-            this.chatPrvd.isLobbyChat = false;
-            if(this.user.id==profileId){
-                if(userRoleName){
-                    this.toolsPrvd.pushPage(ProfilePage, res);
-                }else{
-                    this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
-                }
-            }else{
-                this.toolsPrvd.pushPage(ProfilePage, res);
-            }
-        }, err => {
-            console.error('goToProfile err:', err);
-        });
-    } */
-
-    /* private goToLobby(messageParams:any){
-        this.chatPrvd.postMessages=[];
-        this.chatPrvd.isCleared = true;
-        messageParams.image_urls='';
-        this.app.getRootNav().setRoot(ChatPage, {message:messageParams});
-    } */
-
-    /* public resetFilter():void {
-		if(!this.isProcessing){
-			this.isProcessing = true;
-			this.toolsPrvd.showLoader();
-			if(this.chatPrvd.holdFilter){
-				this.chatPrvd.holdFilter=false;
-				this.getAndUpdateUndercoverMessages();
-				this.toolsPrvd.hideLoader();
-			}else{
-				this.chatPrvd.holdFilter=true;
-				this.getAndUpdateUndercoverMessages();
-				this.toolsPrvd.hideLoader();
-			}
-		}
-    } */
-
-    /* public followNearByNetwork(message) {
-        this.toolsPrvd.showLoader();
-        message.is_followed=!message.is_followed;
-        this.chatPrvd.followUserToLine(message.id).subscribe(res => {
-            this.toolsPrvd.hideLoader();
-            this.toolsPrvd.showToast('Followed successfully');
-        }, err => {
-            this.toolsPrvd.hideLoader();
-        });
-    } */
-
-   
-    /* private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
-        return new Promise((resolve, reject) => {
-            this.chatPrvd.getNearByMessages(this.netwrkLineList, null, true)
-                .subscribe(res => {
-                    res = this.chatPrvd.organizeMessages(res.messages,true);
-					for (let i in res) this.netwrkLineList.push(res[i]);
-                    if (refresher) refresher.complete();
-                    resolve();
-                }, err => {
-                    console.error(err);
-                    if (refresher) refresher.complete(); reject();
-                });
-        });
-    } */
-
-    /* public listenForScrollEnd(event):void {
-        this.zone.run(() => {
-            console.log('scroll end...');
-        });
-    } */
-
-    /* private doInfinite(ev):void {
-        setTimeout(() => {
-            this.refreshChat(ev).then(succ => ev.complete(), err => ev.complete());
-        }, 500);
-    } */
-
-  /* public closeModal():void {
-      this.viewCtrl.dismiss();
-
-      let pageIndex = this.navCtrl.length() - 1;
-
-      this.app.getRootNav().setRoot(ChatPage).then(() => {
-          if(pageIndex){
-              this.navCtrl.remove(pageIndex);
-          }
-      });
-  } */
-  
-  /* public openLineLobby(message:any){
-	  if(this.user.id != message.user_id && message.locked_by_user){
-		 console.log('Private Line...') 
-	  }else{
-		this.toolsPrvd.showLoader();
-		this.storage.set('parameterData', '{"messagePermalink":'+message.id+'}');
-		this.chatPrvd.isCleared = true;
-        this.app.getRootNav().setRoot(ChatPage);
-	  }
-  } */
-  
-  /* public getNCL(message:any,event,index){
-	let clBtn = event.currentTarget;
-	let currState = clBtn.classList.contains('down-btn')?'down':'up';
-	let paElement = clBtn.parentElement;
-	if(currState == 'down'){ // perform down action && this.currentCLLobbyIndex == null
-		this.toolsPrvd.showLoader();
-		this.chatPrvd.getNonCuctomLines(message).subscribe(res => {
-			if(res.messages.length > 0){
-				res = this.chatPrvd.organizeMessages(res.messages,true);
-				for (let i in res){  
-					if(parseInt(i) > 0){
-						res[i].addClass = true; 
-					}
-					this.netwrkLineList.splice(index+1,0, res[i]);
-				}			
-				clBtn.classList.add('up-btn');
-				clBtn.classList.remove('down-btn');
-				paElement.classList.add('active-cl'); 
-				this.toolsPrvd.hideLoader();
-			}else{
-				this.toolsPrvd.hideLoader();
-			}
-		}, err => {
-			clBtn.classList.add('up-btn');
-			clBtn.classList.remove('down-btn');
-			paElement.classList.add('active-cl');
-			this.toolsPrvd.hideLoader();			
-		});	
-	}else if(currState == 'up'){ // perform up action
-		this.netwrkLineList.splice(index+1,message.lines_count);
-		paElement.classList.remove('active-cl');
-		clBtn.classList.add('down-btn');
-		clBtn.classList.remove('up-btn');
-	}	
-  } */
-  
 }

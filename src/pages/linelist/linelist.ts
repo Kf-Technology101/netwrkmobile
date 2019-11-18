@@ -124,7 +124,7 @@ export class LinePage {
     shareLineContainer = new Toggleable('off', true);
     emojiLineContainer = new Toggleable('off', true);
     mainInput = new Toggleable('fadeIn', false);
-    postTimer = new Toggleable('slideUp', true);
+    // postTimer = new Toggleable('slideUp', true);
     postLock = new Toggleable('slideUp', true);
     topSlider = new Toggleable('slideDown', false);
     postUnlock  = new Toggleable('slideUp', true);
@@ -476,12 +476,12 @@ export class LinePage {
 			this.setMainBtnStateRelativeToEvents();
             this.chatPrvd.postBtn.setState(false);
 
-            if (this.postTimer.isVisible()) {
+            /* if (this.postTimer.isVisible()) {
                 setTimeout(() => {
                     this.postTimer.hide();
                 }, chatAnim/2);
                 this.postTimer.setState('slideUp');
-            }
+            } */
             if (this.debug.postHangTime != 0) {
                 this.debug.postHangTime = 0;
             }
@@ -540,7 +540,7 @@ export class LinePage {
 				this.lineTitle = params.title;
 			}
 
-			if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network" && (!this.postLockData.password || !this.postLockData.hint)){
+			if(this.slideAvatarPrvd.sliderPosition == 'right' && (lineAvtr && lineAvtr.name.toLowerCase() == "private network" || this.editMessage && !this.editMessage.public && this.editMessage.locked)&& (!this.postLockData.password || !this.postLockData.hint)){ 
 				this.noErrors = false;
 				return false;
 			}
@@ -606,8 +606,11 @@ export class LinePage {
 
 			this.chatPrvd.sendMessage(messageParams).then(res => {
 				message.id = res.id;
-				message.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
-				// res.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
+				if(this.chatPrvd.updatedLineAvatarData){
+					message.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
+				}else if(this.editMessage){
+					message.avatar_url = this.editMessage.avatar_url;
+				}
 				if(this.storage.get('edited-page')=="holdpage"){
 					message.user_id = this.user.id;
 					message.user = this.user;
@@ -616,8 +619,7 @@ export class LinePage {
 					this.navCtrl.push(NetwrklistPage, {
 					  message: res
 					});
-					// this.toolsPrvd.pushPage(NetwrklistPage,{message:message});
-					this.toolsPrvd.hideLoader();
+					// this.toolsPrvd.hideLoader();
 				}else{
 					if ((message.title && message.title.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
 						let alert = this.alertCtrl.create({
@@ -693,6 +695,10 @@ export class LinePage {
 							}, chatAnim/2);
 							this.cameraPrvd.takenPictures = [];
 						}
+					}else if(this.storage.get('edited-page')=="chat"){
+						console.log('456');
+						/* this.toolsPrvd.showToast('Community settings updated successfully.'); */
+						this.toolsPrvd.pushPage(ChatPage,{message:message});
 					}
 				}
 				
@@ -744,7 +750,7 @@ export class LinePage {
         // this.toolsPrvd.showLoader();
         // this.chatPrvd.sendMessage(messageParams).then(res => {
             this.setting.isNewlineScope=false;
-			messageParams.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
+			// messageParams.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
             this.app.getRootNav().setRoot(ChatPage, {message:messageParams});
 			this.toolsPrvd.hideLoader();
 			// this.chatPrvd.postMessages.unshift(message);
@@ -845,7 +851,7 @@ export class LinePage {
 
     private getTopSlider(container:string):any {
         const a = {
-            timer: this.postTimer,
+            // timer: this.postTimer,
             lock: this.postLock,
             unlock: this.postUnlock
         }
@@ -856,12 +862,20 @@ export class LinePage {
         let cont = this.getTopSlider(container);
 		if(container == 'lock'){
 			let lineAvtr = this.setting.lineAvatar;
-
-			if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network" && (!this.postLockData.password || !this.postLockData.hint )){
-				console.log('inlinr check errors');
-				this.noErrors = false;
-				return false;
+			if(lineAvtr){
+				if(this.slideAvatarPrvd.sliderPosition == 'right' && (lineAvtr && lineAvtr.name.toLowerCase() == "private network") && (!this.postLockData.password || !this.postLockData.hint )){
+					console.log('inline check errors');
+					this.noErrors = false;
+					return false;
+				}
+			}else if(this.editMessage){
+				if(this.slideAvatarPrvd.sliderPosition == 'right' && (this.editMessage && !this.editMessage.public && this.editMessage.locked) && (!this.postLockData.password || !this.postLockData.hint )){
+					console.log('inline check errors');
+					this.noErrors = false;
+					return false;
+				}
 			}
+			
 		}
 		
         if (cont && cont.isVisible()) {
@@ -892,13 +906,32 @@ export class LinePage {
         let cont = this.getTopSlider(container);
         if (this.activeTopForm){
 			let lineAvtr = this.setting.lineAvatar;
-			if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network" && (!this.postLockData.password || !this.postLockData.hint)){
+			if(lineAvtr){
+				if(this.slideAvatarPrvd.sliderPosition == 'right' && (lineAvtr && lineAvtr.name.toLowerCase() == "private network") && (!this.postLockData.password || !this.postLockData.hint )){
+					console.log('inline check errors');
+					this.noErrors = false;
+					return false;
+				}else{
+					this.noErrors = true;
+					this.hideTopSlider(this.activeTopForm);
+				}
+			}else if(this.editMessage){
+				if(this.slideAvatarPrvd.sliderPosition == 'right' && (this.editMessage && !this.editMessage.public && this.editMessage.locked) && (!this.postLockData.password || !this.postLockData.hint )){
+					console.log('inline check errors');
+					this.noErrors = false;
+					return false;
+				}else{
+					this.noErrors = true;
+					this.hideTopSlider(this.activeTopForm);
+				}
+			}
+			/* if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network" && (!this.postLockData.password || !this.postLockData.hint) && this.setting.isNewlineScope){
 				this.noErrors = false;
 				return false;
 			}else{
 				this.noErrors = true;
 				this.hideTopSlider(this.activeTopForm);
-			}
+			} */
 		}
 
         if (cont.isVisible()) {
@@ -924,7 +957,7 @@ export class LinePage {
         let currentDate = moment(new Date());
         switch (timeId) {
             case 0:
-                this.hideTopSlider('timer');
+                // this.hideTopSlider('timer');
                 this.postTimerObj.time = null;
                 this.postTimerObj.expireDate = null;
                 break;
@@ -962,7 +995,7 @@ export class LinePage {
                 this.postTimerObj.time = null;
                 return;
         }
-        this.hideTopSlider('timer');
+      //  this.hideTopSlider('timer');
     }
 
     private getUsers():Promise<any> {
@@ -1416,7 +1449,7 @@ export class LinePage {
         }
 		
         if(this.user.role_name=='Temporary gathering' && this.slideAvatarPrvd.sliderPosition == 'right'){
-            this.toggleTopSlider('timer');
+            // this.toggleTopSlider('timer');
         }
     }
 
@@ -1425,18 +1458,24 @@ export class LinePage {
 		  this.keyboard.disableScroll(true);
 		});
         this.editPostId = this.storage.get('edit-post');
-		if(this.editPostId > 0){
+		console.log('sdfsdfsdfsdfsdfsdfsdfsdfsdf');
+		if(this.editPostId > 0){			
 			this.chatPrvd.getMessageIDDetails(this.editPostId).subscribe(res => {
 				this.editMessage = res.message;
 				this.lineTitle = this.editMessage.text_with_links; 	
 				this.lineimg = this.editMessage.avatar_url;
 				this.txtIn = this.editMessage.text;
+				this.chatPrvd.request_type = this.editMessage.message_type;
+				this.chatPrvd.custom_line_id = this.editMessage.custom_line_id;
 				if(this.editMessage.public){
 					this.storage.set('slider_position', 'left');
 					this.slideAvatarPrvd.setSliderPosition('left'); 
 				}else{
 					this.storage.set('slider_position', 'right');
-					this.slideAvatarPrvd.setSliderPosition('right'); 
+					this.slideAvatarPrvd.setSliderPosition('right');
+					if(this.editMessage && !this.editMessage.public && this.editMessage.locked){
+						this.toggleTopSlider('lock');
+					}
 				}
 				this.setProfileData();
 			}); 
@@ -1445,29 +1484,12 @@ export class LinePage {
 			if (this.chatPrvd.bgState.getState() == 'stretched') {
 				this.toggleChatOptions();
 			}
-			this.toolsPrvd.hideLoader();
-		
+			this.toolsPrvd.hideLoader();		
 		}else if(this.storage.get('edited-page')=="holdpage"){
 			if(this.storage.get('slider_position')=="right"){
 				//private
 				let lineAvtr = this.setting.lineAvatar;
 				if(lineAvtr.name.toLowerCase() == "private group"){ 
-					/* let item = this.storage.get('last-activity');
-					let locDetails = this.storage.get('last_hold_location_details');
-					let place_name = locDetails.place_name;
-					let input_string = place_name.indexOf(",")>-1?place_name.substring(0, place_name.indexOf(",")):place_name;
-					let title =  item.itemName+' at '+input_string;
-					
-					let params: any = {
-						text: item.itemName,
-						title:title,
-						text_with_links:item.itemName,
-					}
-					if (this.chatPrvd.bgState.getState() == 'stretched') {
-						this.toggleChatOptions();
-					}
-					this.postMessage(null, params, true); */
-					
 					this.setProfileData();
 					this.onEnter();
 					if (this.chatPrvd.bgState.getState() == 'stretched') {

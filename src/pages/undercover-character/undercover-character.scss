@@ -1,4 +1,11 @@
 page-undercover-character {
+  .incognito-header.header-ios {
+	padding-top: 20px;
+	height: 65px;
+  }
+  .scroll-content{
+	margin-top: 65px !important;
+  }
   .header {
     &::after {
       background: none;

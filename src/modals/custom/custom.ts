@@ -34,7 +34,7 @@ export class CustomModal {
 			item.itemName = this.inputElement.trim();
 			this.storage.set('last-activity', item);
 		}else{
-			let item = {itemName: "Custom",itemId:'7'};
+			let item = {itemName: "Custom"};
 			item.itemName = this.inputElement.trim();
 			this.storage.set('last-activity', item);
 		}

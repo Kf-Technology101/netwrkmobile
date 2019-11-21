@@ -577,7 +577,7 @@ export class ChatPage implements DoCheck {
             let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
             if (this.plt.is('ios')){
                 this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
-                        this.toolsPrvd.showToast('line shared successfully ');
+                        // this.toolsPrvd.showToast('line shared successfully ');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
 							if(res.privateLineCount > 0){
 								this.coachMarkText = '';  
@@ -603,7 +603,7 @@ export class ChatPage implements DoCheck {
                 );
             }else{
 				this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
-                        this.toolsPrvd.showToast('line shared successfully');
+                        // this.toolsPrvd.showToast('line shared successfully');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
 							if(res.privateLineCount > 0){
 								this.coachMarkText = '';  
@@ -1493,7 +1493,6 @@ export class ChatPage implements DoCheck {
 
   private postMessage(emoji?: string, params?: any):void {
 	try {
-		
 	  let publicUser: boolean;
       let images = [];
       let messageParams: any = {};
@@ -1601,7 +1600,9 @@ export class ChatPage implements DoCheck {
 		  
 		  message.dateStr = 'just now';
 		
-   		  if(this.chatPrvd.request_type != "ACCESS_REQUEST" && !this.isReplyMode){
+   		  if((this.chatPrvd.request_type != "CONV_ACCEPTED" || this.chatPrvd.request_type == "CONV_ACCEPTED" && this.chatPrvd.areaLobby) && this.chatPrvd.request_type != "CONV_REJECTED" && this.chatPrvd.request_type != "ACCESS_REQUEST" && !this.isReplyMode){
+			message.like_by_user = false;
+			message.legendary_by_user = false;
 			this.chatPrvd.postMessages.unshift(message);
 		  }else if(this.isReplyMode){
 			let messageIndex = this.chatPrvd.postMessages.indexOf(this.replyMessage)+this.repliesLength+1;
@@ -1617,7 +1618,7 @@ export class ChatPage implements DoCheck {
         this.chatPrvd.sendMessage(messageParams).then(res => {
           this.hideTopSlider(this.activeTopForm);
           message.id=res.id;
-          if(this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby || msgrequest_type == 'CONV_ACCEPTED' || msgrequest_type == 'CONV_REJECTED'){
+		if(this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby || msgrequest_type == 'CONV_ACCEPTED' || msgrequest_type == 'CONV_REJECTED'){
 			  // this.updateMessageExpiry(this.chatPrvd.currentLobby.id);
               if(!this.isReplyMode){ 
 				res.notification_type="new_message"; 
@@ -1626,7 +1627,7 @@ export class ChatPage implements DoCheck {
 			  }
 			 
 			  this.chatPrvd.sendNotification(res).subscribe(notificationRes => {
-                console.log('Notification Res', notificationRes);
+             
               }, err => console.error(err));
           } 
 	  
@@ -1682,7 +1683,9 @@ export class ChatPage implements DoCheck {
           this.postLockData.password = null;
           this.postTimerObj.expireDate = null;
           this.postTimerObj.label = null;
-          this.updatePost(res, message, emoji);
+		  if(msgrequest_type != "CONV_REJECTED"){
+			this.updatePost(res, message, emoji);
+		  }
           this.postTimerObj.time = null;
           this.chatPrvd.scrollToTop();
           this.toolsPrvd.hideLoader();
@@ -1692,7 +1695,8 @@ export class ChatPage implements DoCheck {
         });
         if (!emoji) {
           this.chatPrvd.appendContainer.setState('off');
-          this.chatPrvd.mainBtn.setState('hidden');
+          // this.chatPrvd.mainBtn.setState('hidden');
+		  this.chatPrvd.mainBtn.setState('normal');
           setTimeout(() => {
             this.chatPrvd.appendContainer.hide();
           }, chatAnim/2);
@@ -3571,7 +3575,7 @@ console.log('openLobbyForLockedChecked::',message);
 		break;		 
 	  case 'pinnedStuff':
 		let pinnedStuffFlag = this.storage.get('show-pinned-stuff');
-		if(pinnedStuffFlag == true || pinnedStuffFlag == null){
+		if(pinnedStuffFlag || pinnedStuffFlag === null){
 			popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content">'+					
 				'<div class="label-18"><strong>Add an epic moment to the local news!</strong></div>'+
 				'<div class="label-18 normal-text">Tap <img class="ic popup-icon" src="assets/icon/lobby-icon.svg" > and select <img class="ic popup-icon" src="assets/images/sun_icon.png" > to try it</div>'+
@@ -4353,7 +4357,7 @@ console.log('openLobbyForLockedChecked::',message);
 	});	
   }
   
-  public grantAccess(accessType,curr_message){
+  public grantAccess(accessType,curr_message,index='-1'){
 	let message_id = '';
 	if(curr_message.messageable_type=='Network' && curr_message.message_type == 'LOCAL_MESSAGE'){
 		message_id = curr_message.id;
@@ -4388,7 +4392,7 @@ console.log('openLobbyForLockedChecked::',message);
 					this.updateConversationExpiry(message_id);
 				}
 				curr_message.conversation_status = 'ACCEPTED';
-				
+				room_message.message.conversation_status = 'ACCEPTED';
 				console.log(this.chatPrvd.currentLobbyMessage);
 				console.log(message_id);
 				
@@ -4405,42 +4409,17 @@ console.log('openLobbyForLockedChecked::',message);
 		break;
 		case 'REJECT':
 			// alert('reject');
-		  this.chatPrvd.getMessageIDDetails(message_id).subscribe(room_message => {
+		  this.chatPrvd.getMessageIDDetails(message_id,false).subscribe(room_message => {	
 			this.storage.set('response_conversation_id',room_message.message.id);
 			this.storage.set('response_room_conversation_id',room_message.room_id);
 			this.requestMessage = this.user.name+" can't make it";
 			this.chatPrvd.request_type = 'CONV_REJECTED';
-			// this.hideTextContainer = true;
+			room_message.message.conversation_status = 'REJECTED';
 			this.postMessage(null);	
-			this.handleMainBtnClick(null);
+			this.chatPrvd.postMessages.splice(index, 1); 
 		  });
 		break;
 	}
-
-	/* switch(accessType){
-		case 'ACCEPT':
-			// alert('accept');
-			this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
-				this.requestMessage = "I'm in";
-				this.chatPrvd.request_type = 'CONV_ACCEPTED';	
-				this.chatPrvd.currentLobby.isAddButtonAvailable = false;
-				this.postMessage(null);
-				if(this.chatPrvd.currentLobbyMessage.expire_date != null){
-					this.updateConversationExpiry(this.chatPrvd.currentLobbyMessage.id);
-				}
-				this.hideTextContainer = false;
-				this.openConversationLobbyForPinned(this.chatPrvd.currentLobbyMessage)
-			}, err => {}); 			  
-		break;
-		case 'REJECT':
-			// alert('reject');
-			this.requestMessage = this.user.name+" can't make it";
-			this.chatPrvd.request_type = 'CONV_REJECTED';
-			this.hideTextContainer = true;
-			this.postMessage(null);	
-			this.handleMainBtnClick(null);
-		break;
-	}  */ 
   }
   
   public updateConversationExpiry(messageId){
@@ -4504,8 +4483,6 @@ console.log('openLobbyForLockedChecked::',message);
                 }, err => console.error(err));
             }
         });
-        
-      
     });
   
   }

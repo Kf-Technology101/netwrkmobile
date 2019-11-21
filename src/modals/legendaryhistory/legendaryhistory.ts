@@ -134,7 +134,7 @@ export class LegendaryModal {
   }
 
   showLegendaryMessages() {
-    this.chatPrvd.showMessages(this.lgMessages, 'legendary').then(res => {
+	this.chatPrvd.showMessages(this.lgMessages, 'legendary').then(res => {
       if (res.messages && res.messages.length > 0 &&
           this.lgMessages.length != res.messages.length) {
         this.areSomeLegendary = true;

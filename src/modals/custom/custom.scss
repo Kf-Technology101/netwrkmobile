@@ -1,18 +1,19 @@
 custom {
   .close-map {
-    width: 36px;
-    height: 36px;
-    background: #5b87aa;
-    border: 1px solid #5b87aa;
-    border-radius: 2px;
-    color: #fff;
-    text-align: center;
-    line-height: 25px;
-    position: absolute;
-    z-index: 99;
-    top: 30px;
-    right: 14px;
-    font-size: 15px;
+    background: transparent;
+	color: #5b87aa;
+	line-height: 25px;
+	font-size: 15px;
+    float: right;
+	margin-right: 4%;
+  }
+  
+  .main-action-btn{
+	border: 5px solid #5b87aa;
+    bottom: 50px;
+    width: 90px;
+    height: 54px;
+    border-radius: 11px;
   }
   
   .okay-btn{
@@ -40,6 +41,14 @@ custom {
     padding-left: 22px;
   }
   
+  .custom-header{
+	width: 90%;
+    margin: 20% auto 0px;
+    color: #5b87aa;
+    text-align: center;
+    font-size: 23px;
+  }
+  
   .custom-input {
     width: 90%;
     margin-left: auto;
@@ -48,9 +57,9 @@ custom {
     border: 1px solid #5b87aa;
     color: #5b87aa;
     height: 50px;
-    margin-top: 20%;
+    margin-top: 2%;
     margin-bottom: auto;
-	padding: 0 15px;
+    padding: 0 15px;
 	.text-input{
 		margin: 16px 8px 11px 0px;
 	}

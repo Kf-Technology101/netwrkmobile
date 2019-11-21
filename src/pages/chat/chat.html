@@ -128,7 +128,7 @@
                         Local<!-- {{ chatPrvd.localStorage.get('chat_zip_code')}} -->
                     </span>
                     <span *ngIf="!chatPrvd.areaFilter" class="username">
-                        All
+                        World
                     </span>
                 </div>
 
@@ -196,11 +196,11 @@
 					  </div>
 					  
 					  <div class="accessDiv" *ngIf = "chatPrvd.currentLobby.isAddButtonAvailable && user.id != message.user_id">
-						<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)">
+						<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message,i)">
 							I'm in
 						</button>
 
-						<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)">
+						<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message,i)">
 							I can't
 						</button>
 					  </div>
@@ -354,11 +354,11 @@
 
 		<div class="accessDiv" 
 		*ngIf = "message.conversation_status && user.id != message.user_id && message.conversation_status=='REQUESTED'"> <!-- *ngIf = "message.conversation_status" -->
-			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)" >
+			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message,i)" >
 				I'm in
 			</button>
 
-			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)" >
+			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message,i)" >
 				I can't
 			</button>
 		</div> 
@@ -532,11 +532,11 @@
         </p>
 		
 		<div class="accessDiv accessBtnDiv" *ngIf = "message.conversation_status && user.id != message.user_id && message.conversation_status=='REQUESTED'">
-			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)">
+			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message,i)">
 				I'm in
 			</button>
 
-			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)">
+			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message,i)">
 				I can't
 			</button>
 		</div> 
@@ -632,7 +632,7 @@
 	  <!-- </div> -->
 	  </div>
 
-	  <div class="message-conversasion 321" *ngIf="chatPrvd.areaLobby && message.message_type == 'CONV_REJECTED' && message.user.id == user.id">
+	  <div class="message-conversasion 321" *ngIf="chatPrvd.areaLobby && message.message_type == 'CONV_REJECTED' && chatPrvd.currentLobbyMessage.user.id == user.id">
 	  <!-- <div *ngIf="isParentOwnerUser(message)"> -->		
 		<p class="message-item">
 			<ng-container *ngIf="!message.locked_by_user || (message.locked_by_user && user.id == message.user_id)">
@@ -725,11 +725,11 @@
         </p>
 		<div class="accessDiv"
 		*ngIf = "message.conversation_status && user.id != message.user_id && message.conversation_status=='REQUESTED'"> <!-- *ngIf = "message.conversation_status" -->
-			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message)">
+			<button ion-button class="accept-access accessBtn" (click)="grantAccess('ACCEPT',message,i)">
 				I'm in
 			</button>
 
-			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message)">
+			<button ion-button class="reject-access accessBtn" (click)="grantAccess('REJECT',message,i)">
 				I can't
 			</button>
 		</div> 

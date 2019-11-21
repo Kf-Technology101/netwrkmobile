@@ -1,5 +1,5 @@
 <ion-header class="ios-head">
-    <ion-toolbar *ngIf="!showContactsStep && !holdSaveLM" class="connect-header">
+   <!--  <ion-toolbar *ngIf="!showContactsStep && !holdSaveLM" class="connect-header">
         <ng-container>
             <ion-row class="loading bg-text" align-items-center>
                 <ion-col text-center>
@@ -7,17 +7,20 @@
                 </ion-col>
             </ion-row>
         </ng-container>
-	</ion-toolbar>
+	</ion-toolbar> -->
 	
-	<!-- <ion-toolbar *ngIf="showContactsStep && !holdSaveLM"  class="contact-header">
+	<ion-toolbar *ngIf="showContactsStep && !holdSaveLM"  class="contact-header">
 		<ng-container>
             <ion-row class="loading bg-text" align-items-center>
                 <ion-col text-center>
-                    <h1 ion-text>Fuego, I’ll delete it in 1 days if no one can kick it. Who should I send it to?</h1>
+                    <h1 ion-text>
+						Fuego, I’ll delete it in 1 days if no one can kick it.<br>Your somvo is private unless posted to a public community.<br>
+						Who should I send it to?
+					</h1>
                 </ion-col>
             </ion-row>
         </ng-container>
-	</ion-toolbar> -->
+	</ion-toolbar>
 </ion-header>
 
 <ion-content class="content"  no-bounce [ngClass]="{'connect-content': (!showContactsStep || holdSaveLM), 'contact-content':showContactsStep }">
@@ -25,7 +28,8 @@
 <div *ngIf="!showContactsStep && !holdSaveLM">
 	<div class="chat-container visible">
 		<div>
-			<p>I want to <button (tap)="show_activity()" class="location-btn">{{activitySelected}}</button></p>		
+			<h1 ion-text color="white" class="connect-head">What do you want to do or talk about?</h1>
+			<button (tap)="show_activity()" class="location-btn activity-btn">{{activitySelected}}</button>		
 			<p *ngIf="locationSelected != ''">Near 
 				<button class="location-btn" >
 					<span class="remove-location" (tap)="remove_loaction()">X</span>
@@ -55,6 +59,8 @@
 			  <div class="username">
 				<ng-container>
 				  {{ post.title}}
+				  <span *ngIf="post.public" class="post-access">Public</span>
+				  <span *ngIf="!post.public" class="post-access">Private</span>
 				</ng-container>
 				<ion-checkbox [disabled]="isDisabled && selectedCommunity[0].id != post.id" (ionChange)="selectMe(post,$event)" [checked]="newlyAdded && newlyAdded.id == post.id"  color="dark"></ion-checkbox>
 			  </div> 

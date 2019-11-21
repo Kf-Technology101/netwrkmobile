@@ -103,26 +103,18 @@ export class MyApp {
         const pushObject: PushObject = this.push.init(options);
 		
         pushObject.on('notification').subscribe((notification: any) => {
-			this.toolsPrvd.showSplashScreen();
-			let message  = JSON.parse(notification.additionalData.child_message);
-			pushObject.finish().then(e => {
-				let messageData:any;
-				messageData = {
-					messagePermalink : message.id
-				};
-				
-				if (notification.additionalData.foreground){
-				}else{
-					// this.toolsPrvd.showLoader();
-					// this.storage.set('parameterData', messageData);
-					// this.goToPage();
-					this.initCheckLogin(message.id); 
-					/* this.chatPrvd.getMessageIDDetails(message.id).subscribe(res => {		this.app.getRootNav().setRoot(ChatPage, {message:res.message});
-					});	
-					this.toolsPrvd.hideSplashScreen();	 */				
-				} 	 
-			});
-			
+			if(notification.additionalData.foreground){
+			}else{
+				this.toolsPrvd.showSplashScreen(); 
+				let message  = JSON.parse(notification.additionalData.child_message);
+				pushObject.finish().then(e => {
+					if(message.id){
+						this.initCheckLogin(message.id); 
+					}else{
+						this.goToPage();
+					}
+				});
+			}
         });
 
         pushObject.on('registration').subscribe((registration: any) => {

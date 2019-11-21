@@ -156,19 +156,21 @@ export class NetwrklistPage {
   public loadActivity(){
 	return new Promise(resolve => {
 		this.activity = [];
-		this.activity.push({itemName: "Do something",itemId:'1'});
-		this.activity.push({itemName: "Hang out",itemId:'2'});
-		this.activity.push({itemName: "Go out",itemId:'3'});
-		this.activity.push({itemName: "Grab food",itemId:'4'});
-		this.activity.push({itemName: "Ball",itemId:'5'});
-		this.activity.push({itemName: "Game",itemId:'6'});
-		this.activity.push({itemName: "Jam",itemId:'7'});  
-		this.activity.push({itemName: "Surf",itemId:'8'});
-		this.activity.push({itemName: "Chill",itemId:'9'});
-		this.activity.push({itemName: "Hike",itemId:'10'});
-		this.activity.push({itemName: "Yoga",itemId:'11'});
-		this.activity.push({itemName: "Chat",itemId:'12'});
-		this.activity.push({itemName: "Custom",itemId:'13'}); 
+		this.activity.push({itemName: "Custom"}); 
+		this.activity.push({itemName: "Go on an adventure"});
+		this.activity.push({itemName: "Dinner"});
+		this.activity.push({itemName: "Lunch"});
+		this.activity.push({itemName: "Hang out"});
+		// this.activity.push({itemName: "Hang our"});
+		this.activity.push({itemName: "Work out"});
+		this.activity.push({itemName: "Ball"});
+		this.activity.push({itemName: "Game"});
+		this.activity.push({itemName: "Jam"});  
+		this.activity.push({itemName: "Surf"});
+		this.activity.push({itemName: "Chill"});
+		this.activity.push({itemName: "Hike"});
+		this.activity.push({itemName: "Yoga"});
+		this.activity.push({itemName: "Chat"});
 		
 		resolve(true);        
 	});           
@@ -181,8 +183,8 @@ export class NetwrklistPage {
   }
   
   public select_activity(item){
-	if(item.itemId == this.activity.length){
-		this.storage.set('last-activity', item);
+	if(item.itemName == 'Custom'){//this.activity.length
+		// this.storage.set('last-activity', item);
 		// popup text box for custom input
 		this.showActivitiesContainer = false;
 		let customModal = this.modalCtrl.create(CustomModal,{}, {
@@ -341,6 +343,7 @@ export class NetwrklistPage {
   }
   
   public performPostMessage(){
+	this.toolsPrvd.showLoader();
 	this.error_txt = '';
 	this.checkCommunityFlag = true;
 	this.checkContactFlag = true; 
@@ -476,7 +479,6 @@ export class NetwrklistPage {
 		}else{
 			title = this.activitySelected;
 		}
-		 
 		
 		this.gpsPrvd.coords.lat = locDetails?parseFloat(locDetails.loc.lat):null;
 		this.gpsPrvd.coords.lng = locDetails?parseFloat(locDetails.loc.lng):null;
@@ -523,7 +525,7 @@ export class NetwrklistPage {
 			this.chatPrvd.sendMessage(netwrkParams).then(msg_result => {
 				let res = msg_result.send_messages[0];
 				res.notification_type = "new_message"; 
-				this.chatPrvd.sendNotification(res).subscribe(notificationRes => {
+				// this.chatPrvd.sendNotification(res).subscribe(notificationRes => {
 					this.checkCommunityFlag = true;
 					if(this.selectedContacts.length > 0){
 						this.sendContactsMessage(message);
@@ -531,7 +533,7 @@ export class NetwrklistPage {
 						this.goBackSuccess(message);
 						// this.toolsPrvd.hideLoader();
 					}
-				}, err => console.error(err));				
+				// }, err => console.error(err));				
 			}).catch(err => {
 				this.toolsPrvd.hideLoader();
 			}); 
@@ -603,9 +605,11 @@ export class NetwrklistPage {
 	} 	
 	if(this.storage.get('last-activity') && this.storage.get('last-activity')!='' && this.storage.get('last-activity')!='undefined'){
 		let item = this.storage.get('last-activity');
-		this.activitySelected = item.itemName;
+		if(item.itemName != 'Custom'){
+			this.activitySelected = item.itemName;
+		}
 	}else{
-		this.activitySelected = "Activity";
+		this.activitySelected = "+";
 	}	
   }
   

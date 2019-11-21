@@ -49,12 +49,19 @@ page-netwrklist {
 			  font-size: 16px;
 			  font-weight: 500;
 			  padding-top: 4px;
+			  .post-access{
+				color: grey;
+				font-size: 14px;
+			  }
 			}
 		}
 		
 		.scroll-content{
-		    margin-top: 0px !important;
+		    margin-top: 100px !important;
 			margin-bottom: 75px !important;
+			@media screen and (max-width: 374px) {
+				margin-top: 130px !important;	     
+			}
 		}
 		
 		.chat-avatar{
@@ -84,12 +91,19 @@ page-netwrklist {
 			color: #fff;
 			text-align: center;
 			margin-bottom: 0px !important;
+			@media screen and (max-width: 374px) {
+				margin-top: 0px !important;	     
+			}
 		 }
 		  .chat-container{
 			text-align: center;
 			font-size: 21px;
-			margin-top: 25%;
+			margin-top: 18%;
 			font-weight: 500;
+		  }
+		  .connect-head{
+			font-size: 3.3rem;
+			margin-bottom: 2rem; 
 		  }
 		  
 		  .activity-list{	  
@@ -127,6 +141,10 @@ page-netwrklist {
 			font-weight: 500;
 			margin-left: 5px;	
 			position: relative;
+			&.activity-btn{
+				min-width: 300px;
+				margin-left: 0px;
+			}
 		  }
 	  }
 	  
@@ -197,15 +215,26 @@ page-netwrklist {
     }
   }
    
-   
   ion-header {
-    height: 53px;
+    height: 12%;
 	&.header-ios{
 		padding-top: 15px;
 	}
     ion-toolbar {
       height: 100%;
-    }
+    }	
+	@media screen and (max-width: 362px) {
+		height: 18%;		     
+	}
+	@media screen and (max-width: 358px) {
+		height: 23%;		    
+	}
+	@media screen and (min-width: 480px) {
+		height: 8%;	 	    
+	}
+	@media screen and (min-width: 1000px) {
+		height: 6%;	 	    
+	}
   }
 
   .bg-text {

@@ -485,7 +485,6 @@ export class Chat {
   public sendNotification(data: any):any {
      let seq = this.api.post('messages/send_notifications', data).share();
      let notifyMap = seq.map(res => res.json());
-
      return notifyMap;
   }
 
@@ -554,23 +553,18 @@ export class Chat {
 			}).catch(err => reject(err));			
 		} else {
 			if(params.message_ids){
-				console.log('sharemessage start');
 				this.shareMessages(params).subscribe(res => {
-					console.log('sharemessage end');
 					resolve(res);
 				}, err => reject(err));
 			}else{
-				console.log('sendMessageWithoutImage',params);
 				this.sendMessageWithoutImage(params).subscribe(res => {
 					if(res.messageable_type == "Network"){
 						if(data.line_avatar.length > 0){
 							this.updateAvatar(res.id, data.line_avatar, null, 'avatar').then(result => {
-								console.log(result);
 								this.updatedLineAvatarData = result;
 								resolve(res);
 							}, error => {
 								this.tools.hideLoader();
-								console.error('updateAvatar ERROR', error);
 								reject(error);
 							});
 						}else{
@@ -758,7 +752,7 @@ export class Chat {
   }
 
   public getLegendaryHistory(netId:number) {
-    // console.log('[getLegendaryHistory] netId:', netId);
+    // console.log('[getLegendaryHistory] netId:', netId); 
     let legendaryList = this.api.get('messages/legendary_list', { network_id: netId }).share();
     let legendaryMap = legendaryList.map(res => res.json());
     return legendaryMap;

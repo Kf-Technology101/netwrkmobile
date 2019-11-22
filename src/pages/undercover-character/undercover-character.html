@@ -1,4 +1,4 @@
-<ion-header class="incognito-header">
+<ion-header class="incognito-header" *ngIf="!settings.isCreateLine">
   <ion-toolbar>
     <div class="drag-container" style="pointer-events: none">
       <div class="dragline">
@@ -14,7 +14,8 @@
 
 </ion-header>
 
-<ion-content has-main-btn>
+<ion-content has-main-btn >
+<div [ngClass]="{'createLine':settings.isCreateLine}">
   <ion-row align-items-center>
     <ion-col text-center>
         <h3 ion-text color="bk" *ngIf="!settings.isCreateLine">Choose an alternate identity</h3>
@@ -41,6 +42,7 @@
           </span>
     </ion-col>
   </ion-row>
+</div>
 </ion-content>
 
 <ion-footer *ngIf="settings.isCreateLine">

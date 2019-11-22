@@ -4,8 +4,13 @@ page-undercover-character {
 	height: 65px;
   }
   .scroll-content{
-	margin-top: 65px !important;
+	/* margin-top: 65px !important; */
   }
+  .createLine{
+	margin-top: 0px !important;
+	padding-top: 0px;
+  }
+  
   .header {
     &::after {
       background: none;

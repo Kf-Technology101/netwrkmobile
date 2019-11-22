@@ -541,7 +541,7 @@ export class ChatPage implements DoCheck {
 
   public shareLineJoinFlow(message):void {
 	let alert = this.alertCtrl.create({
-      subTitle: 'Share the line with your friends?',
+      subTitle: 'Share a community with your friends?',
       buttons: [{
         text: 'No',
         role: 'cancel',
@@ -907,6 +907,7 @@ export class ChatPage implements DoCheck {
   }
 
   public addMarker():void {
+	/* this.chatPrvd.postMessages = [];*/
 	 this.markerLatLng = [];
 	
 	 for (var j = 0; j < this.mapMarkers.length; j++) {
@@ -939,7 +940,6 @@ export class ChatPage implements DoCheck {
 		}else{
 			this.markerLatLng.push(data);	
 		}
-		
 	 } 
 	 let bounds  = new google.maps.LatLngBounds();
 	 for(var j = 0; j < this.markerLatLng.length; j++) {
@@ -974,9 +974,11 @@ export class ChatPage implements DoCheck {
 		}				
 	 });
 	 
-	 if(this.boundsMap)	{
+	 if(this.boundsMap && this.chatPrvd.postMessages.length > 0){
 		this.map.fitBounds(bounds);       // auto-zoom
 		this.map.panToBounds(bounds);     // auto-center
+	 }else if(this.boundsMap && this.chatPrvd.postMessages.length <= 0){
+		this.map.setCenter(new google.maps.LatLng(parseFloat('37.090240'),parseFloat('-95.712891'))); 
 	 }
   }
 
@@ -1822,8 +1824,8 @@ export class ChatPage implements DoCheck {
 			cont0.hide();			
 		});
 		this.chatPrvd.postMessages = [];
-		this.settings.isNewlineScope=false;
-		this.settings.isCreateLine=false;
+		this.settings.isNewlineScope = false;
+		this.settings.isCreateLine = false;
 		this.chatPrvd.isCleared = true;		
 		this.refreshChat();		
 	}
@@ -2373,11 +2375,12 @@ export class ChatPage implements DoCheck {
   }
   
   private getAndUpdateUndercoverMessages() {
+	  console.log(this.chatPrvd.postMessages);
 	  if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {		  
 		  this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
 			if (res) {
 				if (res.messages && res.messages.length > 0) {
-					if(this.chatPrvd.postMessages.length > 1){
+					// if(this.chatPrvd.postMessages.length > 1){
 						for (let i in this.chatPrvd.postMessages) {
 							for (let j in res.messages) {
 							  if (this.chatPrvd.postMessages[i].id == res.messages[j].id) {
@@ -2385,12 +2388,13 @@ export class ChatPage implements DoCheck {
 							  }
 							}
 						}
-					}
+					// }
 					this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
 					this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(this.chatPrvd.postMessages);
 					this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
 					this.isProcessing = false;
 					this.toolsPrvd.hideLoader();
+					console.log(this.chatPrvd.postMessages);
 				}else{
 				  if(!this.isUndercover && this.chatPrvd.areaFilter){
 					this.chatPrvd.areaFilter = false;
@@ -3858,6 +3862,7 @@ console.log('openLobbyForLockedChecked::',message);
 	}, (results, status) => {
 		// this.callback(loc,results, status);
 		this.setCustomLocation(addressDetails);
+		this.boundsMap = false;
 		this.addMarker();
 	});  
   }
@@ -3999,6 +4004,7 @@ console.log('openLobbyForLockedChecked::',message);
 			
 			}
 			this.map.setCenter(new google.maps.LatLng(parseFloat(parameterData.lat), parseFloat(parameterData.lng)));
+			
 			this.addMarker();	
 			this.fitMapToBound();
 		}
@@ -4085,6 +4091,7 @@ console.log('openLobbyForLockedChecked::',message);
 				this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
 				this.contentPosition = 'absolute';
 				this.map.setCenter(new google.maps.LatLng(parseFloat(params.lat), parseFloat(params.lng)));
+				
 				this.addMarker();	
 			}
 			this.chatPrvd.isMainBtnDisabled = false;

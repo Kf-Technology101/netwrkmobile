@@ -24,7 +24,8 @@ export class CustomModal {
   }
 
   private closeModal():any {
-    this.navCtrl.pop();
+    // this.navCtrl.pop();
+	this.viewCtrl.dismiss();
   }
   
   private saveModal(){

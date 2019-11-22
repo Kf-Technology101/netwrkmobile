@@ -156,7 +156,7 @@ export class NetwrklistPage {
   public loadActivity(){
 	return new Promise(resolve => {
 		this.activity = [];
-		this.activity.push({itemName: "Custom"}); 
+		this.activity.push({itemName: "Create an activity or topic"}); 
 		this.activity.push({itemName: "Go on an adventure"});
 		this.activity.push({itemName: "Dinner"});
 		this.activity.push({itemName: "Lunch"});
@@ -183,7 +183,8 @@ export class NetwrklistPage {
   }
   
   public select_activity(item){
-	if(item.itemName == 'Custom'){//this.activity.length
+	  
+	if(item.itemName == this.activity[0].itemName){//this.activity.length
 		// this.storage.set('last-activity', item);
 		// popup text box for custom input
 		this.showActivitiesContainer = false;
@@ -199,8 +200,12 @@ export class NetwrklistPage {
 		
 		customModal.onDidDismiss(data => {
 			this.toolsPrvd.showLoader();
-			let item = this.storage.get('last-activity');
-			this.activitySelected = item.itemName;			
+			if(this.storage.get('last-activity') && this.storage.get('last-activity')!='' && this.storage.get('last-activity')!=undefined && this.storage.get('last-activity')!=null){
+				let item = this.storage.get('last-activity');
+				if(item.itemName != this.activity[0].itemName){
+					this.activitySelected = item.itemName;
+				}
+			}				
 			this.toolsPrvd.hideLoader();			
 		});
 	}else{
@@ -603,9 +608,9 @@ export class NetwrklistPage {
 	}else{
 		this.locationSelected = "";
 	} 	
-	if(this.storage.get('last-activity') && this.storage.get('last-activity')!='' && this.storage.get('last-activity')!='undefined'){
+	if(this.storage.get('last-activity') && this.storage.get('last-activity')!='' && this.storage.get('last-activity')!=undefined && this.storage.get('last-activity')!=null){
 		let item = this.storage.get('last-activity');
-		if(item.itemName != 'Custom'){
+		if(item.itemName != this.activity[0].itemName){
 			this.activitySelected = item.itemName;
 		}
 	}else{

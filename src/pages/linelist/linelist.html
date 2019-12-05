@@ -1,6 +1,6 @@
 <!--Header -->
-<ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
-    <ion-toolbar *ngIf="isUndercover" class="title-container">
+<ion-header class="incognito-header" isScrolling="false">
+    <ion-toolbar class="title-container">
          <ion-input class="netwrk-input" text-center type="text" [(ngModel)]="lineTitle" autofocus (ionBlur)="setLineName()" placeholder="Add Title"></ion-input>
 		 <div class="error" *ngIf="!noErrors && !lineTitle"> 
 				Title is required.

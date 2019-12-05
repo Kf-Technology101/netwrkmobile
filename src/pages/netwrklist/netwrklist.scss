@@ -57,8 +57,8 @@ page-netwrklist {
 		}
 		
 		.scroll-content{
-		    margin-top: 100px !important;
-			margin-bottom: 75px !important;
+		    margin-top: 110px !important;
+			margin-bottom: 0px !important;
 			@media screen and (max-width: 374px) {
 				margin-top: 130px !important;	     
 			}
@@ -216,9 +216,9 @@ page-netwrklist {
   }
    
   ion-header {
-    height: 12%;
+    height: 16%;
 	&.header-ios{
-		padding-top: 15px;
+		padding-top: 25px;
 	}
     ion-toolbar {
       height: 100%;

@@ -45,6 +45,9 @@ page-linelist {
 		text-align: center;
 		color: #fff;
 		font-size: 17px;
+		@media screen and (min-width: 767px) {
+			margin-top: 15%;
+		}
 	  }
     }
 	

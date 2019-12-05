@@ -72,8 +72,9 @@ export class MyApp {
 				}
 			}, (nomatch) => { 
 				this.init();
-				// this.toolsPrvd.showSplashScreen(); 
-				// this.initCheckLogin(466);  
+				/* this.toolsPrvd.showSplashScreen(); 
+				console.log('show splash');
+				this.initCheckLogin(725);   */
 				// this.toolsPrvd.showToast('no match subscribeRoutes');
 			});
 		}); 
@@ -103,9 +104,10 @@ export class MyApp {
         const pushObject: PushObject = this.push.init(options);
 		
         pushObject.on('notification').subscribe((notification: any) => {
+			this.toolsPrvd.showSplashScreen(); 
 			if(notification.additionalData.foreground){
+				this.toolsPrvd.hideSplashScreen();
 			}else{
-				this.toolsPrvd.showSplashScreen(); 
 				let message  = JSON.parse(notification.additionalData.child_message);
 				pushObject.finish().then(e => {
 					if(message.id){

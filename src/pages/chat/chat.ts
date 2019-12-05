@@ -355,19 +355,10 @@ export class ChatPage implements DoCheck {
   ) {	
 	  // this.toolsPrvd.pushPage(HoldScreenPage);
 	  // this.storage.set('new_signUp',true);
-  	  /* this.plt.ready().then(() => {
-		this.push.hasPermission().then((res: any) => {
-			if (res.isEnabled) {
-			  // this.toolsPrvd.showToast('We have permission to send push notifications');
-			} else {
-			  this.toolsPrvd.showToast("Don't you want to get updates from friends? Please turn them on in settings to get alerts, don’t miss out!");
-			}
-		});
-	  }); */
-	  if(this.storage.get('slider_position') == null || this.storage.get('slider_position') == ''){
-		  this.storage.set('slider_position','left');
-		  this.slideAvatarPrvd.setSliderPosition('left');
-		  this.slideAvatarPrvd.sliderPosition = "left";
+  	  if(this.storage.get('slider_position') == null || this.storage.get('slider_position') == ''){
+		this.storage.set('slider_position','left');
+		this.slideAvatarPrvd.setSliderPosition('left');
+		this.slideAvatarPrvd.sliderPosition = "left";
 	  }
 	  this.storage.rm('lobby_message');
 	  if(this.storage.get('new_signUp')){
@@ -703,7 +694,6 @@ export class ChatPage implements DoCheck {
 		
 		if(this.isUndercover){ /// LP
 			if(this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
-				// let marker = new google_maps.Marker({});
 				if(this.chatPrvd.postLineMessages[0].lat && this.chatPrvd.postLineMessages[0].lng){
 					let marker ={
 						map: this.map,
@@ -797,7 +787,7 @@ export class ChatPage implements DoCheck {
 					}
 				}
 			}
-		
+			
 			if(this.gpsPrvd.coords.lat && this.gpsPrvd.coords.lng){
 				this.boundsMap = false;
 			}else{
@@ -973,10 +963,18 @@ export class ChatPage implements DoCheck {
 			} 
 		}				
 	 });
+	
 	 
 	 if(this.boundsMap && this.chatPrvd.postMessages.length > 0){
-		this.map.fitBounds(bounds);       // auto-zoom
-		this.map.panToBounds(bounds);     // auto-center
+		this.map.fitBounds(bounds); // auto-zoom
+		if(this.map.getZoom()<=1){
+			new google.maps.event.addListenerOnce(self.map, 'bounds_changed', function(event) {		
+				this.setZoom(2);
+			});		
+		}else{
+			this.map.panToBounds(bounds); // auto-center
+		}
+		
 	 }else if(this.boundsMap && this.chatPrvd.postMessages.length <= 0){
 		this.map.setCenter(new google.maps.LatLng(parseFloat('37.090240'),parseFloat('-95.712891'))); 
 	 }
@@ -1484,10 +1482,11 @@ export class ChatPage implements DoCheck {
 
   public inputOnFocus():void { 
 	this.textProfile = false;
-    if (!this.chatPrvd.isLobbyChat) this.setDefaultTimer();
+	if (!this.chatPrvd.isLobbyChat) this.setDefaultTimer();
   }
   
   public inputOnBlur():void {
+	this.chatPrvd.postBtn.setState(false)
 	if(!this.isReplyMode){
 		this.textProfile = true;
 	}
@@ -1618,20 +1617,20 @@ export class ChatPage implements DoCheck {
 		
         // this.toolsPrvd.showLoader();
         this.chatPrvd.sendMessage(messageParams).then(res => {
-          this.hideTopSlider(this.activeTopForm);
-          message.id=res.id;
-		if(this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby || msgrequest_type == 'CONV_ACCEPTED' || msgrequest_type == 'CONV_REJECTED'){
-			  // this.updateMessageExpiry(this.chatPrvd.currentLobby.id);
-              if(!this.isReplyMode){ 
-				res.notification_type="new_message"; 
-			  }else if(this.isReplyMode){ 
-				res.notification_type="new_reply"; 
-			  }
-			 
-			  this.chatPrvd.sendNotification(res).subscribe(notificationRes => {
-             
-              }, err => console.error(err));
-          } 
+			this.hideTopSlider(this.activeTopForm);
+			message.id = res.id;
+			if(this.chatPrvd.isLobbyChat || this.chatPrvd.areaLobby || msgrequest_type == 'CONV_ACCEPTED' || msgrequest_type == 'CONV_REJECTED'){
+				  // this.updateMessageExpiry(this.chatPrvd.currentLobby.id);
+				  if(!this.isReplyMode){ 
+					res.notification_type="new_message"; 
+				  }else if(this.isReplyMode){ 
+					res.notification_type="new_reply"; 
+				  }
+				 
+				  this.chatPrvd.sendNotification(res).subscribe(notificationRes => {
+				 
+				  }, err => console.error(err));
+			  } 
 	  
 		   // || !this.chatPrvd.areaLobby && this.chatPrvd.getState() == 'area' && this.chatPrvd.request_type != "ACCESS_REQUEST"
 		  
@@ -2010,6 +2009,9 @@ export class ChatPage implements DoCheck {
 	this.chatPrvd.postMessages=[];
 	this.nclAddedCnt = 0;
 	this.currentCLLobbyIndex = null;
+	this.chatPrvd.currentLobbyMessage = [];
+	this.chatPrvd.areaLobby = false;
+	this.chatPrvd.isLobbyChat = false;	
 	this.chatPrvd.isCleared = true;
 	this.toolsPrvd.pushPage(NetwrklistPage);
   }
@@ -2394,7 +2396,7 @@ export class ChatPage implements DoCheck {
 					this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
 					this.isProcessing = false;
 					this.toolsPrvd.hideLoader();
-					console.log(this.chatPrvd.postMessages);
+					
 				}else{
 				  if(!this.isUndercover && this.chatPrvd.areaFilter){
 					this.chatPrvd.areaFilter = false;
@@ -2849,6 +2851,7 @@ console.log('openLobbyForLockedChecked::',message);
 	  this.placeholderText = 'What would you like to say?';
 
 	  this.chatPrvd.openLobbyForPinned(message).then(() => {
+		  console.log('asdasd');
 		  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
 			  this.placeholderText = 'What do you want to talk about?';
 		  }else{
@@ -2886,7 +2889,7 @@ console.log('openLobbyForLockedChecked::',message);
 	cont1.hide();
 	this.normalizeMainBtn(null,null);	  
 	this.contentMarginTop = null;	  
-
+	this.chatPrvd.postBtn.setState(false);
 	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){		  
 	  if(this.chatPrvd.getState() == 'undercover'){
 		  this.pageNavLobby=true;
@@ -2909,16 +2912,26 @@ console.log('openLobbyForLockedChecked::',message);
   }
 
   public openLobbyForLineMessage(message:any):void {
-	console.log('openLobbyForLineMessage',message);
+	let okForOpenLobby = false;	
+	if(this.user.id != message.user_id && message.locked_by_user){ // Private line
+		this.showUnlockPostForm(message.id, message.hint);
+	}else{ // Public / SEMI PRIVTE / LOCAL MESSAGE
+		if(message.line_message_type == 'PUBLIC_LINE' || (message.line_message_type == 'SEMI_PRIVATE_LINE' && message.is_connected) || (message.line_message_type == 'PRIVATE_LINE' && !message.line_locked_by_user) || message.line_message_type == 'LOCAL_MESSAGE'){
+			okForOpenLobby = true;
+		}
+	}
+	
 	let cont3 = this.getTopSlider('address');
 	cont3.setState('slideUp');
 	cont3.hide();
+	
+	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off' && okForOpenLobby){
 
-	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off'){
 	  if (this.chatPrvd.bgState.getState() == 'stretched') {
 		  this.toggleChatOptions();
 	  }
 	  this.chatPrvd.getParentLobby(message).subscribe(res => {
+		  console.log(res);
 		  this.toolsPrvd.showLoader();
 		  this.isUndercover=true;
 
@@ -2988,8 +3001,7 @@ console.log('openLobbyForLockedChecked::',message);
 	cont2.setState('slideUp');
 	cont2.hide();
 	
-	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off' && (!message.conversation_status || message.conversation_status == 'ACCEPTED')){ //|| message.conversation_status == 'REQUESTED'
-	  console.log('inside openConversationLobbyForPinned if');
+	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off' && (!message.conversation_status || message.conversation_status == 'ACCEPTED')){ 
 	  this.toolsPrvd.showLoader();
 	  if(this.chatPrvd.getState() == 'undercover'){
 		 this.pageNav=true;
@@ -3010,7 +3022,7 @@ console.log('openLobbyForLockedChecked::',message);
 	  this.cameraPrvd.takenPictures = [];
 	  this.setMainBtnStateRelativeToEvents();
 	  this.placeholderText = 'What would you like to say?';
-
+	  this.chatPrvd.postBtn.setState(false);
 	  this.chatPrvd.openLobbyForPinned(message).then(() => {
 		  this.hideTextContainer = false;
 		  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
@@ -3025,7 +3037,7 @@ console.log('openLobbyForLockedChecked::',message);
 		  if(message.lat != null && message.lng!= null){
 			this.initLpMap();
 		  }else{
-			  this.clearMarkers();
+			this.clearMarkers();
 		  }
 		  this.chatPrvd.isMainBtnDisabled = false;
 		  
@@ -3041,7 +3053,8 @@ console.log('openLobbyForLockedChecked::',message);
 		  this.chatPrvd.isLobbyChat = false; 
 			
 		  this.settings.isNewlineScope = false;
-		  this.chatPrvd.setState('area');		  
+		  this.chatPrvd.setState('area');
+		  this.toolsPrvd.hideSplashScreen();		  
 		  this.toolsPrvd.hideLoader();
 		  this.socialLoaderHidden = true;
 	  }, err => {
@@ -3050,6 +3063,7 @@ console.log('openLobbyForLockedChecked::',message);
 		  this.chatPrvd.isMainBtnDisabled = false;
 		  this.startMessageUpdateTimer();
 		  this.chatPrvd.allowUndercoverUpdate = true;
+		  this.toolsPrvd.hideSplashScreen();
 		  this.toolsPrvd.hideLoader();
 		  this.socialLoaderHidden = true;
 	  });
@@ -4158,7 +4172,15 @@ console.log('openLobbyForLockedChecked::',message);
 		bounds.extend(new google.maps.LatLng(position.lat(), position.lng()));
 	}
 	this.map.fitBounds(bounds);       // auto-zoom
-	this.map.panToBounds(bounds);     // auto-center
+	new google.maps.event.addListenerOnce(this.map, 'bounds_changed', function(event) {
+		
+		if (this.getZoom()){
+			this.setZoom(2);
+		}else{
+			this.map.panToBounds(bounds);     // auto-center
+		}
+	});
+	
   }
   
   public loadImage(message:any){
@@ -4172,7 +4194,7 @@ console.log('openLobbyForLockedChecked::',message);
 					if(message.message_type == 'LOCAL_MESSAGE'){ 
 						returnData= message.public ? message.user.avatar_url : message.user.hero_avatar_url;
 					}else{
-						returnData = this.toolsPrvd.defaultAvatar;;
+						returnData = this.toolsPrvd.defaultAvatar;
 					}
 				}
 			break;

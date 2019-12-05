@@ -13,7 +13,19 @@
 
 page-chat,
 modal-legendaryhistory {
-
+  .bcast-txt-btn img{
+	border: 1px solid #5b87aa;
+    border-radius: 50px;
+	width: 35px;
+	margin-bottom: -5px;
+  }
+  .square-txt-btn{
+	border: 3px solid #5b87aa;
+	width: 44px;
+	height: 28px;
+	background: transparent;
+	border-radius: 6px;
+  }
   .bg-text {
     position: absolute;
     top: 40px;
@@ -139,7 +151,7 @@ page-chat,page-hold {
     width: 100%;
     background: transparent;
     height: 84px;
-	padding-top: 5px;
+	padding-top: 15px;
 	
     ion-toolbar {
       padding: 0;
@@ -215,7 +227,8 @@ page-chat,page-hold {
 
           &.user-icon {
             // float: left;
-            margin-left: 12px;
+            margin-left: auto;
+            margin-right: auto;
             display: block;
             width: 42px;
             height: 42px;
@@ -226,6 +239,7 @@ page-chat,page-hold {
               height: 64px;
               margin-top:0 !important;
             }
+			
           }
 
           &.legendary-icon {
@@ -906,18 +920,19 @@ page-network-no {
     top: 0;
 	
 	&.lobby-content {
-      margin-top: 90px;
+      margin-top: 110px;
 	}
 	
 	.message-msg{
 		img.chat-avatar {
-			/* margin-left: 16px !important;
-			top: 0px !important; */
+			/* margin-left: 16px !important;*/
+			top: -15px !important; 
 		}
 		p.message-item.message-container {
 			/* margin-left: 45px !important; */ 
 			min-height: 60px !important;
 			padding-left: 22px;
+			margin-left: 30px;
 		}
 	}
 	
@@ -1029,6 +1044,16 @@ page-network-no {
 			z-index: 4;
 		}
 	  }*/
+	  .message-reply{
+		margin: 15px 0;
+		p.message-item.message-container{
+			margin-left: 30px;
+			padding-left: 22px;
+		}
+		img.chat-avatar{
+			top: -15px !important;
+		}
+	  }
 	 
       .message {
         padding: 0;
@@ -1170,7 +1195,7 @@ page-network-no {
 			color: grey;
 			overflow: hidden;
 			height: 30px;
-			line-height: 30px;
+			line-height: 31px;
 		  }
 		}
 		
@@ -1264,6 +1289,7 @@ page-network-no {
 			display: inline-flex;
 			line-height: 30px;
             /* margin-bottom: 12px; */
+			max-width: 105%;
           }
 		  .message-date {
             font-size: 12px;
@@ -1282,6 +1308,10 @@ page-network-no {
 		  }
           span.access-type {
 			color: grey;
+			&.local-message-accesstype{
+				margin-right: 1%;
+				line-height: 31px;
+			}
 		  }
           .shared-status {
             display: block;
@@ -1884,7 +1914,8 @@ page-network-no {
 
             &.user-icon {
               float: left;
-              margin-left: 12px;
+              margin-left: auto;
+			  margin-right: auto;
             }
 
             &.legendary-icon {

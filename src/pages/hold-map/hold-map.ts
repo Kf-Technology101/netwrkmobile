@@ -562,7 +562,9 @@ export class HoldMapPage {
   
   createMarker(place){
 	let icon =  {
-	   url:'assets/icon/wi-fi.png'
+	   // url:'assets/icon/wi-fi.png'
+	   url:'assets/icon/click-marker.png',
+	   scaledSize: new google.maps.Size(50, 45)
 	};
 	let marker = {								
 			   map: this.map,

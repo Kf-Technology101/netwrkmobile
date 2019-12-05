@@ -95,7 +95,7 @@ export class Chat {
   public request_type: any = null;
   public custom_line_id: any = null;
   public updatedLineAvatarData: any = null;
-
+  private limit: number  = 30;
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -625,7 +625,7 @@ export class Chat {
       lng: this.gps.coords.lng,
       offset: offset,
       is_landing_page: this.isLandingPage ? this.isLandingPage : false,
-      limit: 20
+      limit: 40
     };
 
     let messagesIds: Array<any> = [];
@@ -636,7 +636,7 @@ export class Chat {
 
     if (data.undercover && !doRefresh) {
       data.offset = 0;
-      data.limit = 20;
+      data.limit = 40;
       data.current_ids = [];
     }
 
@@ -662,7 +662,7 @@ export class Chat {
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       offset: offset,
-      limit: 20
+      limit: this.limit
     };
 
     let messagesIds: Array<any> = [];
@@ -674,7 +674,7 @@ export class Chat {
     if (!doRefresh) {
       data.offset = 0;
       //data.limit = offset == 0 ? 20 : offset
-      data.limit = 20
+      data.limit = this.limit
     }
 
     if (params) Object.assign(data, params);
@@ -689,7 +689,7 @@ export class Chat {
 
   public getMessagesByUserId(params: any):any {
     let data: any = {
-      limit: 20,
+      limit: this.limit,
     };
 	
     if (params) Object.assign(data, params);
@@ -702,7 +702,7 @@ export class Chat {
   public getFollowedAndOwnLine(params: any):any {
 	//http://18.188.223.201:3000/api/v1/messages/profile_communities?limit=20&offset=0
     let data: any = {
-      limit: 100
+      limit: this.limit
 	};
 	
     if (params) Object.assign(data, params);
@@ -1166,7 +1166,7 @@ export class Chat {
   /*Fetch all networks nearby latLng with in 100Yards*/
   public getCustomAreaNetworks(params:any = null){	
     let offset = params && params.offset ? params.offset : 0;
-    let limit = params && params.limit ? params.limit : 100;
+    let limit = params && params.limit ? params.limit : this.limit;
 	let data: any = {
       post_code: params.post_code,
       lat: params.lat,
@@ -1186,7 +1186,7 @@ export class Chat {
   /*http://18.188.223.201:3000/api/v1/messages/nearby_profile_messages?user_id=1&lat=19.9942144&lng=73.777152&is_distance_check=true */
   
     let offset = params && params.offset ? params.offset : 0;
-    let limit = params && params.limit ? params.limit : 100;
+    let limit = params && params.limit ? params.limit : this.limit;
 	let data: any = {
       is_distance_check:true,
       lat: params.lat,

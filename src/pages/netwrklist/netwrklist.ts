@@ -324,6 +324,7 @@ export class NetwrklistPage {
   
   public sendMessage(){
 	if(this.createNewCommunity){
+		this.toolsPrvd.showLoader();
 		if(this.storage.get('last_hold_location_details')){
 			let localMessageDetails = {
 				selectedContacts: this.selectedContacts,
@@ -342,6 +343,7 @@ export class NetwrklistPage {
 		if(this.selectedCommunity.length <= 0){
 			this.toolsPrvd.showToast('Select community to share');
 		}else{
+			this.toolsPrvd.showLoader();
 			this.performPostMessage();
 		}
 	}	
@@ -459,7 +461,7 @@ export class NetwrklistPage {
   
   private postMessage(emoji?: string, params?: any) {
 	try {
-		let publicUser: boolean = true;
+		let publicUser: boolean = false; // Private
 		let images = [];
 		let messageParams: any = {};
 		let netwrkParams: any = {};
@@ -469,6 +471,9 @@ export class NetwrklistPage {
 		this.user = this.authPrvd.getAuthData();
 		let selectedCommunityIdsArr:any = [];
 		for(let i=0; i < this.selectedCommunity.length; i++){
+			if(this.selectedCommunity[i].public && !publicUser){ // Check for public
+				publicUser = true;
+			}
 			selectedCommunityIdsArr.push(this.selectedCommunity[i].id);
 		} 
 		let currentDate = moment(new Date());

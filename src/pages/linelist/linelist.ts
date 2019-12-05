@@ -551,7 +551,7 @@ export class LinePage {
 			}
 			 
 			let lineRole = '';
-            if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
+            if(lineAvtr.name.toLowerCase() == "public network"){
                 publicUser=true; 
 			}else{
                 publicUser=false;

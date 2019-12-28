@@ -184,9 +184,9 @@
     },
     "is_top_level": true,
     "variables": {
-      "URL_SCHEME": "netwrkapp",
+      "URL_SCHEME": "somvo",
       "DEEPLINK_SCHEME": "https",
-      "DEEPLINK_HOST": "netwrkapp.com"
+      "DEEPLINK_HOST": "somvo.app"
     }
   },
   "cordova-plugin-facebook4": {

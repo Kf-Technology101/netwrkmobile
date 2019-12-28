@@ -109,9 +109,9 @@
 
 <div class="virtual-custom-scroll-wrapper" [ngStyle]="{'opacity': showActivitiesContainer && !showContactsStep?'1':'0'}">
 	<div class="virtual-custom-scroll-container">  
-		<ion-list [virtualScroll]="activity" approxItemHeight="3px" class="activity-list"> 
-		  <ion-item *virtualItem="let activity_item">
-			<button class="activity-btn" (tap)="select_activity(activity_item)">{{activity_item.itemName}}</button>
+		<ion-list [virtualScroll]="activity" class="activity-list"> 
+		  <ion-item *virtualItem="let activity_item;let i = index">
+			<button class="activity-btn" [ngClass]="{'blue-text':i==0}"  (tap)="select_activity(activity_item)">{{activity_item.itemName}}</button>
 		  </ion-item>
 		</ion-list>
 	</div>
@@ -134,7 +134,7 @@
 	   <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
 	</button>
 	
-	<ion-input #textInput id="textInput" type="text" class="message-input" [placeholder]="placeholderText" *ngIf="showContactsStep" (ionFocus)="inputOnFocus()">
+	<ion-input #textInput id="textInput" type="text" class="message-input" [placeholder]="placeholderText" *ngIf="showContactsStep" (ionFocus)="inputOnFocus()" autocorrect="on">
 	</ion-input>
 	
 	<button ion-button color="bk" class="back-btn" outline (tap)="goToLanding()" *ngIf="showContactsStep">

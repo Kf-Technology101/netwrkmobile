@@ -3,12 +3,13 @@
 <ion-input [(ngModel)]="inputElement" id="textInput" type="text" class="custom-input" [placeholder]="placeholderText"></ion-input>
 <div class="error" *ngIf="isError && inputElement==''">Add custom activity</div>
 
-<button (tap)="closeModal()" class="close-map">
-  Back
-</button>
+
 
 <ion-footer>
 <button (tap)="saveModal()" class="main-action-btn">
  <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
+</button>
+<button (tap)="closeModal()" class="close-map">
+  Back
 </button>
 </ion-footer>

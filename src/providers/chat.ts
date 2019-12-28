@@ -96,6 +96,8 @@ export class Chat {
   public custom_line_id: any = null;
   public updatedLineAvatarData: any = null;
   private limit: number  = 30;
+  public show_lp_note:boolean = false;
+  public show_ap_note:boolean = false;
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -1050,7 +1052,6 @@ export class Chat {
 
   public goToProfile(profileId?: number, profileTypePublic?: boolean): Promise<any> {
     return new Promise(res => {
-
       let currentUser = this.authPrvd.getAuthData();
       if (!profileId) profileId = currentUser.id;
       let params = {
@@ -1086,13 +1087,11 @@ export class Chat {
     if (this.scrollTimer.interval) clearInterval(this.scrollTimer.interval);
     if (this.scrollTimer.timeout) clearTimeout(this.scrollTimer.timeout);
     this.scrollTimer.interval = setInterval(() => {
-      // console.log('[scrollToBottom] loaded:', this.loadedImages + '/' + this.imagesToLoad);
       if (this.imagesToLoad == this.loadedImages || (params && params.forced)) {
         console.log('[SCROLLING TO BOTTOM]');
         content.scrollTo(0, content.getContentDimensions().scrollHeight, 100);
         setTimeout(() => {
           this.isMessagesVisible = true;
-          // this.tools.hideLoader();
         }, 150);
         clearInterval(this.scrollTimer.interval);
       }
@@ -1103,7 +1102,7 @@ export class Chat {
   }
 
   public showMessages(messages:any, location: any, isUndercover?: boolean):Promise<any> {
-	   console.log('[ChatPage][showMessages]');
+	console.log('[ChatPage][showMessages]');
     let loadMessages:any;
     let arg:any;
     switch (location) {
@@ -1183,8 +1182,6 @@ export class Chat {
   
   /*Fetch all private networks nearby latLng with in 15miles of particular user*/
   public getUserPrivateLines(params:any = null){	
-  /*http://18.188.223.201:3000/api/v1/messages/nearby_profile_messages?user_id=1&lat=19.9942144&lng=73.777152&is_distance_check=true */
-  
     let offset = params && params.offset ? params.offset : 0;
     let limit = params && params.limit ? params.limit : this.limit;
 	let data: any = {
@@ -1204,7 +1201,6 @@ export class Chat {
   
   /*Fetch single record wth unique message_id */
   public getMessageIDDetails(message_id:any,isShareLink:boolean=false):any {
-	  // http://18.188.223.201:3000/api/v1/messages/7
 	  let uri:any;
 	  if(isShareLink){
 		uri = 'messages/' + message_id + '?grant_access=true';
@@ -1218,12 +1214,6 @@ export class Chat {
   
   /*Fetch all replies for particular message*/
   public getAllMessageReplies(messageId:number){	
-	//http://18.188.223.201:3000/api/v1/messages/768/reply/messages 
-	// let offset : number = params.offset ? params.offset : 0;
-	// let data: any = {
-		// limit : 15, 
-		// offset :  offset
-	// }
 	let seq = this.api.get('messages/'+messageId+'/reply/messages').share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
@@ -1240,6 +1230,17 @@ export class Chat {
 	let seq = this.api.get('messages/non_custom_lines', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
+  }
+  
+  public saveUserMetaDetails(){
+	this.user = this.authPrvd.getAuthData();
+	let params: any = {
+		user_id: this.user.id,
+		offset: 0
+	}; 
+	this.getMessagesByUserId(params).subscribe(res => {
+		this.localStorage.set('curr_auth_metadetails', res.metadata[0]);
+	});	
   }
   
 }

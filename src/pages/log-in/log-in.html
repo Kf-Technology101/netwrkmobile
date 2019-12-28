@@ -1,8 +1,9 @@
 <ion-content padding has-main-btn has-main-btn-label city-bg-animated no-bounce id="login-content">
-      <div class="city-container">
-        <div class="faces" [@fadeState]="controls.state" [hidden]="controls.hidden"></div>
+      <!-- <div class="city-container">
+        <div class="faces" [@fadeState]="controls.state" [hidden]="controls.hidden">
+		</div>
         <div class="city-bg top"></div>
-      </div>
+      </div> -->
   <ion-grid [@fadeState]="controls.state" [hidden]="controls.hidden" class="login-grid">
     <!-- <ion-row>
       <ion-col text-center>
@@ -40,7 +41,11 @@
     </ion-row>
   </ion-grid>
 
-
+	<ng-container>
+	<div class="somvo-logo">
+		<img src="assets/images/somvo-logo.png" class="arrow-ico icon">
+	</div>
+	</ng-container>
   
   <!-- <div class="tip text-note">No one can see your location.</div> -->
   
@@ -50,13 +55,9 @@
 <ion-footer>
   <div  class="start-signup">
 	<button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()" ion-button color="bk" class="main-action-btn medium has-label"(tap)="goToSignUp()" outline id="main-btn"> </button>
-	<div class="tip">Tap to get started</div>
+	<div class="tip">Tap the somvo button to get started</div>
   </div>
-  <!-- <div  class="login-text-note">
-	<p ion-text color="bk">
-		However we do need location to show you nearby communities and notifications for updates from friends. Please accept notifications and location sharing while using the app.
-	</p>
-  </div> -->
+  
   <div class="transparent login-btns-container">
   <!-- Remove above div in case if used ion-item --> 
   <!-- <ion-item class="transparent login-btns-container"> -->
@@ -64,5 +65,16 @@
             round item-left color="bk" [@fadeState]="controls.state"
             [hidden]="controls.hidden">Login</button>
    
+  </div>
+ <!--  <div  class="login-text-note">
+	<p ion-text color="bk" style="text-align: center;">
+		Please be aware, there may be bugs, send them our way through somvo.app. Thank you for using somvo, I hope it brings a little more community into your life!
+	</p>
+	<p ion-text color="bk" style="text-align: right;">
+		Ben
+	</p>
+  </div> -->
+  <div>
+	<img src="assets/images/signature-note.jpg" class="arrow-ico icon">
   </div>
 </ion-footer>

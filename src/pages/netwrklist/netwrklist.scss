@@ -116,6 +116,10 @@ page-netwrklist {
 					font-size: 25px;
 					font-weight: 500;
 					padding: 0;
+					&.blue-text{
+						color: #6AA4D9;
+						font-weight: normal;
+					}
 				}			
 				.item-inner{
 					border:0px;
@@ -150,8 +154,8 @@ page-netwrklist {
 	  
 	  .virtual-custom-scroll-wrapper{
 		background-color: #fff;
-		height: 200px;
-		padding: 10px 16px 50; 
+		/* height: 250px; */
+		padding: 10px 16px 5px; 
 		position: absolute;
 		bottom: 0;
 		right: 0%;
@@ -159,7 +163,7 @@ page-netwrklist {
 		
 	  }
 	  .virtual-custom-scroll-container{
-		height: 200px;
+		height: 230px;
 		overflow: scroll;
 	  } 
 	  span.remove-location {

@@ -42,6 +42,7 @@ import { HoldScreenPage } from '../hold-screen/hold-screen';
 import { NetwrklistPage } from '../netwrklist/netwrklist';
 import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 import { LinePage } from '../linelist/linelist';
+import { ProfileNameImgPage } from '../profile-name-img/profile-name-img';
 
 // Custom libs
 import { Toggleable } from '../../includes/toggleable';
@@ -264,6 +265,7 @@ export class ChatPage implements DoCheck {
   public currentCLLobbyIndex: number = null;
   public isProcessing:boolean = false;
   public accessDeniedTip:boolean = false; 
+  // public showCreateCommunityBtn:boolean = false;
   public mapStyle = [
 	  {
 		  "featureType": "all",
@@ -352,13 +354,29 @@ export class ChatPage implements DoCheck {
 	public iab: InAppBrowser,
 	private push: Push,
 	private permission: PermissionsService
-  ) {	
-	  // this.toolsPrvd.pushPage(HoldScreenPage);
+  ) {
+	  // this.toolsPrvd.pushPage(HoldScreenPage); 
+	  this.chatPrvd.saveUserMetaDetails();
+	  // this.toolsPrvd.pushPage(ProfileNameImgPage);
 	  // this.storage.set('new_signUp',true);
-  	  if(this.storage.get('slider_position') == null || this.storage.get('slider_position') == ''){
-		this.storage.set('slider_position','left');
+	 
+	  if(this.storage.get('slider_position') == null || this.storage.get('slider_position') == '' || this.storage.get('slider_position') == 'left'){
+		this.storage.set('slider_position','left');		
 		this.slideAvatarPrvd.setSliderPosition('left');
 		this.slideAvatarPrvd.sliderPosition = "left";
+	  }else if(this.storage.get('slider_position') == 'right'){
+		  console.log('slider right');
+		this.storage.set('slider_position','right');		
+		this.slideAvatarPrvd.setSliderPosition('right');
+		this.slideAvatarPrvd.sliderPosition = "right"; 
+	  }
+	 
+  	  if(this.storage.get('show_ap_note')){
+		this.chatPrvd.show_ap_note = true;
+	  }
+	  if(this.storage.get('show_lp_note')){
+		this.chatPrvd.show_lp_note = true;
+		this.coachMarkText='Tap to see what’s nearby, hold to start a somvo';
 	  }
 	  this.storage.rm('lobby_message');
 	  if(this.storage.get('new_signUp')){
@@ -399,7 +417,11 @@ export class ChatPage implements DoCheck {
 						this.openConversationLobbyForPinned(parentMessage);
 					}
 				});
-			}
+			}/* else if(message.messageable_type == "Reply"){
+				this.chatPrvd.getParentLobby(message).subscribe(parentRes => {
+					console.log('parentRes:::::::::::::====>>>>',parentRes)
+				});
+			} */
 		  }else{
 			  // this.initMap();
 			  this.parameterData = this.storage.get('parameterData');
@@ -507,7 +529,7 @@ export class ChatPage implements DoCheck {
           alert.dismiss();
           this.feedbackService.autoPostToFacebook({
             message: message.user.name + ' casted via Netwrk: ' + (message.text_with_links ? message.text_with_links : ''),
-            url:'http://netwrkapp.com'
+            url:'http://somvo.app'
           }).then(res => {
             this.toolsPrvd.showToast('Message successfully shared');
           }, err => {
@@ -527,7 +549,7 @@ export class ChatPage implements DoCheck {
           closeButton: true,
           copyToReference: true
       };
-      this.photoViewer.show(imgUrl, 'Netwrk', photoViewerOptions);
+      this.photoViewer.show(imgUrl, 'Somvo', photoViewerOptions);
   }
 
   public shareLineJoinFlow(message):void {
@@ -567,7 +589,7 @@ export class ChatPage implements DoCheck {
             let subject = message.text_with_links ? message.user.name+': '+message.text_with_links : message.user.name;
             let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
             if (this.plt.is('ios')){
-                this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
+                this.sharing.share(subject, 'Netwrk', file, 'somvo://somvo.app/landing/'+message.id).then(res => {
                         // this.toolsPrvd.showToast('line shared successfully ');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
 							if(res.privateLineCount > 0){
@@ -593,7 +615,7 @@ export class ChatPage implements DoCheck {
                     }
                 );
             }else{
-				this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
+				this.sharing.share(subject, 'Netwrk', file, 'https://somvo.app/landing/'+message.id).then(res => {
                         // this.toolsPrvd.showToast('line shared successfully');
                         this.chatPrvd.connectUserToChat(this.chatPrvd.currentLobby.id).subscribe(res => {
 							if(res.privateLineCount > 0){
@@ -629,6 +651,8 @@ export class ChatPage implements DoCheck {
 
   private initMap():void {
 	this.gapi.init.then((google_maps: any) => {
+	console.log(this.gpsPrvd.coords.lat);
+	console.log(this.gpsPrvd.coords.lng);
 		if(this.gpsPrvd.coords.lat && this.gpsPrvd.coords.lng){
 			this.boundsMap = false;
 			let loc: any = {
@@ -1651,7 +1675,7 @@ export class ChatPage implements DoCheck {
                           let subject = message.text_with_links ? this.user.name+': '+message.text_with_links : '';
                           let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
                           if (this.plt.is('ios')){
-                              this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
+                              this.sharing.share(subject, 'Netwrk', file, 'somvo://somvo.app/landing/'+message.id).then(res => {
                                       this.toolsPrvd.showToast('Message successfully shared');
                                       this.openConversationLobbyForPinnedFormMessage(message);
                                   }, err =>{
@@ -1659,7 +1683,7 @@ export class ChatPage implements DoCheck {
                                   }
                               );
                           }else{
-							  this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
+							  this.sharing.share(subject, 'Netwrk', file, 'https://somvo.app/landing/'+message.id).then(res => {
                                       this.toolsPrvd.showToast('Message successfully shared');
                                       this.openConversationLobbyForPinnedFormMessage(message);
                                   }, err =>{
@@ -1836,7 +1860,7 @@ export class ChatPage implements DoCheck {
 	cont0.setState('slideUp');
 	cont0.hide();
 	// console.log("openLinePage() ==> "+this.chatPrvd.request_type);
-	this.coachMarkText = "Start your network here?";
+	this.coachMarkText = "Start your community here?";
 	this.settings.isNewlineScope=false;
 	this.settings.isCreateLine=true;
 	this.toolsPrvd.pushPage(UndercoverCharacterPage);
@@ -1913,7 +1937,10 @@ export class ChatPage implements DoCheck {
 
     if (this.chatPrvd.getState() == 'undercover') {	
 		this.getGoodStuff('goodStuff');	
-		this.chatPrvd.isLandingPage = false;		
+		this.chatPrvd.isLandingPage = false;
+		this.storage.set('show_lp_note',false);
+		this.chatPrvd.show_lp_note = false;
+		this.coachMarkText = "Awesome people with common interests are nearby! <br /> Start a community!";
 		this.chatPrvd.setState('area');
 		this.undercoverPrvd.setUndercover(false);
 		this.isUndercover=false;
@@ -1972,7 +1999,9 @@ export class ChatPage implements DoCheck {
         }, err => console.error(err));
 
     } else if (this.chatPrvd.getState() == 'area') {
-	  this.chatPrvd.isLandingPage = true;				
+	  this.chatPrvd.isLandingPage = true;
+	  this.storage.set('show_ap_note',false);
+	  this.chatPrvd.show_ap_note = false;
       this.chatPrvd.setState('undercover');
       this.setPostTimer(0);
       this.undercoverPrvd.setUndercover(true);
@@ -2013,6 +2042,14 @@ export class ChatPage implements DoCheck {
 	this.chatPrvd.areaLobby = false;
 	this.chatPrvd.isLobbyChat = false;	
 	this.chatPrvd.isCleared = true;
+	if(this.chatPrvd.getState() == 'undercover'){
+		this.chatPrvd.show_lp_note = false;
+		this.storage.set('show_lp_note',false);
+	}else if(this.chatPrvd.getState() == 'area'){
+		this.chatPrvd.show_ap_note = false;
+		this.storage.set('show_ap_note',false);
+	}
+		
 	this.toolsPrvd.pushPage(NetwrklistPage);
   }
 
@@ -2274,8 +2311,8 @@ export class ChatPage implements DoCheck {
   }
 
   private refreshChat(refresher?:any, forced?:boolean):Promise<any> {
+	
     return new Promise((resolve, reject) => {
-		
 	  if (!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && !this.parameterData || forced && !this.chatPrvd.areaLobby && !this.parameterData) {
         
 		this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages, null, true)
@@ -2344,6 +2381,7 @@ export class ChatPage implements DoCheck {
 		  this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
           this.chatPrvd.isCleared = false;
 		  this.chatPrvd.isMainBtnDisabled = false;
+		  // this.showCreateCommunityBtn = false;
 		  this.loaderState.setState('off');
 		  if (refresher) refresher.complete();
 		  resolve();
@@ -2377,12 +2415,11 @@ export class ChatPage implements DoCheck {
   }
   
   private getAndUpdateUndercoverMessages() {
-	  console.log(this.chatPrvd.postMessages);
 	  if (!this.chatPrvd.areaLobby && !this.chatPrvd.isLobbyChat) {		  
-		  this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages) .subscribe(res => {
+		  this.chatPrvd.getMessages(this.isUndercover, this.chatPrvd.postMessages).subscribe(res => {
 			if (res) {
+				console.log(res.messages);
 				if (res.messages && res.messages.length > 0) {
-					// if(this.chatPrvd.postMessages.length > 1){
 						for (let i in this.chatPrvd.postMessages) {
 							for (let j in res.messages) {
 							  if (this.chatPrvd.postMessages[i].id == res.messages[j].id) {
@@ -2390,7 +2427,6 @@ export class ChatPage implements DoCheck {
 							  }
 							}
 						}
-					// }
 					this.chatPrvd.postMessages = this.chatPrvd.postMessages.concat(res.messages);
 					this.chatPrvd.postMessages = this.chatPrvd.organizeMessages(this.chatPrvd.postMessages);
 					this.chatPrvd.messageDateTimer.start(this.chatPrvd.postMessages);
@@ -2410,8 +2446,7 @@ export class ChatPage implements DoCheck {
             }else{
 				this.chatPrvd.isMainBtnDisabled = false;
 				this.toolsPrvd.hideLoader();
-			}
-              
+			}              
           }, err => {
               this.toolsPrvd.hideLoader();
           });
@@ -2456,12 +2491,7 @@ export class ChatPage implements DoCheck {
     this.chatPrvd.postMessages = [];
     this.chatPrvd.isCleared = true;
 	this.contentPosition = 'relative';
-    //let messageArray=this.getMessagesIds(postMessage);
-    //this.chatPrvd.deleteMessages(messageArray).subscribe( res => {
-    //      this.canRefresh = true;
-    //  }, err => {
-    //      this.canRefresh = true;
-    //  });
+	// this.showCreateCommunityBtn = true;
   }
 
   private flipInput():void {
@@ -2471,26 +2501,53 @@ export class ChatPage implements DoCheck {
   private runUndecoverSlider(pageTag):void {
     if (this.chatPrvd.getState() == 'undercover') {
       this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-      this.slideAvatarPrvd.sliderInit(pageTag);
+	  /*  let metadata = this.chatPrvd.localStorage.get('curr_auth_metadetails');
+	  if(metadata && metadata.communities_count > 0){ */
+		this.slideAvatarPrvd.sliderInit(pageTag);
+	  // }
       this.content.resize();
     }
   }
 
   private goToProfile(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
-	this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
-      this.chatPrvd.isLobbyChat = false;
-        if(this.user.id==profileId){
-            if(userRoleName){
-                this.toolsPrvd.pushPage(ProfilePage, res);
-            }else{
-                this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
-            }
-        }else{
-            this.toolsPrvd.pushPage(ProfilePage, res);
-        }
-    }, err => {
-      console.error('goToProfile err:', err);
-    });
+	/* let metadata = this.chatPrvd.localStorage.get('curr_auth_metadetails');
+	if(metadata.communities_count > 0){ */
+		this.storage.set('identity_warning',1);
+		this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
+		  this.chatPrvd.isLobbyChat = false;
+		  if(this.chatPrvd.getState() == 'undercover'){
+			this.chatPrvd.show_lp_note = false;
+			this.storage.set('show_lp_note',false);
+		  }else if(this.chatPrvd.getState() == 'area'){
+			this.chatPrvd.show_ap_note = false;
+			this.storage.set('show_ap_note',false);
+		  }
+			if(this.user.id==profileId){
+				if(userRoleName){
+					this.toolsPrvd.pushPage(ProfilePage, res);
+				}else{
+					this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
+				}
+			}else{
+				this.toolsPrvd.pushPage(ProfilePage, res);
+			}
+		}, err => {
+		  console.error('goToProfile err:', err);
+		});	
+	/* }else{
+		this.showIdentityWarning();
+	} */
+	
+  }
+  private showIdentityWarning(){	  
+	let popupDetails: any = [];
+	popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content"><div class="label-18 normal-text"><strong>You must create a community to use its name.</strong></div></div>';
+	popupDetails.cssClass = 'good-stuff';
+	popupDetails.buttonText = 'Okay!';
+	popupDetails.buttonCssClass = 'try-span';	
+	popupDetails.buttonHandler = () => {};
+	this.showStuffPopup(popupDetails);		
+	return false;
   }
 
   private updateIconBgRelativeToCamera():boolean {
@@ -2828,7 +2885,7 @@ export class ChatPage implements DoCheck {
   }
 
   public openLobbyForLockedChecked(message:any):void {
-console.log('openLobbyForLockedChecked::',message);
+	console.log('openLobbyForLockedChecked::',message);
 	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby){
 	  if (this.chatPrvd.bgState.getState() == 'stretched') {
 		  this.toggleChatOptions();
@@ -2860,7 +2917,20 @@ console.log('openLobbyForLockedChecked::',message);
 
 		  this.chatPrvd.allowUndercoverUpdate = false;
 		  clearTimeout(this.messIntObject);
-		  this.coachMarkText = '';
+		  if(this.chatPrvd.getState() == 'undercover'){
+			this.chatPrvd.show_lp_note = false;
+			this.storage.set('show_lp_note',false);
+		  }else if(this.chatPrvd.getState() == 'area'){
+			this.chatPrvd.show_ap_note = false;
+			this.storage.set('show_ap_note',false);
+		  }
+		  if(!this.storage.get('first_time_lobby_opened')){
+			this.storage.set('first_time_lobby_opened',true);
+			this.coachMarkText = 'Tap to go back';
+		  }else{ 
+			this.coachMarkText = '';
+		  } 
+		  	  
 		  this.chatPrvd.toggleLobbyChatMode();
 		  this.chatPrvd.areaLobby = false;
 		  this.chatPrvd.isMainBtnDisabled = false;
@@ -2883,7 +2953,7 @@ console.log('openLobbyForLockedChecked::',message);
 	}
   }
 
-  public openLobbyForPinned(message:any):void {
+  public openLobbyForPinned(message:any):void {	
 	let cont1 = this.getTopSlider('address');
 	cont1.setState('slideUp');
 	cont1.hide();
@@ -2948,7 +3018,19 @@ console.log('openLobbyForLockedChecked::',message);
 			  }else{
 				  this.placeholderText = 'What would you like to say?';
 			  }
-			  this.coachMarkText = '';
+			  if(this.chatPrvd.getState() == 'undercover'){
+				this.chatPrvd.show_lp_note = false;
+				this.storage.set('show_lp_note',false);
+			  }else if(this.chatPrvd.getState() == 'area'){
+				this.chatPrvd.show_ap_note = false;
+				this.storage.set('show_ap_note',false);
+			  }
+			  if(!this.storage.get('first_time_lobby_opened')){
+				this.storage.set('first_time_lobby_opened',true);
+				this.coachMarkText = 'Tap to go back';
+			  }else{
+				this.coachMarkText = '';
+			  }
 			  this.chatPrvd.toggleLobbyChatMode();
 			  this.chatPrvd.isMainBtnDisabled = false;
 			  this.chatPrvd.isLobbyChat=true;
@@ -2980,6 +3062,7 @@ console.log('openLobbyForLockedChecked::',message);
 			this.chatPrvd.getMessageIDDetails(message.conversation_line_id).subscribe(res => {
 				this.chatPrvd.isLobbyChat = false;
 				this.chatPrvd.areaLobby = false;
+				res.message.dateStr = message.dateStr; 
 				this.openConversationLobbyForPinned(res.message);
 			});
 		}
@@ -2997,11 +3080,25 @@ console.log('openLobbyForLockedChecked::',message);
 
   public openConversationLobbyForPinned(message:any):void {
 	console.log('openConversationLobbyForPinned',message);
+	
 	let cont2 = this.getTopSlider('address');
 	cont2.setState('slideUp');
 	cont2.hide();
 	
 	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off' && (!message.conversation_status || message.conversation_status == 'ACCEPTED')){ 
+	  if(this.chatPrvd.getState() == 'undercover'){
+		this.chatPrvd.show_lp_note = false;
+		this.storage.set('show_lp_note',false);
+	  }else if(this.chatPrvd.getState() == 'area'){
+		this.chatPrvd.show_ap_note = false;
+		this.storage.set('show_ap_note',false);
+	  }
+	  if(!this.storage.get('first_time_lobby_opened')){
+		this.storage.set('first_time_lobby_opened',true);
+		this.coachMarkText = 'Tap to go back';
+	  }else{
+		this.coachMarkText = '';
+	  }
 	  this.toolsPrvd.showLoader();
 	  if(this.chatPrvd.getState() == 'undercover'){
 		 this.pageNav=true;
@@ -3040,7 +3137,7 @@ console.log('openLobbyForLockedChecked::',message);
 			this.clearMarkers();
 		  }
 		  this.chatPrvd.isMainBtnDisabled = false;
-		  
+	
 		  /* if(message.message_type=="LOCAL_MESSAGE"){// Open normal lobby for local message conversation 
 			this.chatPrvd.areaLobby = false;
 			this.chatPrvd.isLobbyChat = true;			  
@@ -3048,10 +3145,9 @@ console.log('openLobbyForLockedChecked::',message);
 			this.chatPrvd.areaLobby = true;
 			this.chatPrvd.isLobbyChat = false;  
 		  } */
-		
+		  this.chatPrvd.messageDateTimer.start(this.chatPrvd.postAreaMessages);
 		  this.chatPrvd.areaLobby = true;
 		  this.chatPrvd.isLobbyChat = false; 
-			
 		  this.settings.isNewlineScope = false;
 		  this.chatPrvd.setState('area');
 		  this.toolsPrvd.hideSplashScreen();		  
@@ -3083,18 +3179,16 @@ console.log('openLobbyForLockedChecked::',message);
 	  }
 
 	  this.chatPrvd.postMessages = [];
-
 	  this.chatPrvd.isMainBtnDisabled = true;
 	  this.chatPrvd.setState('area');
-	  this.isUndercover=true;
-	  this.chatPrvd.areaLobby=true;
-	  this.settings.isNewlineScope=false;
-	  this.chatPrvd.currentLobbyMessage=message;
+	  this.isUndercover = true;
+	  this.chatPrvd.areaLobby = true;
+	  this.settings.isNewlineScope = false;
+	  this.chatPrvd.currentLobbyMessage = message;
 	  this.chatPrvd.appendContainer.hidden = true;
 	  this.cameraPrvd.takenPictures = [];
 	  this.setMainBtnStateRelativeToEvents();
 	  this.placeholderText = 'What would you like to say?';
-
 	  this.chatPrvd.openLobbyForPinned(message).then(() => {
 		  this.hideTextContainer = false;
 		  if(this.chatPrvd.currentLobby.isAddButtonAvailable){
@@ -3136,10 +3230,16 @@ console.log('openLobbyForLockedChecked::',message);
 	let cont0 = this.getTopSlider('address');
 	cont0.setState('slideUp');
 	cont0.hide();
-
 	this.toolsPrvd.showLoader();
 	this.storage.rm('custom_coordinates');
-
+	// this.showCreateCommunityBtn = false;
+	if(this.chatPrvd.getState() == 'undercover'){
+		this.chatPrvd.show_lp_note = false;
+		this.storage.set('show_lp_note',false);
+	}else if(this.chatPrvd.getState() == 'area'){
+		this.chatPrvd.show_ap_note = false;
+		this.storage.set('show_ap_note',false);
+	}
 	this.gpsPrvd.getMyZipCode().then(zip => {		
 		this.storage.rm('chat_zip_code');
 		this.storage.set('chat_zip_code', zip.zip_code);
@@ -3170,7 +3270,7 @@ console.log('openLobbyForLockedChecked::',message);
 			  this.undercoverPrvd.setUndercover(false);
 			  this.isUndercover=false;
 		  }
-		  
+		  this.accessDeniedTip = false;
 		  this.refreshChat(false, true).then(res => {
 			  this.chatPrvd.allowUndercoverUpdate = true;
 			  this.startMessageUpdateTimer();
@@ -3258,7 +3358,7 @@ console.log('openLobbyForLockedChecked::',message);
 			this.chatPrvd.closeLobbySocket();
 			this.chatPrvd.currentLobbyMessage = null;			
 			this.toolsPrvd.hideLoader();
-			this.chatPrvd.isLandingPage = true;		
+			this.chatPrvd.isLandingPage = true;	
 			this.chatPrvd.setState('undercover');
 			this.undercoverPrvd.setUndercover(true);
 			this.isUndercover = true; 
@@ -3280,28 +3380,20 @@ console.log('openLobbyForLockedChecked::',message);
     if(!this.chatPrvd.isLobbyChat && !this.flgEditPost){
 		this.chatPrvd.isMainBtnDisabled=true;
     }
-	
 	if(this.flgEditPost){
 		this.chatPrvd.isMainBtnDisabled=false;
 	} 
-	
     this.chatPrvd.isMessagesVisible = false;
     this.chatPrvd.loadedImages = 0;
     this.chatPrvd.imagesToLoad = 0;
-
     this.mainInput.setState('fadeIn');
     this.mainInput.show();
     this.chatPrvd.mainBtn.setState('normal');
     this.chatPrvd.mainBtn.show();
-
     this.pageTag = this.elRef.nativeElement.tagName.toLowerCase();
-
-    this.runUndecoverSlider(this.pageTag);
-	
     this.events.subscribe('image:pushed', res => {
       this.setDefaultTimer();
     });
-	
 	if(!this.parameterData){
 		this.events.subscribe('message:received', res => {
 			if (res.messageReceived && this.chatPrvd.isCleared) {
@@ -3347,9 +3439,9 @@ console.log('openLobbyForLockedChecked::',message);
 		  this.chatPrvd.updateAppendContainer();
 		}, 1);
 		
-	}
-	
+	}	
     this.user = this.authPrvd.getAuthData();
+	this.runUndecoverSlider(this.pageTag);
   }
 
   public followNearByNetwork(message,index) {
@@ -3428,11 +3520,18 @@ console.log('openLobbyForLockedChecked::',message);
   }
   
   public loadMaps() {
+	if(this.chatPrvd.getState() == 'undercover'){
+		this.chatPrvd.show_lp_note = false;
+		this.storage.set('show_lp_note',false);
+	}else if(this.chatPrvd.getState() == 'area'){
+		this.chatPrvd.show_ap_note = false;
+		this.storage.set('show_ap_note',false);
+	}
 	this.gpsPrvd.getMyZipCode().then(zip => {
 		this.eventClickTrigger(); 
 		this.toggleTopSlider('address');		
 		this.scrollTop = 0;
-		this.coachMarkText = "Start your network here?";
+		this.coachMarkText = "Start your community here?";
 		this.search = true;
 		this.nclAddedCnt = 0;
 		this.currentCLLobbyIndex = null;
@@ -3440,8 +3539,7 @@ console.log('openLobbyForLockedChecked::',message);
 			this.chatPrvd.closeLobbySocket();
 			this.chatPrvd.currentLobby.id = null;
 			this.chatPrvd.currentLobbyMessage = null;
-		}
-			
+		}			
 		this.initializeMap();
 		this.initAutocomplete();    
 	},err=>{
@@ -3461,6 +3559,7 @@ console.log('openLobbyForLockedChecked::',message);
 			lat : parseFloat(this.gpsPrvd.coords.lat),
 			lng : parseFloat(this.gpsPrvd.coords.lng)
 		};
+		
 		this.gapi.init.then((google_maps:any) => {
 			this.map = new google_maps.Map(this.mapElement.nativeElement, {
 				zoom: 15,
@@ -3471,6 +3570,22 @@ console.log('openLobbyForLockedChecked::',message);
 				disableDefaultUI: true,
 				fullscreenControl: false				
 			});
+			
+			this.gpsPrvd.getGoogleAdress(loc.lat, loc.lng).map(res => res.json()).subscribe(res => {
+				console.log('inside getGoogleAdress to set blue dot',loc);
+				console.log(res);
+				let icon = {
+					url:'assets/icon/blue_dot.png'
+				};
+				let marker = new google_maps.Marker({
+					map: this.map,
+					position: res.results[0].geometry.location,
+					icon: icon
+				});
+			}, err => {
+				console.log('[google address] error:', err);
+			});
+			
 			this.gpsPrvd.getZipCode().then(zip => {
 				let params = { 
 					lat : parseFloat(this.gpsPrvd.coords.lat),
@@ -3478,8 +3593,7 @@ console.log('openLobbyForLockedChecked::',message);
 					post_code : zip				
 				}
 				this.setNearbyOnMap(params);
-			});
-			
+			});			
 		});
 		setTimeout(function() { google.maps.event.trigger(this.map, 'resize') }, 600);	
     });
@@ -3570,6 +3684,9 @@ console.log('openLobbyForLockedChecked::',message);
 	  case 'pinnedStuff':
 		this.storage.set('show-pinned-stuff', false);
 		break;		
+	  case 'legendaryStuff':
+		this.storage.set('show-legendary-stuff', false);
+		break;		
 	}
   }
   
@@ -3605,7 +3722,22 @@ console.log('openLobbyForLockedChecked::',message);
 			this.updateGoodStuff('pinnedStuff');
 			this.showStuffPopup(popupDetails);				
 		}
-		break;		
+		break;	
+	  case 'legendaryStuff':
+			let legendaryStuffFlag = this.storage.get('show-legendary-stuff');
+			if(legendaryStuffFlag || legendaryStuffFlag === null){
+				popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content">'+					
+					'<div class="label-18 normal-text">Hold <img class="ic popup-icon" src="assets/icon/lobby-icon.svg"> or <img class="ic popup-icon pop-sunicon" src="assets/images/sun_icon.png"> to block or report someone</div>'+
+					'</div>';
+				popupDetails.cssClass = 'good-stuff';
+				popupDetails.buttonText = 'Okay!';
+				popupDetails.buttonCssClass = 'try-span';	
+				popupDetails.buttonHandler = () => {};
+				this.updateGoodStuff('legendaryStuff');
+				this.showStuffPopup(popupDetails);		
+			}			
+		break;	
+		
 	}
 	  
 	  
@@ -4192,14 +4324,19 @@ console.log('openLobbyForLockedChecked::',message);
 					returnData= message.avatar_url;
 				}else{
 					if(message.message_type == 'LOCAL_MESSAGE'){ 
-						returnData= message.public ? message.user.avatar_url : message.user.hero_avatar_url;
+						// returnData= message.public ? message.user.avatar_url : message.user.hero_avatar_url;
+						returnData= message.user.avatar_url;
 					}else{
 						returnData = this.toolsPrvd.defaultAvatar;
 					}
 				}
 			break;
 			case 'Room':
-				returnData= message.public ? message.user.avatar_url : message.user.hero_avatar_url;
+				if(message.message_type == 'CONV_REQUEST'){
+					returnData= message.user.avatar_url;
+				}else{
+					returnData= message.public ? message.user.avatar_url : message.user.hero_avatar_url;
+				}
 			break;
 			case 'Reply':
 				returnData= message.public ? message.user.avatar_url : message.user.hero_avatar_url;
@@ -4304,29 +4441,34 @@ console.log('openLobbyForLockedChecked::',message);
   }
   
   private tapForProfileChange(profileId?: number, profileTypePublic?: boolean,userRoleName?: any):void {
-	this.toolsPrvd.showLoader();
-	if(userRoleName){
-		if(this.slideAvatarPrvd.sliderPosition == "right"){
-			this.storage.set('slider_position','left');
-			this.slideAvatarPrvd.setSliderPosition('left');
-			this.slideAvatarPrvd.sliderPosition = "left";
+	let metadata = this.chatPrvd.localStorage.get('curr_auth_metadetails');
+	if(metadata.communities_count > 0){
+		this.toolsPrvd.showLoader();
+		if(userRoleName){
+			if(this.slideAvatarPrvd.sliderPosition == "right"){
+				this.storage.set('slider_position','left');
+				this.slideAvatarPrvd.setSliderPosition('left');
+				this.slideAvatarPrvd.sliderPosition = "left";
+			}else{
+				this.storage.set('slider_position','right');
+				this.slideAvatarPrvd.setSliderPosition('right');
+				this.slideAvatarPrvd.sliderPosition = "right";
+			}
+			this.toolsPrvd.hideLoader();
 		}else{
-			this.storage.set('slider_position','right');
-			this.slideAvatarPrvd.setSliderPosition('right');
-			this.slideAvatarPrvd.sliderPosition = "right";
-		}
-		this.toolsPrvd.hideLoader();
+			this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
+				console.log(this.chatPrvd.currentLobbyMessage);
+				this.storage.set('lobby_message',this.chatPrvd.currentLobbyMessage);
+				this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
+				this.toolsPrvd.hideLoader();
+			}, err => {
+				console.error('tapForProfileChange > goToProfile err:', err);
+				this.toolsPrvd.hideLoader();
+			});
+		}       
 	}else{
-		this.chatPrvd.goToProfile(profileId, profileTypePublic).then(res => {
-			console.log(this.chatPrvd.currentLobbyMessage);
-			this.storage.set('lobby_message',this.chatPrvd.currentLobbyMessage);
-			this.toolsPrvd.pushPage(UndercoverCharacterPage, res);
-			this.toolsPrvd.hideLoader();
-		}, err => {
-			console.error('tapForProfileChange > goToProfile err:', err);
-			this.toolsPrvd.hideLoader();
-		});
-	}       
+		this.showIdentityWarning();
+	}
   }
     
   public getNCL(message:any,event,index){
@@ -4515,7 +4657,15 @@ console.log('openLobbyForLockedChecked::',message);
     });
   
   }
-  
+  public disableAssocPageCoachMark(){
+	if(this.chatPrvd.getState() == 'undercover'){
+		this.chatPrvd.show_lp_note = false;
+		this.storage.set('show_lp_note',false);
+	}else if(this.chatPrvd.getState() == 'area'){
+		this.chatPrvd.show_ap_note = false;
+		this.storage.set('show_ap_note',false);
+	}
+  }
   
 }
 

@@ -49,6 +49,7 @@
                 (input)="fieldChange($event)"></ion-input>
             </ion-item>
 
+			<div class="dob_title" [hidden]="!states.date_of_birthday.bool">Tap to choose your birthday</div>
             <ion-item [hidden]="!states.date_of_birthday.bool" [@inputState]="states.date_of_birthday.str">
               <ion-datetime
                 placeholder="Birthday..."

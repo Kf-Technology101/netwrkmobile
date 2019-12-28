@@ -135,10 +135,10 @@ export class Auth {
 
   public saveAuthData(authData: any, type?: string) {
     if (type) this.storage.set('auth_type', type);
-    this.storage.set('auth_data', authData);
-    this.network.saveInviteAccess(authData.invitation_sent);
+    this.storage.set('auth_data', authData);	
+	this.network.saveInviteAccess(authData.invitation_sent);
   }
-
+  
   public setDeviceRegistration(registrationId: any) {
     this.storage.set('device_registrationId', registrationId);
   }

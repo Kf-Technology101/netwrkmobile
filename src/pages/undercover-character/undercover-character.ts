@@ -71,7 +71,6 @@ export class UndercoverCharacterPage {
 	 if(this.settings.isCreateLine){
 		this.settings.lineAvatar = this.activePerson;
 		if(avatar.name.toLowerCase() == "private group"){
-			console.log('pri');			
 			this.slideAvatarPrvd.setSliderPosition('right');
 			this.slideAvatarPrvd.sliderPosition = 'right';
 			this.storage.set('slider_position','right');

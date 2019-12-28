@@ -121,13 +121,14 @@ export class LogInPage {
 		  this.tools.showToast("Don't you want to get updates from friends? Please turn them on in settings to get alerts, don’t miss out!");
 		}
 	  });
-      if (resp.tou_accepted) {
+	  if (resp.tou_accepted) {
         // this.tools.pushPage(HoldScreenPage);
 		this.tools.pushPage(ChatPage);
       } else if (!resp.tou_accepted &&
         typeof resp.tou_accepted == 'boolean'){
         this.termsAlertShow('form', resp.id);
       }
+
     }, err => {
       this.tools.showToast(this.textStrings.login);
       this.tools.hideLoader();
@@ -205,7 +206,7 @@ export class LogInPage {
     alert.present().then(res => {
       let alertSt = document.querySelector('.alert-sub-title');
       alertSt.innerHTML +=
-      '<a href="http://netwrkapp.com/terms_of_use" target="_blank">Terms of Use</a>?';
+      '<a href="http://somvo.app/terms_of_use" target="_blank">Terms of Use</a>?';
     });
   }
 

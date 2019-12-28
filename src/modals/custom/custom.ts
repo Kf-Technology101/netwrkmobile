@@ -11,7 +11,7 @@ import { Tools } from '../../providers/tools';
 export class CustomModal {
  
   public inputElement: any = '';
-  public placeholderText:any = "Type it in here";
+  public placeholderText:any = "Get together at 7?";
   public isError:boolean = false;
   constructor(
     public viewCtrl: ViewController,

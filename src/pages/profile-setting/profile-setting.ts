@@ -101,6 +101,7 @@ export class ProfileSettingPage {
         this.app.getRootNav().setRoot(LogInPage);
         this.storage.rm('auth_data');
         this.storage.rm('auth_type');
+        this.storage.rm('curr_auth_metadetails');		
 		this.chatPrvd.postMessages = [];
     }).catch(err => console.error('logout error: ', err));
   }

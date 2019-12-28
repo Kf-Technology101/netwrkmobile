@@ -3,7 +3,6 @@ import { Platform, Events, App, Nav, AlertController } from 'ionic-angular';
 import { Sim } from '@ionic-native/sim';
 import { StatusBar } from '@ionic-native/status-bar';
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
-
 import { Deeplinks } from '@ionic-native/deeplinks';
 // Pages
 import { LogInPage } from '../pages/log-in/log-in';
@@ -28,10 +27,8 @@ import { UpgradeAdapter } from '@angular/upgrade';
 
 
 export class MyApp {
-	
     rootPage:any = LogInPage;
-
-    @ViewChild(Nav) navChild:Nav;
+    @ViewChild(Nav) navChild:Nav;	
 	
     constructor(
         public platform: Platform,
@@ -51,38 +48,46 @@ export class MyApp {
         private push: Push,
 		private chatPrvd: Chat,
         private gps: Gps
-        ) {
+	) {
 		this.platform.registerBackButtonAction(() => {
             this.toolsPrvd.doBackButton();
             return true;
         });
-		
+		this.platform.ready().then(() => {
+			if(!this.storage.get('count_app_restarted') || this.storage.get('count_app_restarted') < 5){
+				this.storage.set('show_lp_note',true);
+				this.chatPrvd.show_lp_note = true;
+				this.storage.set('show_ap_note',true);
+				this.chatPrvd.show_ap_note = true;
+				let counter = !this.storage.get('count_app_restarted')?1:parseInt(this.storage.get('count_app_restarted')) + 1;
+				this.storage.set('count_app_restarted',counter);
+			}else{
+				this.storage.set('show_lp_note',false);
+				this.storage.set('show_ap_note',false);
+			}
+		});
 		this.platform.ready().then(() => {
 			this.deeplinks.routeWithNavController(this.navChild, {
 				'/login': LogInPage,
 				'/landing/:messagePermalink': ChatPage      
 			}).subscribe((match) => {
-				// this.toolsPrvd.showToast('matched subscribeRoutes');
 				if(match.$args){
 					this.toolsPrvd.showSplashScreen();
 					this.initCheckLogin(match.$args.messagePermalink);
-					// this.storage.set('parameterData', match.$args.messagePermalink);
 				}else{
 					this.init();
 				}
 			}, (nomatch) => { 
+				
 				this.init();
 				/* this.toolsPrvd.showSplashScreen(); 
 				console.log('show splash');
-				this.initCheckLogin(725);   */
-				// this.toolsPrvd.showToast('no match subscribeRoutes');
+				this.initCheckLogin(464);  */
 			});
 		}); 
        
         this.platform.ready().then(() => {
-            // this.authPrvd.removeDeviceRegistration();
-            this.pushSetup();
-			// this.gps.getMyZipCode(true);
+			this.pushSetup();
         });
 
         this.storage.rm('custom_coordinates');
@@ -118,11 +123,9 @@ export class MyApp {
 				});
 			}
         });
-
         pushObject.on('registration').subscribe((registration: any) => {
             this.authPrvd.setDeviceRegistration(registration.registrationId);
         });
-
     }
 
     public init = () => {
@@ -179,5 +182,7 @@ export class MyApp {
 		},
 		err => console.error('Unable to get sim info: ', err));
     }
+	
+	
 	 
 }

@@ -156,12 +156,11 @@ export class NetwrklistPage {
   public loadActivity(){
 	return new Promise(resolve => {
 		this.activity = [];
-		this.activity.push({itemName: "Create an activity or topic"}); 
+		this.activity.push({itemName: "+ Create an activity or topic"}); 
 		this.activity.push({itemName: "Go on an adventure"});
 		this.activity.push({itemName: "Dinner"});
 		this.activity.push({itemName: "Lunch"});
 		this.activity.push({itemName: "Hang out"});
-		// this.activity.push({itemName: "Hang our"});
 		this.activity.push({itemName: "Work out"});
 		this.activity.push({itemName: "Ball"});
 		this.activity.push({itemName: "Game"});
@@ -171,7 +170,7 @@ export class NetwrklistPage {
 		this.activity.push({itemName: "Hike"});
 		this.activity.push({itemName: "Yoga"});
 		this.activity.push({itemName: "Chat"});
-		
+		this.activity.push({itemName: "Skate"});		
 		resolve(true);        
 	});           
 	
@@ -295,7 +294,9 @@ export class NetwrklistPage {
 		this.chatPrvd.isCleared = true;
 		this.storage.rm('edited-page');
 		this.chatPrvd.request_type = '';
-		this.app.getRootNav().setRoot(ChatPage);
+		this.toolsPrvd.popPage();
+		// this.app.getRootNav().setRoot(ChatPage);
+		
 	}else if(this.showContactsStep){
 		this.loadActivity();
 		this.showContactsStep = false; 
@@ -374,13 +375,13 @@ export class NetwrklistPage {
   public sendContactsMessage(message:any){	 
 	let shareLink = '';
 	if (this.platform.is('ios')){
-		shareLink = 'netwrkapp://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
+		shareLink = 'somvo://somvo.app/landing/'+this.selectedCommunity[0].id;
 	}else{
-		shareLink = 'https://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
+		shareLink = 'https://somvo.app/landing/'+this.selectedCommunity[0].id;
 	}
 	
 	this.user = this.authPrvd.getAuthData();
-	let shareMessage =  "Want to "+this.activitySelected.toLowerCase()+"? Download https://TestFlight.apple.com/join/cmTDxwuU"+" and reply via "+shareLink; 
+	let shareMessage =  "Want to "+this.activitySelected.toLowerCase()+"? Download https://testflight.apple.com/join/vkIJtwFV"+" and reply via "+shareLink; 
 	
 	let contacts = ''; //[]   
 	for(let i = 0;i<this.selectedContacts.length;i++){		
@@ -394,7 +395,6 @@ export class NetwrklistPage {
 	this.socialSharing.shareViaSMS(shareMessage,contacts);
 	this.goBackSuccess(message);
 	// this.toolsPrvd.hideLoader();
-	
   }
   
   private createPrivateGroup(){

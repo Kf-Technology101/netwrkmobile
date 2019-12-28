@@ -128,8 +128,8 @@ export class ProfilePage {
     this.user.id = this.navParams.get('id');
     let publicProfile = this.navParams.get('public');
     this.profileTypePublic = typeof publicProfile == 'boolean' ? publicProfile : true;
-    console.log('[ProfilePage][constructor]', this.navParams.get('public'));
-    console.log('[ProfilePage][constructor]', this.profileTypePublic);
+    // console.log('remove identity_warning')
+	// this.storage.rm('identity_warning'); 
   }
 
   public removeMessage(messageId:number):void {

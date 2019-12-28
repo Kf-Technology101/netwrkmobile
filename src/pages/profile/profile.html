@@ -88,7 +88,7 @@
           text-center type="text" placeholder="Choose a name"
           [(ngModel)]="profile.userName"
           [ngClass]="{'has-value' : profile.userName}"
-          (ionBlur)="profile.saveChanges()"></ion-input>
+          (ionBlur)="profile.saveChanges()" autocorrect="on"></ion-input>
       </ion-item>
     </ion-col>
   </ion-row>

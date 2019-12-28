@@ -104,11 +104,11 @@ export class FeedbackService {
     let file = message.image_urls && message.image_urls.length > 1 ? message.image_urls[0] : null;
 
       if (this.plt.is('ios')){
-          this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
+          this.sharing.share(subject, 'Somvo', file, 'somvo://somvo.app/landing/'+message.id).then(res => {
 
           }, err => console.error(err));
       }else{
-          this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
+          this.sharing.share(subject, 'Somvo', file, 'https://somvo.app/landing/'+message.id).then(res => {
 
           }, err => console.error(err));
       }

@@ -488,18 +488,24 @@ page-network-no {
 			}			    
 		}
 	  }
+	  &.indent-coach{
+		bottom: 98px;
+		&:before{
+			top: 27px;
+		}
+	  }
 	  &.near-netwrks{ 
-		padding: 6px 10px;
+		padding: 0px 10px 9px;
 		.netwrk-img{
 		    background-color: #fff;
 			border-radius: 25px;
 			width: 30px;
 			height: 30px;
-			margin: -5px 3px;
+			margin: 1px 3px -9px;
 		}
 	  }
 	  &.near-netwrks:before{
-		top: 20px;
+		top: 25px;
 	  }
     }
 
@@ -1126,7 +1132,7 @@ page-network-no {
               color: color($colors, bk);
             }
           }
-
+		 
           .message-container.false,.message-container.isLobby {
             padding: 6px;
             margin-left: 0;
@@ -1154,11 +1160,31 @@ page-network-no {
           object-fit: cover;
 		  left: 0;
         }
+		
+		.legend-msg{
+			float: right;
+			width: 25px;
+			height: 25px;
+			position: relative;
+			right: 55px;
+			z-index: 33;
+		}
+		
         .chat-avatar.conversation {
           /* top: 6px !important; */
           left: -6px;
         }
-		
+		.room-users{
+			margin: -40px 0px -20px 45px;
+			display: block;
+			position: relative;
+			z-index: 33;
+			.room_users_profile{
+				width: 30px;
+				border-radius: 65%;
+				margin-top: -7px;
+			}
+		} 
         .message-container.false,.message-container.isLobby{
 			margin-left: 17px !important;
 			padding: 0;
@@ -1175,7 +1201,7 @@ page-network-no {
 			display: block;
           }
 		  .chat-avatar{
-			// top: 5%;
+			/* top: 5%; */
 			margin-left: -5px; 
 			left: 0px;
 		  }
@@ -1200,7 +1226,7 @@ page-network-no {
 		}
 		
 		.message-container.isLobby {
-			min-height: 80px;
+			min-height: auto;
 			padding-top: 5px;
 			line-height: 18px;
 			border: 0px;
@@ -1212,6 +1238,12 @@ page-network-no {
 			}
 			.text{
 				white-space: normal;
+			}
+			.lm-access-type{
+				float: left;
+				margin-right: 5px;
+				color: #7a7a7a;
+				/* font-size: 14px; */
 			}
 		}
 
@@ -1292,7 +1324,7 @@ page-network-no {
 			max-width: 105%;
           }
 		  .message-date {
-            font-size: 12px;
+            /* font-size: 12px; */
             color: #7a7a7a;
 			display: block;
           }
@@ -1771,7 +1803,14 @@ page-network-no {
           z-index: 3;
           float: right;
         }
-        .netwrk-users {
+		
+		.netwrk-chat-icon{
+			width: 12px;
+			float: right;
+			margin-right: 3px;
+		}
+        
+		.netwrk-users {
           float: right;
           margin-right: 10px;
         }
@@ -2060,9 +2099,10 @@ page-chat{
 				  float: right;
 				  font-size: 18px;
 				}
+				
 				.netwrk-users {
 				  float: right;
-				  margin-right: 17px;
+				  /* margin-right: 17px; */
 				}
 				.netwrk-icon {
 				  border-radius: 50%;
@@ -2195,6 +2235,9 @@ page-chat{
 			display: inline;
 			margin-bottom: -3px;
 			width: 25px;
+			&.pop-sunicon{
+				width: 28px;
+			}
 		}
 		.try-span{
 			.button-inner{

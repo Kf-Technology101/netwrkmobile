@@ -7,15 +7,18 @@ import 'rxjs/add/operator/map';
 export class Api {
   public httpProtocol: string = 'http://';
   private apiV: string = '/api/v1';
-  //public domain: any = {
-  //  local: '192.168.1.77:3000', // default :3000
-  //  remote: '192.168.1.77:3000' // 'netwrk.com'
-  //};
-
+  // Local
+ /*  public domain: any = {
+   local: '192.168.0.77:3000', // default :3000
+   remote: '192.168.0.77:3000' // 'netwrk.com'
+  };  */
+  
+  // Production
   public domain: any = {
     local: '18.188.223.201:3000', // default :3000
     remote: '18.188.223.201:3000' // 'netwrk.com'
-  };
+  }; 
+  
   public siteDomain: string = this.domain.local;
   public hostUrl = this.httpProtocol + this.siteDomain;
   public url: string = this.hostUrl + this.apiV;

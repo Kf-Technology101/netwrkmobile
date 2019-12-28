@@ -116,6 +116,7 @@ export class HoldMapPage {
   public flgEditPost : boolean;
   public search : boolean;
   public locDetails : any;
+  public boundsMap: boolean = false;
   public mapStyle = [
 	  {
 		  "featureType": "all",
@@ -268,8 +269,9 @@ export class HoldMapPage {
   
   private getAndUpdateUndercoverMessages() {
 		this.chatPrvd.postMessages = [];
-	    this.chatPrvd.getMessages(false, this.chatPrvd.postMessages).subscribe(res => {
+	    this.chatPrvd.getMessages(true, this.chatPrvd.postMessages).subscribe(res => {
 			if (res) {
+				console.log(res.messages);
 				if (res.messages && res.messages.length > 0) {
 					if(this.chatPrvd.postMessages.length > 1){
 						for (let i in this.chatPrvd.postMessages) {
@@ -303,6 +305,8 @@ export class HoldMapPage {
 					}
 					
 				}
+						
+			this.boundsMap = true;
 			this.addMarker();
             }              
 		}, err => {
@@ -485,8 +489,19 @@ export class HoldMapPage {
 			} 
 		}				
 	 });
-	this.map.fitBounds(bounds);       // auto-zoom
-	this.map.panToBounds(bounds);     // auto-center
+	
+     if(this.boundsMap && this.chatPrvd.postMessages.length > 0){
+		this.map.fitBounds(bounds); // auto-zoom
+		if(this.map.getZoom()<=1){
+			new google.maps.event.addListenerOnce(self.map, 'bounds_changed', function(event) {		
+				this.setZoom(2);
+			});		
+		}else{
+			this.map.panToBounds(bounds); // auto-center
+		}
+	 }else if(this.boundsMap && this.chatPrvd.postMessages.length <= 0){
+		this.map.setCenter(new google.maps.LatLng(parseFloat('37.090240'),parseFloat('-95.712891'))); 
+	 }
   }
   
   public clearMarkers():void {
@@ -515,6 +530,9 @@ export class HoldMapPage {
 	}, (results, status) => {
 		this.callback(loc,results, status);
 		this.setCustomLocation(addressDetails);
+		this.boundsMap = false;
+		this.map.setCenter(new google.maps.LatLng(parseFloat(addressLat),parseFloat(addressLng))); 
+		this.map.setZoom(15);
 		this.addMarker();
 	});  
   }

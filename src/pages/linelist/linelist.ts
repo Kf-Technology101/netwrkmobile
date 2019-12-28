@@ -645,7 +645,7 @@ export class LinePage {
 									let subject = message.text_with_links ? message.text_with_links : '';
 									let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
 									if (this.plt.is('ios')){
-										this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
+										this.sharing.share(subject, 'Netwrk', file, 'somvo://somvo.app/landing/'+message.id).then(res => {
 												this.toolsPrvd.showToast('Message successfully shared');
 												if (!message.social) {
 													message.user_id = this.user.id;
@@ -663,7 +663,7 @@ export class LinePage {
 											}
 										);
 									}else{
-										this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
+										this.sharing.share(subject, 'Netwrk', file, 'https://somvo.app/landing/'+message.id).then(res => {
 												this.toolsPrvd.showToast('Message successfully shared');
 												if (!message.social) {
 													message.user_id = this.user.id;
@@ -1383,16 +1383,28 @@ export class LinePage {
 		}else if(this.storage.get('edited-page') == 'holdpage'){
 			this.navCtrl.popTo(this.navCtrl.getByIndex(this.navCtrl.length() - 3));
 		}else{
-			this.storage.rm("edited-page");
+			/* this.storage.rm("edited-page");
 			this.storage.rm('edit-post');
 			this.cameraPrvd.takenPictures=[];
+			this.setting.isCreateLine = true;
 			this.chatPrvd.isLandingPage = true;
 			this.chatPrvd.postMessages = [];
 			this.chatPrvd.isCleared = true;
 			this.setting.isNewlineScope=false;
 			this.canRefresh=true;
 			this.refreshChat();
+			this.toolsPrvd.popPage(); */
+			
+			this.storage.rm("edited-page");
+			this.storage.rm('edit-post');
+			this.cameraPrvd.takenPictures=[];
+			this.chatPrvd.postMessages = [];
+			this.chatPrvd.isCleared = true;
+			this.setting.isNewlineScope=false;
+			this.canRefresh=true;
+			this.refreshChat();
 			this.app.getRootNav().setRoot(ChatPage);
+			
 		}
     }
 

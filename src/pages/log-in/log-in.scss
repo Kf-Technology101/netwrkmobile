@@ -9,6 +9,12 @@ page-log-in {
       bottom: 0!important;
 	  margin-top: 15px;
     }
+	.somvo-logo{
+		text-align: center;
+		img{
+			max-width: 80%;
+		}
+	}
   }
   ion-grid.login-grid{
     opacity: 0;
@@ -28,7 +34,7 @@ page-log-in {
   .main-action-btn {
 	top:-4% !important;
     z-index: 3;
-	bottom: 40px !important;	
+	bottom: 17% !important;	
   }
   .row.top-form-row {
     position: absolute;
@@ -96,7 +102,8 @@ page-log-in {
   .footer {
     .login-btns-container {
       padding: 0px;
-      height: 80px;
+      height: 30px;
+	  
       [item-left], [item-right] {
         margin: 0;
       }
@@ -138,13 +145,14 @@ page-log-in {
     left: 0;
     right: 0;
     // top: calc(33%);
-    font-size: 25px;
+    font-size: 22px;
     padding: 4px;
     width: 100%;
     cursor: pointer;
 	color: #5b87aa;
 	background: none; 
 	font-weight: 600;
+	bottom: 75%;
     &:before {
 	  display:none;
       width: 35px;

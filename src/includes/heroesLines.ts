@@ -10,17 +10,17 @@ export const heroesLines: any = {
             name: 'Community Moderator',
             description: 'Take the identity of the network you create.',
             imageUrl: 'assets/images/undercover/netwrk.png'
-        },
+        }
         /* {
             name: 'Constructive Honesty',
             description: 'Showing another needed perspective in a constructive way',
             imageUrl: 'assets/images/undercover/netwrk.png'
         }, */
-        {
+        /* {
             name: 'Hot dog',
             description: 'I don’t want to be a hot dog.. Said no one ever.',
             imageUrl: 'assets/images/undercover/hotdog.jpg'
-        }
+        } */
     ],
     20: [
         /* {
@@ -32,12 +32,12 @@ export const heroesLines: any = {
             name: 'Community Moderator',
             description: 'Take the identity of the network you create.',
             imageUrl: 'assets/images/undercover/netwrk.png'
-        },
-        {
+        }
+        /* {
             name: 'Hot dog',
             description: 'I don’t want to be a hot dog.. Said no one ever.',
             imageUrl: 'assets/images/undercover/hotdog.jpg'
-        }
+        } */
     ],
     40: [
         /* {
@@ -49,12 +49,12 @@ export const heroesLines: any = {
             name: 'Community Moderator',
             description: 'Take the identity of the network you create.',
             imageUrl: 'assets/images/undercover/netwrk.png'
-        },
-        {
+        }
+        /* {
             name: 'Hot dog',
             description: 'I don’t want to be a hot dog.. Said no one ever.',
             imageUrl: 'assets/images/undercover/hotdog.jpg'
-        }
+        } */
     ]
 }
 

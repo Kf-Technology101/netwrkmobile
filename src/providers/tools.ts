@@ -20,7 +20,7 @@ import { Auth } from './auth';
 
 @Injectable()
 export class Tools {
-  public defaultAvatar: string = 'assets/images/incognito.png';
+  public defaultAvatar: string = 'assets/icon/netwrk-chat.png'; // 'assets/images/incognito.png';
   private toast: any;
   private loader: any = null;
   public isCameraReady: boolean = false;

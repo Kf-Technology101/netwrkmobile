@@ -63,14 +63,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "cordova-plugin-x-socialsharing": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-x-socialsharing"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "es6-promise-plugin": {
     "source": {
       "type": "registry",
@@ -177,18 +169,6 @@
       "FABRIC_KEY": "0b15d44d213d573ac860629f837562b2bf37ce9f"
     }
   },
-  "ionic-plugin-deeplinks": {
-    "source": {
-      "type": "registry",
-      "id": "ionic-plugin-deeplinks@^1.0.17"
-    },
-    "is_top_level": true,
-    "variables": {
-      "URL_SCHEME": "somvo",
-      "DEEPLINK_SCHEME": "https",
-      "DEEPLINK_HOST": "somvo.app"
-    }
-  },
   "cordova-plugin-facebook4": {
     "source": {
       "type": "registry",
@@ -261,6 +241,38 @@
     "is_top_level": true,
     "variables": {
       "PHOTO_LIBRARY_USAGE_DESCRIPTION": "Image Picker"
+    }
+  },
+  "cordova-plugin-snapchat": {
+    "source": {
+      "type": "local",
+      "path": "D:\\tejaswini\\netwrk-ios\\node_modules\\SnapChat"
+    },
+    "is_top_level": true,
+    "variables": {}
+  },
+  "ionic-plugin-deeplinks": {
+    "source": {
+      "type": "registry",
+      "id": "ionic-plugin-deeplinks"
+    },
+    "is_top_level": true,
+    "variables": {
+      "URL_SCHEME": "somvo",
+      "DEEPLINK_SCHEME": "https",
+      "DEEPLINK_HOST": "somvo.app",
+      "ANDROID_PATH_PREFIX": "/"
+    }
+  },
+  "cordova-plugin-x-socialsharing": {
+    "source": {
+      "type": "registry",
+      "id": "cordova-plugin-x-socialsharing"
+    },
+    "is_top_level": true,
+    "variables": {
+      "PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION": "This app requires photo library access to function properly.",
+      "PHOTO_LIBRARY_USAGE_DESCRIPTION": "This app requires photo library access to function properly."
     }
   }
 }

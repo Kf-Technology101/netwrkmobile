@@ -42,7 +42,8 @@
   </ion-grid>
 
 	<ng-container>
-	<div class="somvo-logo">
+	<div class="somvo-logo" [@fadeState]="controls.state"
+            [hidden]="controls.hidden">
 		<img src="assets/images/somvo-logo.png" class="arrow-ico icon">
 	</div>
 	</ng-container>
@@ -53,28 +54,26 @@
 </ion-content>
 
 <ion-footer>
-  <div  class="start-signup">
-	<button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()" ion-button color="bk" class="main-action-btn medium has-label"(tap)="goToSignUp()" outline id="main-btn"> </button>
-	<div class="tip">Tap the somvo button to get started</div>
-  </div>
-  
-  <div class="transparent login-btns-container">
-  <!-- Remove above div in case if used ion-item --> 
-  <!-- <ion-item class="transparent login-btns-container"> -->
-    <button ion-button default (tap)="toggleLoginForm()"
-            round item-left color="bk" [@fadeState]="controls.state"
-            [hidden]="controls.hidden">Login</button>
-   
-  </div>
- <!--  <div  class="login-text-note">
-	<p ion-text color="bk" style="text-align: center;">
-		Please be aware, there may be bugs, send them our way through somvo.app. Thank you for using somvo, I hope it brings a little more community into your life!
-	</p>
-	<p ion-text color="bk" style="text-align: right;">
-		Ben
-	</p>
-  </div> -->
-  <div>
+  <div [@fadeState]="controls.state" [hidden]="controls.hidden" class="signature_note">
 	<img src="assets/images/signature-note.jpg" class="arrow-ico icon">
   </div>
+  
+  <div  class="start-signup" >
+	<button target="_top" isScrolling="false" [@mainBtnState]="chatPrvd.mainBtn.getState()" ion-button color="bk" class="main-action-btn medium has-label"(tap)="goToSignUp()" outline id="main-btn" >Tap</button>
+	<div class="tip" [@fadeState]="controls.state" [hidden]="controls.hidden">
+		Tap the somvo button to get started
+	</div>
+  </div> 
+  
+  <div class="transparent login-btns-container">
+	<button ion-button default (tap)="toggleLoginForm()" round item-left color="bk" [@fadeState]="controls.state" [hidden]="controls.hidden">
+		Login
+	</button>
+	<!-- <button ion-button default (tap)="doFbLogin()" round item-left color="bk" [@fadeState]="controls.state" [hidden]="controls.hidden" style="float: right">
+		FbLogin
+	</button> -->
+  </div>
+  
+  
+  
 </ion-footer>

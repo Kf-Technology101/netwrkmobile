@@ -86,7 +86,7 @@ export class CameraPage {
         this.storage.set('first_time_camera', true);
       }
       setTimeout(() => {
-        this.mainBtn.state = 'normal';
+        this.mainBtn.state = 'minimised';
       }, animSpeed.fadeIn/2);
 
       this.imgBg = `url(data:image/jpeg;base64,${imageData[0]})`;
@@ -106,7 +106,7 @@ export class CameraPage {
       // this.goBack();
     }, err => {
       console.log(err);
-      this.mainBtn.state = 'normal';
+      this.mainBtn.state = 'minimised';
       // this.goBack();
     });
   }

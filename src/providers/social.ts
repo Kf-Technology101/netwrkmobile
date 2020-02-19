@@ -134,9 +134,22 @@ export class Social {
     return new Promise((resolve, reject) => {
       const clientId = '2d3db558942e4eaabfafc953263192a7';
       const clientSecret = 'bcf35f1ba4e94d59ad9f2c6c1322c640';
-      const redirectUrl = this.api.hostUrl + '/loader';
-      let autorizationLink = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=token`;
+      const redirectUrl =  this.api.hostUrl + '/loader'; 
 
+	 /* console.log(redirectUrl); 
+	  return false; */
+	  
+	 /*  const clientId = '2d3db558942e4eaabfafc953263192a7';
+      const clientSecret = 'bcf35f1ba4e94d59ad9f2c6c1322c640';
+      const redirectUrl =  this.api.hostUrl + '/loader';  */
+	  
+      // let autorizationLink = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=token`;
+
+ 
+	  let autorizationLink =  `https://api.instagram.com/oauth/authorize?client_id=177347736690442&redirect_uri=https://18.188.223.201:3000/loader&scope=user_profile,user_media&response_type=code`;
+							  
+  
+  
       let instagramData:any = {
         token: null,
         provider_name: 'instagram',

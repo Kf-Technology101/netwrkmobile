@@ -70,7 +70,7 @@ export class UndercoverCharacterPage {
      this.activePerson.description=avatar.description;
 	 if(this.settings.isCreateLine){
 		this.settings.lineAvatar = this.activePerson;
-		if(avatar.name.toLowerCase() == "private group"){
+		if(avatar.referal.toLowerCase() == "private_group"){
 			this.slideAvatarPrvd.setSliderPosition('right');
 			this.slideAvatarPrvd.sliderPosition = 'right';
 			this.storage.set('slider_position','right');
@@ -95,7 +95,7 @@ export class UndercoverCharacterPage {
 				this.settings.isCreateLine = false;
 				this.toolsPrvd.pushPage(LinePage);
 			}
-		}else if(avatar.name.toLowerCase() == "public network"){
+		}else if(avatar.referal.toLowerCase() == "public_network"){
 			console.log('pub');
 			this.slideAvatarPrvd.setSliderPosition('left');
 			this.slideAvatarPrvd.sliderPosition = 'left';
@@ -115,7 +115,9 @@ export class UndercoverCharacterPage {
 		  if (this.storage.get('first_time_hero') === null) {
 			this.firstTimeHero = false;
 			this.storage.set('first_time_hero', this.firstTimeHero);
-		  }		
+		  }	
+		  this.slideAvatarPrvd.sliderPosition = 'left';
+		  this.storage.set('slider_position','left');
 		  this.settings.isCreateLine = false;
 		  this.toolsPrvd.pushPage(ProfilePage, data);
 		}, err => {
@@ -146,7 +148,9 @@ export class UndercoverCharacterPage {
 				hint: null,
 				expire_date: null,
 				timestamp: Math.floor(new Date().getTime()/1000),
-				line_avatar:[]
+				line_avatar:[],
+				user_public_profile: false
+				
 	};
 	message = Object.assign(message, messageParams);
 	/* console.log(messageParams);

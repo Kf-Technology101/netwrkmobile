@@ -46,7 +46,7 @@ page-linelist {
 		color: #fff;
 		font-size: 17px;
 		@media screen and (min-width: 767px) {
-			margin-top: 15%;
+			margin-top: 10%;
 		}
 	  }
     }
@@ -303,14 +303,14 @@ page-linelist,page-netwrklist {
     background: transparent;
     
 	.main-action-btn {
-      bottom: 35px;
+      /* bottom: 35px; */
       border: 5px solid #5b87aa;
     }
     
 	.go-back-btn{
 		float: right;
 		margin-right: 10px;
-		margin-bottom: 35px;
+		margin-bottom: 15px;
 		background-color: transparent;
 		color: #5b87aa;
 		font-size: 15px;
@@ -396,9 +396,9 @@ page-linelist,page-netwrklist {
     }
   }
 
-  .chatMainBtn {
+  /* .chatMainBtn {
     bottom: 68px;
-  }
+  } */
 
   ion-footer.chatFooter.has-input {
     // height: 100%;

@@ -167,11 +167,11 @@ export class LogInPage {
   }
 
   public inputBlured():void {
-    this.chatPrvd.mainBtn.setState('centered');
+    // this.chatPrvd.mainBtn.setState('centered');
   }
 
   public inputFocused():void {
-    this.chatPrvd.mainBtn.setState('minimised');
+    // this.chatPrvd.mainBtn.setState('minimised');
   }
 
   private goToSignUp():void { this.tools.pushPage(SignUpPage); }

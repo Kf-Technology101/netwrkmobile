@@ -23,22 +23,27 @@
 <ion-content no-bounce>
     <ion-row class="hold-text">
         <ion-col text-center>
-		  <p ion-text class="text-bk3">
+		  <!-- <p ion-text class="text-bk3">
 			The somvo button allows you to easily move back and forth.
-		  </p>
+		  </p>  -->
 		  <p ion-text class="text-bk3">
 			Hold <button class="square-btn"></button> to start a somvo
-		  </p>                        
+		  </p>
+		  <p class="tail-bottom text-bk2">
+			Your contacts will be needed for inviting friends.
+		  </p>		  
         </ion-col>
     </ion-row>
 </ion-content>
 
 <ion-footer>
-    <button ion-button color="bk" class="main-action-btn medium transparent" outline (press)="showNetwrklist()" (tap)="showNetwrklist()">
-    </button>
-	<p class="tail-bottom">
-		Your contacts will be needed for inviting friends.
+	<p class="text-bk3">
+		Start a somvo with your community
 	</p>
+    <button ion-button color="bk" class="main-action-btn medium transparent" outline (press)="showNetwrklist()" (tap)="showNetwrklist()">
+	Hold
+    </button>
+	
 	<button ion-button class="skip-local" (tap)="goToLanding()">
 		Skip
 	</button>    

@@ -315,6 +315,25 @@ export class HoldMapPage {
      
   }
   
+  public getCurrLocDetails(){
+    this.gpsPrvd.getMyZipCode(true).then(zip => {
+		let zipcode = zip;
+		this.gpsPrvd.getGoogleAdress(this.gpsPrvd.coords.lat, this.gpsPrvd.coords.lng).map(res => res.json()).subscribe(res => {
+			
+			let loc = {
+			  lat: res.results[0].geometry.location.lat,
+			  lng: res.results[0].geometry.location.lng,
+			  place_name: res.results[0].address_components[0].short_name ? res.results[0].address_components[0].short_name : res.results[0].address_components[0].long_name,
+			  zipcode: zipcode
+			}
+			this.map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
+			this.setCustomAddressOnMap(loc);
+		});
+	});
+	
+	
+  }
+  
   private initAutocomplete(): void {
 	this.addressElement = this.searchbar.nativeElement.querySelector('.searchbar-input');
 	this.searchModel = "";
@@ -338,7 +357,7 @@ export class HoldMapPage {
 		  zipcode: zipcode
 		}
 		
-		this.gapi.init.then((google_maps: any) => {
+		/* this.gapi.init.then((google_maps: any) => {
 			this.map = new google.maps.Map(this.mapElement.nativeElement, {
 			   zoom : 15,
 			   center: data,
@@ -346,8 +365,8 @@ export class HoldMapPage {
 			   disableDefaultUI: true,
 			   fullscreenControl: false			   
 			});		
-		});
-
+		}); */
+		this.map.setCenter(new google.maps.LatLng(loc.lat, loc.lng));
 		this.setCustomAddressOnMap(loc);
 	  });	
 		

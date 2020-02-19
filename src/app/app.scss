@@ -248,19 +248,19 @@ ion-app {
     }
     .alert-sub-title {
       font-weight: bold;
-      font-size: 16px;
-      color: color($colors, bk-active-blue);
+      font-size: 18px;
+      color: color($colors, bk);
     }
     &.alert-md .alert-button,
     &.alert-ios .alert-button {
       // border-top: 1px solid color($colors, bk);
-      color: color($colors, bk-active-blue);
+      color: color($colors, bk); /*bk-active-blue*/
       padding: 0;
       height: 26px;
       border: none;
       &.active {
         .button-inner {
-          background: color($colors, bk-active-blue);
+          background: color($colors, bk); /*bk-active-blue*/
           color: #fff;
         }
       }
@@ -483,7 +483,7 @@ ion-app .ion-page .content {
 
 .main-action-btn {
   position: absolute;
-  bottom: 68px;
+  bottom: 15px; /* 68px; */
   left: 0;
   right: 0;
   margin: auto;
@@ -556,7 +556,7 @@ ion-app .ion-page .content {
     padding: 1px 5px;
     border-radius: 5px;
     position: relative;
-    bottom: 26px;
+    bottom: 77px;
   }
 
   .footer-back-button,
@@ -1436,7 +1436,7 @@ modal-sharelist {
 
 .no-data-message {
   text-align: center;
-  color: #fff;
+  color: #5b87aa;
   font-size: 16px;
   text-shadow: 0px 2px 3px rgba(150, 150, 150, 0.6);
   &.abs {
@@ -1538,16 +1538,17 @@ modal-netwrklist {
 }
 
 .netwrk-button {
-  width: 50px;
-  height: 50px;
+  width: 58px;
+  height: 58px;
   border-radius: 13px;
   padding: 0 5px;
   z-index: 3;
-  margin: 0 auto;
+  margin: 0 auto; 
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 15px;
+  bottom: 65px;
+  background: transparent;
   .icon {
     pointer-events: none;
     width: 100%;
@@ -1557,3 +1558,11 @@ modal-netwrklist {
   }
 }
 
+.flicker_me{
+	animation:blinkingText 7s infinite;
+}
+@keyframes blinkingText{
+	0%   { opacity:1; }
+	50%  { opacity:0; }
+	100% { opacity:1; }
+} 

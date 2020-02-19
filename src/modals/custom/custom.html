@@ -1,15 +1,17 @@
 
 <h1 class="custom-header">Create your own activity or topic</h1>
-<ion-input [(ngModel)]="inputElement" id="textInput" type="text" class="custom-input" [placeholder]="placeholderText"></ion-input>
+<ion-input [(ngModel)]="inputElement" id="textInput" type="text" class="custom-input" [placeholder]="placeholderText" (ionFocus)="inputOnFocus()" autocorrect="on" ></ion-input>
 <div class="error" *ngIf="isError && inputElement==''">Add custom activity</div>
 
 
 
-<ion-footer>
-<button (tap)="saveModal()" class="main-action-btn">
- <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
-</button>
+<ion-footer  class="customActivityFooter">
 <button (tap)="closeModal()" class="close-map">
   Back
 </button>
+
+<button (tap)="saveModal()" class="main-action-btn normal">
+ <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
+</button>
+
 </ion-footer>

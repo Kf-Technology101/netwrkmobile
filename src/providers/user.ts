@@ -75,7 +75,6 @@ export class User {
   }
 
   public update(id:number, accountInfo:any, type?:string, operationType?:string) {
-	  console.log(accountInfo);
     let userOnly = accountInfo.user;
     let seq = this.api.patch(`registrations/${id}`, {
       user: userOnly,

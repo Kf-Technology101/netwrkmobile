@@ -155,6 +155,7 @@ export class ProfilePage {
 	this.toolsPrvd.showLoader();
 	this.storage.set("edit-post", messageId);
 	this.storage.set("edited-page", 'profile');
+	console.log('pushpage');
 	this.toolsPrvd.pushPage(ChatPage);
 	this.toolsPrvd.hideLoader(); 
   }
@@ -260,9 +261,12 @@ export class ProfilePage {
 	  this.chatPrvd.areaLobby = false;
 	  if(this.storage.get('lobby_message') && (this.storage.get('lobby_message') != null || this.storage.get('lobby_message') != '')){
 		let lobby_message = this.storage.get('lobby_message');
+		console.log('setroot2');
 		this.app.getRootNav().setRoot(ChatPage,{message:lobby_message});
 	  }else{
+		  console.log('setroot1');
 		this.app.getRootNav().setRoot(ChatPage);
+		// this.toolsPrvd.popPage();
 	  }
   }
 
@@ -400,38 +404,7 @@ export class ProfilePage {
       ? this.user.name : this.user.role_name;
     this.profile.userDescription = this.user.role_description;
   }
-
-  private viewDidEnter(params?:any):void {
-    console.log('PROFILE | DIDENTER');
-
-    if (params) {
-      if (params.id) this.user.id = params.id;
-      if (params.public) this.profileTypePublic = params.public;
-    }
-    this.posts = [];
-    this.loadProfile();
-
-    this.user = this.authPrvd.getAuthData();
-    this.setProfileData();
-  }
-
-  ionViewDidEnter() {
-      this.viewDidEnter();
-      this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
-      this.slideAvatarPrvd.sliderInit(this.pageTag);
-  }
-
-  ionViewDidLoad() { this.loadProfile(); }
-
-  ionViewWillLeave() {
-    this.profile.saveChangesOnLeave();
-    this.setProfileData();
-    this.profile.user.hero_avatar_url = null;
-    this.profile.user.avatar_url = null;
-    this.profile.user.name = null;
-    this.profile.user.role_name = null;
-  }
-
+  
   public editSetting(messageId:number):void{
 	console.log(messageId);
 	this.toolsPrvd.showLoader();
@@ -453,5 +426,64 @@ export class ProfilePage {
 		this.toolsPrvd.hideLoader(); 
 	});	
   }
+  
+  public setCommunityIdentity(message:any){
+	console.log('setCommunityIdentity');
+	this.storage.set('savePrivateProfile',true);
+	let curr_auth_details = this.storage.get('curr_auth_metadetails');
+	this.profile.userName = message.title;
+	this.profile.userDescription = message.text;
+	this.profile.community_identity = message;
+	this.profile.saveChanges();	
+  }
+  
+  public saveProfileChanges(){
+	  console.log('saveProfileChanges');
+	 let params = {
+        user: {
+          role_description: this.profile.userDescription
+		}
+      }
+	this.userPrvd.update(this.user.id, params, this.authPrvd.getAuthType(), 'update')
+	.map(res => res.json()).subscribe(res => {
+		this.user = res;
+		this.toolsPrvd.hideLoader();
+	}, err => {
+		console.error(err);
+		this.toolsPrvd.hideLoader();
+	});
+  }
+
+  private viewDidEnter(params?:any):void {
+    if (params) {
+      if (params.id) this.user.id = params.id;
+      if (params.public) this.profileTypePublic = params.public;
+    }
+    this.posts = [];
+    this.loadProfile();
+
+    this.user = this.authPrvd.getAuthData();
+    this.setProfileData();
+  }
+
+  ionViewDidEnter() {
+      this.viewDidEnter();
+      this.slideAvatarPrvd.changeCallback = this.changeCallback.bind(this);
+      this.slideAvatarPrvd.sliderInit(this.pageTag);
+  }
+
+  ionViewDidLoad() { this.loadProfile(); }
+
+  ionViewWillLeave() {
+	  console.log('ionViewWillLeave');
+    // this.profile.saveChangesOnLeave();
+    this.setProfileData();
+    this.profile.user.hero_avatar_url = null;
+    this.profile.user.avatar_url = null;
+    this.profile.user.name = null;
+    this.profile.user.role_name = null;
+  }
+
+
   
 }

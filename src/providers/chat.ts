@@ -311,8 +311,8 @@ export class Chat {
 
   public openLobbyForPinned(message:any,getMessagesOnly:boolean = false):Promise<any> {
     return new Promise ((resolve, reject) => {
-		/* this.gps.coords.lat = parseFloat(message.lat);
-		this.gps.coords.lng = parseFloat(message.lng); */
+		this.gps.coords.lat = parseFloat(message.lat);
+		this.gps.coords.lng = parseFloat(message.lng); 
 		
       if (!this.isLobbyChat) { 
 	    this.getLocationLobby(message.id).subscribe(res => {
@@ -610,6 +610,18 @@ export class Chat {
     return seqMap;
   }
 
+  public getUniversalMapMessages():any{
+	let data: any = {
+      post_code: this.localStorage.get('chat_zip_code'),
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng
+    };
+	
+	let seq = this.api.get('messages/map_feed', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+  
   public getMessages(
     undercover: boolean,
     messageArray?: Array<any>,
@@ -754,8 +766,8 @@ export class Chat {
   }
 
   public getLegendaryHistory(netId:number) {
-    // console.log('[getLegendaryHistory] netId:', netId); 
-    let legendaryList = this.api.get('messages/legendary_list', { network_id: netId }).share();
+    console.log('[getLegendaryHistory] netId:', netId); 
+    let legendaryList = this.api.get('messages/legendary_list', { network_id: netId, is_distance_check:  this.areaFilter}).share();
     let legendaryMap = legendaryList.map(res => res.json());
     return legendaryMap;
   }
@@ -1128,11 +1140,11 @@ export class Chat {
           this.isMainBtnDisabled = false;
           reject();
           return;
-        } else if (data && data.messages && data.messages.length > 0) {
+        } else if (data && data.messages && data.messages.length > 0) {		  
           if (location == 'chat') receivedMessages = data.messages;
           else receivedMessages = data.messages.reverse();
           if (messages.length > 0) {
-            resolve({
+			resolve({
               messages: this.organizeMessages(receivedMessages),
               callback: (mess) => {
                 this.calcTotalImages(mess);
@@ -1148,7 +1160,8 @@ export class Chat {
               }
             });
           }
-        } else {
+		  this.isMainBtnDisabled = false;
+        } else {			  
           this.tools.hideLoader();
           if (data.messages.length == 0) reject('no messages');
           else reject('something went wrong');
@@ -1172,6 +1185,28 @@ export class Chat {
       lng: params.lng,
 	  message_type: params && params.message_type?params.message_type:'',
 	  offset: offset,
+	  limit: limit 
+    };
+	 
+	let seq = this.api.get('messages/nearby_search', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+  
+  /*Fetch all networks nearby latLng with in 100Yards*/
+  public getMutualNetworks(params:any = null){	
+  console.log(params);
+    let offset = params && params.offset ? params.offset : 0;
+    let limit = params && params.limit ? params.limit : this.limit;
+	let data: any = {
+      post_code: params.post_code,
+      lat: params.lat,
+      lng: params.lng,
+	  message_type: params && params.message_type?params.message_type:'',
+	  is_connected: params.isCurrentRoomUser,
+	  message_id: params.message_id,
+	  offset: offset,
+	  with_mutual_connected_communities:true,
 	  limit: limit 
     };
 	 

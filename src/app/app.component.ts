@@ -78,11 +78,10 @@ export class MyApp {
 					this.init();
 				}
 			}, (nomatch) => { 
-				
 				this.init();
 				/* this.toolsPrvd.showSplashScreen(); 
 				console.log('show splash');
-				this.initCheckLogin(464);  */
+				this.initCheckLogin(692); */
 			});
 		}); 
        
@@ -149,8 +148,8 @@ export class MyApp {
 	}
 
     private goToPage():void {
-		this.app.getRootNav().setRoot(ChatPage);
         this.toolsPrvd.hideSplashScreen();
+		this.app.getRootNav().setRoot(ChatPage);
     }
 
     private getLogin() {

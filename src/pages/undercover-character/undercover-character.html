@@ -23,9 +23,9 @@
         <div class="text text-md text-md-bk" text-center color="bk" *ngIf="!settings.isCreateLine">
             (Don't worry, you can change this later)
         </div>
-        <div class="text text-md text-md-bk" text-center color="bk" *ngIf="settings.isCreateLine">
+        <!-- <div class="text text-md text-md-bk" text-center color="bk" *ngIf="settings.isCreateLine">
             if it isn't here you can always make it however you want
-        </div>
+        </div> -->
         <ion-slides slidesPerView="3" initialSlide="1" spaceBetween="10">
             <ion-slide></ion-slide>
             <ion-slide [ngClass]="{'transition': sliderLoaded}" *ngFor="let p of persons" (click)="choosePerson(p)">
@@ -33,13 +33,15 @@
               <div class="avatar" [ngClass]="{'avatar': settings.isCreateLine, 'avatarLine' : !settings.isCreateLine }">
                 <img class="sun-icon" src="{{ p.imageUrl }}">
               </div>
+			  
             </ion-slide>
             <ion-slide></ion-slide>
         </ion-slides>
-        <div class="tip" *ngIf="firstTimeHero">Swap or tap</div>
-         <span class="custom-center-block person-description" ion-text color="bk">
+        <div class="tip" *ngIf="firstTimeHero">Swap to swipe</div>
+		<h4 class="title" ion-text color="bk">{{ activePerson.title }}</h4>
+		<span class="custom-center-block person-description" ion-text color="bk">
             {{ activePerson.description }}
-          </span>
+		</span>
     </ion-col>
   </ion-row>
 </div>

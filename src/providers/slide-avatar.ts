@@ -199,7 +199,7 @@ export class SlideAvatar {
 	  console.log(this.xElem);
 	  let metadata = this.storage.get('curr_auth_metadetails');
 	  console.log('metadata',metadata.communities_count); 
-	  if(metadata && metadata.communities_count > 0){
+	  if(metadata && metadata.communities_count > 0 && parseInt(metadata.user_points_count) > -120 && metadata.community_identity != null){
 		  this.selectedItem = e.target;
 		  let xPosxElem = this.xPos - this.xElem;
 		  let dEndDivTwo = this.dEnd / 2 + 3;
@@ -234,8 +234,11 @@ export class SlideAvatar {
 	  }else{
 		this.selectedItem.style.left = this.dStart + 'px';
 		let popupDetails: any = [];
-		
-		popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content"><div class="label-18 normal-text"><strong>You must create a community to use its name.</strong></div></div>';
+		if(metadata.communities_count <= 0 || metadata.community_identity == null){
+			popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content"><div class="label-18 normal-text"><strong>You must create a community to use its name.</strong></div></div>';
+		}else{
+			popupDetails.goodStuffPopupHtml = '<div class="center good-stuff-content"><div class="label-18 normal-text"><strong>Your privilege to have an alternate identity has been disabled. Please go and ponder what it would take to be your best self!</strong></div></div>';
+		}
 		popupDetails.cssClass = 'good-stuff';
 		popupDetails.buttonText = 'Okay!';
 		popupDetails.buttonCssClass = 'try-span';	

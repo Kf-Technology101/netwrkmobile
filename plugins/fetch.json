@@ -122,7 +122,7 @@
   "cordova-base64-to-gallery": {
     "source": {
       "type": "registry",
-      "id": "cordova-base64-to-gallery"
+      "id": "cordova-base64-to-gallery@^4.1.3"
     },
     "is_top_level": true,
     "variables": {}
@@ -130,7 +130,7 @@
   "cordova-plugin-camera-preview": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-camera-preview"
+      "id": "cordova-plugin-camera-preview@^0.9.0"
     },
     "is_top_level": true,
     "variables": {}
@@ -240,7 +240,7 @@
   "cordova-plugin-ionic-webview": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-ionic-webview@4.0.0"
+      "id": "cordova-plugin-ionic-webview@~4.0.0"
     },
     "is_top_level": true,
     "variables": {}
@@ -248,7 +248,7 @@
   "cordova-plugin-ionic-keyboard": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-ionic-keyboard"
+      "id": "cordova-plugin-ionic-keyboard@~2.1.3"
     },
     "is_top_level": true,
     "variables": {}
@@ -256,11 +256,11 @@
   "cordova-plugin-telerik-imagepicker": {
     "source": {
       "type": "registry",
-      "id": "cordova-plugin-telerik-imagepicker"
+      "id": "cordova-plugin-telerik-imagepicker@~2.3.2"
     },
     "is_top_level": true,
     "variables": {
-      "PHOTO_LIBRARY_USAGE_DESCRIPTION": "Image Picker"
+      "PHOTO_LIBRARY_USAGE_DESCRIPTION": "your usage message"
     }
   }
 }

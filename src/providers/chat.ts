@@ -95,7 +95,9 @@ export class Chat {
   public request_type: any = null;
   public custom_line_id: any = null;
   public updatedLineAvatarData: any = null;
-
+  private limit: number  = 30;
+  public show_lp_note:boolean = false;
+  public show_ap_note:boolean = false;
   constructor(
     public localStorage: LocalStorage,
     public api: Api,
@@ -309,8 +311,8 @@ export class Chat {
 
   public openLobbyForPinned(message:any,getMessagesOnly:boolean = false):Promise<any> {
     return new Promise ((resolve, reject) => {
-		/* this.gps.coords.lat = parseFloat(message.lat);
-		this.gps.coords.lng = parseFloat(message.lng); */
+		this.gps.coords.lat = parseFloat(message.lat);
+		this.gps.coords.lng = parseFloat(message.lng); 
 		
       if (!this.isLobbyChat) { 
 	    this.getLocationLobby(message.id).subscribe(res => {
@@ -608,6 +610,18 @@ export class Chat {
     return seqMap;
   }
 
+  public getUniversalMapMessages():any{
+	let data: any = {
+      post_code: this.localStorage.get('chat_zip_code'),
+      lat: this.gps.coords.lat,
+      lng: this.gps.coords.lng
+    };
+	
+	let seq = this.api.get('messages/map_feed', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+  
   public getMessages(
     undercover: boolean,
     messageArray?: Array<any>,
@@ -625,7 +639,7 @@ export class Chat {
       lng: this.gps.coords.lng,
       offset: offset,
       is_landing_page: this.isLandingPage ? this.isLandingPage : false,
-      limit: 20
+      limit: 40
     };
 
     let messagesIds: Array<any> = [];
@@ -636,7 +650,7 @@ export class Chat {
 
     if (data.undercover && !doRefresh) {
       data.offset = 0;
-      data.limit = 20;
+      data.limit = 40;
       data.current_ids = [];
     }
 
@@ -662,7 +676,7 @@ export class Chat {
       lat: this.gps.coords.lat,
       lng: this.gps.coords.lng,
       offset: offset,
-      limit: 20
+      limit: this.limit
     };
 
     let messagesIds: Array<any> = [];
@@ -674,7 +688,7 @@ export class Chat {
     if (!doRefresh) {
       data.offset = 0;
       //data.limit = offset == 0 ? 20 : offset
-      data.limit = 20
+      data.limit = this.limit
     }
 
     if (params) Object.assign(data, params);
@@ -689,7 +703,7 @@ export class Chat {
 
   public getMessagesByUserId(params: any):any {
     let data: any = {
-      limit: 20,
+      limit: this.limit,
     };
 	
     if (params) Object.assign(data, params);
@@ -702,7 +716,7 @@ export class Chat {
   public getFollowedAndOwnLine(params: any):any {
 	//http://18.188.223.201:3000/api/v1/messages/profile_communities?limit=20&offset=0
     let data: any = {
-      limit: 100
+      limit: this.limit
 	};
 	
     if (params) Object.assign(data, params);
@@ -752,8 +766,8 @@ export class Chat {
   }
 
   public getLegendaryHistory(netId:number) {
-    // console.log('[getLegendaryHistory] netId:', netId); 
-    let legendaryList = this.api.get('messages/legendary_list', { network_id: netId }).share();
+    console.log('[getLegendaryHistory] netId:', netId); 
+    let legendaryList = this.api.get('messages/legendary_list', { network_id: netId, is_distance_check:  this.areaFilter}).share();
     let legendaryMap = legendaryList.map(res => res.json());
     return legendaryMap;
   }
@@ -1050,7 +1064,6 @@ export class Chat {
 
   public goToProfile(profileId?: number, profileTypePublic?: boolean): Promise<any> {
     return new Promise(res => {
-
       let currentUser = this.authPrvd.getAuthData();
       if (!profileId) profileId = currentUser.id;
       let params = {
@@ -1086,13 +1099,11 @@ export class Chat {
     if (this.scrollTimer.interval) clearInterval(this.scrollTimer.interval);
     if (this.scrollTimer.timeout) clearTimeout(this.scrollTimer.timeout);
     this.scrollTimer.interval = setInterval(() => {
-      // console.log('[scrollToBottom] loaded:', this.loadedImages + '/' + this.imagesToLoad);
       if (this.imagesToLoad == this.loadedImages || (params && params.forced)) {
         console.log('[SCROLLING TO BOTTOM]');
         content.scrollTo(0, content.getContentDimensions().scrollHeight, 100);
         setTimeout(() => {
           this.isMessagesVisible = true;
-          // this.tools.hideLoader();
         }, 150);
         clearInterval(this.scrollTimer.interval);
       }
@@ -1103,7 +1114,7 @@ export class Chat {
   }
 
   public showMessages(messages:any, location: any, isUndercover?: boolean):Promise<any> {
-	   console.log('[ChatPage][showMessages]');
+	console.log('[ChatPage][showMessages]');
     let loadMessages:any;
     let arg:any;
     switch (location) {
@@ -1129,11 +1140,11 @@ export class Chat {
           this.isMainBtnDisabled = false;
           reject();
           return;
-        } else if (data && data.messages && data.messages.length > 0) {
+        } else if (data && data.messages && data.messages.length > 0) {		  
           if (location == 'chat') receivedMessages = data.messages;
           else receivedMessages = data.messages.reverse();
           if (messages.length > 0) {
-            resolve({
+			resolve({
               messages: this.organizeMessages(receivedMessages),
               callback: (mess) => {
                 this.calcTotalImages(mess);
@@ -1149,7 +1160,8 @@ export class Chat {
               }
             });
           }
-        } else {
+		  this.isMainBtnDisabled = false;
+        } else {			  
           this.tools.hideLoader();
           if (data.messages.length == 0) reject('no messages');
           else reject('something went wrong');
@@ -1166,7 +1178,7 @@ export class Chat {
   /*Fetch all networks nearby latLng with in 100Yards*/
   public getCustomAreaNetworks(params:any = null){	
     let offset = params && params.offset ? params.offset : 0;
-    let limit = params && params.limit ? params.limit : 100;
+    let limit = params && params.limit ? params.limit : this.limit;
 	let data: any = {
       post_code: params.post_code,
       lat: params.lat,
@@ -1181,12 +1193,32 @@ export class Chat {
     return seqMap;
   }
   
+  /*Fetch all networks nearby latLng with in 100Yards*/
+  public getMutualNetworks(params:any = null){	
+  console.log(params);
+    let offset = params && params.offset ? params.offset : 0;
+    let limit = params && params.limit ? params.limit : this.limit;
+	let data: any = {
+      post_code: params.post_code,
+      lat: params.lat,
+      lng: params.lng,
+	  message_type: params && params.message_type?params.message_type:'',
+	  is_connected: params.isCurrentRoomUser,
+	  message_id: params.message_id,
+	  offset: offset,
+	  with_mutual_connected_communities:true,
+	  limit: limit 
+    };
+	 
+	let seq = this.api.get('messages/nearby_search', data).share();
+    let seqMap = seq.map(res => res.json());
+    return seqMap;
+  }
+  
   /*Fetch all private networks nearby latLng with in 15miles of particular user*/
   public getUserPrivateLines(params:any = null){	
-  /*http://18.188.223.201:3000/api/v1/messages/nearby_profile_messages?user_id=1&lat=19.9942144&lng=73.777152&is_distance_check=true */
-  
     let offset = params && params.offset ? params.offset : 0;
-    let limit = params && params.limit ? params.limit : 100;
+    let limit = params && params.limit ? params.limit : this.limit;
 	let data: any = {
       is_distance_check:true,
       lat: params.lat,
@@ -1204,7 +1236,6 @@ export class Chat {
   
   /*Fetch single record wth unique message_id */
   public getMessageIDDetails(message_id:any,isShareLink:boolean=false):any {
-	  // http://18.188.223.201:3000/api/v1/messages/7
 	  let uri:any;
 	  if(isShareLink){
 		uri = 'messages/' + message_id + '?grant_access=true';
@@ -1218,12 +1249,6 @@ export class Chat {
   
   /*Fetch all replies for particular message*/
   public getAllMessageReplies(messageId:number){	
-	//http://18.188.223.201:3000/api/v1/messages/768/reply/messages 
-	// let offset : number = params.offset ? params.offset : 0;
-	// let data: any = {
-		// limit : 15, 
-		// offset :  offset
-	// }
 	let seq = this.api.get('messages/'+messageId+'/reply/messages').share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
@@ -1240,6 +1265,17 @@ export class Chat {
 	let seq = this.api.get('messages/non_custom_lines', data).share();
     let seqMap = seq.map(res => res.json());
     return seqMap;
+  }
+  
+  public saveUserMetaDetails(){
+	this.user = this.authPrvd.getAuthData();
+	let params: any = {
+		user_id: this.user.id,
+		offset: 0
+	}; 
+	this.getMessagesByUserId(params).subscribe(res => {
+		this.localStorage.set('curr_auth_metadetails', res.metadata[0]);
+	});	
   }
   
 }

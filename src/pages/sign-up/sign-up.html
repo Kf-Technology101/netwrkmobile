@@ -10,7 +10,7 @@
       <ion-col>
         <form [formGroup]="signUpForm" (submit)="doSignUp(signUpForm)" #submitForm="ngForm" novalidate class="registration-form">
           <ion-list>
-
+		  
             <ion-item [hidden]="!states.login.bool" [@inputState]="states.login.str">
               <ion-input
                 (ionFocus)="inputOn($event, 'focus')"
@@ -36,6 +36,7 @@
                 (input)="fieldChange($event)"></ion-input>
             </ion-item>
 
+
             <ion-item [hidden]="!states.password.bool" [@inputState]="states.password.str">
               <ion-input
                 (ionFocus)="inputOn($event, 'focus')"
@@ -49,6 +50,7 @@
                 (input)="fieldChange($event)"></ion-input>
             </ion-item>
 
+			<div class="dob_title" [hidden]="!states.date_of_birthday.bool">Tap to choose your birthday</div>
             <ion-item [hidden]="!states.date_of_birthday.bool" [@inputState]="states.date_of_birthday.str">
               <ion-datetime
                 placeholder="Birthday..."
@@ -76,15 +78,23 @@
 </ion-content>
 
 <ion-footer class="signUpFooter">
-  <button [@mainBtnState]="mainBtn.state" ion-button color="bk"
-          class="main-action-btn medium has-label"
-          (tap)="doSignUp(signUpForm)" outline
-          *ngIf="!mainBtn.disabled"></button>
-  <span class="main-action-text" ion-text color="bk" [hidden]="mainBtn.state=='hidden'">
+  <div class="main-action-text main-action-coachmark" *ngIf="(this.activeStateId == 1 || this.activeStateId == 0) && !mainBtn.disabled" ion-text color="bk" [hidden]="mainBtn.state=='hidden'">
+	{{coachmarkText}}
+  </div>  
+  <span class="main-action-text" ion-text color="bk" [hidden]="mainBtn.state=='hidden'" *ngIf="!mainBtn.disabled">
     Tap to continue
   </span>
-
   <button ion-button class="footer-back-button" (click)="goBack()">
     <span ion-text color="bk">Back</span>
   </button>
+  <button [@mainBtnState]="mainBtn.state" ion-button color="bk"
+          class="main-action-btn medium has-label"
+          (tap)="doSignUp(signUpForm)" outline
+          *ngIf="!mainBtn.disabled">
+		<ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"></ion-icon>
+  </button>
+  
+  
+
+  
 </ion-footer>

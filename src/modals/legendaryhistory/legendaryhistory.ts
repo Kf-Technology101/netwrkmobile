@@ -9,6 +9,7 @@ import { Chat } from '../../providers/chat';
 import { Tools } from '../../providers/tools';
 import { Auth } from '../../providers/auth';
 import { VideoService } from '../../providers/videoservice';
+import { FeedbackService } from '../../providers/feedback.service';
 
 // Modals
 import { FeedbackModal } from '../feedback/feedback';
@@ -49,6 +50,7 @@ export class LegendaryModal {
     public authPrvd: Auth,
     public zone: NgZone,
     public elRef: ElementRef,
+	public feedbackService: FeedbackService,
     public videoservice: VideoService
   ) {
     this.userId = this.params.get('user_id');
@@ -157,7 +159,8 @@ export class LegendaryModal {
     this.mainBtn.state = 'minimisedForCamera';
     console.log('[LegendaryList][DidEnter]');
     this.netwrkId = this.params.get('netwrk_id');
-    console.log('[LegendaryList][DidEnter] netwrkId:', this.netwrkId);
+	console.log('[LegendaryList][DidEnter] netwrkId:', this.netwrkId);
+	console.log('this.chatPrvd.areaFilter',this.chatPrvd.areaFilter);
     this.showLegendaryMessages();
   }
 }

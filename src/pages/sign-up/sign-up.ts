@@ -72,7 +72,7 @@ export class SignUpPage {
   activeStateId: number = -1;
 
   public mainBtn: any = {
-    state: 'hidden',
+    state: 'normal',
     disabled: false
   }
   public maxBirthday: string;
@@ -81,7 +81,8 @@ export class SignUpPage {
   private textStrings: any = {};
 
   public signUpForm: any;
-
+  public coachmarkText = 'Tap to navigate throughout the app';
+  
   constructor(
     public navCtrl: NavController,
     public auth: Auth,
@@ -134,8 +135,8 @@ export class SignUpPage {
     if (!valid) { this.setMainBtnState({disabled: false}); return; }
     let signUpProcess = () => {
       console.log('current state id:', this.activeStateId);
-      this.activeStateId++;
-      this.setMainBtnState({state: 'hidden', disabled: true});
+	  this.activeStateId++; 
+      // this.setMainBtnState({state: 'hidden', disabled: true});
       this.updateActiveStates();
 
       this.account = {
@@ -145,11 +146,12 @@ export class SignUpPage {
         type: ''
       }
 	  if(this.activeStateId == 1){
+		this.coachmarkText = 'If your not sure what to do, tap the somvo button';
 		if(this.signUpForm.controls['password'].valid && this.signUpForm.controls['confirm_password'].valid){
 			this.setMainBtnState({state: 'minimised', disabled: false});
-		}else{
+		}/* else {
 			this.setMainBtnState({state: 'hidden', disabled: true});
-		}  
+		}  */ 
 	  }	  
       if (this.activeStateId == 2) {
         this.setMainBtnState({state: 'normal', disabled: false});
@@ -219,6 +221,9 @@ export class SignUpPage {
       this.tools.popPage();
     } else {
       this.activeStateId--;
+	  if (this.activeStateId == 0) {
+		this.coachmarkText = 'Tap to navigate throughout the app';
+	  }
       this.updateActiveStates();
       setTimeout(() => {
         this.setMainBtnState({
@@ -341,9 +346,9 @@ export class SignUpPage {
   public fieldChange(event:any):void {
     if (this.checkInputLength(event.target.value)) {
       this.setMainBtnState({state: 'minimised', disabled: false});
-    } else {
+    } /* else {
       this.setMainBtnState({state: 'hidden', disabled: true});
-    }
+    } */
   }
 
   public inputOn(event:any, state:string):void {
@@ -380,10 +385,11 @@ export class SignUpPage {
     if (this.platform.is('ios')) {
       this.keyboard.onKeyboardShow().subscribe(res => {
         try {
+		  let keyboardHeight = res && res.keyboardHeight ? res.keyboardHeight : '30%';
           let footerEl = <HTMLElement>document.querySelector('.signUpFooter');
           let scrollEl = <HTMLElement>document.querySelector('.scroll-content');
-          scrollEl.style.bottom = res.keyboardHeight + 'px';
-          footerEl.style.bottom = res.keyboardHeight + 'px';
+          scrollEl.style.bottom = keyboardHeight;
+          footerEl.style.bottom = keyboardHeight;
         } catch (e) {
           console.error('on-keyboard-show error:', e);
         }

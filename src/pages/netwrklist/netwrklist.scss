@@ -32,8 +32,40 @@ page-netwrklist {
 			font-size: 16px;
 		}
 		  
+		.lm-details{
+		    
+			.user-icon{
+				max-height: 45px;
+				max-width: 45px;
+				border-radius: 100px;
+			}
+			.title{
+				text-align: center;
+				border: 1px solid;
+				border-radius: 10px;
+				padding-left: 30px;
+				padding-right: 10px;				
+				margin: -38px 7px 10px 14px;
+				span{
+					font-size: 20px;
+				}
+				#textInput{
+					color: #000;
+					.text-input{
+						text-align: center;
+						/* &::placeholder{
+							color: #000;	
+						} */
+					}
+					
+				}
+				.exp-note{
+				    font-size: 12px;
+					color: red;
+				}
+			}
+		}  
 		.container-title{
-			border-top: 1px solid #5b87aa;
 			border-bottom: 1px solid #5b87aa;
 			font-size: 17px;
 			font-weight: 500;
@@ -57,8 +89,8 @@ page-netwrklist {
 		}
 		
 		.scroll-content{
-		    margin-top: 100px !important;
-			margin-bottom: 75px !important;
+		    margin-top: 10px !important;
+			margin-bottom: 0px !important;
 			@media screen and (max-width: 374px) {
 				margin-top: 130px !important;	     
 			}
@@ -95,6 +127,7 @@ page-netwrklist {
 				margin-top: 0px !important;	     
 			}
 		 }
+		
 		  .chat-container{
 			text-align: center;
 			font-size: 21px;
@@ -116,6 +149,10 @@ page-netwrklist {
 					font-size: 25px;
 					font-weight: 500;
 					padding: 0;
+					&.blue-text{
+						color: #6AA4D9;
+						font-weight: normal;
+					}
 				}			
 				.item-inner{
 					border:0px;
@@ -150,8 +187,8 @@ page-netwrklist {
 	  
 	  .virtual-custom-scroll-wrapper{
 		background-color: #fff;
-		height: 200px;
-		padding: 10px 16px 50; 
+		/* height: 250px; */
+		padding: 10px 16px 5px; 
 		position: absolute;
 		bottom: 0;
 		right: 0%;
@@ -159,7 +196,7 @@ page-netwrklist {
 		
 	  }
 	  .virtual-custom-scroll-container{
-		height: 200px;
+		height: 230px;
 		overflow: scroll;
 	  } 
 	  span.remove-location {
@@ -180,17 +217,17 @@ page-netwrklist {
 		/* float: left; */
 	  }
 	  
-	  .flicker_me{
+	  /* .flicker_me{
 		animation:blinkingText 7s infinite;
-	  }
+	  } */
 	  /* .flicker_loc{
 		animation:blinkingBtn 7s infinite;
 	  } */
-	  @keyframes blinkingText{
+	  /* @keyframes blinkingText{
 		0%   { opacity:1; }
 		50%  { opacity:0; }
 		100% { opacity:1; }
-	  } 
+	  } */
 	  /* @keyframes blinkingBtn{
 		0%   { opacity:1; }
 		50%  { opacity:0; }
@@ -216,9 +253,9 @@ page-netwrklist {
   }
    
   ion-header {
-    height: 12%;
+    height: 10%;
 	&.header-ios{
-		padding-top: 15px;
+		padding-top: 0px;
 	}
     ion-toolbar {
       height: 100%;
@@ -265,7 +302,7 @@ page-netwrklist {
 		border-radius: 50%;
 		width: 98px;
 		height: 98px;
-		padding: 0; 
+		padding: 0;  
 		position: absolute;
 		left: 0;
 		right: 0;
@@ -274,11 +311,17 @@ page-netwrklist {
 		border: 6px solid #fff;
 		background: transparent;
 	}
+	.save-btn-note{
+		margin-bottom: 69px;
+		color: #fff;
+		font-size: 14px;
+	}
 	.bottom-margin{
 		margin-bottom: 40px;
 	}
 	.message-input{
-	    width: 90%;
+	    /* width: 90%; */
+		float: left;
 		margin-left: auto;
 		margin-right: auto;
 		border: 1.5px solid #5b87aa;
@@ -292,16 +335,72 @@ page-netwrklist {
 			}
 		}
 	}
+	.share-snapchat{
+		margin-bottom: 90px;
+		color: #fff;
+	}
+	.share-with{
+		margin-bottom: 15px;
+		.item{
+			padding: 0px 5px 0 5px;
+			width: 100px;
+			min-height: 30px;
+			height: 30px;
+			font-size: 14px;
+			color: #fff;
+			&.facebook-radio{
+				background-color: #3b5998;
+			}
+			&.twitter-radio{
+				background-color: #00acee;
+			}
+			ion-label{
+				color: #fff !important;		
+				.icon{
+					color: #fff;
+					margin-right: 2px;
+					font-size: 23px;
+					max-width: 18px;
+					margin-top: 1px;
+				}
+				span{
+					margin-top: 4px;
+					margin-left: 5px;
+					position: absolute;
+				}			
+			}
+			ion-radio{
+			    margin: 0px;
+				border: 2px solid #000 !important;
+				border-radius: 50px;
+				width: 26px;				
+				height: 26px;	
+				background-color: #fff;
+				.radio-inner{
+					border-color: #000;
+				}
+			}
+		}
+	}
 	.back-btn{
-		height: 20px;
-		width: 35px;
+		max-height: 22px;
 		border: 0px;
-		float: right;
-		margin-right: 5%;
+		float: left;
+		margin-left: calc(50% - 135px);
+		font-size: 15px;
+		max-width: 55px;
+		background-color: #5b87aa;
+		color: #fff;
+		padding: 14px;
+		border-radius: 25px;
+		bottom: 25px;
 	} 
 	
 	.main-action-btn{
-		width: 42px;
+		font-size: 17px;
+		color: #5b87aa;
+		font-weight: bold;
+		/*width: 42px;
 		height: 26px;
 		border: 3px solid #5b87aa;
 		border-radius: 4px;
@@ -311,7 +410,10 @@ page-netwrklist {
 		 }
 		 .ion-ios-arrow-back-outline{
 			 font-size:25px;
-		 }
+		 }*/
+		&.txtual-move{
+			bottom: 15px;
+		} 
 	}
 	
 	.contacts-list-btn{

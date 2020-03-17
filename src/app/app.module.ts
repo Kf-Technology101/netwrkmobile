@@ -6,6 +6,7 @@ import { Push } from '@ionic-native/push';
 import { ImagePicker } from '@ionic-native/image-picker';
 import { WebView } from '@ionic-native/ionic-webview/ngx';
 import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { HttpClientModule } from '@angular/common/http'; 
 
 import { SplashScreen } from "@ionic-native/splash-screen";
 import { StatusBar } from "@ionic-native/status-bar";
@@ -67,6 +68,7 @@ import { Places } from '../providers/places';
 import { ReportService } from '../providers/reportservice';
 import { VideoService } from '../providers/videoservice';
 import { FeedbackService } from '../providers/feedback.service';
+import { SnapProvider } from '../providers/snap';
 
 //Pipes
 import { ContactListPipe } from '../pipes/contact-list';
@@ -214,6 +216,7 @@ export function providers() {
 	ImagePicker,
 	WebView,
     Places,
+	SnapProvider
 	//SMS,
     // Keep this to enable Ionic's runtime error handling during development
   ];
@@ -224,11 +227,13 @@ export function providers() {
   imports: [
     BrowserModule,
     HttpModule,
+	HttpClientModule,
     BrowserAnimationsModule,
     Ng2CableModule,
     IonicModule.forRoot(MyApp, { scrollAssist: false } ),
     GoogleMapsModule.forRoot({
-      url: 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBjoCQlLGverzDsYq0bpYpxXO9E20FT3yI'
+      // url: 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBjoCQlLGverzDsYq0bpYpxXO9E20FT3yI'
+      url: 'https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyBtEx1yF-VizBprDZDN3v_z3cv7bA_CLFs' 
     })
   ], 
  /*  exports: [

@@ -114,9 +114,9 @@
         <variable name="FABRIC_KEY" value="0b15d44d213d573ac860629f837562b2bf37ce9f" />
     </plugin>
     <plugin name="ionic-plugin-deeplinks" spec="^1.0.17">
-        <variable name="URL_SCHEME" value="netwrkapp" />
+        <variable name="URL_SCHEME" value="somvoapp" />
         <variable name="DEEPLINK_SCHEME" value="https" />
-        <variable name="DEEPLINK_HOST" value="netwrkapp.com" />
+        <variable name="DEEPLINK_HOST" value="somvo.app" />
         <variable name="ANDROID_PATH_PREFIX" value="/" />
         <variable name="ANDROID_2_PATH_PREFIX" value="/" />
         <variable name="ANDROID_3_PATH_PREFIX" value="/" />

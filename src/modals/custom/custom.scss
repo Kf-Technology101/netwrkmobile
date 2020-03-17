@@ -1,19 +1,20 @@
 custom {
   .close-map {
-    background: transparent;
-	color: #5b87aa;
-	line-height: 25px;
-	font-size: 15px;
-    float: right;
-	margin-right: 4%;
+	background: transparent;
+    color: #5b87aa;
+    line-height: 25px;
+    font-size: 18px;
+    float: left;
+    margin-left: calc(50% - 135px);
+    margin-bottom: 33px;
+    font-weight: 500;
   }
   
   .main-action-btn{
 	border: 5px solid #5b87aa;
-    bottom: 50px;
     width: 90px;
     height: 54px;
-    border-radius: 11px;
+    border-radius: 11px; 
   }
   
   .okay-btn{

@@ -20,8 +20,9 @@ page-hold {
     }
     .text-bk3 {
       color: #5b87aa;
-      font-size: 22px;
+      font-size: 26px;
       font-weight: bold;
+	  margin-bottom: 0px;
     }
 	.col{
 	  padding: 110px 5px;
@@ -52,20 +53,29 @@ page-hold {
 		border-radius: 50%;
 		z-index: -1;
 	}  
-	
+	.text-bk3 {
+      color: #5b87aa;
+      font-size: 21px;
+      font-weight: bold;
+      margin-bottom: 60px;
+    }
 	.tail-bottom {
 		color: #5b87aa;
 		padding: 0 30px;
 		text-align: center;
 		font-size: 11px;
-		margin-bottom: -12px;
+		margin-bottom: 30px;
 		font-weight: 700;
 	}
 	.skip-local{
 		color: #5b87aa;
 		background: transparent;
-		float:right;
-		font-weight: 500;
+		float: right;
+		font-size: 17px;
+		right: calc(50% - 145px);
+		bottom: 33px;
+		font-weight: bold;
+		max-height: 20px;
 	}
   }
   
@@ -78,6 +88,10 @@ page-hold {
         background-size: 26px;
       }
     }
+	span.button-inner{
+	    font-size: 22px;
+		font-weight: 600;
+	}
   }
 
   .content {

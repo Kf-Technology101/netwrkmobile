@@ -286,7 +286,7 @@ export class LinePage {
         this.chatPrvd.bgState.setState((this.chatPrvd.bgState.getState() == 'stretched') ? 'compressed' : 'stretched');
 
         if (this.chatPrvd.bgState.getState() == 'stretched') {
-			this.bottomMargin="65px";
+			/* this.bottomMargin="65px"; */
             this.chatPrvd.postBtn.setState(false);
             for (let i = 0; i < this.chatPrvd.chatBtns.state.length; i++) {
                 setTimeout(() => {
@@ -294,7 +294,7 @@ export class LinePage {
                 }, chatAnim/3 + (i*50));
             }
         } else {
-			this.bottomMargin="27%";			
+			/* this.bottomMargin="27%";			 */
             if (this.txtIn.trim() != '' ||
                 this.cameraPrvd.takenPictures.length > 0) {
                 this.chatPrvd.postBtn.setState(true);
@@ -496,9 +496,10 @@ export class LinePage {
 		this.textareaFocused = true;
 		this.keyboard.onKeyboardShow().subscribe(res => {
 			try {
+				let keyboardHeight = res && res.keyboardHeight ? res.keyboardHeight : '30%';
 				let scrollEl = <HTMLElement>document.querySelector('.description-box');
 				if (scrollEl && this.textareaFocused)
-					scrollEl.style.bottom = res.keyboardHeight + 'px';
+					scrollEl.style.bottom = keyboardHeight;
 			} catch (e) {
 				// this.toolsPrvd.showToast('on-keyboard-show error');
 				console.error('on-keyboard-show error:', e);
@@ -540,7 +541,7 @@ export class LinePage {
 				this.lineTitle = params.title;
 			}
 
-			if(this.slideAvatarPrvd.sliderPosition == 'right' && (lineAvtr && lineAvtr.name.toLowerCase() == "private network" || this.editMessage && !this.editMessage.public && this.editMessage.locked)&& (!this.postLockData.password || !this.postLockData.hint)){ 
+			if(this.slideAvatarPrvd.sliderPosition == 'right' && (lineAvtr && lineAvtr.referal.toLowerCase() == "private_network" || this.editMessage && !this.editMessage.public && this.editMessage.locked)&& (!this.postLockData.password || !this.postLockData.hint)){ 
 				this.noErrors = false;
 				return false;
 			}
@@ -551,7 +552,7 @@ export class LinePage {
 			}
 			 
 			let lineRole = '';
-            if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
+            if(lineAvtr && lineAvtr.referal.toLowerCase() == "public_network"){
                 publicUser=true; 
 			}else{
                 publicUser=false;
@@ -581,14 +582,16 @@ export class LinePage {
 				images: emoji ? [] : images,
 				video_urls: params && params.video_urls ? params.video_urls : [],
 				undercover: (this.chatPrvd.getState() == 'area') ? false : this.isUndercover,
-				public: publicUser,
+				// public: publicUser,
+				public: this.chatPrvd.currentLobbyMessage ? this.chatPrvd.currentLobbyMessage.public : publicUser,
 				is_emoji: emoji ? true : false,
 				locked: (this.postLockData.hint && this.postLockData.password) ? true : false,
 				password: this.postLockData.password ? this.postLockData.password : null,
 				hint: this.postLockData.hint ? this.postLockData.hint : null,
 				expire_date: this.postTimerObj.expireDate ? this.postTimerObj.expireDate : null,
 				timestamp: Math.floor(new Date().getTime()/1000),
-				line_avatar : this.tempFiles
+				line_avatar : this.tempFiles,
+				user_public_profile: publicUser 
 			};
 			if(lineAvtr){
 				messageParams.role_name = lineAvtr.name;
@@ -603,7 +606,7 @@ export class LinePage {
             message.isTemporary = false;
             message.temporaryFor = 0;
 			this.toolsPrvd.showLoader();
-
+			
 			this.chatPrvd.sendMessage(messageParams).then(res => {
 				message.id = res.id;
 				if(this.chatPrvd.updatedLineAvatarData){
@@ -611,6 +614,19 @@ export class LinePage {
 				}else if(this.editMessage){
 					message.avatar_url = this.editMessage.avatar_url;
 				}
+				var curr_auth_details = this.storage.get('curr_auth_metadetails');
+				curr_auth_details.communities_count = parseInt(curr_auth_details.communities_count)+1;
+				this.storage.set('curr_auth_metadetails',curr_auth_details);
+				
+				if (curr_auth_details.community_identity == null && lineAvtr.referal.toLowerCase() != "private_group") {
+					this.profile.community_identity = res;
+					this.storage.set('savePrivateProfile', true);
+					this.profile.userName = this.lineTitle;
+					this.profile.userDescription = messageParams.text;
+					this.profile.saveChanges();
+				}
+				
+				
 				if(this.storage.get('edited-page')=="holdpage"){
 					message.user_id = this.user.id;
 					message.user = this.user;
@@ -623,7 +639,7 @@ export class LinePage {
 				}else{
 					if ((message.title && message.title.trim() != '') || (message.images && message.images.length > 0) || (message.social_urls && message.social_urls.length > 0)) {
 						let alert = this.alertCtrl.create({
-							subTitle: 'Share the line with your friends?',
+							subTitle: 'Share the community with your friends?',
 							buttons: [{
 								text: 'No',
 								role: 'cancel',
@@ -645,7 +661,7 @@ export class LinePage {
 									let subject = message.text_with_links ? message.text_with_links : '';
 									let file = message.image_urls.length > 1 ? message.image_urls[0] : null;
 									if (this.plt.is('ios')){
-										this.sharing.share(subject, 'Netwrk', file, 'netwrkapp://netwrkapp.com/landing/'+message.id).then(res => {
+										this.sharing.share(subject, 'Netwrk', file, 'somvo://somvo.app/landing/'+message.id).then(res => {
 												this.toolsPrvd.showToast('Message successfully shared');
 												if (!message.social) {
 													message.user_id = this.user.id;
@@ -663,7 +679,7 @@ export class LinePage {
 											}
 										);
 									}else{
-										this.sharing.share(subject, 'Netwrk', file, 'https://netwrkapp.com/landing/'+message.id).then(res => {
+										this.sharing.share(subject, 'Netwrk', file, 'https://somvo.app/landing/'+message.id).then(res => {
 												this.toolsPrvd.showToast('Message successfully shared');
 												if (!message.social) {
 													message.user_id = this.user.id;
@@ -747,16 +763,12 @@ export class LinePage {
     }
 
     private goToLobby(messageParams:any){
-        // this.toolsPrvd.showLoader();
-        // this.chatPrvd.sendMessage(messageParams).then(res => {
-            this.setting.isNewlineScope=false;
-			// messageParams.avatar_url = this.chatPrvd.updatedLineAvatarData.avatar_url;
-            this.app.getRootNav().setRoot(ChatPage, {message:messageParams});
-			this.toolsPrvd.hideLoader();
-			// this.chatPrvd.postMessages.unshift(message);
-        // }).catch(err => {
-            // this.toolsPrvd.hideLoader();
-        // });
+		this.setting.isNewlineScope=false;
+		this.slideAvatarPrvd.setSliderPosition('right');
+		this.slideAvatarPrvd.sliderPosition = 'right';
+		this.storage.set('slider_position','right');
+		this.app.getRootNav().setRoot(ChatPage, {message:messageParams});
+		this.toolsPrvd.hideLoader();
     }
 
     private openFeedbackModal(messageData: any, mIndex: number):void {
@@ -863,7 +875,7 @@ export class LinePage {
 		if(container == 'lock'){
 			let lineAvtr = this.setting.lineAvatar;
 			if(lineAvtr){
-				if(this.slideAvatarPrvd.sliderPosition == 'right' && (lineAvtr && lineAvtr.name.toLowerCase() == "private network") && (!this.postLockData.password || !this.postLockData.hint )){
+				if(this.slideAvatarPrvd.sliderPosition == 'right' && (lineAvtr && lineAvtr.referal.toLowerCase() == "private_network") && (!this.postLockData.password || !this.postLockData.hint )){
 					console.log('inline check errors');
 					this.noErrors = false;
 					return false;
@@ -907,7 +919,7 @@ export class LinePage {
         if (this.activeTopForm){
 			let lineAvtr = this.setting.lineAvatar;
 			if(lineAvtr){
-				if(this.slideAvatarPrvd.sliderPosition == 'right' && (lineAvtr && lineAvtr.name.toLowerCase() == "private network") && (!this.postLockData.password || !this.postLockData.hint )){
+				if(this.slideAvatarPrvd.sliderPosition == 'right' && (lineAvtr && lineAvtr.referal.toLowerCase() == "private_network") && (!this.postLockData.password || !this.postLockData.hint )){
 					console.log('inline check errors');
 					this.noErrors = false;
 					return false;
@@ -925,7 +937,7 @@ export class LinePage {
 					this.hideTopSlider(this.activeTopForm);
 				}
 			}
-			/* if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network" && (!this.postLockData.password || !this.postLockData.hint) && this.setting.isNewlineScope){
+			/* if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.referal.toLowerCase() == "private_network" && (!this.postLockData.password || !this.postLockData.hint) && this.setting.isNewlineScope){
 				this.noErrors = false;
 				return false;
 			}else{
@@ -1383,16 +1395,28 @@ export class LinePage {
 		}else if(this.storage.get('edited-page') == 'holdpage'){
 			this.navCtrl.popTo(this.navCtrl.getByIndex(this.navCtrl.length() - 3));
 		}else{
-			this.storage.rm("edited-page");
+			/* this.storage.rm("edited-page");
 			this.storage.rm('edit-post');
 			this.cameraPrvd.takenPictures=[];
+			this.setting.isCreateLine = true;
 			this.chatPrvd.isLandingPage = true;
 			this.chatPrvd.postMessages = [];
 			this.chatPrvd.isCleared = true;
 			this.setting.isNewlineScope=false;
 			this.canRefresh=true;
 			this.refreshChat();
+			this.toolsPrvd.popPage(); */
+			
+			this.storage.rm("edited-page");
+			this.storage.rm('edit-post');
+			this.cameraPrvd.takenPictures=[];
+			this.chatPrvd.postMessages = [];
+			this.chatPrvd.isCleared = true;
+			this.setting.isNewlineScope=false;
+			this.canRefresh=true;
+			this.refreshChat();
 			this.app.getRootNav().setRoot(ChatPage);
+			
 		}
     }
 
@@ -1444,7 +1468,7 @@ export class LinePage {
         this.user = this.authPrvd.getAuthData();
 		let lineAvtr = this.setting.lineAvatar;
 		
-		if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.name.toLowerCase() == "private network"){ 
+		if(this.slideAvatarPrvd.sliderPosition == 'right' && lineAvtr.referal.toLowerCase() == "private_network"){ 
 			this.toggleTopSlider('lock');			
         }
 		
@@ -1489,7 +1513,7 @@ export class LinePage {
 			if(this.storage.get('slider_position')=="right"){
 				//private
 				let lineAvtr = this.setting.lineAvatar;
-				if(lineAvtr.name.toLowerCase() == "private group"){ 
+				if(lineAvtr.referal.toLowerCase() == "private_group"){ 
 					this.setProfileData();
 					this.onEnter();
 					if (this.chatPrvd.bgState.getState() == 'stretched') {

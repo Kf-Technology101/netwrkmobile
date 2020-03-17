@@ -16,7 +16,7 @@ import { Tools } from './tools';
 import { SlideAvatar } from './slide-avatar';
 import { User } from './user';
 import { UndercoverProvider } from './undercover';
-
+import { LocalStorage } from './local-storage';
 import { Keyboard } from '@ionic-native/keyboard';
 
 @Injectable()
@@ -24,6 +24,7 @@ export class Profile {
 
   public userName: string;
   public userDescription: string;
+  public community_identity: any;
   public user: any;
   public profileTypePublic: boolean;
   public imageLoading: boolean = false;
@@ -38,6 +39,7 @@ export class Profile {
     public auth: Auth,
     public userPrvd: User,
     public undercoverPrvd: UndercoverProvider,
+	public storage: LocalStorage,
     public zone: NgZone,
     elRef: ElementRef
   ) {
@@ -122,13 +124,14 @@ export class Profile {
         ? this.user.name
         : this.user.role_name;
       this.userDescription = this.user.role_description;
-
-      this.saveChanges();
+// console.log('changeCallback');
+      // this.saveChanges();
     });
     return this.user;
   }
 
   public saveChanges(command?:string) {
+	console.log('saveChanges');
     let showLoader: boolean = true;
     switch (command) {
       case 'noloader':
@@ -139,13 +142,14 @@ export class Profile {
       this.tools.showLoader();
 
     let params: any;
-    console.log('slider position: ' + this.slideAvatarPrvd.sliderPosition);
-    if (this.slideAvatarPrvd.sliderPosition == 'right') {
-      if (this.userName && this.userDescription)
+    console.log('this.community_identity' , this.community_identity); 
+	
+    if (this.storage.get('savePrivateProfile')) {
       params = {
         user: {
           role_name: this.userName,
-          role_description: this.userDescription
+          role_description: this.userDescription,
+		  community_identity_id: this.community_identity.id
         }
       }
     } else {
@@ -156,10 +160,14 @@ export class Profile {
     if (params)
       this.userPrvd.update(this.user.id, params, this.auth.getAuthType(), 'update')
       .map(res => res.json()).subscribe(res => {
-        console.log('[user provider] (Update) res:', res);
         this.user = res;
+		if (this.storage.get('savePrivateProfile')) {
+			let curr_auth_metadetails = this.storage.get('curr_auth_metadetails');
+			curr_auth_metadetails.community_identity = this.community_identity;
+			this.storage.set('curr_auth_metadetails',curr_auth_metadetails);
+			this.storage.set('savePrivateProfile',false);
+		}
         this.tools.hideLoader();
-        // this.user.avatar_url = this.auth.hostUrl + this.user.avatar_url;
       }, err => {
         console.error(err);
         this.tools.hideLoader();
@@ -193,6 +201,7 @@ export class Profile {
 
   public saveChangesOnLeave() {
 	this.slideAvatarPrvd.changeCallback = null;
+	console.log('saveChangesOnLeave');
     this.saveChanges();
   }
 

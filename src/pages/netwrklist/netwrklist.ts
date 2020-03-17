@@ -24,6 +24,8 @@ import { Chat } from '../../providers/chat';
 import { Settings } from '../../providers/settings';
 import { ContactsProvider } from '../../providers/contacts';
 
+import { SnapProvider } from '../../providers/snap';
+
 // Modals
 import { CustomModal } from '../../modals/custom/custom';
 import * as moment from 'moment';
@@ -63,7 +65,11 @@ import { ModalRTLLeaveAnimation } from '../../includes/rtl-leave.transition';
 
 
 export class NetwrklistPage {
+customYearValues = [2020, 2016, 2008, 2004, 2000, 1996];
+customDayShortNames = ['sun', 'mon', 'tues', 'wed', 'thur', 'fri', 'sat'];
+customPickerOptions: any; 
   @ViewChild('textInput') txtIn;
+  @ViewChild('activityDateInput') activityDateInput;
   public isUndercover: boolean;
   public user: any = {};
   public netwrkLineList: any = [];
@@ -74,13 +80,13 @@ export class NetwrklistPage {
   public activity :any=[];
   public activitySelected:any;
   public locationSelected:any;
+  public dateTimeSelected:any ='';
   public showActivitiesContainer: boolean = false; 
   public showContactsStep: boolean = false; 
   public postLoading: boolean = false; 
-  public placeholderText:any = 'Add a custom portion to your message';
+  public placeholderText:any = 'Tap to add additional text';
   public selectedCommunity: any = [];
   public selectedContacts: any = [];
-  public error_txt:any = '';
   public contacts = [];
   public listType = '';
   public checkCommunityFlag: boolean;
@@ -89,7 +95,14 @@ export class NetwrklistPage {
   public newlyAdded:any = null;
   public isCreateCheck:boolean = false;
   public createNewCommunity:boolean = false;
+  public shareViaSnapchat:boolean = false;
+  public shareViaTwitter:boolean = false;
+  public shareViaFacebook:boolean = false;
   public holdSaveLM:boolean = false;
+  public max_date: string;
+  public min_date: string = '1900';
+  public shareWith = null;
+  public lm_title: string = '';
   constructor(
     private viewCtrl: ViewController,
     private api: Api,
@@ -112,8 +125,10 @@ export class NetwrklistPage {
 	private keyboard: Keyboard,
     elRef: ElementRef,
 	public socialSharing: SocialSharing,
-	private alertCtrl: AlertController
+	private alertCtrl: AlertController,
+	public snap: SnapProvider 
   ) {
+	  // this.chatPrvd.mainBtn.setState('txtual-move');
 	  this.listType = 'phones'; 
 	  this.contactsPrvd.getContacts(this.listType).then(data => {
 		  this.contacts = data;
@@ -151,17 +166,17 @@ export class NetwrklistPage {
 		}
 		this.storage.set('local_coordinates',loc);	  
 	  }	  
+	  // console.log(this.user);
   }
 	 
   public loadActivity(){
 	return new Promise(resolve => {
 		this.activity = [];
-		this.activity.push({itemName: "Create an activity or topic"}); 
+		this.activity.push({itemName: "+ Create an activity or topic"}); 
 		this.activity.push({itemName: "Go on an adventure"});
 		this.activity.push({itemName: "Dinner"});
 		this.activity.push({itemName: "Lunch"});
 		this.activity.push({itemName: "Hang out"});
-		// this.activity.push({itemName: "Hang our"});
 		this.activity.push({itemName: "Work out"});
 		this.activity.push({itemName: "Ball"});
 		this.activity.push({itemName: "Game"});
@@ -171,7 +186,7 @@ export class NetwrklistPage {
 		this.activity.push({itemName: "Hike"});
 		this.activity.push({itemName: "Yoga"});
 		this.activity.push({itemName: "Chat"});
-		
+		this.activity.push({itemName: "Skate"});		
 		resolve(true);        
 	});           
 	
@@ -218,6 +233,9 @@ export class NetwrklistPage {
   public select_loaction(){
 	this.toolsPrvd.pushPage(HoldMapPage);
   }
+  public select_dateTime(){
+	  
+  }
   
   public remove_loaction(){
 	this.storage.set('last_hold_location_details','');
@@ -226,7 +244,18 @@ export class NetwrklistPage {
   
   public showContacts(){     
 	if(this.storage.get('last-activity') && this.storage.get('last-activity')!=''){
-		this.showContactsStep = true; 
+		this.showContactsStep = true;
+		console.log('asdasd');
+		this.chatPrvd.mainBtn.setState('txtual-move');
+		
+		let locDetails = this.storage.get('last_hold_location_details');
+		let place_name = locDetails?locDetails.place_name:'';
+		if(place_name !=''){
+			this.lm_title = this.activitySelected +' near '+place_name+'?';
+		}else{
+			this.lm_title = this.activitySelected+'?';
+		}
+		
 		this.toolsPrvd.showLoader();
 		this.showMessages();
 	}else{
@@ -295,12 +324,15 @@ export class NetwrklistPage {
 		this.chatPrvd.isCleared = true;
 		this.storage.rm('edited-page');
 		this.chatPrvd.request_type = '';
-		this.app.getRootNav().setRoot(ChatPage);
+		this.toolsPrvd.popPage();
+		// this.app.getRootNav().setRoot(ChatPage);
+		
 	}else if(this.showContactsStep){
 		this.loadActivity();
 		this.showContactsStep = false; 
 	}
   } 
+
 
   public selectMe(data:any, event){
 	if(event.checked){
@@ -324,6 +356,7 @@ export class NetwrklistPage {
   
   public sendMessage(){
 	if(this.createNewCommunity){
+		this.toolsPrvd.showLoader();
 		if(this.storage.get('last_hold_location_details')){
 			let localMessageDetails = {
 				selectedContacts: this.selectedContacts,
@@ -342,6 +375,7 @@ export class NetwrklistPage {
 		if(this.selectedCommunity.length <= 0){
 			this.toolsPrvd.showToast('Select community to share');
 		}else{
+			this.toolsPrvd.showLoader();
 			this.performPostMessage();
 		}
 	}	
@@ -349,7 +383,6 @@ export class NetwrklistPage {
   
   public performPostMessage(){
 	this.toolsPrvd.showLoader();
-	this.error_txt = '';
 	this.checkCommunityFlag = true;
 	this.checkContactFlag = true; 
 	if(this.selectedContacts.length > 0){
@@ -369,30 +402,99 @@ export class NetwrklistPage {
 	}
   }
   
-  public sendContactsMessage(message:any){	 
-	let shareLink = '';
-	if (this.platform.is('ios')){
-		shareLink = 'netwrkapp://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
+  public setShare(via){
+	this.shareViaSnapchat = false;
+	this.shareViaTwitter = false;
+	this.shareViaFacebook = false;
+	console.log(via);
+	switch(via){
+		case 'SnapChat':
+			this.shareViaSnapchat = true;
+		break;
+		case 'Twitter':
+			this.shareViaTwitter = true;
+		break;
+		case 'Facebook':
+			this.shareViaFacebook = true;
+		break;	
+	}
+  }
+  
+/*   public snapchatShare(event){
+	if(event.checked){
+		this.shareViaSnapchat = true;		
 	}else{
-		shareLink = 'https://netwrkapp.com/landing/'+this.selectedCommunity[0].id;
-	}
+		this.shareViaSnapchat = false;
+	} 
+  }
+  public twitterShare(event){
+	if(event.checked){
+		this.shareViaTwitter = true;		
+	}else{
+		this.shareViaTwitter = false;
+	} 
+  }
+   public facebookShare(event){
+	if(event.checked){
+		this.shareViaFacebook = true;		
+	}else{
+		this.shareViaFacebook = false;
+	} 
+  } */
+  
+  /* public twitterShare(event){
+	this.socialSharing.shareViaTwitter(null,null,'https://somvo.app/landing?id=881').then(res=>{
+		this.toolsPrvd.showToast('Shared link ');
+	}).catch(err=>{
+		this.toolsPrvd.showToast('error'+err);
+	});;
 	
-	this.user = this.authPrvd.getAuthData();
-	let shareMessage =  "Want to "+this.activitySelected.toLowerCase()+"? Download https://TestFlight.apple.com/join/cmTDxwuU"+" and reply via "+shareLink; 
+  } 
+
+  public facebookShare(event){
+	this.socialSharing.shareViaFacebook(null,null,'https://somvo.app/landing?id=881').then(res=>{
+		this.toolsPrvd.showToast('Shared link ');
+	}).catch(err=>{
+		this.toolsPrvd.showToast('error'+err);
+	});
 	
-	let contacts = ''; //[]   
-	for(let i = 0;i<this.selectedContacts.length;i++){		
-		if(contacts == ''){
-			contacts = this.selectedContacts[i].phoneNumbers[0].value;
+  }*/
+  
+  public sendContactsMessage(message:any){
+	return new Promise((resolve, reject) => { 
+	
+	
+	
+		let shareLink = '';
+		if (this.platform.is('ios')){
+			shareLink = 'somvo://somvo.app/landing/'+this.selectedCommunity[0].id;
 		}else{
-			contacts = contacts + ',' + this.selectedContacts[i].phoneNumbers[0].value;
-		} 
-	}
-	this.checkContactFlag = true; 
-	this.socialSharing.shareViaSMS(shareMessage,contacts);
-	this.goBackSuccess(message);
-	// this.toolsPrvd.hideLoader();
-	
+			shareLink = 'https://somvo.app/landing/'+this.selectedCommunity[0].id;
+		}
+		
+		this.user = this.authPrvd.getAuthData();
+		// let shareMessage =  "Want to "+this.activitySelected.toLowerCase()+"? Download https://testflight.apple.com/join/vkIJtwFV"+" and reply via "+shareLink; 
+		
+		let messageParamsId = this.selectedCommunity[0].id;// message.id;  
+		// let shareLink = 'https://somvo.app/landing?id='+messageParamsId+'&platform=android';
+		let userName = message.public?this.user.name:message.role_name;
+		let messageType = message.public?'Public':'Private';
+		let shareMessage = '  '+message.title + '? '+message.text+"\n Somvo Community: "+this.selectedCommunity[0].title+"\n Type:"+messageType; 
+		
+		let contacts = ''; //[]   
+		for(let i = 0;i<this.selectedContacts.length;i++){		
+			if(contacts == ''){
+				contacts = this.selectedContacts[i].phoneNumbers[0].value;
+			}else{
+				contacts = contacts + ',' + this.selectedContacts[i].phoneNumbers[0].value;
+			} 
+		}
+		this.checkContactFlag = true; 
+		this.socialSharing.shareViaSMS(shareMessage,contacts);
+		// this.goBackSuccess(message);
+		// this.toolsPrvd.hideLoader();
+		resolve();
+	});  
   }
   
   private createPrivateGroup(){
@@ -459,18 +561,28 @@ export class NetwrklistPage {
   
   private postMessage(emoji?: string, params?: any) {
 	try {
-		let publicUser: boolean = true;
+		let publicUser: boolean = false; // Private
 		let images = [];
 		let messageParams: any = {};
 		let netwrkParams: any = {};
 		let message: any = {};
-		
 			
 		this.user = this.authPrvd.getAuthData();
 		let selectedCommunityIdsArr:any = [];
 		for(let i=0; i < this.selectedCommunity.length; i++){
+			if(this.selectedCommunity[i].public && !publicUser){ // Check for public
+				publicUser = true;
+			}
 			selectedCommunityIdsArr.push(this.selectedCommunity[i].id);
 		} 
+		
+		let userPublicProfile:boolean;
+		if(this.slideAvatarPrvd.sliderPosition == 'left' || this.storage.get('slider_position')=='left'){
+            userPublicProfile = true;
+        }else{
+            userPublicProfile = false;
+        }
+		
 		let currentDate = moment(new Date());
 		let locDetails = this.storage.get('last_hold_location_details');
 		console.log('locDetails:::',locDetails);
@@ -506,7 +618,8 @@ export class NetwrklistPage {
 			hint			 : null,
 			expire_date		 : currentDate.add(12, 'hours'),
 			timestamp		 : Math.floor(new Date().getTime()/1000),
-			line_avatar		 : []
+			line_avatar		 : [],
+			user_public_profile: userPublicProfile
 		};
 		
 		if (params) Object.assign(netwrkParams, params);
@@ -533,10 +646,11 @@ export class NetwrklistPage {
 				// this.chatPrvd.sendNotification(res).subscribe(notificationRes => {
 					this.checkCommunityFlag = true;
 					if(this.selectedContacts.length > 0){
-						this.sendContactsMessage(message);
+						this.sendContactsMessage(message).then(res=>{
+							this.goBackSuccess(message);
+						});
 					}else{
 						this.goBackSuccess(message);
-						// this.toolsPrvd.hideLoader();
 					}
 				// }, err => console.error(err));				
 			}).catch(err => {
@@ -561,12 +675,40 @@ export class NetwrklistPage {
 		successCase = 3;
 	}
 	let messageParamsId = this.selectedCommunity[0].id;// message.id;  
+	let shareLink = 'https://somvo.app/landing?id='+messageParamsId+'&platform=android';
+	let userName = message.public?this.user.name:message.role_name;
+	let messageType = message.public?'Public':'Private';
+	let shareMessage = ' '+message.title + '? '+message.text+"\n Somvo Community: "+this.selectedCommunity[0].title+"\n Type:"+messageType; 
+
+	/* if(this.shareViaSnapchat){
+		this.socialSharing.shareVia('SnapChat', shareMessage, '', '', shareLink).then(res=>{
+			this.toolsPrvd.showToast('Shared via SnapChat.');
+		}).catch(err=>{
+			this.toolsPrvd.showToast('Error: '+err);
+		});
+	} */
+	if(this.shareViaTwitter){		
+		this.socialSharing.shareViaTwitter(shareMessage,null,shareLink).then(res=>{
+			this.toolsPrvd.showToast('Shared link ');
+		});/* .catch(err=>{
+			this.toolsPrvd.showToast('error'+err);
+		});		 */
+	} 
+	
+	if(this.shareViaFacebook){
+		this.socialSharing.shareViaFacebook(shareMessage,null,shareLink).then(res=>{
+			this.toolsPrvd.showToast('Shared link ');
+		});/* .catch(err=>{
+			this.toolsPrvd.showToast('error'+err);
+		}); */
+	} 
+	
 	switch(successCase){
 		case 1:		
 			if(this.checkCommunityFlag && this.checkContactFlag){
 				this.chatPrvd.getMessageIDDetails(messageParamsId).subscribe(res => {	
 					this.toolsPrvd.pushPage(ChatPage,{message:res.message});
-					this.toolsPrvd.showToast('Message shared successfully');		
+					this.toolsPrvd.showToast('Somvo sent successfully. Get together and have a great time! ');						
 				});
 			}
 		break;
@@ -574,7 +716,7 @@ export class NetwrklistPage {
 			if(this.checkCommunityFlag){
 				this.chatPrvd.getMessageIDDetails(messageParamsId).subscribe(res => {	
 					this.toolsPrvd.pushPage(ChatPage,{message:res.message});
-					this.toolsPrvd.showToast('Message shared successfully');		
+					this.toolsPrvd.showToast('Somvo sent successfully. Get together and have a great time! ');		
 				});	
 			}
 		break;
@@ -582,11 +724,12 @@ export class NetwrklistPage {
 			if(this.checkContactFlag){
 				this.chatPrvd.getMessageIDDetails(messageParamsId).subscribe(res => {	
 					this.toolsPrvd.pushPage(ChatPage,{message:res.message});
-					this.toolsPrvd.showToast('Message shared successfully');		
+					this.toolsPrvd.showToast('Somvo sent successfully. Get together and have a great time! ');		
 				});	
 			}
 		break;
 	}
+	
   }
   
   ionViewDidEnter() {	
@@ -618,21 +761,20 @@ export class NetwrklistPage {
 	}	
   }
   
+  public inputOnBlur():void{
+	this.placeholderText = 'Tap to add additional text';
+  }
+  
   public inputOnFocus():void {
-	// this.textareaFocused = true;
-	this.keyboard.onKeyboardShow().subscribe(res => {
-		try {
-			let scrollEl = <HTMLElement>document.querySelector('.message-input');
-			if (scrollEl)
-				scrollEl.style.bottom = res.keyboardHeight + 'px';
-		} catch (e) {
-			// this.toolsPrvd.showToast('on-keyboard-show error');
-			console.error('on-keyboard-show error:', e);
-		}
+	this.placeholderText = '';
+	this.keyboard.onKeyboardShow().subscribe(res => {		
+		let keyboardHeight = res && res.keyboardHeight ? res.keyboardHeight + 'px' : '30%';
+		let scrollEl = <HTMLElement>document.querySelector('.message-input');
+		if (scrollEl)
+			scrollEl.style.bottom = keyboardHeight;		
 		this.chatPrvd.mainLineBtn.setState('minimised');              
 	}, err =>{
 		console.error(err);
-		// this.toolsPrvd.showToast('on-keyboard-show error 2');
 	}); 
 	
 	this.keyboard.onKeyboardHide().subscribe(res => {
@@ -642,15 +784,13 @@ export class NetwrklistPage {
 				scrollEl.style.bottom = '27%';
 		} catch (e) {
 			console.error('on-keyboard-hide error:', e);
-			// this.toolsPrvd.showToast('on-keyboard-hide error');
 		}
-		this.chatPrvd.mainLineBtn.setState('normal');              
-		
+		this.chatPrvd.mainLineBtn.setState('normal');    
 	}, err =>{
 		console.error(err);
-		// this.toolsPrvd.showToast('on-keyboard-hide error 2');
 	}); 
   }
-
+  
+ 
 
 }

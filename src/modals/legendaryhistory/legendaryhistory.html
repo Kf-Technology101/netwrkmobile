@@ -1,10 +1,14 @@
 <ion-header class="incognito-header chat-header">
-  <div class="netwrk-header">
+  <!-- <div class="netwrk-header">
     <ion-toolbar class="area-head no-bg">
       <span>Legend</span>
       <img class="ic legendary-icon" src="assets/images/sun_icon.png">
     </ion-toolbar>
-  </div>
+  </div> -->
+	<button class="legend-popup-btn" (click)="closeModal()">
+		<div class="icon"></div>
+		Legend
+	</button>
 </ion-header>
 
 <ion-content has-main-btn has-main-btn-label no-bounce (ionScrollEnd)="listenForScrollEnd($event)">
@@ -26,25 +30,29 @@
 
   <div class="chat-container visible">
     <div class="message" *ngFor="let message of lgMessages; let i = index" [@fadeState]="'fadeInVeryFast'">
-      <ng-container *ngIf="!message.has_expired">
-        <img *ngIf="message.user" (click)="goToProfile(message.user_id, message.public)"
-          [src]="message.public ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
+      <ng-container *ngIf="!message.has_expired && !message.line_locked_by_user">
+        <img *ngIf="message.user" (click)="goToProfile(message.user_id, message.user_public_profile)"
+          [src]="message.user_public_profile ? message.user.avatar_url : message.user.hero_avatar_url" class="chat-avatar"
           (error)="chatPrvd.updateAvatarUrl($event)">
 
-        <img *ngIf="!message.user" (click)="goToProfile(message.user_id, message.public)" [src]="toolsPrvd.defaultAvatar"
+        <img *ngIf="!message.user" (click)="goToProfile(message.user_id, message.user_public_profile)" [src]="toolsPrvd.defaultAvatar"
           class="chat-avatar" (error)="chatPrvd.updateAvatarUrl($event)">
 
         <p class="message-container">
           <span class="username" *ngIf="message.user">
-            <ng-container *ngIf="message.public">
+            <ng-container *ngIf="message.user_public_profile">
               {{ message.user.name }}
             </ng-container>
-            <ng-container *ngIf="!message.public">
+            <ng-container *ngIf="!message.user_public_profile">
               {{ message.user.role_name }}
             </ng-container>
           </span>
-
+		   
           <span class="message-date">{{ message.dateStr }}</span>
+		  
+		  <!-- <span class="access-type" *ngIf = "message.public">Public</span> -->
+		  <span class="access-type"  *ngIf = "!message.public">Private</span>
+		  
           <span *ngIf="message.social" class="shared-status">Casted via {{ message.social }}
             <a *ngIf="message.post_url" href="{{ message.post_url }}"
                 class="open-post">
@@ -82,14 +90,21 @@
             <div class="icon"></div>
         </button>
 
-        <ng-container *ngIf="userId != message.user_id && message.locked_by_user">
+<!-- *ngIf="message.line_message_type == 'PRIVATE_LINE' && !message.locked_by_user || message.line_message_type == 'SEMI_PRIVATE_LINE' && message.is_connected || message.line_message_type == 'PUBLIC_LINE' || message.line_message_type == 'LOCAL_MESSAGE' && is_connected" -->
+
+		<button class="recast-button" [ngClass]="{ 'disabled' : !message.is_synced}" (click)="feedbackService.initNativeShare(message)" *ngIf="!message.locked_by_user || userId == message.user_id">
+                Share
+		</button>
+			
+        <!-- <ng-container *ngIf="userId != message.user_id && message.locked_by_user">
           <button class="feedback-button lock" (tap)="showUnlockPostForm(message.id, message.hint)">
             <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
           </button>
-        </ng-container>
-
+        </ng-container> -->
+		
         <ng-container *ngIf="message.locked_by_user && userId == message.user_id ||
                             !message.locked_by_user">
+		<div class="media-container">
           <ion-slides *ngIf="message.image_urls.length + message.video_urls.length > 1" pager="true" (ionSlideDidChange)="messageSliderChange($event)">
             <ion-slide *ngFor="let img of message.image_urls">
               <img src="{{img}}" (load)="chatPrvd.calcLoadedImages()"/>
@@ -115,6 +130,7 @@
             </ng-container>
           </ng-container>
 
+		</div>
         </ng-container>
       </ng-container>
     </div>

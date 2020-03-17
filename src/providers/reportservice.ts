@@ -19,7 +19,7 @@ export class ReportService {
     'Inappropriate content'
   ];
 
-  private supportAddress:string = 'support@netwrkapp.com';
+  private supportAddress:string = 'info@somvo.app'; //support@netwrkapp.com
 
   constructor(
     public api: Api,

@@ -69,22 +69,18 @@ export class UndercoverCharacterPage {
      this.activePerson.imageUrl=avatar.imageUrl;
      this.activePerson.description=avatar.description;
 	 if(this.settings.isCreateLine){
-		this.settings.isCreateLine = false;
 		this.settings.lineAvatar = this.activePerson;
-		if(avatar.name.toLowerCase() == "private group"){
-			console.log('pri');			
+		if(avatar.referal.toLowerCase() == "private_group"){
 			this.slideAvatarPrvd.setSliderPosition('right');
 			this.slideAvatarPrvd.sliderPosition = 'right';
 			this.storage.set('slider_position','right');
 			if(this.storage.get('edited-page')=="holdpage"){
 				let lineAvtr = this.settings.lineAvatar;
-				console.log('private',lineAvtr);
-				
 				let item = this.storage.get('last-activity');
 				let locDetails = this.storage.get('last_hold_location_details');
 				let place_name = locDetails.place_name;
 				let input_string = place_name.indexOf(",")>-1?place_name.substring(0, place_name.indexOf(",")):place_name;
-				let title =  item.itemName+' at '+input_string;
+				let title =  item.itemName+' near '+input_string;
 				
 				let params: any = {
 					text: item.itemName,
@@ -93,30 +89,36 @@ export class UndercoverCharacterPage {
 					role_name: lineAvtr.name,
 					place_name: place_name
 				}
+				
 				this.postMessage(params);
 			}else{
+				this.settings.isCreateLine = false;
 				this.toolsPrvd.pushPage(LinePage);
 			}
-		}else if(avatar.name.toLowerCase() == "public network"){
+		}else if(avatar.referal.toLowerCase() == "public_network"){
 			console.log('pub');
 			this.slideAvatarPrvd.setSliderPosition('left');
 			this.slideAvatarPrvd.sliderPosition = 'left';
 			this.storage.set('slider_position','left');
+			this.settings.isCreateLine = false;
 			this.toolsPrvd.pushPage(LinePage);
 		}else{
 			console.log('pri');
 			this.slideAvatarPrvd.setSliderPosition('right');
 			this.slideAvatarPrvd.sliderPosition = 'right';
 			this.storage.set('slider_position','right');
+			this.settings.isCreateLine = false;
 			this.toolsPrvd.pushPage(LinePage);
-		}
-		
+		}		
 	 }else{
 		this.undercoverPrvd.setPerson(this.activePerson).then(data => {
 		  if (this.storage.get('first_time_hero') === null) {
 			this.firstTimeHero = false;
 			this.storage.set('first_time_hero', this.firstTimeHero);
-		  }		
+		  }	
+		  this.slideAvatarPrvd.sliderPosition = 'left';
+		  this.storage.set('slider_position','left');
+		  this.settings.isCreateLine = false;
 		  this.toolsPrvd.pushPage(ProfilePage, data);
 		}, err => {
 		  this.toolsPrvd.popPage();
@@ -146,13 +148,16 @@ export class UndercoverCharacterPage {
 				hint: null,
 				expire_date: null,
 				timestamp: Math.floor(new Date().getTime()/1000),
-				line_avatar:[]
+				line_avatar:[],
+				user_public_profile: false
+				
 	};
 	message = Object.assign(message, messageParams);
 	/* console.log(messageParams);
 	return false; */
 	
 	this.chatPrvd.sendMessage(messageParams).then(res => {
+		this.settings.isCreateLine = false;
 		message.user_id = this.user.id;
 		message.user = this.user;
 		message.image_urls = message.images;

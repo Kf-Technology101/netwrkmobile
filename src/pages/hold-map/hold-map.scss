@@ -3,7 +3,7 @@ page-hold-map {
 		background:transparent;
 		position:absolute;
 		padding:0px;
-		height: 130px;
+		max-height: 190px;
 		top: 15px;	
 		
 		.scroll-content{
@@ -14,6 +14,9 @@ page-hold-map {
 			}
 			.item-inner{
 				border-bottom:0px;
+			}
+			.label{
+				text-align: center;
 			}
 		}
 		.searchbar-ios {
@@ -35,16 +38,18 @@ page-hold-map {
 		}
 	}
 	
-	.back-btn{
+	.back-btn,.current-location{
 		color: #fff;
 		background-color: #f95e64;
 		font-size: 20px;
-		margin: 5px 15%;
-		width: 70%;
+		margin: 5px auto;
+		width: 270px;
 		border-radius: 100px;
 		padding: 3px 0;		
 	}
-	
+	.current-location{
+		background-color: #5b87aa;
+	}
 	
 	
 }

@@ -2,7 +2,7 @@
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
         xmlns:android="http://schemas.android.com/apk/res/android"
         id="cordova-plugin-x-socialsharing"
-        version="5.4.0">
+        version="5.6.4">
 
   <name>SocialSharing</name>
 
@@ -41,8 +41,14 @@
       </feature>
     </config-file>
 
+    <preference name="PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION" default="This app requires photo library access to function properly." />
     <config-file target="*-Info.plist" parent="NSPhotoLibraryAddUsageDescription">
-      <string>This app requires photo library access to function properly.</string>
+      <string>$PHOTO_LIBRARY_ADD_USAGE_DESCRIPTION</string>
+    </config-file>
+
+    <preference name="PHOTO_LIBRARY_USAGE_DESCRIPTION" default="This app requires photo library access to function properly." />
+    <config-file target ="*-Info.plist" parent="NSPhotoLibraryUsageDescription">
+      <string>$PHOTO_LIBRARY_USAGE_DESCRIPTION</string>
     </config-file>
 
     <header-file src="src/ios/NSString+SSURLEncoding.h"/>
@@ -88,7 +94,8 @@
     <source-file src="src/android/nl/xservices/plugins/FileProvider.java" target-dir="src/nl/xservices/plugins"/>
     <source-file src="src/android/res/xml/sharing_paths.xml" target-dir="res/xml"/>
 
-    <framework src="com.android.support:support-v4:24.1.1+" />
+    <framework src="com.android.support:support-v4:$ANDROID_SUPPORT_V4_VERSION" />
+    <preference name="ANDROID_SUPPORT_V4_VERSION" default="24.1.1+"/>
   </platform>
 
   <!-- wp8 -->

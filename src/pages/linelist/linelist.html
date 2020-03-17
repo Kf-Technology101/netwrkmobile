@@ -1,13 +1,13 @@
 <!--Header -->
-<ion-header class="incognito-header" isScrolling="false" [ngClass]="{'chat-header': !isUndercover, 'fully-disabled': chatPrvd.isLobbyChat }">
-    <ion-toolbar *ngIf="isUndercover" class="title-container">
-         <ion-input class="netwrk-input" text-center type="text" [(ngModel)]="lineTitle" autofocus (ionBlur)="setLineName()" placeholder="Add Title"></ion-input>
+<ion-header class="incognito-header" isScrolling="false">
+    <ion-toolbar class="title-container">
+         <ion-input class="netwrk-input" text-center type="text" [(ngModel)]="lineTitle" autofocus (ionBlur)="setLineName()" placeholder="Add Title" autocorrect="on" ></ion-input>
 		 <div class="error" *ngIf="!noErrors && !lineTitle"> 
 				Title is required.
 		 </div>		 
 		 <!-- (ionBlur)="saveNetworkName()" -->
 		
-        <button ion-button *ngIf="slideAvatarPrvd.sliderPosition == 'right' && (!editMessage && setting.lineAvatar && setting.lineAvatar.name.toLowerCase() == 'private network' || editMessage && !editMessage.public && editMessage.locked && editMessage.password_hash !='' && editMessage.hint !='')" class="side lock-btn top-icon white" (click)="toggleTopSlider('lock');">
+        <button ion-button *ngIf="slideAvatarPrvd.sliderPosition == 'right' && (!editMessage && setting.lineAvatar && setting.lineAvatar.referal.toLowerCase() == 'private_network' || editMessage && !editMessage.public && editMessage.locked && editMessage.password_hash !='' && editMessage.hint !='')" class="side lock-btn top-icon white" (click)="toggleTopSlider('lock');">
             <ion-icon ios="ios-lock" md="ios-lock"></ion-icon>
         </button>
 
@@ -37,7 +37,7 @@
 			</div>
             <ion-item>
                 <ion-input type="text" placeholder="Hint" name="hint"
-                [(ngModel)]="postLockData.hint" required></ion-input>
+                [(ngModel)]="postLockData.hint" required autocorrect="on"></ion-input>
             </ion-item>
 			<div class="error" *ngIf="!noErrors && !postLockData.hint"> 
 				Hint is required.
@@ -55,9 +55,10 @@
 	<ion-row>
 		<ion-col>
 		<div class="accesstype-div">
-			<span class="access-type" *ngIf="(!editMessage && setting.lineAvatar && setting.lineAvatar.name.toLowerCase() != 'public network') || (editMessage && !editMessage.public) "> Private </span>
+		
+			<span class="access-type" *ngIf="(!editMessage && setting.lineAvatar && setting.lineAvatar.referal.toLowerCase() != 'public_network') || (editMessage && !editMessage.public) "> Private </span>
 						
-			<span class="access-type" *ngIf="(!editMessage && setting.lineAvatar && setting.lineAvatar.name.toLowerCase() == 'public network') || (editMessage && editMessage.public) "> Public </span>	
+			<span class="access-type" *ngIf="(!editMessage && setting.lineAvatar && setting.lineAvatar.referal.toLowerCase() == 'public_network') || (editMessage && editMessage.public) "> Public </span>	
 		</div>
 		</ion-col>
 	</ion-row>
@@ -66,8 +67,6 @@
 	
 	  <ion-col>
 		<div class="avatar" >
-			
-
 			<img [src]="lineimg" (error)="chatPrvd.updateAvatarUrl($event)">
 			<div class="add-container">
 			  <button color="bk" ion-button>

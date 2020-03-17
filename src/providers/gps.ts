@@ -101,8 +101,8 @@ export class Gps {
   
   public getMyZipCode(checkOnlineFresh:boolean = false): Promise<any> {
     return new Promise((resolve, reject) => {
-	  if(!checkOnlineFresh && this.coords.lat != null && this.coords.lng != null){// && this.zipCode != null
-		if(this.locationAccessPermission){
+	  if(!checkOnlineFresh && this.coords.lat && this.coords.lng){// && this.zipCode != null
+	    if(this.locationAccessPermission){
 			resolve({zip_code: this.zipCode});
 		}else{
 			let error = {
@@ -228,7 +228,8 @@ export class Gps {
 		let seq = this.getAddressDetail(url, {
 		  latlng: coords,
 		  sensor: true,
-		  key: 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'
+		  key: 'AIzaSyBtEx1yF-VizBprDZDN3v_z3cv7bA_CLFs'
+		  // 'AIzaSyDEdwj5kpfPdZCAyXe9ydsdG5azFsBCVjw'
 		}).share();
 		this.googleAddress = seq;
 		return seq;
@@ -238,6 +239,7 @@ export class Gps {
   public getZipCode(): Promise<any> {
     return new Promise((resolve, reject) => {
 	  if (this.coords.lat && this.coords.lng) {
+		//  console.log(this.coords);
         this.getGoogleAdress().map(res => res.json()).subscribe(res => {
             console.log('i m in getZipCode::::::: ',res);
             let zipCode: any = this.parseGoogleAddress(res.results);
@@ -259,13 +261,9 @@ export class Gps {
                 this.localStorage.set('chat_zip_code', zipCode);
                 if (nav.getActive().name.toLowerCase() == 'chatpage') {
                     this.localStorage.set('areaChange_triggered', true);
-                    //nav.setRoot(ChatPage, {
-                    //    action_from_gps: this.localStorage.get('chat_state'),
-                    //    zipCode: zipCode
-                    //});
                 }
             }
-            resolve(zipCode);
+			resolve(zipCode);			
         },
         err => {
           reject(err);

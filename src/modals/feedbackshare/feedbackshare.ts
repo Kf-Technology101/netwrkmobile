@@ -32,7 +32,7 @@ export class FeedbackShareModal {
     coords: null,
     message: null,
     image: null,
-    url: 'http://netwrkapp.com' /*'http://netwrk.com'*/
+    url: 'http://somvo.app' /*'http://netwrk.com'*/
   }
 
   private backBtn:any = {

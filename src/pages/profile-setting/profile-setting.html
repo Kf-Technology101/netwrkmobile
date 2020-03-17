@@ -28,14 +28,19 @@
         <ion-icon ios="ios-contacts" md="ios-contacts" color="primary"></ion-icon>
         <span>Blacklist</span>
       </button>
-      <button ion-item (tap)="settings.showArealist()">
+      <!-- <button ion-item (tap)="settings.showArealist()">
         <ion-icon ios="ios-git-network" md="ios-git-network" color="bk"></ion-icon>
         <span>Area list</span>
-      </button>
+      </button> -->
       <button ion-item (tap)="deactivateAccount()">
         <ion-icon ios="ios-remove-circle" md="ios-remove-circle"
           color="bk-red"></ion-icon>
         <span>Deactivate account</span>
+      </button>
+	  
+	  <button ion-item (tap)="logOut()">
+		<ion-icon name="log-out-outline"  color="bk-white"></ion-icon>
+        <span>Log Out</span>
       </button>
 
     </ion-item-group>
@@ -48,7 +53,7 @@
     <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
   </button>
 
-  <button ion-button class="footer-back-button" (click)="logOut()">
+  <!-- <button ion-button class="footer-back-button" (click)="logOut()">
     <span ion-text color="light">Log Out</span>
-  </button>
+  </button> -->
 </ion-footer>

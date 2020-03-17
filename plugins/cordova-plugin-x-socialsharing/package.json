@@ -10,23 +10,24 @@
         "spec": "latest",
         "type": "tag"
       },
-      "F:\\ionic\\demo"
+      "D:\\tejaswini\\netwrk-ios"
     ]
   ],
   "_from": "cordova-plugin-x-socialsharing@latest",
-  "_id": "cordova-plugin-x-socialsharing@5.4.0",
+  "_hasShrinkwrap": false,
+  "_id": "cordova-plugin-x-socialsharing@5.6.4",
   "_inCache": true,
   "_location": "/cordova-plugin-x-socialsharing",
-  "_nodeVersion": "6.12.3",
+  "_nodeVersion": "10.13.0",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/cordova-plugin-x-socialsharing_5.4.0_1524830542492_0.7107510150448499"
+    "tmp": "tmp/cordova-plugin-x-socialsharing_5.6.4_1581629302782_0.7600922058696016"
   },
   "_npmUser": {
     "name": "eddyverbruggen",
     "email": "eddyverbruggen@gmail.com"
   },
-  "_npmVersion": "3.10.10",
+  "_npmVersion": "6.11.3",
   "_phantomChildren": {},
   "_requested": {
     "raw": "cordova-plugin-x-socialsharing",
@@ -38,14 +39,13 @@
     "type": "tag"
   },
   "_requiredBy": [
-    "#USER",
-    "/"
+    "#USER"
   ],
-  "_resolved": "https://registry.npmjs.org/cordova-plugin-x-socialsharing/-/cordova-plugin-x-socialsharing-5.4.0.tgz",
-  "_shasum": "74a04c19f4a052499dda6a0dc6d24fc11bf311a6",
+  "_resolved": "https://registry.npmjs.org/cordova-plugin-x-socialsharing/-/cordova-plugin-x-socialsharing-5.6.4.tgz",
+  "_shasum": "92b87dc9daddfa8d1db4692257b1968f60e61ee6",
   "_shrinkwrap": null,
   "_spec": "cordova-plugin-x-socialsharing",
-  "_where": "F:\\ionic\\demo",
+  "_where": "D:\\tejaswini\\netwrk-ios",
   "author": {
     "name": "Eddy Verbruggen - @EddyVerbruggen"
   },
@@ -67,11 +67,12 @@
   "devDependencies": {},
   "directories": {},
   "dist": {
-    "shasum": "74a04c19f4a052499dda6a0dc6d24fc11bf311a6",
-    "tarball": "https://registry.npmjs.org/cordova-plugin-x-socialsharing/-/cordova-plugin-x-socialsharing-5.4.0.tgz",
+    "integrity": "sha512-bBjWY9TgoH1CMK4P26zLT1D9rVcvI9LoIEGUjmwdLGiBP+IWo7RXu90RM1xHmVjG5hVLgmic5XyWc665ye8aRQ==",
+    "shasum": "92b87dc9daddfa8d1db4692257b1968f60e61ee6",
+    "tarball": "https://registry.npmjs.org/cordova-plugin-x-socialsharing/-/cordova-plugin-x-socialsharing-5.6.4.tgz",
     "fileCount": 18,
-    "unpackedSize": 509155,
-    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJa4xFQCRA9TVsSAnZWagAA1IsP/25dcX6xebkXNBda8Ut0\nGr8QQByGZdfgUjDUkM5Lw9fJqzrZEPp9rrjV+fggynGoKGb295qTJqQST+vm\ngc0AZ49xd5DKyrJ4tVXGGsL0ELR6rQNmHaDYMZnvx8qkjAMaeeHPoGIzzpbv\nrbUnzTbSYnrUhjSXptv71vdptQSa6fgqTYXj/2x6yufjmNCcb6USjVnGcWsH\nPydeMqW6xz98dEee7LOS3LoVVcjYKbVdaK+gwaj1XDRY76s6k6jo9mJgS4E4\nn/vVg4vsJQ21lz7+wXnMPUNWaxrmL3hhkUwmDp3mTdPdlsyAVnF0R+K43UAA\nCqXbZr9EalYQ9chazx5er/TQr/U/JvtiLNzbaYlLZmFEM1L7ZduiBw1GJPWk\n1B69pd0NPHqoVNFpXwrQxvzi6Eq7gncfwOj46smoogMSxQ5U9EwtgkvGF+6D\n3eIkwdAwzvBZ/6QDl2qI3DP7MwFfFe9c8aYhScOnbtW++EIjIXmzW1XAxgN0\nitgTMNhswCBFphlCot2ug8Hq+qsYWsezhM9K3HZjDhV/3OFr18O/Su0lO50G\nXoDFd5Y+WHpyAUTSZ1BjfW6MfbSSKZ0/YSaRlRFtsqN4xhed47W9k/5xZ7kG\nzYNQJTKlRzYZ1T4KjkzwcaNaVXwOrk6nQ+nvNYM99vONy7jM20eztfORCAdX\nQpMA\r\n=pUwW\r\n-----END PGP SIGNATURE-----\r\n"
+    "unpackedSize": 518402,
+    "npm-signature": "-----BEGIN PGP SIGNATURE-----\r\nVersion: OpenPGP.js v3.0.4\r\nComment: https://openpgpjs.org\r\n\r\nwsFcBAEBCAAQBQJeRb93CRA9TVsSAnZWagAAN5kP/1kJoNui4Z0LpGws7AUx\ncNfFGSXWYL3Woo231lb7kgLBmh/KhAGg1mNf4HNsoSi8wzk2vWaaYnt1e0vQ\nirMEShuXxzlfnppBAaMbFXnuNSpzcqtv1yFmI6Unn1O409YIpfK8oggtlkFy\nJvtIbcFrwpEikKlj19P+Y4lXbVR3vNloX7pyXBmDIXq8V32t7ChTFJ8HjSBe\ngTwvj1AWMU6Hao6ukVIApEZwAKkz8o68KhGR+kMv0GRc68MmQx3q0sW4V2q4\nGgTOub22RYsVsIAdZQngEFLSO/OLa+ryq/onBBO/cVjCaY9dHxOSnTGvw7yv\ngwpgS4CkWfEGKJ6+2oCUheTO1U7/SOh0IDAtHqq42iUay2YYU+uyylOu1p2M\nbHxxN9NMOxbh42bS+5rthk1LoiXRwOiYwifPcYw46Y+i7r5f0CWCXQcQ01q0\n/vKJvf5jQw3/dOcA3pg7khsWvxb78SbcZuSaWZHQUa2E3CPLCvFetAoKgxL+\n4wSWDaRbATZcKSvWuIn+rUw7380EBvQa2CD62lM3OdgeD0dXL9UVSSPEDna4\nPYok+dDR0NLeTggqRmyRVZcA8dW4MWZrovv2UzA4fnm3aOcg0iVRwVsA/lQd\nwYJYQ0zBDq0/4Df63Wtw4178mSc62lBizd8aGBTm/d4Z71ahaENRolNNWY3/\nQ5R+\r\n=gZ4T\r\n-----END PGP SIGNATURE-----\r\n"
   },
   "engines": [
     {
@@ -79,7 +80,7 @@
       "version": ">=3.0.0"
     }
   ],
-  "gitHead": "dc19b6970fdd1a90bfbf014a23d8332351615a60",
+  "gitHead": "6b88edc6a8ac789bdf09b69076d3a4fa803deb0a",
   "homepage": "https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin#readme",
   "keywords": [
     "Social",
@@ -113,6 +114,6 @@
     "type": "git",
     "url": "git+https://github.com/EddyVerbruggen/SocialSharing-PhoneGap-Plugin.git"
   },
-  "scripts": {},
-  "version": "5.4.0"
+  "types": "./types/index.d.ts",
+  "version": "5.6.4"
 }

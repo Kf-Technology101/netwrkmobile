@@ -2,4 +2,33 @@ page-sign-up {
   .item-block {
     padding-left: 0;
   }
+  .dob_title{
+	margin-bottom: 10px;
+    position: relative;
+    font-size: 20px;
+    color: #5b87aa;
+    text-align: center;
+  }
+  .main-action-coachmark{
+	bottom: 80px !important;
+	font-size: 22px !important;
+	font-weight: 600 ;
+	text-align: center;
+  }
+  .footer{	
+	.footer-back-button{
+	    position: absolute; 
+		bottom: 25px;
+		max-height: 30px;
+		background: none;
+		box-shadow: none;
+		left: calc(50% - 145px);
+		font-size: 21px;
+		max-width: 65px;
+	}
+  }
+ 
 }
+ .picker-columns{
+	padding: 0 40px;
+  }

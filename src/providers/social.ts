@@ -122,34 +122,32 @@ export class Social {
     //   alert.present();
     // });
   }
+  
+  // 
 
   private getAccessToken(res:any) {
-    if (res.url.indexOf('access_token') !== -1) {
+	// if (res.url.indexOf('access_token') !== -1) {
+    if (res.url.indexOf('code') !== -1) {
       let splitUrl = res.url.split('#');
       return splitUrl[splitUrl.length - 1].split('=')[1];
-    } else return false;
+    } else return false; 
   }
 
   connectToInstagram():Promise<any> {
     return new Promise((resolve, reject) => {
-      const clientId = '2d3db558942e4eaabfafc953263192a7';
-      const clientSecret = 'bcf35f1ba4e94d59ad9f2c6c1322c640';
-      const redirectUrl =  this.api.hostUrl + '/loader'; 
-
-	 /* console.log(redirectUrl); 
-	  return false; */
+      const clientId = '177347736690442';
+      const clientSecret = 'e3f0665dd859c85dd94182ef11857d50';
+      const redirectUrl =  'https://api.somvo.app/loader'; 
 	  
 	 /*  const clientId = '2d3db558942e4eaabfafc953263192a7';
       const clientSecret = 'bcf35f1ba4e94d59ad9f2c6c1322c640';
-      const redirectUrl =  this.api.hostUrl + '/loader';  */
+      const redirectUrl =  this.api.hostUrl + '/loader';  
 	  
-      // let autorizationLink = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=token`;
+      let autorizationLink = `https://api.instagram.com/oauth/authorize/?client_id=${clientId}&redirect_uri=${redirectUrl}&response_type=token`; */
 
+	  let autorizationLink =  `https://api.instagram.com/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUrl}&scope=user_profile,user_media&response_type=code`;
  
-	  let autorizationLink =  `https://api.instagram.com/oauth/authorize?client_id=177347736690442&redirect_uri=https://18.188.223.201:3000/loader&scope=user_profile,user_media&response_type=code`;
-							  
-  
-  
+ 
       let instagramData:any = {
         token: null,
         provider_name: 'instagram',
@@ -162,12 +160,15 @@ export class Social {
       });
       browser.on('loadstop').subscribe(res => {
         console.log('instagram auth res:', res);
-        if (res.url.indexOf('access_token=') != -1 && !instagramData.token) {
+		
+        if (res.url.indexOf('code=') != -1 && !instagramData.token) {
           browser.hide();
-          const accessToken = this.getAccessToken(res);
-          instagramData.token = accessToken ? accessToken : false;
-          console.log('[instagram] instagramData:', instagramData);
-          if (instagramData.token) {
+		  
+          // const accessToken = this.getAccessToken(res);
+          // instagramData.token = accessToken ? accessToken : false;
+		  let splitUrl = res.url.split('#');
+		  instagramData.token = splitUrl[0].split('=')[1];
+		  if (instagramData.token) {
             let seq = this.api.post('profiles/connect_social', {
               user: instagramData
             }).share();
@@ -180,7 +181,10 @@ export class Social {
               browser.show();
               reject();
             });
-          } else console.warn('[INSTAGRAM] No access token');
+          } else {
+			  console.warn('[INSTAGRAM] No access token');
+			  reject('No access token');
+		  };
         }
       }, err => { console.log(err); reject(err); });
 

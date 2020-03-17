@@ -38,23 +38,18 @@
 				
 			</p> 
 			<p *ngIf="locationSelected == ''" class="flicker_me">Near 
-				<button class="location-btn" (tap)="select_loaction()" >+</button> 
+				<button class="location-btn no-location-btn" (tap)="select_loaction()" >+</button> 
 			</p> 
-			
-			<!-- <ion-item>
-			  <ion-label>
-				<p *ngIf="dateTimeSelected == ''" class="flicker_me">At 
-					<button class="location-btn" (tap)="select_dateTime()" >+</button> 
-				</p> 
-			  </ion-label>
-			  <ion-datetime min="1992" max="2020" 
-				displayFormat="DDDD"
-				pickerFormat="DDDD"
-				></ion-datetime>
-			</ion-item> -->
-			<!-- [dayShortNames]="customDayShortNames" -->
-            
-			
+			<p [ngClass]="{'flicker_me':activityDate == ''}">At 
+				<button class="location-btn activity-datetime" (tap)="select_dateTime()" [ngClass]="{'no-datetime':activityDate == ''}"><span *ngIf = "activityDate == ''" > + </span> 
+					<ion-datetime [max]="maxYear"
+					[min]="minYear"
+					displayFormat="DDD MMM D YYYY, h:mm A"
+					pickerFormat="DDD MMM D YYYY, h:mm A"
+					[(ngModel)]="activityDate">
+					</ion-datetime>
+				</button> 				
+			</p> 
 		</div>
 	</div>
 </div>
@@ -104,8 +99,6 @@
 		  </ion-row>		
 		</ng-container>
 		
-		
-		
 		<div class="container-title top-margin-20">
 			Invite your people
 		</div>
@@ -127,6 +120,7 @@
 		</ng-container>
 	</div>
 </div>
+
 <div *ngIf="holdSaveLM" class="wait-note">
 	<span *ngIf="locationSelected != ''">Wait! We are sharing your activity '{{activitySelected}} near {{locationSelected}}'</span>
 	<span *ngIf="locationSelected == ''">Wait! We are sharing your activity '{{activitySelected}}'</span>
@@ -145,29 +139,18 @@
 </ion-content>
 
 <ion-footer *ngIf="!showActivitiesContainer">
-	<!-- <div class="share-snapchat" *ngIf='!showContactsStep && user.id == 44'> 
-	  Share with SnapChat
-	  <ion-checkbox color="dark" (ionChange)="snapchatShare($event)" > </ion-checkbox>  
-	</div>
-	<div class="share-snapchat" *ngIf='!showContactsStep && user.id == 44'> 
-	  Share with Twitter
-	  <ion-checkbox color="dark" (ionChange)="twitterShare($event)" > </ion-checkbox>  
-	</div>
-	<div class="share-snapchat" *ngIf='!showContactsStep && user.id == 44'> 
-	  Share with Facebook
-	  <ion-checkbox color="dark" (ionChange)="facebookShare($event)" > </ion-checkbox>  
-	</div> -->
-	
 	<ion-list radio-group class="share-with" *ngIf='!showContactsStep'>
-	  <!-- <ion-item>
-		<ion-label>Share with SnapChat</ion-label>
+	  <!-- <ion-item  class="snapchat-radio" *ngIf="user.id == 47">
+		<ion-label>
+			<ion-icon ios="logo-snapchat" md="logo-snapchat"></ion-icon>
+			<span> Share </span>
+		</ion-label>
 		<ion-radio slot="start" value="SnapChat" (ionSelect)="setShare('SnapChat')"></ion-radio>
-	  </ion-item> -->
+	  </ion-item> --> 
 
 	  <ion-item class="facebook-radio">
 		<ion-label>
 			<ion-icon ios="logo-facebook" md="logo-facebook"></ion-icon> 
-			<!-- <i class="ionicons ion-social-facebook-outline"></i> -->
 			<span> Share </span>
 		</ion-label>
 		<ion-radio slot="start" value="Facebook" (ionSelect)="setShare('Facebook')"></ion-radio>
@@ -181,35 +164,31 @@
 		<ion-radio slot="start" value="Twitter" (ionSelect)="setShare('Twitter')"></ion-radio>
 	  </ion-item>
 	  
+	  <ion-item class="instagram-radio">
+		<ion-label> 
+			<ion-icon ios="logo-instagram" md="logo-instagram"></ion-icon>	
+			<span>Share</span>
+		</ion-label>
+		<ion-radio slot="start" value="Instagram" (ionSelect)="setShare('Instagram')"></ion-radio>
+	  </ion-item> 
 	</ion-list>
-		
-	
-	<!-- <div class="share-snapchat" *ngIf='!showContactsStep && user.id == 44'> 
-	  Share with Twitter
-	  <ion-checkbox color="dark" (ionChange)="twitterShare($event)" > </ion-checkbox>  
-	</div>
-	<div class="share-snapchat" *ngIf='!showContactsStep && user.id == 44'> 
-	  Share with Facebook
-	  <ion-checkbox color="dark" (ionChange)="facebookShare($event)" > </ion-checkbox>  
-	</div> -->
+
 	
 	<button ion-button color="bk" class="back-btn" outline (tap)="goToLanding()" *ngIf="showContactsStep">
 	   Back
 	</button>
 	
 	<button ion-button color="bk" class="main-action-btn medium transparent {{chatPrvd.mainBtn.state}}" outline (tap)="goToLanding()" (press)="showContacts()" [disabled]="holdSaveLM" *ngIf='!showContactsStep'>
-		<span >Hold <br/> to create</span>
+		<span>Hold <br/> to create</span>
 	</button>
 	
 	<button ion-button color="bk" class="main-action-btn medium transparent {{chatPrvd.mainBtn.state}}" outline (tap)="sendMessage()" [disabled]="holdSaveLM" *ngIf='showContactsStep'>	
 	   <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>	
 	</button>
 	
-	  <!-- <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon> -->
-	  <!-- style="padding-left:3px;" -->
-	<!-- *ngIf="!showContactsStep"  -->
-	<!-- <button ion-button class="main-action-btn medium forward contacts-list-btn" outline (tap)="sendMessage()" [ngClass]="{'bottom-margin':showContactsStep}" *ngIf="showContactsStep">
-	   <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline"  style="padding-left:3px;"></ion-icon>
-	</button> -->
-	
+	<div class="weekly-btn" *ngIf='!showContactsStep'> 
+		<ion-checkbox color="dark" [(ngModel)]="isWeekly" ></ion-checkbox> 
+		Weekly? 
+	</div>
+
 </ion-footer>

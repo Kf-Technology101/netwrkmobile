@@ -96,7 +96,7 @@ page-arealist {
       .card {
         margin-top: 0;
         border-radius: 16px;
-        max-width: 75%;
+        max-width: 85%;
       }
     }
     .chat-avatar{
@@ -125,7 +125,7 @@ page-arealist {
       text-align: center;
       display: block;
       font-size: 18px;
-      margin: 15px 0;
+	  margin: 5px 0 0;
       color: #fff;
     }
     .avatar-section {
@@ -249,6 +249,20 @@ page-arealist {
         }
       }
     }
+	
+	.weekly-btn{
+		float: right;
+		border-color: #000; 
+		.checkbox-checked {
+			border-color: #000;
+			background-color: #fff;
+			color: #000;
+			.checkbox-inner {
+				border-color: #000;
+				width: 5px;
+			}
+		}
+	}
   }
 
   // SLIDERS AND VIDEOS IN POSTS
@@ -305,6 +319,24 @@ page-arealist {
         }
       }
     }
+  }
+  .feedback-button{
+	width: 26px;
+    height: 26px;
+    border-radius: 50px;
+    padding: 0px;
+    z-index: 3;
+	background-color: #5b87aa;
+	.icon{
+		-webkit-mask: url(../assets/icon/lobby-icon.svg) no-repeat 75%;
+		background: #fff;
+		pointer-events: none;
+		width: 70%;
+		height: 70%;
+		display: block;
+		z-index: 3;
+		margin: 0 auto;
+	}
   }
 } // end of page-profile
 

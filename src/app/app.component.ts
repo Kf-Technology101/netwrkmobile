@@ -81,7 +81,7 @@ export class MyApp {
 				this.init();
 				/* this.toolsPrvd.showSplashScreen(); 
 				console.log('show splash');
-				this.initCheckLogin(692); */
+				this.initCheckLogin(819); */ 
 			});
 		}); 
        

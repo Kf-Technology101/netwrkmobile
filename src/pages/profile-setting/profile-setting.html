@@ -3,27 +3,9 @@
   <ion-list>
     <ion-list-header>
       Settings
+	  <span class="users-cnt">{{user.id}}</span>
     </ion-list-header>
     <ion-item-group>
-
-       <!--<button ion-item (tap)="locationchange.showLocationSelect()">-->
-        <!--<ion-icon ios="ios-globe" md="ios-globe" color="primary"></ion-icon>-->
-        <!--<span>Select custom location</span>-->
-      <!--</button>-->
-      <!--<button *ngIf="locationchange.isCustomCoordAvaliable()"-->
-        <!--ion-item (tap)="locationchange.disableCustomLocation()">-->
-        <!--<ion-icon ios="ios-close-circle" md="ios-close-circle" color="danger"></ion-icon>-->
-        <!--<span>Set current location as default</span>-->
-      <!--</button>-->
-
-      <!--<button ion-item (tap)="settings.toggleCameraOnUC()">-->
-        <!--<ion-icon ios="ios-camera" md="ios-camera" color="secondary"></ion-icon>-->
-        <!--<span>Background camera</span>-->
-        <!--<ion-note item-end>-->
-          <!--{{ settings.ucCameraState }}-->
-        <!--</ion-note>-->
-      <!--</button>-->
-
       <button ion-item (tap)="settings.showBlacklist()">
         <ion-icon ios="ios-contacts" md="ios-contacts" color="primary"></ion-icon>
         <span>Blacklist</span>
@@ -42,7 +24,6 @@
 		<ion-icon name="log-out-outline"  color="bk-white"></ion-icon>
         <span>Log Out</span>
       </button>
-
     </ion-item-group>
   </ion-list>
 </ion-content>
@@ -52,8 +33,4 @@
     outline (click)="goBack()" (press)="goToHoldScreen()">
     <ion-icon ios="ios-arrow-back-outline" md="ios-arrow-back-outline"></ion-icon>
   </button>
-
-  <!-- <button ion-button class="footer-back-button" (click)="logOut()">
-    <span ion-text color="light">Log Out</span>
-  </button> -->
 </ion-footer>

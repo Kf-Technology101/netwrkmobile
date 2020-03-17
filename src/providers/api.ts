@@ -5,7 +5,7 @@ import 'rxjs/add/operator/map';
 
 @Injectable()
 export class Api {
-  public httpProtocol: string = 'http://';
+  public httpProtocol: string = 'https://';
   private apiV: string = '/api/v1';
   // Local
  /*  public domain: any = {
@@ -14,10 +14,15 @@ export class Api {
   };  */
   
   // Production
-  public domain: any = {
+  /* public domain: any = {
     local: '18.188.223.201:3000', // default :3000
     remote: '18.188.223.201:3000' // 'netwrk.com'
-  }; 
+  }; */  
+   
+  public domain: any = {
+    local: 'api.somvo.app', // default :3000
+    remote: 'api.somvo.app' // 'netwrk.com'
+  };   
   
   public siteDomain: string = this.domain.local;
   public hostUrl = this.httpProtocol + this.siteDomain;
@@ -97,8 +102,13 @@ export class Api {
   post(endpoint: string, body: any, options?: RequestOptions) {
     options = this.createAuthorizationHeader(options);
     return this.http.post(this.url + '/' + endpoint, body, options);
+  } 
+  
+  postInstagram(endpoint: string, body: any, options?: RequestOptions) {
+    options = [];
+    return this.http.post(endpoint, body, options);
   }
-
+  
   put(endpoint: string, body: any, options?: RequestOptions) {
     options = this.createAuthorizationHeader(options);
     return this.http.put(this.url + '/' + endpoint, body, options);

@@ -243,6 +243,7 @@ export class SlideAvatar {
 		popupDetails.buttonText = 'Okay!';
 		popupDetails.buttonCssClass = 'try-span';	
 		popupDetails.buttonHandler = () => {this.storage.rm('identity_warning');};
+		this.arrowIcon.style.opacity = '1';
 		let alert = this.alertCtrl.create({
 			subTitle: popupDetails.goodStuffPopupHtml,
 			cssClass: popupDetails.cssClass,

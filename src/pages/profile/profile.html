@@ -39,10 +39,11 @@
 (ionScrollEnd)="listenForScrollEnd($event)">
   <ion-row class="avatar-section">
     <ion-col>
-      <div class="avatar" *ngIf="ownProfile">
+      <div class="avatar" *ngIf="ownProfile"> 
+	   <!-- && slideAvatarPrvd.sliderPosition == 'left' -->
         <!-- <ion-spinner *ngIf="profile.imageLoading"></ion-spinner> -->
         <img [src]="slideAvatarPrvd.sliderPosition == 'left' ? profile.user.avatar_url : profile.user.hero_avatar_url"
-        (error)="chatPrvd.updateAvatarUrl($event)">
+        (error)="chatPrvd.updateAvatarUrl($event)" >
         <div class="add-container" *ngIf="slideAvatarPrvd.sliderPosition == 'left'">
 		<!-- Allow upload or change of profile image only if public else disable profile image upload -->
           <button color="bk" ion-button>
@@ -82,6 +83,11 @@
       <span class="user-points">{{ user.points_count }} points</span>
     </ion-col>
   </ion-row>
+  <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'right'">
+    <ion-col>
+      <span class="user-points">Switch and edit your community IDs</span>
+    </ion-col>
+  </ion-row>
   <ion-row class="input-section" *ngIf="ownProfile && slideAvatarPrvd.sliderPosition != 'right'">
     <ion-col>
       <ion-item class="no-style">
@@ -97,7 +103,7 @@
   <div ion-content class="description-section"
        *ngIf="ownProfile && slideAvatarPrvd.sliderPosition == 'right'">
     <ion-item class="no-style">
-      <ion-textarea autosize [(ngModel)]="profile.userDescription" rows="7"
+      <ion-textarea autosize [(ngModel)]="profile.userDescription" rows="5"
                     (ionBlur)="saveProfileChanges()"> <!-- profile.saveChanges -->
         {{ profile.userDescription }}
       </ion-textarea>
@@ -121,15 +127,15 @@
       </ion-slides>
     </ion-col>
   </ion-row>
-  <!-- <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left' && ownProfile">
+  <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left' && ownProfile">
     <p ion-text text-center color="white" class="broadcast-central-head">
       Broadcast central
     </p>
-  </ion-row> -->
+  </ion-row> 
   <ion-row *ngIf="slideAvatarPrvd.sliderPosition == 'left' && ownProfile"
   class="connect" padding>
     <ion-col>
-      <ion-row>
+      <ion-row> 
         <!-- <div class="slide-container sl-facebook">
           <div [ngClass]="{'active': socialPrvd.connect.facebook}" class="toggle-el"
             (click)="socialPrvd.connectToFacebook()">
@@ -155,7 +161,7 @@
         </div> -->
 		
 <!-- Instagram Button starts here -->
-        <!-- <div class="slide-container sl-instagram">
+        <div class="slide-container sl-instagram">
           <div [ngClass]="{'active': socialPrvd.connect.instagram}" class="toggle-el"
             (click)="connectToInstagram()">
             <span class="toggle-state" *ngIf="socialPrvd.connect.instagram">Instagram</span>
@@ -165,7 +171,7 @@
             </div>
             <input type="checkbox" [checked]="socialPrvd.connect.instagram">
           </div>
-        </div> -->
+        </div>
 <!-- Instagram Button ends here -->
 
         <!-- <ion-col class="li" *ngIf="!socialPrvd.connect.linkedin" hidden>
@@ -181,16 +187,19 @@
           </button>
         </ion-col> -->
 
-      </ion-row>
+     </ion-row>
     </ion-col>
-  </ion-row>
+  </ion-row> 
   <ng-container *ngIf="!posts || posts.length == 0">
     <p class="no-data-message">There are no posts yet</p>
   </ng-container>
   <ion-grid *ngIf="posts.length > 0" no-padding>
     <ion-row class="feed">
       <ion-col>
-        <h3><span>Recent activity</span></h3>
+        <h3>
+			<span *ngIf="slideAvatarPrvd.sliderPosition == 'left'">Somvos</span>
+			<span *ngIf="slideAvatarPrvd.sliderPosition == 'right'">Communities</span>
+		</h3>
         <ng-container *ngFor="let post of posts">
           <ion-row class="post" [ngClass]="{'image-post': post.full_picture}" *ngIf="post.locked && post.user_id == user.id || !post.locked || !post.has_expired">
             <ion-col>
@@ -200,6 +209,9 @@
 
                       <img [src]="post.avatar_url" class="chat-avatar conversation"
                       (error)="chatPrvd.updateAvatarUrl($event)">
+					  
+					  <span style="display: block;" *ngIf="post.message_type=='LOCAL_MESSAGE'">Somvo</span>
+					  <span style="display: block;" *ngIf="post.message_type!='LOCAL_MESSAGE'">Community</span>
 
                       <span class="username">
                           <ng-container>
@@ -218,28 +230,31 @@
                       </ng-container>
                       -
                     </ng-container>
-                    {{ post.date }}
+                    <span *ngIf="post.message_type != 'LOCAL_MESSAGE'">{{ post.date }}</span>
                     <ng-container *ngIf="post.expire_at">
                       <span class="expire-in">Expires in {{ post.expire_at }}</span>
                     </ng-container>
-                  </ion-card-title>
-
 					<p (click)="toolsPrvd.handleLinkClick($event)"
                      [innerHTML]="post.text_with_links">
 					</p>
+                  </ion-card-title>
+
 
 					<!-- editSetting(post.id) -->
                     <button ion-button class="remove-message-btn" (tap)="setCommunityIdentity(post)"  *ngIf="ownProfile && post.undercover && (post.public || !post.public && post.locked)">
                       <img src="assets/icon/1.png" style="width:18px;">
                     </button>
-
+					
                     <button *ngIf="ownProfile" ion-button class="remove-message-btn" (tap)="removeMessage(post.id)">
                         <ion-icon ios="ios-trash-outline" md="ios-trash-outline" color="dark"></ion-icon>
                     </button>
 					
 					<button *ngIf="ownProfile && post.undercover" ion-button class="remove-message-btn" (tap)="editMessage(post.id)">
                         <ion-icon ios="ios-create-outline" md="ios-create-outline" color="dark"></ion-icon>
-                    </button>  
+                    </button> 
+					
+					<ion-checkbox color="dark" [checked]="post.weekly_status==1" class="weekly-btn" *ngIf="post.message_type=='LOCAL_MESSAGE' && (todaysDate | date: 'dd/MM/yyyy') < (post.start_date | date: 'dd/MM/yyyy')" (ionChange)="changeWeeklyStatus(post.id,$event)"> </ion-checkbox>  
+					
 					<!-- ios-settings-outline -->
                 </ion-card-content>
               </ion-card>
@@ -286,7 +301,10 @@
               </ion-badge>
               <ion-badge item-right>
                 <span>{{ post.likes_count }}</span>
-                <img class="icon-img" src="assets/images/joy.png">
+                <button class="feedback-button 456">
+					<div class="icon"></div>
+				</button>
+			
               </ion-badge>
             </ion-col>
           </ion-row>

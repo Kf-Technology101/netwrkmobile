@@ -22,7 +22,7 @@ import { Chat } from '../../providers/chat';
   templateUrl: 'profile-setting.html'
 })
 export class ProfileSettingPage {
-
+public user: any;
   constructor(
     public navCtrl: NavController,
     public tools: Tools,
@@ -34,8 +34,9 @@ export class ProfileSettingPage {
     public storage: LocalStorage,
     public alertCtrl: AlertController,
     public chatPrvd: Chat
-	
-  ) { }
+  ) { 
+	this.user = this.auth.getAuthData();
+  }
 
   public goBack():void {
     this.storage.set('_fromPrSett', true);

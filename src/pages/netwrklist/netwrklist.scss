@@ -53,11 +53,12 @@ page-netwrklist {
 					color: #000;
 					.text-input{
 						text-align: center;
-						/* &::placeholder{
-							color: #000;	
-						} */
-					}
-					
+						line-height: 20px;
+						margin: 5px 8px;
+						&:focus {
+						  color: #000;
+						}
+					}					
 				}
 				.exp-note{
 				    font-size: 12px;
@@ -91,9 +92,6 @@ page-netwrklist {
 		.scroll-content{
 		    margin-top: 10px !important;
 			margin-bottom: 0px !important;
-			@media screen and (max-width: 374px) {
-				margin-top: 130px !important;	     
-			}
 		}
 		
 		.chat-avatar{
@@ -181,6 +179,18 @@ page-netwrklist {
 			&.activity-btn{
 				min-width: 300px;
 				margin-left: 0px;
+			}
+			&.no-location-btn{
+				width:90px;
+			}			
+			&.activity-datetime{
+				font-size: 25px;
+				padding: 10px 5px;
+			}
+			&.no-datetime{
+				height: 55px;
+				font-size: 35px;
+				padding: 10px 25px;
 			}
 		  }
 	  }
@@ -339,8 +349,38 @@ page-netwrklist {
 		margin-bottom: 90px;
 		color: #fff;
 	}
+	.weekly-btn{
+		float: right;
+		color: #fff;
+		position: absolute;
+		right: 10px;
+		bottom: 13px;
+		background-color: #5b87aa;
+		border-radius: 50px;
+		width: 88px;
+		height: 30px;
+		line-height: 27px;
+		padding: 3px 3px 3px 6px;
+		ion-checkbox{
+			border: 1px solid #5b87aa;
+			border-radius: 53px;
+			float: right;
+			.checkbox-checked {
+				border-color: #5b87aa;
+				background-color: #fff;
+				color: #000;
+				.checkbox-inner {
+					border-color: #5b87aa;
+					width: 5px;
+				}
+			}
+		}
+	}
 	.share-with{
-		margin-bottom: 15px;
+		margin-bottom: 0px;
+		width: 40%;
+		margin-right: 0px;
+		float: left;
 		.item{
 			padding: 0px 5px 0 5px;
 			width: 100px;
@@ -353,6 +393,18 @@ page-netwrklist {
 			}
 			&.twitter-radio{
 				background-color: #00acee;
+			}
+			&.instagram-radio{
+				background-color: #3f729b;
+			}
+			&.snapchat-radio{
+				background-color: #fffc00;
+				ion-label{
+					color: #000 !important;
+					.icon{
+						color: #000;
+					}
+				}
 			}
 			ion-label{
 				color: #fff !important;		
@@ -371,13 +423,19 @@ page-netwrklist {
 			}
 			ion-radio{
 			    margin: 0px;
-				border: 2px solid #000 !important;
+				border: 2px solid #5b87aa !important;
 				border-radius: 50px;
 				width: 26px;				
 				height: 26px;	
 				background-color: #fff;
-				.radio-inner{
-					border-color: #000;
+				.radio-icon{
+					margin: 15% auto;
+					.radio-inner{
+						border-color: #5b87aa;
+						left: 6px;
+						width: 6px;
+						top: 2px
+					}
 				}
 			}
 		}
@@ -443,4 +501,9 @@ page-netwrklist {
 
 }
 
-
+.picker-columns{
+	padding: 0 15px !important;
+}
+.picker-ios .picker-opt{
+	font-size: 18px !important;
+}

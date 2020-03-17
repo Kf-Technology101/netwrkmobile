@@ -35,6 +35,7 @@ import { ChatPage } from '../pages/chat/chat';
 import { UndercoverCharacterPage } from '../pages/undercover-character/undercover-character';
 import { CameraPage } from '../pages/camera/camera';
 import { ProfileNameImgPage } from '../pages/profile-name-img/profile-name-img';
+import { DealPage } from '../pages/deal/deal';
 
 // Modals
 import { LegendaryModal } from '../modals/legendaryhistory/legendaryhistory';
@@ -124,7 +125,8 @@ let declarations_pages = [
   ChatPage,
   UndercoverCharacterPage,
   CameraPage,
-  ProfileNameImgPage,  
+  ProfileNameImgPage, 
+  DealPage,  
   ContactListPipe,
   EmojiFilter,
   SortPipe
@@ -155,7 +157,8 @@ let pages = [
   ChatPage,
   UndercoverCharacterPage,
   CameraPage,
-  ProfileNameImgPage
+  ProfileNameImgPage,
+  DealPage
   
 ];
 export function declarations() {
@@ -208,7 +211,7 @@ export function providers() {
     Settings,
     Crop,
     Diagnostic,
-    NetworkCheck,
+	NetworkCheck,
     ReportService,
     VideoService,
     FeedbackService,

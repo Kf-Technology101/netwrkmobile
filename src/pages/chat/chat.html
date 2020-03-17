@@ -219,6 +219,13 @@
 							I can't
 						</button>
 					  </div>
+					  
+					  <div class="accessDiv" *ngIf = "!chatPrvd.currentLobby.isAddButtonAvailable">
+						<button ion-button class="share-somvo-btn accessBtn" (click)="shareSomvo(message)">
+							Share
+						</button>
+					  </div>
+					  
 		
                     </div>
 
@@ -627,8 +634,7 @@
 		</div> 
 		
         <ng-container *ngIf = "!message.conversation_status && message.line_message_type !=  'LOCAL_MESSAGE' || (message.message_type != 'CONV_ACCEPTED' && message.conversation_status != 'REQUESTED' && message.is_connected)">		
-			
-				
+							
 		    <button class="feedback-button 456" (tap)="feedbackService.toggleLikes(message, user.id, $event);getGoodStuff('pinnedStuff'); " [ngClass]="{ 'disabled' : !isFeedbackClickable || !message.is_synced, 'active' : message.like_by_user}" *ngIf="(!message.like_by_user && chatPrvd.areaLobby && !message.locked_by_user || !message.like_by_user && (chatPrvd.isLobbyChat && !netwrkFeed) && !message.locked_by_user || !message.like_by_user && chatPrvd.getState() == 'area' && (message.line_message_type == 'PRIVATE_LINE' && !message.locked_by_user || message.line_message_type == 'SEMI_PRIVATE_LINE' && message.is_connected || message.line_message_type == 'PUBLIC_LINE' || message.line_message_type == 'LOCAL_MESSAGE')) && message.messageable_type=='Room' && message.message_type != 'CONV_ACCEPTED'"  (press)="openFeedbackModal(message, i)">
               <div class="icon" [ngClass]="{'lobby' : chatPrvd.isLobbyChat}"></div>
             </button>
@@ -874,7 +880,7 @@
 
   <div #shareCont item-content class="gallery-container share-container" [hidden]="shareContainer.hidden" [@containerState]="shareContainer.state" *ngIf="chatPrvd.isLobbyChat || chatPrvd.areaLobby || chatPrvd.getState() == 'area'" [ngStyle]="{'padding-bottom': contentPadding, 'margin-bottom': contentMargin}" >
     <ion-toolbar [ngClass]="{ 'no-events' : !socialLoaderHidden }">
-      <div class="slide-container sl-facebook">
+      <div class="slide-container sl-facebook" *ngIf="socialPrvd.connect.facebook">
         <div #slfb [ngClass]="{'active': shareCheckbox.facebook}" class="toggle-el"
           (click)="toggleShareSlider('facebook')">
           <span class="toggle-state" *ngIf="shareCheckbox.facebook">on</span>
@@ -975,7 +981,7 @@
 	</button>
   </div>
   
-  <div class="tip tail-bottom" [ngClass]="{'networks-visible':netwrkCoachMarkText, 'indent-coach': chatPrvd.getState() == 'area' && chatPrvd.show_ap_note && !chatPrvd.isLobbyChat && !chatPrvd.areaLobby}" *ngIf="(settings.isNewlineScope || chatPrvd.isLobbyChat || chatPrvd.areaLobby || (chatPrvd.show_ap_note && chatPrvd.getState() == 'area')) && !netwrkCoachMarkText" [ngStyle]="{'display': coachMarkText!=''?'inline-flex':'none', 'bottom': firstTimeInLobby?'120px':'', 'z-index': firstTimeInLobby?'-1':''}" (click)="(chatPrvd.show_lp_note || chatPrvd.show_ap_note)?disableAssocPageCoachMark():''" [innerHTML] = "coachMarkText"></div> 
+  <div class="tip tail-bottom" [ngClass]="{'networks-visible':netwrkCoachMarkText, 'indent-coach': chatPrvd.getState() == 'area' && chatPrvd.show_ap_note && !chatPrvd.isLobbyChat && !chatPrvd.areaLobby}" *ngIf="(settings.isNewlineScope || chatPrvd.isLobbyChat || chatPrvd.areaLobby || (chatPrvd.show_ap_note && chatPrvd.getState() == 'area')) && !netwrkCoachMarkText" [ngStyle]="{'display': coachMarkText!=''?'block':'none', 'bottom': firstTimeInLobby?'85px':'', 'z-index': firstTimeInLobby?'-1':''}" (click)="(chatPrvd.show_lp_note || chatPrvd.show_ap_note)?disableAssocPageCoachMark():''" [innerHTML] = "coachMarkText"></div>  
   <!-- getVisibleNetwrks -->
   <div class="tip tail-bottom near-netwrks" [ngClass]="{'networks-visible':netwrkCoachMarkText}" *ngIf="netwrkCoachMarkText && chatPrvd.isLobbyChat" [ngStyle]="{'display': netwrkCoachMarkText && chatPrvd.isLobbyChat?'inline-table':'none'}" (press)="netwrkCoachMarkText?getNetwrkFeedLines():''">You’ve connected to new clubs! Tap <img class="netwrk-img ng-tns-c1-2" src="assets/icon/netwrk-chat.png"> to see them</div>  
   <!-- <img src='assets/icon/blue.png' class='netwrk-img'> -->
@@ -983,6 +989,11 @@
   <button ion-button class="back-nav-btn" (tap)="goBack();" clear *ngIf="settings.isNewlineScope == true">
         <span ion-text>Back</span>
   </button>
+  
+  <button ion-button class="create-deal-btn" (tap)="goToCreateDeal();" clear *ngIf="!settings.isNewlineScope && chatPrvd.plusBtn.state == 'default' && chatPrvd.isLobbyChat && user.id == 47" [ngStyle]="{'bottom': firstTimeInLobby?'145px':''}">
+        <span ion-text>Create Deal</span>
+  </button>
+  
 <!-- (press)="normalizeMainBtn($event); goToHoldScreen()"  -->
   <button class="{{chatPrvd.mainBtn.state}}" isScrolling="false" [hidden]="chatPrvd.mainBtn.hidden" *ngIf="settings.isNewlineScope" [@mainBtnState]="chatPrvd.mainBtn.state" color="bk" class="main-action-btn has-footer transparent chatMainBtn" [disabled]="chatPrvd.isMainBtnDisabled" (press)="normalizeMainBtn($event); goToHoldScreen()" (click)="normalizeMainBtn($event,'openLinePage');" [ngClass]="{'anim-glow' : chatPrvd.networkAvailable && chatPrvd.localStorage.get('firstTimeAreaChange') === null, 'small' :  chatPrvd.mainBtn.getState() == 'back-to-hold', 'big' : chatPrvd.mainBtn.getState() != 'back-to-hold'}" >
     <ion-icon ios="ios-arrow-forward-outline" md="ios-arrow-forward-outline">
@@ -1031,14 +1042,15 @@
            <ion-icon ios="ios-image-outline" md="ios-image-outline"></ion-icon>
         </button>
 
-        <!-- <button class="noBtn" ion-button [@inputState]="chatPrvd.chatBtns.state[2]" *ngIf="chatPrvd.getState() == 'area' && !chatPrvd.isLobbyChat && !chatPrvd.areaLobby" (click)="toggleContainer(shareContainer, null, 'shareContainer');">
+        <button class="noBtn" ion-button [@inputState]="chatPrvd.chatBtns.state[2]" *ngIf="chatPrvd.isLobbyChat || chatPrvd.areaLobby" (click)="toggleContainer(shareContainer, null, 'shareContainer');">
           <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
         </button>
 
-        <button class="noBtn" ion-button [@inputState]="chatPrvd.chatBtns.state[2]" *ngIf="chatPrvd.getState() == 'undercover' || chatPrvd.isLobbyChat || chatPrvd.areaLobby"
+        <!-- <button class="noBtn" ion-button [@inputState]="chatPrvd.chatBtns.state[2]" *ngIf="chatPrvd.getState() == 'undercover' || chatPrvd.isLobbyChat || chatPrvd.areaLobby"
           (click)="toggleContainer(shareContainer, null, 'shareContainer');">
           <ion-icon ios="ios-redo" md="ios-redo"></ion-icon>
         </button> -->
+		
         <button class="noBtn" ion-button [@inputState]="chatPrvd.chatBtns.state[3]" (click)="toggleContainer(emojiContainer);">
           <ion-icon ios="ios-happy-outline" md="ios-happy-outline"></ion-icon>
         </button>

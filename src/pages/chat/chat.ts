@@ -32,6 +32,7 @@ import { NativeGeocoder, NativeGeocoderReverseResult, NativeGeocoderForwardResul
 import { InAppBrowser } from '@ionic-native/in-app-browser'; 
 import { Push, PushObject, PushOptions } from '@ionic-native/push';
 
+
 // Pages
 import { CameraPage } from '../camera/camera';
 import { ProfilePage } from '../profile/profile';
@@ -42,6 +43,7 @@ import { NetwrklistPage } from '../netwrklist/netwrklist';
 import { UndercoverCharacterPage } from '../undercover-character/undercover-character';
 import { LinePage } from '../linelist/linelist';
 import { ProfileNameImgPage } from '../profile-name-img/profile-name-img';
+import { DealPage } from '../deal/deal';
 
 // Custom libs
 import { Toggleable } from '../../includes/toggleable';
@@ -302,7 +304,7 @@ export class ChatPage implements DoCheck {
 		  ]
 	  }
 	];
-
+  
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -357,8 +359,8 @@ export class ChatPage implements DoCheck {
 		this.slideAvatarPrvd.setSliderPosition('right');
 		this.slideAvatarPrvd.sliderPosition = "right"; 
 	  }
-	 
-  	  if(this.storage.get('show_ap_note')){
+	  
+	  if(this.storage.get('show_ap_note')){
 		this.chatPrvd.show_ap_note = true;
 	  }
 	  if(this.storage.get('show_lp_note')){
@@ -1141,6 +1143,7 @@ export class ChatPage implements DoCheck {
   }
 
   private toggleChatOptions():void {
+
     this.chatPrvd.plusBtn.setState((this.chatPrvd.plusBtn.getState() == 'spined') ? 'default' : 'spined');
     this.chatPrvd.bgState.setState((this.chatPrvd.bgState.getState() == 'stretched') ? 'compressed' : 'stretched');
 
@@ -3146,7 +3149,7 @@ export class ChatPage implements DoCheck {
 	cont2.setState('slideUp');
 	cont2.hide();
 	
-	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off' && (!message.conversation_status || message.conversation_status == 'ACCEPTED')){ 
+	if(!this.chatPrvd.isLobbyChat && !this.chatPrvd.areaLobby && this.loaderState.getState() == 'off' && (!message.conversation_status || message.conversation_status == 'ACCEPTED' || (message.conversation_status == 'REQUESTED' && this.chatPrvd.getState() != 'area'))){ 
 	  if(this.chatPrvd.getState() == 'undercover'){
 		this.chatPrvd.show_lp_note = false;
 		this.storage.set('show_lp_note',false);
@@ -4779,6 +4782,28 @@ export class ChatPage implements DoCheck {
 	  }]
 	});
 	alert.present();  
+  }
+  
+  public shareSomvo(message){
+	let messageType = message.public?'Public':'Private';	
+	let subject = message.title + '? '+message.text+"\n Type:"+messageType
+	let messageParamsId = message.id;  
+	let shareLink = 'https://somvo.app/landing?id='+messageParamsId+'&title='+message.title;
+	
+	console.log('subject ==>',subject);
+	console.log('shareLink ==>',shareLink);
+	
+	this.sharing.share(subject, 'Netwrk', null, shareLink).then(res => {
+		this.toolsPrvd.showToast('Message has been shared successfully.');
+	}, err =>{
+		this.toolsPrvd.showToast('Unable to share message',err);
+	});
+
+  }
+  
+  public goToCreateDeal(){
+	console.log(this.chatPrvd.currentLobbyMessage);
+	this.toolsPrvd.pushPage(DealPage);	
   }
   
 }

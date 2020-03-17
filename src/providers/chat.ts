@@ -120,7 +120,7 @@ export class Chat {
 	protected webView: WebView,
 	private sanitizer:DomSanitizer
   ) {
-    this.hostUrl = this.api.hostUrl;
+    this.hostUrl = 'http://18.188.223.201:3000'; // this.api.hostUrl; 
     this.user = this.authPrvd.getAuthData();
   }
 
@@ -875,8 +875,6 @@ export class Chat {
 	return seqMap;
   }
   
-
-
   public updateAvatar(id:any, files: any, data?: any, fieldName?: string) {
     return new Promise((resolve, reject) => {
       let xhr: XMLHttpRequest = new XMLHttpRequest();

@@ -9,6 +9,7 @@ import { ChatPage } from '../../pages/chat/chat';
 import { ProfilePage } from '../../pages/profile/profile';
 import { HoldMapPage } from '../../pages/hold-map/hold-map';
 import { Keyboard } from '@ionic-native/keyboard';
+import { AppAvailability } from '@ionic-native/app-availability';
 
 // Providers
 import { Gps } from '../../providers/gps';
@@ -69,7 +70,7 @@ customYearValues = [2020, 2016, 2008, 2004, 2000, 1996];
 customDayShortNames = ['sun', 'mon', 'tues', 'wed', 'thur', 'fri', 'sat'];
 customPickerOptions: any; 
   @ViewChild('textInput') txtIn;
-  @ViewChild('activityDateInput') activityDateInput;
+  @ViewChild('activityDateInput') activityDateInput; 
   public isUndercover: boolean;
   public user: any = {};
   public netwrkLineList: any = [];
@@ -98,11 +99,18 @@ customPickerOptions: any;
   public shareViaSnapchat:boolean = false;
   public shareViaTwitter:boolean = false;
   public shareViaFacebook:boolean = false;
+  public shareViaInstagram:boolean = false;
   public holdSaveLM:boolean = false;
-  public max_date: string;
-  public min_date: string = '1900';
+  public minYear: string;
+  public maxYear: string;
   public shareWith = null;
   public lm_title: string = '';
+  public activityDate='';
+  public isWeekly: boolean = false;
+  
+  public showFbApp: boolean = false;
+  public showTwitterApp: boolean = false;
+  
   constructor(
     private viewCtrl: ViewController,
     private api: Api,
@@ -126,9 +134,77 @@ customPickerOptions: any;
     elRef: ElementRef,
 	public socialSharing: SocialSharing,
 	private alertCtrl: AlertController,
-	public snap: SnapProvider 
+	public snap: SnapProvider,
+	private appAvailability: AppAvailability
   ) {
-	  // this.chatPrvd.mainBtn.setState('txtual-move');
+	  let fbappSlug;
+	  let twitterappSlug;
+	  if (this.platform.is('ios')) {
+		fbappSlug = 'fb://';
+		twitterappSlug = 'twitter://';
+	  } else if (this.platform.is('android')) {
+		fbappSlug = 'com.facebook.android';
+		twitterappSlug = 'com.twitter.android';
+	  }	  
+	  
+	  /* this.appAvailability.check(fbappSlug).then(
+		(yes: boolean) => {
+			this.showFbApp = true; 
+			// this.toolsPrvd.showToast(fbappSlug+' is available.');
+		},
+		(no: boolean) => {
+			this.showFbApp = false;
+			// this.toolsPrvd.showToast(fbappSlug+' is not available.');
+		}
+	  );
+	  this.appAvailability.check(twitterappSlug).then(
+		(yes: boolean) => { 
+			this.showTwitterApp = true;
+			// this.toolsPrvd.showToast(twitterappSlug+' is available.');
+		},
+		(no: boolean) => {
+			this.showTwitterApp = false;
+			// this.toolsPrvd.showToast(twitterappSlug+' is not available.');
+		}
+	  );  */
+	  
+	/*   this.appAvailability.check(fbappSlug).then(() => {
+		this.showFbApp = true; 
+		this.toolsPrvd.showToast(fbappSlug+' is available.');
+	  }).catch(() => {
+		this.showFbApp = false; 
+		this.toolsPrvd.showToast(fbappSlug+' is not available.');
+	  });	  
+	  this.appAvailability.check(twitterappSlug).then(() => {
+		this.showTwitterApp = true; 
+		this.toolsPrvd.showToast(twitterappSlug+' is available.');
+	  }).catch(() => {
+		this.showTwitterApp = false; 
+		this.toolsPrvd.showToast(twitterappSlug+' is not available.');
+	  });  */ 
+	  	  
+	 /*  this.socialSharing.canShareVia('com.apple.social.facebook', 'Check for share', null, null, null).then(() => {
+		this.showFbApp = true; 
+		this.toolsPrvd.showToast('facebook is available.');
+	  }).catch(() => {
+		this.showFbApp = false; 
+		this.toolsPrvd.showToast('facebook is not available.');
+	  });
+	  
+	  this.socialSharing.canShareVia('twitter', 'Check for share', null, null, null).then(() => {
+		this.showTwitterApp = true; 
+		this.toolsPrvd.showToast('twitter is available.');
+	  }).catch(() => {
+		this.showTwitterApp = false; 
+		this.toolsPrvd.showToast('twitter is not available.');
+	  }); */
+
+	  	  
+	  let mindate = new Date(); // today
+	  let maxdate = new Date(mindate.getFullYear(),mindate.getMonth(),mindate.getDate()+365);
+	  this.minYear = mindate.toISOString();
+	  this.maxYear = maxdate.toISOString();
+	  
 	  this.listType = 'phones'; 
 	  this.contactsPrvd.getContacts(this.listType).then(data => {
 		  this.contacts = data;
@@ -166,7 +242,7 @@ customPickerOptions: any;
 		}
 		this.storage.set('local_coordinates',loc);	  
 	  }	  
-	  // console.log(this.user);
+	  console.log(this.user);
   }
 	 
   public loadActivity(){
@@ -188,8 +264,7 @@ customPickerOptions: any;
 		this.activity.push({itemName: "Chat"});
 		this.activity.push({itemName: "Skate"});		
 		resolve(true);        
-	});           
-	
+	}); 
   }
   
   public show_activity(){
@@ -198,7 +273,6 @@ customPickerOptions: any;
   }
   
   public select_activity(item){
-	  
 	if(item.itemName == this.activity[0].itemName){//this.activity.length
 		// this.storage.set('last-activity', item);
 		// popup text box for custom input
@@ -234,7 +308,7 @@ customPickerOptions: any;
 	this.toolsPrvd.pushPage(HoldMapPage);
   }
   public select_dateTime(){
-	  
+	
   }
   
   public remove_loaction(){
@@ -250,11 +324,20 @@ customPickerOptions: any;
 		
 		let locDetails = this.storage.get('last_hold_location_details');
 		let place_name = locDetails?locDetails.place_name:'';
+		
+		this.lm_title = this.activitySelected;
 		if(place_name !=''){
-			this.lm_title = this.activitySelected +' near '+place_name+'?';
-		}else{
-			this.lm_title = this.activitySelected+'?';
+			this.lm_title += ' near '+place_name;
 		}
+		if(this.activityDate != ''){
+			let today = new Date(); // today
+			if(moment.utc(today).format("L") == moment.utc(this.activityDate).format("L")){
+				this.lm_title += ' at '+ moment.utc(this.activityDate).format("LT");
+			}else{
+				this.lm_title += ' on '+ moment.utc(this.activityDate).format("MMM D");
+			}
+		} 
+		this.lm_title +='?';
 		
 		this.toolsPrvd.showLoader();
 		this.showMessages();
@@ -406,10 +489,14 @@ customPickerOptions: any;
 	this.shareViaSnapchat = false;
 	this.shareViaTwitter = false;
 	this.shareViaFacebook = false;
+	this.shareViaInstagram = false;
 	console.log(via);
 	switch(via){
 		case 'SnapChat':
 			this.shareViaSnapchat = true;
+		break;
+		case 'Instagram':
+			this.shareViaInstagram = true;
 		break;
 		case 'Twitter':
 			this.shareViaTwitter = true;
@@ -463,19 +550,19 @@ customPickerOptions: any;
   public sendContactsMessage(message:any){
 	return new Promise((resolve, reject) => { 
 	
-	
+		let messageParamsId = message.id;  
 	
 		let shareLink = '';
 		if (this.platform.is('ios')){
-			shareLink = 'somvo://somvo.app/landing/'+this.selectedCommunity[0].id;
+			shareLink = 'somvo://somvo.app/landing/'+ messageParamsId; // this.selectedCommunity[0].id;
 		}else{
-			shareLink = 'https://somvo.app/landing/'+this.selectedCommunity[0].id;
+			shareLink = 'https://somvo.app/landing/'+ messageParamsId; // this.selectedCommunity[0].id;
 		}
 		
 		this.user = this.authPrvd.getAuthData();
 		// let shareMessage =  "Want to "+this.activitySelected.toLowerCase()+"? Download https://testflight.apple.com/join/vkIJtwFV"+" and reply via "+shareLink; 
 		
-		let messageParamsId = this.selectedCommunity[0].id;// message.id;  
+		
 		// let shareLink = 'https://somvo.app/landing?id='+messageParamsId+'&platform=android';
 		let userName = message.public?this.user.name:message.role_name;
 		let messageType = message.public?'Public':'Private';
@@ -590,16 +677,31 @@ customPickerOptions: any;
 		this.chatPrvd.request_type = "LOCAL_MESSAGE";	
 		let item = this.storage.get('last-activity');
 		this.activitySelected = item.itemName;
-		let title ='';
+		
+		let title = this.activitySelected;
 		if(place_name !=''){
-			title = this.activitySelected +' near '+place_name;
-		}else{
-			title = this.activitySelected;
+			title += ' near '+place_name;
 		}
 		
+		if(this.activityDate != ''){
+			let today = new Date(); // today
+			if(moment.utc(today).format("L") == moment.utc(this.activityDate).format("L")){
+				title += ' at '+ moment.utc(this.activityDate).format("LT");
+			}else{
+				title += ' on '+ moment.utc(this.activityDate).format("MMM D");
+			}
+		} 
+		title +='?';
+		
+			
 		this.gpsPrvd.coords.lat = locDetails?parseFloat(locDetails.loc.lat):null;
 		this.gpsPrvd.coords.lng = locDetails?parseFloat(locDetails.loc.lng):null;
-		
+		let extra_data = {
+			community_ids:selectedCommunityIdsArr,
+			activity: this.activitySelected,
+			place_name: place_name,
+			initial_date: this.activityDate!=''?this.activityDate:moment()
+		};
 		netwrkParams = {
 			messageId		 : null,
 			undercover		 : false,
@@ -619,7 +721,10 @@ customPickerOptions: any;
 			expire_date		 : currentDate.add(12, 'hours'),
 			timestamp		 : Math.floor(new Date().getTime()/1000),
 			line_avatar		 : [],
-			user_public_profile: userPublicProfile
+			user_public_profile: userPublicProfile,
+			extra	 		 : JSON.stringify(extra_data),
+			start_date 		 : this.activityDate!=''?this.activityDate:moment(),
+			weekly_status    : this.isWeekly
 		};
 		
 		if (params) Object.assign(netwrkParams, params);
@@ -674,34 +779,43 @@ customPickerOptions: any;
 	}else if(this.selectedContacts.length > 0){
 		successCase = 3;
 	}
-	let messageParamsId = this.selectedCommunity[0].id;// message.id;  
-	let shareLink = 'https://somvo.app/landing?id='+messageParamsId+'&platform=android';
+	let messageParamsId = message.id;  
+	let shareLink = 'https://somvo.app/landing?id='+messageParamsId+'&title='+message.title;
 	let userName = message.public?this.user.name:message.role_name;
 	let messageType = message.public?'Public':'Private';
-	let shareMessage = ' '+message.title + '? '+message.text+"\n Somvo Community: "+this.selectedCommunity[0].title+"\n Type:"+messageType; 
+	let shareMessage = message.title + '? '+message.text+"\n Somvo Community: "+this.selectedCommunity[0].title+"\n Type:"+messageType; 
 
-	/* if(this.shareViaSnapchat){
-		this.socialSharing.shareVia('SnapChat', shareMessage, '', '', shareLink).then(res=>{
+	if(this.shareViaSnapchat){
+		this.socialSharing.shareVia('snapchat', shareMessage, null, null, shareLink).then(res=>{
 			this.toolsPrvd.showToast('Shared via SnapChat.');
 		}).catch(err=>{
 			this.toolsPrvd.showToast('Error: '+err);
 		});
-	} */
+	} 
+	
 	if(this.shareViaTwitter){		
 		this.socialSharing.shareViaTwitter(shareMessage,null,shareLink).then(res=>{
 			this.toolsPrvd.showToast('Shared link ');
-		});/* .catch(err=>{
-			this.toolsPrvd.showToast('error'+err);
-		});		 */
+		});
+	} 
+	
+	
+	if(this.shareViaInstagram){		
+		/* this.socialSharing.shareVia('instagram',shareMessage, null, null,shareLink).then(res=>{
+			this.toolsPrvd.showToast('Shared link ');
+		}); */ 
+		shareMessage = shareMessage + ' ' + shareLink;		
+		this.socialSharing.shareViaInstagram(shareMessage,this.user.avatar_url).then(res=>{
+			this.toolsPrvd.showToast('Shared link ');
+		}); 
 	} 
 	
 	if(this.shareViaFacebook){
 		this.socialSharing.shareViaFacebook(shareMessage,null,shareLink).then(res=>{
-			this.toolsPrvd.showToast('Shared link ');
-		});/* .catch(err=>{
-			this.toolsPrvd.showToast('error'+err);
-		}); */
+			this.toolsPrvd.showToast('Shared link');
+		});
 	} 
+	
 	
 	switch(successCase){
 		case 1:		

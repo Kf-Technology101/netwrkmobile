@@ -71,7 +71,7 @@ export class ProfilePage {
         description: '',
         imageUrl: ''
     };
-
+  public todaysDate: any;
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
@@ -99,6 +99,8 @@ export class ProfilePage {
 	
   ) {
     this.loadConstructor();
+	// Get today's date
+	this.todaysDate = new Date(); 
   }
 
   public listenForScrollEnd(event):void {
@@ -294,6 +296,7 @@ export class ProfilePage {
       console.error(err);
     });
   }
+  
   connectToLinkedIn() {
     this.toolsPrvd.showToast('LinkedIn isn\'t connected');
   }
@@ -454,6 +457,26 @@ export class ProfilePage {
 	});
   }
 
+  public changeWeeklyStatus(message_id,event){
+	let weekly_status;
+	this.toolsPrvd.showLoader();
+	if(event.checked){
+		weekly_status = 1;
+	}else if(!event.checked){
+		weekly_status = 0;
+	}  
+	let messageParams = {
+		message:{
+			messageId: message_id,
+			weekly_status: weekly_status
+		}
+	};
+	this.chatPrvd.sendMessageWithoutImage(messageParams).subscribe(res => {
+		console.log(res);
+		this.toolsPrvd.hideLoader();
+	});
+  }
+  
   private viewDidEnter(params?:any):void {
     if (params) {
       if (params.id) this.user.id = params.id;

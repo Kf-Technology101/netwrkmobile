@@ -67,15 +67,16 @@ modal-legendaryhistory {
 			background-color: #f95e65;
 			bottom: 7px;
 		}
+		&.share-somvo-btn{
+			top: -16px;
+			background-color: #5b87aa;
+			width: 45px;
+			font-size: 12px;
+		}
 	}
 	&.accessBtnDiv{
 		margin-top:-65px;
 		margin-right:0px;
-	}
-  }
-  .areaLobby{
-	.accessDiv{
-		margin-right:-35px;
 	}
   }
   
@@ -84,6 +85,14 @@ modal-legendaryhistory {
 	width:90% 
   }
   
+  .areaLobby{
+	.accessDiv{
+		margin-right:-35px;
+	}
+	.messageDiv{
+		width:100% 
+	}
+  }
   .content {
     &.netwrk-content.content-md {
       .scroll-content {
@@ -474,12 +483,12 @@ page-network-no {
       color: #fff;
       font-size: 13px;
       padding: 3px 10px;
-      bottom: 87px;
-      width: auto;
+      bottom: 85px;
+	  width: 110px;
       z-index: 4;
       display: inline;
 	  &.tail-bottom:before {
-        width: 56px;
+        width: 56px; 
         top: 11px;
       }
 	  &.networks-visible{
@@ -499,6 +508,7 @@ page-network-no {
 		float: left;
 		margin-left: calc(50% - 180px);
 		margin-bottom: 2%;
+		width: 265px;
 		&:before {
 			top: 28px;
 			right: unset;
@@ -612,6 +622,15 @@ page-network-no {
 			border: 1px solid #fff; 
 			color: #fff;
 		}
+	}
+	.create-deal-btn{
+		bottom: 110px;
+		padding: 0px 7px;
+		background-color: #5b87aa;
+		color: #fff;
+		border-radius: 100px;
+		height: 20px;
+		font-size: 15px;
 	}
 	
   }
@@ -972,6 +991,14 @@ page-network-no {
 	&.content .lobby-content{
 		padding-top: 0px;
 	}
+	.message-container {
+	 &.false{
+		.username{
+			display: inline-block;	
+			min-width: 100%;
+		}
+	  }
+	}
   }
 
   .lineLobby {
@@ -1090,7 +1117,7 @@ page-network-no {
         padding-top: 0px;		
       }
       &.areaMessageLobby {
-        padding-top: 55px !important;
+        padding-top: 35px !important;
 		.message-msg.message-text {
 			margin-top: 0px;
 		}
